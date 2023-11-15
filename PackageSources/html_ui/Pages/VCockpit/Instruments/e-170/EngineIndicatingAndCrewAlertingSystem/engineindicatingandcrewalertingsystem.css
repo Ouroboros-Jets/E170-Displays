@@ -1,4 +1,4 @@
-/* temp_stylePlugin:ni:sha-256;_b5SUsODaco8HjjenuIWt9SP4DTJuYDuzKdr9CTOlSc */
+/* temp_stylePlugin:src\instruments\src\EngineIndicatingAndCrewAlertingSystem\Components\ComponentProvider\ComponentProvider.scss */
 .component-provider-wrapper {
   color: white;
   display: flex;
@@ -88,9 +88,9 @@
   box-shadow: none;
 }
 
-/* temp_stylePlugin:ni:sha-256;47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU */
+/* temp_stylePlugin:src\instruments\src\EngineIndicatingAndCrewAlertingSystem\Components\Engine\components\n1Gauge.scss */
 
-/* temp_stylePlugin:ni:sha-256;9DcHPq6rrWG0KTwB0XjOeeUeGCQQg8I9sREnaaH5aiY */
+/* temp_stylePlugin:src\instruments\src\EngineIndicatingAndCrewAlertingSystem\Components\Engine\components\ittGauge\ittGauge.scss */
 .itt-gauge-container-absolute {
   position: absolute;
   width: 150px;
@@ -98,7 +98,7 @@
   top: 220px;
 }
 
-/* temp_stylePlugin:ni:sha-256;nO9DUfXrugr7l1senNY7m-l8eoiNA1BQl2n-Yo2D0X4 */
+/* temp_stylePlugin:src\instruments\src\EngineIndicatingAndCrewAlertingSystem\Components\Engine\engine.scss */
 .engine-wrapper {
   display: flex;
   flex-direction: column;
@@ -113,7 +113,7 @@
   flex-direction: row;
 }
 
-/* temp_stylePlugin:ni:sha-256;i8_dv-1gSphObPwi1fiSkNE10LYZhn_r4xf0kNsRv9A */
+/* temp_stylePlugin:src\instruments\src\EngineIndicatingAndCrewAlertingSystem\index.scss */
 #EICAS_ROOT {
   width: 600px;
   height: 800px;

@@ -1,0 +1,73 @@
+{
+  "name": "Ouroboros E-170/175",
+  "paths": {
+    "instruments": "src\\instruments\\src",
+    "bundles": "bundles",
+    "html_ui": "PackageSources\\html_ui"
+  },
+  "elements": [
+    {
+      "uuid": "f1e204bf-74ff-4f1c-9a08-e67e882a8e19",
+      "name": "Clock",
+      "element": "Instrument",
+      "width": 500,
+      "height": 500,
+      "x": 9000,
+      "y": 3020
+    },
+    {
+      "uuid": "b9a7732e-91a5-4308-a20d-c0227be8e545",
+      "name": "ElectronicFlightBag",
+      "element": "Instrument",
+      "width": 2048,
+      "height": 1536,
+      "x": 3500,
+      "y": 1980
+    },
+    {
+      "uuid": "00e16bb9-1b89-497a-90e7-ad1d9fbc8d68",
+      "name": "MultifunctionDisplay",
+      "element": "Instrument",
+      "width": 600,
+      "height": 800,
+      "x": 7400,
+      "y": 2460
+    },
+    {
+      "uuid": "a8dd0327-c667-4852-9744-2bc2a00bfaf9",
+      "name": "EngineIndicatingAndCrewAlertingSystem",
+      "element": "Instrument",
+      "width": 600,
+      "height": 800,
+      "x": 6780,
+      "y": 2460
+    },
+    {
+      "uuid": "304bf76c-2b48-4a58-805f-218e57cf50cc",
+      "name": "PrimaryFlightDisplay",
+      "element": "Instrument",
+      "width": 600,
+      "height": 800,
+      "x": 6160,
+      "y": 2460
+    },
+    {
+      "uuid": "282fc322-ab42-4c05-9bae-59cba9d04f2f",
+      "name": "DU_1310_2_PFD",
+      "element": "Instrument",
+      "width": 1400,
+      "height": 1050,
+      "x": 5780,
+      "y": 1320
+    },
+    {
+      "uuid": "b8dfc359-f300-4711-a07a-c16ad25440d7",
+      "name": "DU_1310_2_MFD",
+      "element": "Instrument",
+      "width": 1400,
+      "height": 1050,
+      "x": 7200,
+      "y": 1320
+    }
+  ]
+}

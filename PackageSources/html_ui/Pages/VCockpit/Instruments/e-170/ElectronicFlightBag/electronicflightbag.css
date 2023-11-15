@@ -1,4 +1,4 @@
-/* temp_stylePlugin:ni:sha-256;FcaXAsVvXB6c-96Sb2H2JQH2kZ8GpHZxdpS2Cpf8_vI */
+/* temp_stylePlugin:src\instruments\src\ElectronicFlightBag\index.scss */
 :root {
   color: white;
   --redish: #b51f42;
@@ -14,13 +14,13 @@ body {
   background-size: cover;
 }
 
-/* temp_stylePlugin:ni:sha-256;M_a7PuhVk62ryeqXPTf8TCLbNnD5bQfGbQtDh50h8L4 */
+/* temp_stylePlugin:src\instruments\src\ElectronicFlightBag\components\Container\container.scss */
 .container {
   height: 100vh;
   width: 100%;
 }
 
-/* temp_stylePlugin:ni:sha-256;tQf4grKc9hpzaLuw6zru2N8KkUISGYyXHtHhYMgvxxU */
+/* temp_stylePlugin:src\instruments\src\ElectronicFlightBag\components\header\header.scss */
 .headerWrapper {
   background-color: rgba(255, 255, 255, 0.1);
   height: 50px;
@@ -41,7 +41,7 @@ body {
   z-index: -1;
 }
 
-/* temp_stylePlugin:ni:sha-256;mQP4wzSrYpjp6zdTStHoAt3zouahktLGT8XBT2pWcOA */
+/* temp_stylePlugin:node_modules\react-toastify\dist\ReactToastify.css */
 :root {
   --toastify-color-light: #fff;
   --toastify-color-dark: #121212;
@@ -651,7 +651,7 @@ body {
   }
 }
 
-/* temp_stylePlugin:ni:sha-256;3ZS0cO9A2NQdAO81iBETtSyexwDehdMnwjs2Jt-hs8A */
+/* temp_stylePlugin:src\instruments\src\ElectronicFlightBag\components\LockScreen\lockScreen.scss */
 .passcode-component {
   position: relative;
   text-align: center;
