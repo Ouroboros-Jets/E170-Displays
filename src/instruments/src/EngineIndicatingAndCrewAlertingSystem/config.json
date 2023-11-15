@@ -1,0 +1,9 @@
+{
+  "index": "./index.tsx",
+  "isInteractive": true,
+  "name": "EngineIndicatingAndCrewAlertingSystem",
+  "dimensions": {
+    "width": 600,
+    "height": 800
+  }
+}

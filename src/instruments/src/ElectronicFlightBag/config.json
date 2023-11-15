@@ -1,0 +1,9 @@
+{
+	"index": "./index.tsx",
+	"isInteractive": true,
+	"name": "ElectronicFlightBag",
+	"dimensions": {
+		"width": 2048,
+		"height": 1536
+	}
+}

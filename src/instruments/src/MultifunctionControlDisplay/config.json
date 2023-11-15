@@ -1,0 +1,9 @@
+{
+  "index": "./index.tsx",
+  "isInteractive": true,
+  "name": "MultifunctionControlDisplay",
+  "dimensions": {
+    "width": 900,
+    "height": 800
+  }
+}

@@ -1,0 +1,16 @@
+@font-face {
+  font-family: OuroborosMFD;
+  src: url('/Fonts/Ouroboros_SCREEN_FONT.ttf') format('truetype');
+}
+#ROOT_ELEMENT,
+#MSFS_REACT_MOUNT {
+  width: 600px;
+  height: 800px;
+  cursor: none;
+  font-family: Arial, Helvetica, sans-serif;
+  background-image: url('./mfd.png');
+  background-size: cover;
+}
+div {
+  color: white;
+}

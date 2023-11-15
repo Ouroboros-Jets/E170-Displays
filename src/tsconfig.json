@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "target": "ESNext",
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@instruments/common/*": ["./instruments/src/Common/*"]
+    },
+    "typeRoots": ["../typings/", "../node_modules/@types", "../node_modules/sass"]
+  }
+}

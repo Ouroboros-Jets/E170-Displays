@@ -1,0 +1,93 @@
+.passcode-component {
+	position: relative;
+	text-align: center;
+
+	height: 100vh;
+	width: 100vw;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	-webkit-user-select: none;
+	user-select: none;
+}
+.passcode-button-container {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1rem;
+	max-width: 15rem;
+	margin: 0 auto;
+}
+
+.passcode-button {
+	background: none;
+	border: 3px solid white;
+	cursor: pointer;
+	border-radius: 100%;
+	width: 3.5rem;
+	height: 3.5rem;
+	font-size: 1.5rem;
+	color: white;
+	&:hover {
+		background: rgba($color: black, $alpha: 0.4);
+	}
+	&:focus {
+		outline: none;
+	}
+	&:disabled {
+		cursor: not-allowed;
+		background: initial;
+	}
+	transition: ease-in-out 0.2s;
+}
+
+.passcode-input-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 0.313rem;
+	margin-top: 0.65rem;
+}
+.zero {
+	grid-column-start: 2;
+	grid-column-end: 3;
+	grid-row-start: 4;
+	grid-row-end: 5;
+}
+.delete-button {
+	background: none;
+	border: none;
+	font-size: 0.9rem;
+	cursor: pointer;
+	color: white;
+	grid-column-start: 3;
+	margin-top: -14px;
+	margin-left: -20px;
+	grid-column-end: 4;
+	grid-row-start: 4;
+	grid-row-end: 5;
+	&:hover {
+		color: rgba($color: red, $alpha: 0.8);
+	}
+	transition: ease-in-out 0.2s;
+}
+.delete-button-container {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 4rem;
+	margin-right: 1.563rem;
+}
+.error-message-container {
+	position: relative;
+}
+
+.error-message {
+	color: #c80000;
+	position: absolute;
+	margin-top: 0.6rem;
+	top: 0;
+	left: 0;
+	right: 0;
+}
+.passcode-input-dots {
+	margin-top: 30px;
+}

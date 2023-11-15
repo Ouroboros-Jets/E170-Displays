@@ -1,0 +1,39 @@
+<svg id="Agrupar_1" data-name="Agrupar 1" xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #c2c2c2;
+        fill-rule: evenodd;
+      }
+
+      .cls-2 {
+        font-size: 57.182px;
+      }
+
+      .cls-2, .cls-3, .cls-4 {
+        fill: #fff;
+        text-anchor: middle;
+        font-family: Ouroboros-SYSTEM-5.0-BOLDER, "Ouroboros SYSTEM V5 BOLDER";
+      }
+
+      .cls-3 {
+        font-size: 50.529px;
+      }
+
+      .cls-4 {
+        font-size: 48.521px;
+      }
+    </style>
+  </defs>
+  <path id="Retângulo_1" data-name="Retângulo 1" class="cls-1" d="M131.4,117.957H248.237v12.519H131.4V117.957h0Z"/>
+  <path id="Retângulo_1_copiar" data-name="Retângulo 1 copiar" class="cls-1" d="M247.237,124.216V356.849H234.719V124.216h12.518Z"/>
+  <path id="Retângulo_1_copiar_2" data-name="Retângulo 1 copiar 2" class="cls-1" d="M0,344.33H1005.64v12.519H0V344.33H0Z"/>
+  <path id="Retângulo_1_copiar_3" data-name="Retângulo 1 copiar 3" class="cls-1" d="M991.035,344.33V603.043H978.517V344.33h12.518Z"/>
+  <path id="Retângulo_1_copiar_4" data-name="Retângulo 1 copiar 4" class="cls-1" d="M1280,356.849H1121.43V344.33H1280v12.519h0Z"/>
+  <path id="Retângulo_1_copiar_5" data-name="Retângulo 1 copiar 5" class="cls-1" d="M1280,461.168H1087.01V448.65H1280v12.518h0Z"/>
+  <path id="Retângulo_1_copiar_7" data-name="Retângulo 1 copiar 7" class="cls-1" d="M1280,602.043H991.035V589.524H1280v12.519h0Z"/>
+  <path id="Retângulo_1_copiar_6" data-name="Retângulo 1 copiar 6" class="cls-1" d="M1005.64,461.168H978.517V448.65h27.123v12.518h0Z"/>
+  <text id="WEATHER" class="cls-2" transform="translate(65.661 133.481) scale(0.407)"><tspan x="0">WEATHER</tspan></text>
+  <text id="NO_BRG" data-name="NO BRG" class="cls-3" transform="translate(1064.165 359.855) scale(0.461)"><tspan x="0">NO BRG</tspan></text>
+  <text id="TCAS" class="cls-4" transform="matrix(0.48, 0, 0, 0.48, 1046.516, 464.551)"><tspan x="0">TCAS</tspan></text>
+</svg>

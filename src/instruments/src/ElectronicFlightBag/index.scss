@@ -1,0 +1,13 @@
+:root {
+	// background-color: #200f3a;
+	color: white;
+	--redish: #b51f42;
+	--image: url('https://images6.alphacoders.com/132/1323578.png');
+
+	font-size: xx-large;
+	font-family: Arial, Helvetica, sans-serif;
+}
+body {
+	background-image: var(--image);
+	background-size: cover;
+}

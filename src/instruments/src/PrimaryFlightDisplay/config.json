@@ -1,0 +1,9 @@
+{
+  "index": "./instrument.tsx",
+  "isInteractive": false,
+  "name": "PrimaryFlightDisplay",
+  "dimensions": {
+    "width": 600,
+    "height": 800
+  }
+}

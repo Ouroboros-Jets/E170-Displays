@@ -1,0 +1,9 @@
+{
+  "index": "./index.tsx",
+  "isInteractive": true,
+  "name": "DU_1310_2_PFD",
+  "dimensions": {
+    "width": 1400,
+    "height": 1050
+  }
+}

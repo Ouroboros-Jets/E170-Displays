@@ -1,0 +1,20 @@
+.MFD-container {
+  display: flex;
+  width: 600px;
+  height: 800px;
+  flex-direction: column;
+  justify-content: space-between;
+  // background-color: gray;
+}
+.upper-content-container {
+  background-color: rgba($color: black, $alpha: 0.3);
+  height: 455px;
+}
+.lower-content-container {
+  background-color: rgba($color: black, $alpha: 0.3);
+  height: 232px;
+}
+.center-divider {
+  border-top: 7px solid #767776;
+  width: 600px;
+}

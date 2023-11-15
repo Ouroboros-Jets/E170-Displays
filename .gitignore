@@ -1,0 +1,10 @@
+node_modules
+bundles
+_PackageInt
+Packages
+target
+.idea
+.vscode
+msfs-avionics-mirror/src/sdk/build
+.ace
+display-ref
