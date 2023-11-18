@@ -67,7 +67,7 @@ type T_FMAStringProps = {
   mode: ATModeTypes;
 };
 
-export const getStringForATMode: FC<T_FMAStringProps> = (props: T_FMAStringProps): JSX.Element => {
+export const GetStringForATMode: FC<T_FMAStringProps> = (props: T_FMAStringProps): JSX.Element => {
   const textColor = props.style.color;
   switch (props.mode) {
     case ATModeTypes.TO_w:
