@@ -12,8 +12,8 @@
       "element": "Instrument",
       "width": 500,
       "height": 500,
-      "x": 9000,
-      "y": 3020
+      "x": 8140,
+      "y": 2460
     },
     {
       "uuid": "b9a7732e-91a5-4308-a20d-c0227be8e545",
@@ -50,24 +50,6 @@
       "height": 800,
       "x": 6160,
       "y": 2460
-    },
-    {
-      "uuid": "282fc322-ab42-4c05-9bae-59cba9d04f2f",
-      "name": "DU_1310_2_PFD",
-      "element": "Instrument",
-      "width": 1400,
-      "height": 1050,
-      "x": 5780,
-      "y": 1320
-    },
-    {
-      "uuid": "b8dfc359-f300-4711-a07a-c16ad25440d7",
-      "name": "DU_1310_2_MFD",
-      "element": "Instrument",
-      "width": 1400,
-      "height": 1050,
-      "x": 7200,
-      "y": 1320
     }
   ]
 }

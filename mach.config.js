@@ -23,7 +23,7 @@ module.exports = {
     sassPlugin(),
   ],
   instruments: [
-    msfsAvionicsInstrument('PrimaryFlightDisplay'),
+    reactInstrument('PrimaryFlightDisplay'),
     msfsAvionicsInstrument('RadioSelector'),
     msfsAvionicsInstrument('Clock'),
     msfsAvionicsInstrument('IntegratedElectronicStandby'),

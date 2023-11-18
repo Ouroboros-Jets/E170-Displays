@@ -95,7 +95,7 @@
     "name": "INDICATED ALTITUDE",
     "index": 0,
     "unit": "Feet",
-    "value": 0.0,
+    "value": 111.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -108,7 +108,7 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 0.0,
+    "value": 7.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
