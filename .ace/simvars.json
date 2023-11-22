@@ -108,11 +108,11 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 476.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 900.0
+      "max": 1000.0
     },
     "pinned": null
   },

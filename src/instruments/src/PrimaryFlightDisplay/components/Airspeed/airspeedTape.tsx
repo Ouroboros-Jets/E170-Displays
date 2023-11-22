@@ -3,6 +3,7 @@ import { createArray } from 'instruments/common/util/createArray';
 import './airspeed.scss';
 import { useSimVar } from 'instruments/common/Hooks/simVars';
 import { SelectedAirspeedBox } from './selectedAirspeedBox';
+import { ClampValue } from '../../util/clampValue';
 
 /**
  * airspeed tape has a range of 30 to 942 knots +/- 42 knots from the center, meaning the highese number will be 900 but we will extend the tick marks to 942
@@ -67,7 +68,7 @@ export const AirspeedTape: FC = (): JSX.Element => {
           <rect x={0} y={34} width={81} height={330} />
         </clipPath>
         <g clipPath="url(#tapeClip)">
-          <g transform={`translate(0,${(airspeed < 30 ? 30 : airspeed) * airspeedTapeScaling + startOffset})`}>{Tape}</g>
+          <g transform={`translate(0,${ClampValue(airspeed, 30, 900) * airspeedTapeScaling + startOffset})`}>{Tape}</g>
         </g>
         <SelectedAirspeedBox selectedAirspeed={0.79} mach={true} mode={0} />
       </svg>

@@ -21140,6 +21140,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return /* @__PURE__ */ import_react6.default.createElement("g", null, /* @__PURE__ */ import_react6.default.createElement("rect", { x: 1, y: 1, rx: 2, ry: 2, width: 80, height: 33, strokeWidth: 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ import_react6.default.createElement("text", { x: 41, y: 28, textAnchor: "middle", fill: getString().color, fontSize: "30" }, getString().element));
   };
 
+  // src/instruments/src/PrimaryFlightDisplay/util/clampValue.ts
+  var ClampValue = (value, min, max) => {
+    if (value < min) {
+      return min;
+    } else if (value > max) {
+      return max;
+    } else {
+      return value;
+    }
+  };
+
   // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeedTape.tsx
   var AirspeedTape = () => {
     const [airspeed] = useSimVar("AIRSPEED INDICATED", "knots");
@@ -21178,7 +21189,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return null;
       }
     });
-    return /* @__PURE__ */ import_react7.default.createElement("div", { className: "airspeed-container" }, /* @__PURE__ */ import_react7.default.createElement("svg", { className: "airspeed-svg", viewBox: "0 0 82 396" }, /* @__PURE__ */ import_react7.default.createElement("path", { d: "M 81 32 L 81 364", stroke: "white", strokeWidth: "2" }), /* @__PURE__ */ import_react7.default.createElement("clipPath", { id: "tapeClip" }, /* @__PURE__ */ import_react7.default.createElement("rect", { x: 0, y: 34, width: 81, height: 330 })), /* @__PURE__ */ import_react7.default.createElement("g", { clipPath: "url(#tapeClip)" }, /* @__PURE__ */ import_react7.default.createElement("g", { transform: `translate(0,${(airspeed < 30 ? 30 : airspeed) * airspeedTapeScaling + startOffset})` }, Tape)), /* @__PURE__ */ import_react7.default.createElement(SelectedAirspeedBox, { selectedAirspeed: 0.79, mach: true, mode: 0 })));
+    return /* @__PURE__ */ import_react7.default.createElement("div", { className: "airspeed-container" }, /* @__PURE__ */ import_react7.default.createElement("svg", { className: "airspeed-svg", viewBox: "0 0 82 396" }, /* @__PURE__ */ import_react7.default.createElement("path", { d: "M 81 32 L 81 364", stroke: "white", strokeWidth: "2" }), /* @__PURE__ */ import_react7.default.createElement("clipPath", { id: "tapeClip" }, /* @__PURE__ */ import_react7.default.createElement("rect", { x: 0, y: 34, width: 81, height: 330 })), /* @__PURE__ */ import_react7.default.createElement("g", { clipPath: "url(#tapeClip)" }, /* @__PURE__ */ import_react7.default.createElement("g", { transform: `translate(0,${ClampValue(airspeed, 30, 900) * airspeedTapeScaling + startOffset})` }, Tape)), /* @__PURE__ */ import_react7.default.createElement(SelectedAirspeedBox, { selectedAirspeed: 0.79, mach: true, mode: 0 })));
   };
 
   // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeed.tsx
