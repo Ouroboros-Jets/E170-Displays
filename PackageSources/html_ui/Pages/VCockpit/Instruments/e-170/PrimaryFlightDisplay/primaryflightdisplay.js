@@ -2489,11 +2489,11 @@ class InstrumentLogic extends BaseInstrument {
       if (true) {
         (function() {
           "use strict";
-          var React8 = require_react();
+          var React11 = require_react();
           var _assign = require_object_assign();
           var Scheduler = require_scheduler();
           var tracing = require_tracing();
-          var ReactSharedInternals = React8.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React11.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           function warn(format) {
             {
               for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -2525,7 +2525,7 @@ class InstrumentLogic extends BaseInstrument {
               Function.prototype.apply.call(console[level], console, argsWithFormat);
             }
           }
-          if (!React8) {
+          if (!React11) {
             {
               throw Error("ReactDOM was loaded before React. Make sure you load the React package before loading ReactDOM.");
             }
@@ -3861,7 +3861,7 @@ class InstrumentLogic extends BaseInstrument {
           var didWarnInvalidChild = false;
           function flattenChildren(children) {
             var content = "";
-            React8.Children.forEach(children, function(child) {
+            React11.Children.forEach(children, function(child) {
               if (child == null) {
                 return;
               }
@@ -3872,7 +3872,7 @@ class InstrumentLogic extends BaseInstrument {
           function validateProps(element, props) {
             {
               if (typeof props.children === "object" && props.children !== null) {
-                React8.Children.forEach(props.children, function(child) {
+                React11.Children.forEach(props.children, function(child) {
                   if (child == null) {
                     return;
                   }
@@ -11075,7 +11075,7 @@ class InstrumentLogic extends BaseInstrument {
           }
           var fakeInternalInstance = {};
           var isArray = Array.isArray;
-          var emptyRefsObject = new React8.Component().refs;
+          var emptyRefsObject = new React11.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -20672,7 +20672,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // src/instruments/src/PrimaryFlightDisplay/index.tsx
-  var import_react7 = __toESM(require_react());
+  var import_react10 = __toESM(require_react());
 
   // src/instruments/common/Hooks/index.tsx
   var import_react3 = __toESM(require_react());
@@ -20840,6 +20840,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       children
     );
   };
+  var useSimVar = (name, unit, maxStaleness = 0) => {
+    const value = useSimVarValue(name, unit, maxStaleness);
+    const setter = useSimVarSetter(name, unit);
+    return [value, setter];
+  };
   var useObjLocalVar = (name, unit, maxStaleness = 0) => {
     const value = useSimVarValue("L:OBJ_E170_" + name, unit, maxStaleness);
     const setter = useSimVarSetter("L:OBJ_E170_" + name, unit);
@@ -20866,7 +20871,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
 
   // src/instruments/src/PrimaryFlightDisplay/components/pfdProvider/pfdProvider.tsx
-  var import_react6 = __toESM(require_react());
+  var import_react9 = __toESM(require_react());
 
   // src/instruments/src/PrimaryFlightDisplay/components/FMA/FMA.tsx
   var import_react5 = __toESM(require_react());
@@ -20993,25 +20998,30 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }, 500);
       return () => clearInterval(intervalId);
     }, []);
-    const reversed = reverseVideo({ backgroundColor: "white", color: "red", reverse: s_reverseVideo });
+    const GetAtModeBoxColor = () => {
+      if (AT_Mode_ == 13 /* AT_r_rv */) {
+        return {
+          bg: reverseVideo({ color: "red", backgroundColor: "white", reverse: s_reverseVideo }).backgroundColor,
+          color: reverseVideo({ color: "red", backgroundColor: "white", reverse: s_reverseVideo }).color
+        };
+      } else if (AT_Mode_ == 12 /* AT_g_rv */) {
+        return {
+          bg: reverseVideo({ color: "green", backgroundColor: "white", reverse: s_reverseVideo }).backgroundColor,
+          color: reverseVideo({ color: "green", backgroundColor: "white", reverse: s_reverseVideo }).color
+        };
+      } else
+        return { bg: getStyleForATMode(AT_Mode_).backgroundColor, color: getStyleForATMode(AT_Mode_).color };
+    };
     return /* @__PURE__ */ import_react5.default.createElement("div", { className: "fma-container", style: { left: props.x, top: props.y } }, /* @__PURE__ */ import_react5.default.createElement(
       FMAGrid,
       {
         AT_Mode_Box: {
-          backgroundColor: AT_Mode_ == 13 /* AT_r_rv */ ? reverseVideo({ color: "red", backgroundColor: "white", reverse: s_reverseVideo }).backgroundColor : getStyleForATMode(AT_Mode_).backgroundColor,
-          element: /* @__PURE__ */ import_react5.default.createElement(
-            GetStringForATMode,
-            {
-              ovrdFontColor: reverseVideo({ color: "red", backgroundColor: "white", reverse: s_reverseVideo }).color,
-              style: getStyleForATMode(AT_Mode_),
-              mode: AT_Mode_
-            }
-          )
+          backgroundColor: GetAtModeBoxColor().bg,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { ovrdFontColor: GetAtModeBoxColor().color, style: getStyleForATMode(AT_Mode_), mode: AT_Mode_ })
         },
         AP_Status_Box: {
           backgroundColor: getStyleForATMode(AP_Status_).backgroundColor,
-          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(AP_Status_), mode: AP_Status_ }),
-          reverseVideo: s_reverseVideo
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(AP_Status_), mode: AP_Status_ })
         },
         AP_AT_Source_box: {
           backgroundColor: getStyleForATMode(Selection_Source_).backgroundColor,
@@ -21092,16 +21102,100 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return vars;
   };
 
+  // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeed.tsx
+  var import_react8 = __toESM(require_react());
+
+  // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeedTape.tsx
+  var import_react7 = __toESM(require_react());
+
+  // src/instruments/common/util/createArray.ts
+  var createArray = (length) => {
+    const array = new Array(length);
+    for (let i = 0; i < length; i++) {
+      array[i] = i;
+    }
+    return array;
+  };
+
+  // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/selectedAirspeedBox.tsx
+  var import_react6 = __toESM(require_react());
+  var SelectedAirspeedBox = (props) => {
+    const invalidOutput = "---";
+    const getString = () => {
+      switch (props.mode) {
+        case 0 /* FMS */:
+          return {
+            element: /* @__PURE__ */ import_react6.default.createElement("tspan", null, props.selectedAirspeed, props.mach ? /* @__PURE__ */ import_react6.default.createElement("tspan", { fill: "white", fontSize: 14 }, "M") : ""),
+            color: "magenta"
+          };
+        case 1 /* MAN */:
+          return {
+            element: /* @__PURE__ */ import_react6.default.createElement("tspan", null, props.selectedAirspeed, props.mach ? /* @__PURE__ */ import_react6.default.createElement("tspan", { fill: "white", fontSize: 14 }, "M") : ""),
+            color: "cyan"
+          };
+        case 2 /* INOP */:
+          return { element: /* @__PURE__ */ import_react6.default.createElement("tspan", null, invalidOutput), color: "yellow" };
+      }
+    };
+    return /* @__PURE__ */ import_react6.default.createElement("g", null, /* @__PURE__ */ import_react6.default.createElement("rect", { x: 1, y: 1, rx: 2, ry: 2, width: 80, height: 33, strokeWidth: 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ import_react6.default.createElement("text", { x: 41, y: 28, textAnchor: "middle", fill: getString().color, fontSize: "30" }, getString().element));
+  };
+
+  // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeedTape.tsx
+  var AirspeedTape = () => {
+    const [airspeed] = useSimVar("AIRSPEED INDICATED", "knots");
+    const tapeLength = 942;
+    const spacing = 3.95;
+    const startOffset = 200;
+    const airspeedTapeScaling = 3.95;
+    const array = createArray(tapeLength);
+    const drawTick = (small, y) => {
+      return /* @__PURE__ */ import_react7.default.createElement(
+        "path",
+        {
+          d: `M 82 ${-y} L ${small ? 70 : 58} ${-y}`,
+          stroke: "white",
+          strokeWidth: "2",
+          strokeLinecap: "round",
+          strokeLinejoin: "round"
+        }
+      );
+    };
+    const Tape = array.map((item, index) => {
+      if (index < 30) {
+        return null;
+      }
+      if (index < 200) {
+        if (index % 10 === 0) {
+          return /* @__PURE__ */ import_react7.default.createElement("g", { key: index }, drawTick(false, index * spacing), /* @__PURE__ */ import_react7.default.createElement("text", { x: "53", y: -index * spacing + 9, textAnchor: "end", fill: "white", fontSize: "22" }, index));
+        } else
+          return null;
+      } else {
+        if (index % 20 === 0) {
+          return /* @__PURE__ */ import_react7.default.createElement("g", { key: index }, drawTick(false, index * spacing), /* @__PURE__ */ import_react7.default.createElement("text", { x: "53", y: -index * spacing + 9, textAnchor: "end", fill: "white", fontSize: "22" }, index));
+        } else if (index % 20 === 10) {
+          return drawTick(false, index * spacing);
+        } else
+          return null;
+      }
+    });
+    return /* @__PURE__ */ import_react7.default.createElement("div", { className: "airspeed-container" }, /* @__PURE__ */ import_react7.default.createElement("svg", { className: "airspeed-svg", viewBox: "0 0 82 396" }, /* @__PURE__ */ import_react7.default.createElement("path", { d: "M 81 32 L 81 364", stroke: "white", strokeWidth: "2" }), /* @__PURE__ */ import_react7.default.createElement("clipPath", { id: "tapeClip" }, /* @__PURE__ */ import_react7.default.createElement("rect", { x: 0, y: 34, width: 81, height: 330 })), /* @__PURE__ */ import_react7.default.createElement("g", { clipPath: "url(#tapeClip)" }, /* @__PURE__ */ import_react7.default.createElement("g", { transform: `translate(0,${(airspeed < 30 ? 30 : airspeed) * airspeedTapeScaling + startOffset})` }, Tape)), /* @__PURE__ */ import_react7.default.createElement(SelectedAirspeedBox, { selectedAirspeed: 0.79, mach: true, mode: 0 })));
+  };
+
+  // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeed.tsx
+  var Airspeed = () => {
+    return /* @__PURE__ */ import_react8.default.createElement("div", null, /* @__PURE__ */ import_react8.default.createElement(AirspeedTape, null));
+  };
+
   // src/instruments/src/PrimaryFlightDisplay/components/pfdProvider/pfdProvider.tsx
   var PFDProvider = () => {
-    return /* @__PURE__ */ import_react6.default.createElement("div", null, /* @__PURE__ */ import_react6.default.createElement("div", { className: "top-component" }, /* @__PURE__ */ import_react6.default.createElement(FMA, { x: 0, y: 0, vars: FmaVars() })), /* @__PURE__ */ import_react6.default.createElement("div", { className: "bottom-component" }, "bottom"));
+    return /* @__PURE__ */ import_react9.default.createElement("div", null, /* @__PURE__ */ import_react9.default.createElement("div", { className: "top-component" }, /* @__PURE__ */ import_react9.default.createElement(FMA, { x: 0, y: 0, vars: FmaVars() }), /* @__PURE__ */ import_react9.default.createElement(Airspeed, null)), /* @__PURE__ */ import_react9.default.createElement("div", { className: "bottom-component" }, "bottom"));
   };
 
   // src/instruments/src/PrimaryFlightDisplay/index.tsx
   var PrimaryFlightDisplay = () => {
-    return /* @__PURE__ */ import_react7.default.createElement("div", { id: "PFD-ROOT" }, /* @__PURE__ */ import_react7.default.createElement(PFDProvider, null));
+    return /* @__PURE__ */ import_react10.default.createElement("div", { id: "PFD-ROOT" }, /* @__PURE__ */ import_react10.default.createElement(PFDProvider, null));
   };
-  render(/* @__PURE__ */ import_react7.default.createElement(PrimaryFlightDisplay, null));
+  render(/* @__PURE__ */ import_react10.default.createElement(PrimaryFlightDisplay, null));
 })();
 /*
 object-assign

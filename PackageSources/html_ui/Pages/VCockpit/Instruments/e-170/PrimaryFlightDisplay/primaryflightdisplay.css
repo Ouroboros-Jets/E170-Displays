@@ -36,3 +36,17 @@
   height: 100%;
   width: 100%;
 }
+
+/* temp_stylePlugin:src\instruments\src\PrimaryFlightDisplay\components\Airspeed\airspeed.scss */
+.airspeed-container {
+  position: absolute;
+  top: 54px;
+  left: 0px;
+  width: 82px;
+  height: 396px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.airspeed-svg {
+  width: 100%;
+  height: 100%;
+}

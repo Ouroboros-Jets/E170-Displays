@@ -44,28 +44,36 @@ export const FMA: FC<T_FMAProps> = (props: T_FMAProps): JSX.Element => {
     return () => clearInterval(intervalId);
   }, []);
 
-  const reversed = reverseVideo({ backgroundColor: 'white', color: 'red', reverse: s_reverseVideo });
+  type T_Colors = {
+    bg: string;
+    color: string;
+  };
+  const GetAtModeBoxColor = (): T_Colors => {
+    if (AT_Mode_ == ATModeTypes.AT_r_rv) {
+      return {
+        bg: reverseVideo({ color: 'red', backgroundColor: 'white', reverse: s_reverseVideo }).backgroundColor,
+        color: reverseVideo({ color: 'red', backgroundColor: 'white', reverse: s_reverseVideo }).color,
+      };
+    } else if (AT_Mode_ == ATModeTypes.AT_g_rv) {
+      return {
+        bg: reverseVideo({ color: 'green', backgroundColor: 'white', reverse: s_reverseVideo }).backgroundColor,
+        color: reverseVideo({ color: 'green', backgroundColor: 'white', reverse: s_reverseVideo }).color,
+      };
+    } else return { bg: getStyleForATMode(AT_Mode_).backgroundColor, color: getStyleForATMode(AT_Mode_).color };
+  };
 
   return (
     <div className="fma-container" style={{ left: props.x, top: props.y }}>
       <FMAGrid
         AT_Mode_Box={{
-          backgroundColor:
-            AT_Mode_ == ATModeTypes.AT_r_rv
-              ? reverseVideo({ color: 'red', backgroundColor: 'white', reverse: s_reverseVideo }).backgroundColor
-              : getStyleForATMode(AT_Mode_).backgroundColor,
+          backgroundColor: GetAtModeBoxColor().bg,
           element: (
-            <GetStringForATMode
-              ovrdFontColor={reverseVideo({ color: 'red', backgroundColor: 'white', reverse: s_reverseVideo }).color}
-              style={getStyleForATMode(AT_Mode_)}
-              mode={AT_Mode_}
-            />
+            <GetStringForATMode ovrdFontColor={GetAtModeBoxColor().color} style={getStyleForATMode(AT_Mode_)} mode={AT_Mode_} />
           ),
         }}
         AP_Status_Box={{
           backgroundColor: getStyleForATMode(AP_Status_).backgroundColor,
           element: <GetStringForATMode style={getStyleForATMode(AP_Status_)} mode={AP_Status_} />,
-          reverseVideo: s_reverseVideo,
         }}
         AP_AT_Source_box={{
           backgroundColor: getStyleForATMode(Selection_Source_).backgroundColor,
