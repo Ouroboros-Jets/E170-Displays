@@ -1,6 +1,7 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { getStyleForATMode, GetStringForATMode, ATModeTypes } from './FMA_Annunciators';
 import { reverseVideo } from 'instruments/common/util/reverseVideo';
+import './fma.scss';
 
 export type FMAVars = {
   v_AT_Mode: number;
@@ -34,17 +35,37 @@ export const FMA: FC<T_FMAProps> = (props: T_FMAProps): JSX.Element => {
   /**
    * todo: add logic for reverse video, dependent on the mode for each box, the prop is a boolean and we will just pass true if the mode has reverse video
    */
+  const [s_reverseVideo, setReverseVideo] = useState<boolean>(true);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setReverseVideo((prevValue) => !prevValue);
+    }, 500);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const reversed = reverseVideo({ backgroundColor: 'white', color: 'red', reverse: s_reverseVideo });
 
   return (
     <div className="fma-container" style={{ left: props.x, top: props.y }}>
       <FMAGrid
         AT_Mode_Box={{
-          backgroundColor: getStyleForATMode(AT_Mode_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(AT_Mode_)} mode={AT_Mode_} />,
+          backgroundColor:
+            AT_Mode_ == ATModeTypes.AT_r_rv
+              ? reverseVideo({ color: 'red', backgroundColor: 'white', reverse: s_reverseVideo }).backgroundColor
+              : getStyleForATMode(AT_Mode_).backgroundColor,
+          element: (
+            <GetStringForATMode
+              ovrdFontColor={reverseVideo({ color: 'red', backgroundColor: 'white', reverse: s_reverseVideo }).color}
+              style={getStyleForATMode(AT_Mode_)}
+              mode={AT_Mode_}
+            />
+          ),
         }}
         AP_Status_Box={{
           backgroundColor: getStyleForATMode(AP_Status_).backgroundColor,
           element: <GetStringForATMode style={getStyleForATMode(AP_Status_)} mode={AP_Status_} />,
+          reverseVideo: s_reverseVideo,
         }}
         AP_AT_Source_box={{
           backgroundColor: getStyleForATMode(Selection_Source_).backgroundColor,
@@ -103,10 +124,25 @@ type T_FMAGridProps = {
 };
 
 const FMAGrid: FC<T_FMAGridProps> = (props: T_FMAGridProps): JSX.Element => {
-  const reversed: string = reverseVideo({ backgroundColor: 'red', color: 'red', reverse: false }).backgroundColor;
   return (
-    <svg className="fma-grid" viewBox="0 0 100 100">
-      <rect x="0" y="0" width="100" height="100" fill={'transparent'} />
+    <svg className="fma-svg" viewBox="0 0 374 56" xmlns="http://www.w3.org/2000/svg">
+      <rect
+        x="1.5"
+        y="1.5"
+        width="371"
+        height="53"
+        fill="transparent"
+        stroke="white"
+        strokeWidth={3}
+        strokeLinejoin="round"
+        strokeMiterlimit={'round'}
+        rx={2}
+        ry={2}
+      />
+      <rect id="AT_Mode_Box" x="3" y="3" width="100" height="26" fill={props.AT_Mode_Box.backgroundColor} />
+      <text x={50} y={25} textAnchor="middle" color="red" fontSize={25}>
+        {props.AT_Mode_Box.element}
+      </text>
     </svg>
   );
 };

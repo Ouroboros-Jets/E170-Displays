@@ -1093,7 +1093,7 @@ class InstrumentLogic extends BaseInstrument {
             }
             return dispatcher.useContext(Context, unstable_observedBits);
           }
-          function useState2(initialState) {
+          function useState3(initialState) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useState(initialState);
           }
@@ -1105,7 +1105,7 @@ class InstrumentLogic extends BaseInstrument {
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect2(create, deps) {
+          function useEffect3(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1675,13 +1675,13 @@ class InstrumentLogic extends BaseInstrument {
           exports.useCallback = useCallback;
           exports.useContext = useContext2;
           exports.useDebugValue = useDebugValue;
-          exports.useEffect = useEffect2;
+          exports.useEffect = useEffect3;
           exports.useImperativeHandle = useImperativeHandle;
           exports.useLayoutEffect = useLayoutEffect;
           exports.useMemo = useMemo;
           exports.useReducer = useReducer;
           exports.useRef = useRef2;
-          exports.useState = useState2;
+          exports.useState = useState3;
           exports.version = ReactVersion;
         })();
       }
@@ -2489,11 +2489,11 @@ class InstrumentLogic extends BaseInstrument {
       if (true) {
         (function() {
           "use strict";
-          var React6 = require_react();
+          var React8 = require_react();
           var _assign = require_object_assign();
           var Scheduler = require_scheduler();
           var tracing = require_tracing();
-          var ReactSharedInternals = React6.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React8.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           function warn(format) {
             {
               for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -2525,7 +2525,7 @@ class InstrumentLogic extends BaseInstrument {
               Function.prototype.apply.call(console[level], console, argsWithFormat);
             }
           }
-          if (!React6) {
+          if (!React8) {
             {
               throw Error("ReactDOM was loaded before React. Make sure you load the React package before loading ReactDOM.");
             }
@@ -3861,7 +3861,7 @@ class InstrumentLogic extends BaseInstrument {
           var didWarnInvalidChild = false;
           function flattenChildren(children) {
             var content = "";
-            React6.Children.forEach(children, function(child) {
+            React8.Children.forEach(children, function(child) {
               if (child == null) {
                 return;
               }
@@ -3872,7 +3872,7 @@ class InstrumentLogic extends BaseInstrument {
           function validateProps(element, props) {
             {
               if (typeof props.children === "object" && props.children !== null) {
-                React6.Children.forEach(props.children, function(child) {
+                React8.Children.forEach(props.children, function(child) {
                   if (child == null) {
                     return;
                   }
@@ -11075,7 +11075,7 @@ class InstrumentLogic extends BaseInstrument {
           }
           var fakeInternalInstance = {};
           var isArray = Array.isArray;
-          var emptyRefsObject = new React6.Component().refs;
+          var emptyRefsObject = new React8.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -20672,7 +20672,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // src/instruments/src/PrimaryFlightDisplay/index.tsx
-  var import_react5 = __toESM(require_react());
+  var import_react7 = __toESM(require_react());
 
   // src/instruments/common/Hooks/index.tsx
   var import_react3 = __toESM(require_react());
@@ -20840,6 +20840,25 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       children
     );
   };
+  var useObjLocalVar = (name, unit, maxStaleness = 0) => {
+    const value = useSimVarValue("L:OBJ_E170_" + name, unit, maxStaleness);
+    const setter = useSimVarSetter("L:OBJ_E170_" + name, unit);
+    return [value, setter];
+  };
+  var useSimVarValue = (name, unit, maxStaleness) => {
+    const contextValue = (0, import_react2.useContext)(context);
+    (0, import_react2.useEffect)(() => {
+      contextValue.register(name, unit, maxStaleness, false);
+      return () => {
+        contextValue.unregister(name, unit, maxStaleness, false);
+      };
+    }, [name, unit, maxStaleness]);
+    return contextValue.retrieve(name, unit);
+  };
+  var useSimVarSetter = (name, unit, proxy) => {
+    const contextValue = (0, import_react2.useContext)(context);
+    return (value) => contextValue.update(name, unit, value, proxy);
+  };
 
   // src/instruments/common/Hooks/index.tsx
   var render = (Slot) => {
@@ -20847,16 +20866,242 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
 
   // src/instruments/src/PrimaryFlightDisplay/components/pfdProvider/pfdProvider.tsx
+  var import_react6 = __toESM(require_react());
+
+  // src/instruments/src/PrimaryFlightDisplay/components/FMA/FMA.tsx
+  var import_react5 = __toESM(require_react());
+
+  // src/instruments/src/PrimaryFlightDisplay/components/FMA/FMA_Annunciators.tsx
   var import_react4 = __toESM(require_react());
+  var getStyleForATMode = (mode) => {
+    switch (mode) {
+      case 1 /* TO_w */:
+        return { color: "white", backgroundColor: "transparent", isReverseVideo: false };
+      case 2 /* TO_g */:
+        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
+      case 3 /* HOLD_g */:
+        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
+      case 4 /* SPD_T_w */:
+        return { color: "white", backgroundColor: "transparent", isReverseVideo: false };
+      case 5 /* SPD_T_g */:
+        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
+      case 6 /* SPD_E_g */:
+        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
+      case 7 /* RETD_w */:
+        return { color: "white", backgroundColor: "transparent", isReverseVideo: false };
+      case 8 /* RETD_g */:
+        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
+      case 9 /* GA_g */:
+        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
+      case 10 /* LIM_a */:
+        return { color: "amber", backgroundColor: "transparent", isReverseVideo: false };
+      case 11 /* AT_g */:
+        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
+      case 12 /* AT_g_rv */:
+        return { color: "lime", backgroundColor: "transparent", isReverseVideo: true };
+      case 13 /* AT_r_rv */:
+        return { color: "red", backgroundColor: "transparent", isReverseVideo: true };
+      case 14 /* OVRD_g */:
+        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
+      case 15 /* DD_g */:
+        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
+      case 0 /* NONE */:
+        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
+      case 0 /* NONE */:
+        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
+      case 0 /* NONE */:
+        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
+      case 0 /* NONE */:
+        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
+      case 0 /* NONE */:
+        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
+      case 0 /* NONE */:
+        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
+      case 0 /* NONE */:
+        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
+      default:
+        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
+    }
+  };
+  var GetStringForATMode = (props) => {
+    const textColor = props.style.color;
+    switch (props.mode) {
+      case 1 /* TO_w */:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", { fill: textColor }, "TO");
+      case 2 /* TO_g */:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", { fill: textColor }, "TO");
+      case 3 /* HOLD_g */:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", { fill: textColor }, "HOLD");
+      case 4 /* SPD_T_w */:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", { fill: textColor }, "SPD", /* @__PURE__ */ import_react4.default.createElement("tspan", { fontSize: 20 }, "T"));
+      case 5 /* SPD_T_g */:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", { fill: textColor }, "SPD", /* @__PURE__ */ import_react4.default.createElement("tspan", { fontSize: 20 }, "T"));
+      case 6 /* SPD_E_g */:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", { fill: textColor }, "SPD", /* @__PURE__ */ import_react4.default.createElement("tspan", { fontSize: 20 }, "E"));
+      case 7 /* RETD_w */:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", { fill: textColor }, "RETD");
+      case 8 /* RETD_g */:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", { fill: textColor }, "RETD");
+      case 9 /* GA_g */:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", { fill: textColor }, "GA");
+      case 10 /* LIM_a */:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", { fill: textColor }, "LIM");
+      case 11 /* AT_g */:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", { fill: textColor }, "AT");
+      case 12 /* AT_g_rv */:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", { fill: props.ovrdFontColor != null ? props.ovrdFontColor : textColor }, "AT");
+      case 13 /* AT_r_rv */:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", { fill: props.ovrdFontColor != null ? props.ovrdFontColor : textColor }, "AT");
+      case 14 /* OVRD_g */:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", { fill: textColor }, "OVRD");
+      case 15 /* DD_g */:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", { fill: textColor }, "DD");
+      default:
+        return /* @__PURE__ */ import_react4.default.createElement("tspan", null);
+    }
+  };
+
+  // src/instruments/common/util/reverseVideo.ts
+  var reverseVideo = ({ color, backgroundColor, reverse }) => {
+    if (reverse) {
+      return {
+        color: backgroundColor,
+        backgroundColor: color
+      };
+    }
+    return {
+      color,
+      backgroundColor
+    };
+  };
+
+  // src/instruments/src/PrimaryFlightDisplay/components/FMA/FMA.tsx
+  var FMA = (props) => {
+    const AT_Mode_ = props.vars.v_AT_Mode;
+    const AP_Status_ = props.vars.v_AP_Status;
+    const Lateral_Mode_ = props.vars.v_Lateral_Mode;
+    const Vertical_Mode_ = props.vars.v_Vertical_Mode;
+    const Armed_AT_Mode_ = props.vars.v_Armed_AT_Mode;
+    const AT_Status_ = props.vars.v_AT_Status;
+    const Armed_Lateral_Mode_ = props.vars.v_Armed_Lateral_Mode;
+    const Armed_Vertical_Mode_ = props.vars.v_Armed_Vertical_Mode;
+    const Selection_Source_ = props.vars.v_Selection_Source;
+    const [s_reverseVideo, setReverseVideo] = (0, import_react5.useState)(true);
+    (0, import_react5.useEffect)(() => {
+      const intervalId = setInterval(() => {
+        setReverseVideo((prevValue) => !prevValue);
+      }, 500);
+      return () => clearInterval(intervalId);
+    }, []);
+    const reversed = reverseVideo({ backgroundColor: "white", color: "red", reverse: s_reverseVideo });
+    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "fma-container", style: { left: props.x, top: props.y } }, /* @__PURE__ */ import_react5.default.createElement(
+      FMAGrid,
+      {
+        AT_Mode_Box: {
+          backgroundColor: AT_Mode_ == 13 /* AT_r_rv */ ? reverseVideo({ color: "red", backgroundColor: "white", reverse: s_reverseVideo }).backgroundColor : getStyleForATMode(AT_Mode_).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(
+            GetStringForATMode,
+            {
+              ovrdFontColor: reverseVideo({ color: "red", backgroundColor: "white", reverse: s_reverseVideo }).color,
+              style: getStyleForATMode(AT_Mode_),
+              mode: AT_Mode_
+            }
+          )
+        },
+        AP_Status_Box: {
+          backgroundColor: getStyleForATMode(AP_Status_).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(AP_Status_), mode: AP_Status_ }),
+          reverseVideo: s_reverseVideo
+        },
+        AP_AT_Source_box: {
+          backgroundColor: getStyleForATMode(Selection_Source_).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(Selection_Source_), mode: Selection_Source_ })
+        },
+        Lateral_Mode_Box: {
+          backgroundColor: getStyleForATMode(Lateral_Mode_).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(Lateral_Mode_), mode: Lateral_Mode_ })
+        },
+        Vertical_Mode_Box: {
+          backgroundColor: getStyleForATMode(Vertical_Mode_).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(Vertical_Mode_), mode: Vertical_Mode_ })
+        },
+        Armed_AT_Mode_Box: {
+          backgroundColor: getStyleForATMode(Armed_AT_Mode_).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(Armed_AT_Mode_), mode: Armed_AT_Mode_ })
+        },
+        AT_Status_Box: {
+          backgroundColor: getStyleForATMode(AT_Status_).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(AT_Status_), mode: AT_Status_ })
+        },
+        Armed_Lateral_Mode_Box: {
+          backgroundColor: getStyleForATMode(Armed_Lateral_Mode_).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(Armed_Lateral_Mode_), mode: Armed_Lateral_Mode_ })
+        },
+        Armed_Vertical_Mode_Box: {
+          backgroundColor: getStyleForATMode(Armed_Vertical_Mode_).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(Armed_Vertical_Mode_), mode: Armed_Vertical_Mode_ })
+        },
+        Selection_Source_Box: {
+          backgroundColor: getStyleForATMode(Selection_Source_).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(Selection_Source_), mode: Selection_Source_ })
+        }
+      }
+    ));
+  };
+  var FMAGrid = (props) => {
+    return /* @__PURE__ */ import_react5.default.createElement("svg", { className: "fma-svg", viewBox: "0 0 374 56", xmlns: "http://www.w3.org/2000/svg" }, /* @__PURE__ */ import_react5.default.createElement(
+      "rect",
+      {
+        x: "1.5",
+        y: "1.5",
+        width: "371",
+        height: "53",
+        fill: "transparent",
+        stroke: "white",
+        strokeWidth: 3,
+        strokeLinejoin: "round",
+        strokeMiterlimit: "round",
+        rx: 2,
+        ry: 2
+      }
+    ), /* @__PURE__ */ import_react5.default.createElement("rect", { id: "AT_Mode_Box", x: "3", y: "3", width: "100", height: "26", fill: props.AT_Mode_Box.backgroundColor }), /* @__PURE__ */ import_react5.default.createElement("text", { x: 50, y: 25, textAnchor: "middle", color: "red", fontSize: 25 }, props.AT_Mode_Box.element));
+  };
+
+  // src/instruments/src/PrimaryFlightDisplay/components/FMA/FMA_Vars.tsx
+  var FmaVars = () => {
+    const [v_AT_Mode] = useObjLocalVar("PFD_FMA_AT_Mode", "number");
+    const [v_AP_Status] = useObjLocalVar("PFD_FMA_AP_Status", "number");
+    const [v_Lateral_Mode] = useObjLocalVar("PFD_FMA_Lateral_Mode", "number");
+    const [v_Vertical_Mode] = useObjLocalVar("PFD_FMA_Vertical_Mode", "number");
+    const [v_Armed_AT_Mode] = useObjLocalVar("PFD_FMA_Armed_AT_Mode", "number");
+    const [v_AT_Status] = useObjLocalVar("PFD_FMA_AT_Status", "number");
+    const [v_Armed_Lateral_Mode] = useObjLocalVar("PFD_FMA_Armed_Lateral_Mode", "number");
+    const [v_Armed_Vertical_Mode] = useObjLocalVar("PFD_FMA_Armed_Vertical_Mode", "number");
+    const [v_Selection_Source] = useObjLocalVar("PFD_FMA_Selection_Source", "number");
+    const vars = {
+      v_AT_Mode,
+      v_AP_Status,
+      v_Lateral_Mode,
+      v_Vertical_Mode,
+      v_Armed_AT_Mode,
+      v_AT_Status,
+      v_Armed_Lateral_Mode,
+      v_Armed_Vertical_Mode,
+      v_Selection_Source
+    };
+    return vars;
+  };
+
+  // src/instruments/src/PrimaryFlightDisplay/components/pfdProvider/pfdProvider.tsx
   var PFDProvider = () => {
-    return /* @__PURE__ */ import_react4.default.createElement("div", null, /* @__PURE__ */ import_react4.default.createElement("div", { className: "top-component" }, "top"), /* @__PURE__ */ import_react4.default.createElement("div", { className: "bottom-component" }, "bottom"));
+    return /* @__PURE__ */ import_react6.default.createElement("div", null, /* @__PURE__ */ import_react6.default.createElement("div", { className: "top-component" }, /* @__PURE__ */ import_react6.default.createElement(FMA, { x: 0, y: 0, vars: FmaVars() })), /* @__PURE__ */ import_react6.default.createElement("div", { className: "bottom-component" }, "bottom"));
   };
 
   // src/instruments/src/PrimaryFlightDisplay/index.tsx
   var PrimaryFlightDisplay = () => {
-    return /* @__PURE__ */ import_react5.default.createElement("div", { id: "PFD-ROOT" }, /* @__PURE__ */ import_react5.default.createElement(PFDProvider, null));
+    return /* @__PURE__ */ import_react7.default.createElement("div", { id: "PFD-ROOT" }, /* @__PURE__ */ import_react7.default.createElement(PFDProvider, null));
   };
-  render(/* @__PURE__ */ import_react5.default.createElement(PrimaryFlightDisplay, null));
+  render(/* @__PURE__ */ import_react7.default.createElement(PrimaryFlightDisplay, null));
 })();
 /*
 object-assign

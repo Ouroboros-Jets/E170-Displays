@@ -77,93 +77,52 @@ export const getStyleForATMode = (
     | ArmedLateralModeTypes
     | ArmedVerticalModeTypes
     | SelectionSourceTypes,
-  index: number, // 0-8, this will temporarily be used to designate what box we are styling
 ): styleReturn => {
-  switch (index) {
-    case 0:
-      switch (mode) {
-        case ATModeTypes.TO_w:
-          return { color: 'white', backgroundColor: 'transparent', isReverseVideo: false };
-        case ATModeTypes.TO_g:
-          return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
-        case ATModeTypes.HOLD_g:
-          return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
-        case ATModeTypes.SPD_T_w:
-          return { color: 'white', backgroundColor: 'transparent', isReverseVideo: false };
-        case ATModeTypes.SPD_T_g:
-          return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
-        case ATModeTypes.SPD_E_g:
-          return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
-        case ATModeTypes.RETD_w:
-          return { color: 'white', backgroundColor: 'transparent', isReverseVideo: false };
-        case ATModeTypes.RETD_g:
-          return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
-        case ATModeTypes.GA_g:
-          return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
-        case ATModeTypes.LIM_a:
-          return { color: 'amber', backgroundColor: 'transparent', isReverseVideo: false };
-        case ATModeTypes.AT_g:
-          return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
-        case ATModeTypes.AT_g_rv:
-          return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: true };
-        case ATModeTypes.AT_r_rv:
-          return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: true };
-        case ATModeTypes.OVRD_g:
-          return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
-        case ATModeTypes.DD_g:
-          return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
-        default:
-          return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
-      }
-    case 1:
-      switch (mode) {
-        case APStatusTypes.NONE:
-          return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
-        default:
-          return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
-      }
-    case 2:
-      switch (mode) {
-        case ArmedATModeTypes.NONE:
-          return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
-        default:
-          return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
-      }
-    case 3:
-      switch (mode) {
-        case ActiveLateralModeTypes.NONE:
-          return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
-        default:
-          return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
-      }
-    case 4:
-      switch (mode) {
-        case ActiveVerticalModeTypes.NONE:
-          return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
-        default:
-          return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
-      }
-    case 5:
-      switch (mode) {
-        case ArmedLateralModeTypes.NONE:
-          return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
-        default:
-          return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
-      }
-    case 6:
-      switch (mode) {
-        case ArmedVerticalModeTypes.NONE:
-          return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
-        default:
-          return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
-      }
-    case 7:
-      switch (mode) {
-        case SelectionSourceTypes.NONE:
-          return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
-        default:
-          return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
-      }
+  switch (mode) {
+    case ATModeTypes.TO_w:
+      return { color: 'white', backgroundColor: 'transparent', isReverseVideo: false };
+    case ATModeTypes.TO_g:
+      return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
+    case ATModeTypes.HOLD_g:
+      return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
+    case ATModeTypes.SPD_T_w:
+      return { color: 'white', backgroundColor: 'transparent', isReverseVideo: false };
+    case ATModeTypes.SPD_T_g:
+      return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
+    case ATModeTypes.SPD_E_g:
+      return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
+    case ATModeTypes.RETD_w:
+      return { color: 'white', backgroundColor: 'transparent', isReverseVideo: false };
+    case ATModeTypes.RETD_g:
+      return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
+    case ATModeTypes.GA_g:
+      return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
+    case ATModeTypes.LIM_a:
+      return { color: 'amber', backgroundColor: 'transparent', isReverseVideo: false };
+    case ATModeTypes.AT_g:
+      return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
+    case ATModeTypes.AT_g_rv:
+      return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: true };
+    case ATModeTypes.AT_r_rv:
+      return { color: 'red', backgroundColor: 'transparent', isReverseVideo: true };
+    case ATModeTypes.OVRD_g:
+      return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
+    case ATModeTypes.DD_g:
+      return { color: 'lime', backgroundColor: 'transparent', isReverseVideo: false };
+    case APStatusTypes.NONE:
+      return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
+    case ArmedATModeTypes.NONE:
+      return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
+    case ActiveLateralModeTypes.NONE:
+      return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
+    case ActiveVerticalModeTypes.NONE:
+      return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
+    case ArmedLateralModeTypes.NONE:
+      return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
+    case ArmedVerticalModeTypes.NONE:
+      return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
+    case SelectionSourceTypes.NONE:
+      return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
     default:
       return { color: 'transparent', backgroundColor: 'transparent', isReverseVideo: false };
   }
@@ -177,55 +136,67 @@ export const getStyleForATMode = (
 
 type T_FMAStringProps = {
   style: styleReturn;
-  mode: ATModeTypes;
+  mode:
+    | ATModeTypes
+    | APStatusTypes
+    | APStatusTypes
+    | ArmedATModeTypes
+    | ActiveLateralModeTypes
+    | ActiveVerticalModeTypes
+    | ArmedLateralModeTypes
+    | ArmedVerticalModeTypes
+    | SelectionSourceTypes;
+  reverseVideo?: boolean;
+  ovrdFontColor?: string;
 };
 
 export const GetStringForATMode: FC<T_FMAStringProps> = (props: T_FMAStringProps): JSX.Element => {
   const textColor = props.style.color;
   switch (props.mode) {
     case ATModeTypes.TO_w:
-      return <div style={{ color: textColor }}>TO</div>;
+      return <tspan fill={textColor}>TO</tspan>;
     case ATModeTypes.TO_g:
-      return <div style={{ color: textColor }}>TO</div>;
+      return <tspan fill={textColor}>TO</tspan>;
     case ATModeTypes.HOLD_g:
-      return <div style={{ color: textColor }}>HOLD</div>;
+      return <tspan fill={textColor}>HOLD</tspan>;
     case ATModeTypes.SPD_T_w:
       return (
-        <div style={{ color: textColor }}>
-          SPD<sub>T</sub>
-        </div>
+        <tspan fill={textColor}>
+          SPD
+          <tspan fontSize={20}>T</tspan>
+        </tspan>
       );
     case ATModeTypes.SPD_T_g:
       return (
-        <div style={{ color: textColor }}>
-          SPD<sub>T</sub>
-        </div>
+        <tspan fill={textColor}>
+          SPD<tspan fontSize={20}>T</tspan>
+        </tspan>
       );
     case ATModeTypes.SPD_E_g:
       return (
-        <div style={{ color: textColor }}>
-          SPD<sub>E</sub>
-        </div>
+        <tspan fill={textColor}>
+          SPD<tspan fontSize={20}>E</tspan>
+        </tspan>
       );
     case ATModeTypes.RETD_w:
-      return <div style={{ color: textColor }}>RETD</div>;
+      return <tspan fill={textColor}>RETD</tspan>;
     case ATModeTypes.RETD_g:
-      return <div style={{ color: textColor }}>RETD</div>;
+      return <tspan fill={textColor}>RETD</tspan>;
     case ATModeTypes.GA_g:
-      return <div style={{ color: textColor }}>GA</div>;
+      return <tspan fill={textColor}>GA</tspan>;
     case ATModeTypes.LIM_a:
-      return <div style={{ color: textColor }}>LIM</div>;
+      return <tspan fill={textColor}>LIM</tspan>;
     case ATModeTypes.AT_g:
-      return <div style={{ color: textColor }}>AT</div>;
+      return <tspan fill={textColor}>AT</tspan>;
     case ATModeTypes.AT_g_rv:
-      return <div style={{ color: textColor }}>AT</div>; // this will be reverse video but we will handle color in the parent
+      return <tspan fill={props.ovrdFontColor != null ? props.ovrdFontColor : textColor}>AT</tspan>;
     case ATModeTypes.AT_r_rv:
-      return <div style={{ color: textColor }}>AT</div>; // this will be reverse video but we will handle color in the parent
+      return <tspan fill={props.ovrdFontColor != null ? props.ovrdFontColor : textColor}>AT</tspan>;
     case ATModeTypes.OVRD_g:
-      return <div style={{ color: textColor }}>OVRD</div>;
+      return <tspan fill={textColor}>OVRD</tspan>;
     case ATModeTypes.DD_g:
-      return <div style={{ color: textColor }}>DD</div>;
+      return <tspan fill={textColor}>DD</tspan>;
     default:
-      return <div></div>;
+      return <tspan></tspan>;
   }
 };

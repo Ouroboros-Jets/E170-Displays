@@ -401,5 +401,122 @@
       "max": 250.0
     },
     "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_AT_Mode",
+    "index": 0,
+    "unit": "number",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 15.0
+    },
+    "pinned": true
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_AP_Status",
+    "index": 0,
+    "unit": "number",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_Lateral_Mode",
+    "index": 0,
+    "unit": "number",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_Vertical_Mode",
+    "index": 0,
+    "unit": "number",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_Armed_AT_Mode",
+    "index": 0,
+    "unit": "number",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_AT_Status",
+    "index": 0,
+    "unit": "number",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_Armed_Lateral_Mode",
+    "index": 0,
+    "unit": "number",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_Armed_Vertical_Mode",
+    "index": 0,
+    "unit": "number",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_Selection_Source",
+    "index": 0,
+    "unit": "number",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
   }
 ]

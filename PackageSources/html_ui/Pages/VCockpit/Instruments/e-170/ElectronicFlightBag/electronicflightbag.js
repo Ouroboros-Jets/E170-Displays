@@ -24532,14 +24532,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     };
   };
 
-  // env-ns:env
-  var CLIENT_ID = "26719457876398320522438947354958";
-  var CLIENT_SECRET = "0tMmHlOaDGqukCzRLPvDZIrGmpWDYu3j";
-
   // src/instruments/src/ElectronicFlightBag/components/NavigraphProvider/navigraph.ts
   var config = {
-    clientId: CLIENT_ID,
-    clientSecret: CLIENT_SECRET,
+    clientId: void 0,
+    clientSecret: void 0,
     scopes: [Scope.CHARTS, Scope.FMSDATA]
   };
   initializeApp(config);
