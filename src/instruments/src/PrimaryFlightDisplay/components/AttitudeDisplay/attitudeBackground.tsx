@@ -25,7 +25,7 @@ export const AttitudeBackground = (props: T_AttitudeBackgroundProps): JSX.Elemen
   };
 
   return (
-    <g transform={`rotate(${props.bank}, 300, 255)`}>
+    <g transform={`rotate(${props.bank}, 275, 255)`}>
       <linearGradient id="SkyGradiant" x1="0" x2="0" y1="0" y2="1">
         <stop offset="0%" stop-color="#020383" />
         <stop offset="88%" stop-color="#020383" />

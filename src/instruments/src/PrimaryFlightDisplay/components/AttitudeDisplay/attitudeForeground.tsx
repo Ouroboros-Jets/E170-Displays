@@ -298,17 +298,20 @@ export const AttitudeForeground = (props: T_AttitudeForegroundProps): JSX.Elemen
     }
   };
   return (
-    <g transform={`rotate(${props.bank}, 300, 255)`}>
+    <g>
       <clipPath id="attitude-clip">
         <path d="m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" />
       </clipPath>
+
       <g clipPath="url(#attitude-clip)">
-        <g transform={`translate(0,${getTranslation().value * 8.6})`}>
-          <rect x="-500" y="-2000" width="1600" height="2255" className="attitude-sky" />
-          <rect x="-0" y="254" width="1600" height="2205" className="attitude-ground-inner" />
-          {isHorizonMarkerActive() && <rect x="0" y="252" width="600" height="4" fill="white" stroke="black" strokeWidth={1} />}
+        <g transform={`rotate(${props.bank}, 275, 255)`}>
+          <g transform={`translate(0,${getTranslation().value * 8.6})`}>
+            <rect x="-500" y="-2000" width="1600" height="2255" className="attitude-sky" />
+            <rect x="-0" y="254" width="1600" height="2205" className="attitude-ground-inner" />
+            {isHorizonMarkerActive() && <rect x="0" y="252" width="600" height="4" fill="white" stroke="black" strokeWidth={1} />}
+          </g>
+          <g transform={`translate(0,${`${props.pitch * 8.6}`} )`}>{createPitchMarkings()}</g>
         </g>
-        <g transform={`translate(0,${`${props.pitch * 8.6}`} )`}>{createPitchMarkings()}</g>
       </g>
     </g>
   );
