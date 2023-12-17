@@ -4,6 +4,7 @@ import './airspeed.scss';
 import { useSimVar } from 'instruments/common/Hooks/simVars';
 import { SelectedAirspeedBox } from './selectedAirspeedBox';
 import { ClampValue } from '../../util/clampValue';
+import { PathWithBlackBackground } from '../../util/pathWithBlackBackground';
 
 /**
  * airspeed tape has a range of 30 to 942 knots +/- 42 knots from the center, meaning the highese number will be 900 but we will extend the tick marks to 942
@@ -21,12 +22,12 @@ export const AirspeedTape: FC = (): JSX.Element => {
 
   const drawTick = (small: boolean, y: number) => {
     return (
-      <path
-        d={`M 82 ${-y} L ${small ? 70 : 58} ${-y}`}
-        stroke="white"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+      <PathWithBlackBackground
+        d={`M 81 ${-y} L ${small ? 70 : 58} ${-y}`}
+        fill="black"
+        fillTop="white"
+        strokeWidthTop={3}
+        StrokeWidth={5}
       />
     );
   };
@@ -39,7 +40,16 @@ export const AirspeedTape: FC = (): JSX.Element => {
         return (
           <g key={index}>
             {drawTick(false, index * spacing)}
-            <text x="53" y={-index * spacing + 9} textAnchor="end" fill="white" fontSize="22">
+            <text
+              x="53"
+              y={-index * spacing + 9}
+              stroke="black"
+              strokeWidth={2}
+              paintOrder="stroke"
+              textAnchor="end"
+              fill="white"
+              fontSize="22"
+            >
               {index}
             </text>
           </g>
@@ -50,7 +60,16 @@ export const AirspeedTape: FC = (): JSX.Element => {
         return (
           <g key={index}>
             {drawTick(false, index * spacing)}
-            <text x="53" y={-index * spacing + 9} textAnchor="end" fill="white" fontSize="22">
+            <text
+              x="53"
+              y={-index * spacing + 9}
+              stroke="black"
+              strokeWidth={2}
+              paintOrder="stroke"
+              textAnchor="end"
+              fill="white"
+              fontSize="22"
+            >
               {index}
             </text>
           </g>
@@ -63,13 +82,16 @@ export const AirspeedTape: FC = (): JSX.Element => {
   return (
     <div className="airspeed-container">
       <svg className="airspeed-svg" viewBox="0 0 82 396">
-        <path d="M 81 32 L 81 364" stroke="white" strokeWidth="2" />
+        <rect x={0} y={0} width={82} height={396} fill="black" opacity={0.3} />
+
         <clipPath id="tapeClip">
           <rect x={0} y={34} width={81} height={330} />
         </clipPath>
         <g clipPath="url(#tapeClip)">
           <g transform={`translate(0,${ClampValue(airspeed, 30, 900) * airspeedTapeScaling + startOffset})`}>{Tape}</g>
         </g>
+        <PathWithBlackBackground d="M 81 32 L 81 364" fill="black" fillTop="white" strokeWidthTop={2} StrokeWidth={3} />
+
         <SelectedAirspeedBox selectedAirspeed={0.79} mach={true} mode={0} />
       </svg>
     </div>

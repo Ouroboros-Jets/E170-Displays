@@ -21103,10 +21103,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
 
   // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeed.tsx
-  var import_react8 = __toESM(require_react());
+  var import_react9 = __toESM(require_react());
 
   // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeedTape.tsx
-  var import_react7 = __toESM(require_react());
+  var import_react8 = __toESM(require_react());
 
   // src/instruments/common/util/createArray.ts
   var createArray = (length) => {
@@ -21151,6 +21151,32 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   };
 
+  // src/instruments/src/PrimaryFlightDisplay/util/pathWithBlackBackground.tsx
+  var import_react7 = __toESM(require_react());
+  var PathWithBlackBackground = (props) => {
+    return /* @__PURE__ */ import_react7.default.createElement("g", null, /* @__PURE__ */ import_react7.default.createElement(
+      "path",
+      {
+        d: props.d,
+        fill: props.forceTransparent ? "transparent" : "black",
+        strokeWidth: props.StrokeWidth,
+        stroke: props.fill,
+        strokeLinecap: props.forceEndCap ? "butt" : "round",
+        strokeLinejoin: "round"
+      }
+    ), /* @__PURE__ */ import_react7.default.createElement(
+      "path",
+      {
+        d: props.d,
+        fill: props.fillTop2 ? props.fillTop2 : props.fillTop,
+        strokeWidth: props.strokeWidthTop,
+        stroke: props.fillTop,
+        strokeLinecap: props.forceEndCap ? "butt" : "round",
+        strokeLinejoin: "round"
+      }
+    ));
+  };
+
   // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeedTape.tsx
   var AirspeedTape = () => {
     const [airspeed] = useSimVar("AIRSPEED INDICATED", "knots");
@@ -21160,14 +21186,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     const airspeedTapeScaling = 3.95;
     const array = createArray(tapeLength);
     const drawTick2 = (small, y) => {
-      return /* @__PURE__ */ import_react7.default.createElement(
-        "path",
+      return /* @__PURE__ */ import_react8.default.createElement(
+        PathWithBlackBackground,
         {
-          d: `M 82 ${-y} L ${small ? 70 : 58} ${-y}`,
-          stroke: "white",
-          strokeWidth: "2",
-          strokeLinecap: "round",
-          strokeLinejoin: "round"
+          d: `M 81 ${-y} L ${small ? 70 : 58} ${-y}`,
+          fill: "black",
+          fillTop: "white",
+          strokeWidthTop: 3,
+          StrokeWidth: 5
         }
       );
     };
@@ -21177,73 +21203,133 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       if (index < 200) {
         if (index % 10 === 0) {
-          return /* @__PURE__ */ import_react7.default.createElement("g", { key: index }, drawTick2(false, index * spacing), /* @__PURE__ */ import_react7.default.createElement("text", { x: "53", y: -index * spacing + 9, textAnchor: "end", fill: "white", fontSize: "22" }, index));
+          return /* @__PURE__ */ import_react8.default.createElement("g", { key: index }, drawTick2(false, index * spacing), /* @__PURE__ */ import_react8.default.createElement(
+            "text",
+            {
+              x: "53",
+              y: -index * spacing + 9,
+              stroke: "black",
+              strokeWidth: 2,
+              paintOrder: "stroke",
+              textAnchor: "end",
+              fill: "white",
+              fontSize: "22"
+            },
+            index
+          ));
         } else
           return null;
       } else {
         if (index % 20 === 0) {
-          return /* @__PURE__ */ import_react7.default.createElement("g", { key: index }, drawTick2(false, index * spacing), /* @__PURE__ */ import_react7.default.createElement("text", { x: "53", y: -index * spacing + 9, textAnchor: "end", fill: "white", fontSize: "22" }, index));
+          return /* @__PURE__ */ import_react8.default.createElement("g", { key: index }, drawTick2(false, index * spacing), /* @__PURE__ */ import_react8.default.createElement(
+            "text",
+            {
+              x: "53",
+              y: -index * spacing + 9,
+              stroke: "black",
+              strokeWidth: 2,
+              paintOrder: "stroke",
+              textAnchor: "end",
+              fill: "white",
+              fontSize: "22"
+            },
+            index
+          ));
         } else if (index % 20 === 10) {
           return drawTick2(false, index * spacing);
         } else
           return null;
       }
     });
-    return /* @__PURE__ */ import_react7.default.createElement("div", { className: "airspeed-container" }, /* @__PURE__ */ import_react7.default.createElement("svg", { className: "airspeed-svg", viewBox: "0 0 82 396" }, /* @__PURE__ */ import_react7.default.createElement("path", { d: "M 81 32 L 81 364", stroke: "white", strokeWidth: "2" }), /* @__PURE__ */ import_react7.default.createElement("clipPath", { id: "tapeClip" }, /* @__PURE__ */ import_react7.default.createElement("rect", { x: 0, y: 34, width: 81, height: 330 })), /* @__PURE__ */ import_react7.default.createElement("g", { clipPath: "url(#tapeClip)" }, /* @__PURE__ */ import_react7.default.createElement("g", { transform: `translate(0,${ClampValue(airspeed, 30, 900) * airspeedTapeScaling + startOffset})` }, Tape)), /* @__PURE__ */ import_react7.default.createElement(SelectedAirspeedBox, { selectedAirspeed: 0.79, mach: true, mode: 0 })));
+    return /* @__PURE__ */ import_react8.default.createElement("div", { className: "airspeed-container" }, /* @__PURE__ */ import_react8.default.createElement("svg", { className: "airspeed-svg", viewBox: "0 0 82 396" }, /* @__PURE__ */ import_react8.default.createElement("rect", { x: 0, y: 0, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ import_react8.default.createElement("clipPath", { id: "tapeClip" }, /* @__PURE__ */ import_react8.default.createElement("rect", { x: 0, y: 34, width: 81, height: 330 })), /* @__PURE__ */ import_react8.default.createElement("g", { clipPath: "url(#tapeClip)" }, /* @__PURE__ */ import_react8.default.createElement("g", { transform: `translate(0,${ClampValue(airspeed, 30, 900) * airspeedTapeScaling + startOffset})` }, Tape)), /* @__PURE__ */ import_react8.default.createElement(PathWithBlackBackground, { d: "M 81 32 L 81 364", fill: "black", fillTop: "white", strokeWidthTop: 2, StrokeWidth: 3 }), /* @__PURE__ */ import_react8.default.createElement(SelectedAirspeedBox, { selectedAirspeed: 0.79, mach: true, mode: 0 })));
   };
 
   // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeed.tsx
   var Airspeed = () => {
-    return /* @__PURE__ */ import_react8.default.createElement("div", null, /* @__PURE__ */ import_react8.default.createElement(AirspeedTape, null));
+    return /* @__PURE__ */ import_react9.default.createElement("div", null, /* @__PURE__ */ import_react9.default.createElement(AirspeedTape, null));
   };
 
   // src/instruments/src/PrimaryFlightDisplay/components/Altitude/Altitude.tsx
-  var import_react12 = __toESM(require_react());
+  var import_react13 = __toESM(require_react());
 
   // src/instruments/src/PrimaryFlightDisplay/components/Altitude/AltitudeTape.tsx
-  var import_react9 = __toESM(require_react());
+  var import_react10 = __toESM(require_react());
   var drawChevron = (double, y) => {
     const offset = -y / 3.31;
     if (double) {
-      return /* @__PURE__ */ import_react9.default.createElement("g", null, /* @__PURE__ */ import_react9.default.createElement(
-        "path",
+      return /* @__PURE__ */ import_react10.default.createElement("g", null, /* @__PURE__ */ import_react10.default.createElement(
+        PathWithBlackBackground,
+        {
+          d: `M 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181}`,
+          fill: "black",
+          fillTop: "white",
+          strokeWidthTop: 2,
+          StrokeWidth: 4,
+          fillTop2: "transparent",
+          forceTransparent: true,
+          forceEndCap: true
+        }
+      ), /* @__PURE__ */ import_react10.default.createElement(
+        PathWithBlackBackground,
         {
           d: `M 70 ${offset + 300} L 70 ${offset + 255} L38 ${offset + 223} L 70 ${offset + 190} L 70 ${offset + 148}`,
-          stroke: "white",
-          strokeWidth: "2",
-          fill: "none"
+          fill: "black",
+          fillTop: "white",
+          strokeWidthTop: 2,
+          StrokeWidth: 4,
+          fillTop2: "transparent",
+          forceTransparent: true,
+          forceEndCap: true
         }
-      ), /* @__PURE__ */ import_react9.default.createElement("path", { d: `M 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181}`, stroke: "white", strokeWidth: "2", fill: "none" }), drawNumber(y));
+      ), drawNumber(y));
     } else {
-      return /* @__PURE__ */ import_react9.default.createElement("g", null, /* @__PURE__ */ import_react9.default.createElement(
-        "path",
+      return /* @__PURE__ */ import_react10.default.createElement("g", null, /* @__PURE__ */ import_react10.default.createElement(
+        PathWithBlackBackground,
         {
           d: `M 70 ${offset + 300} L 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181} L 70 ${offset + 148}`,
-          stroke: "white",
-          strokeWidth: "2",
-          fill: "none"
+          fill: "black",
+          fillTop: "white",
+          strokeWidthTop: 2,
+          StrokeWidth: 4,
+          fillTop2: "transparent",
+          forceTransparent: true,
+          forceEndCap: true
         }
       ), drawNumber(y));
     }
   };
   var drawTick = (y) => {
     const offset = -y / 3.31;
-    return /* @__PURE__ */ import_react9.default.createElement(
-      "path",
+    return /* @__PURE__ */ import_react10.default.createElement(
+      PathWithBlackBackground,
       {
         d: `M 30 ${offset + 222} L ${42} ${offset + 222}`,
-        stroke: "white",
-        strokeWidth: "2",
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
+        fill: "black",
+        fillTop: "white",
+        strokeWidthTop: 2,
+        StrokeWidth: 4
       }
     );
   };
   var drawNumber = (y) => {
     const offset = -y / 3.31;
-    return /* @__PURE__ */ import_react9.default.createElement("text", { x: "46", y: offset + 224, fill: "white", fontSize: "22px", textAnchor: "start", dominantBaseline: "middle" }, y);
+    return /* @__PURE__ */ import_react10.default.createElement(
+      "text",
+      {
+        x: "46",
+        y: offset + 224,
+        stroke: "black",
+        strokeWidth: 2,
+        paintOrder: "stroke",
+        fill: "white",
+        fontSize: "22px",
+        textAnchor: "start",
+        dominantBaseline: "middle"
+      },
+      y
+    );
   };
-  var AltitudeTape = ({ invalid, altitude }) => {
+  var AltitudeTape = (props) => {
     const tickMarks = createArray(600);
     const negativeTickMarks = createArray(30);
     const tape = tickMarks.map((tick) => {
@@ -21264,31 +21350,32 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       return drawTick(tick * -100);
     });
-    return /* @__PURE__ */ import_react9.default.createElement("g", null, /* @__PURE__ */ import_react9.default.createElement("path", { d: "M 29 58 L 29 391", stroke: "white", strokeWidth: "2", fill: "none" }), negativeTape, tape);
+    return /* @__PURE__ */ import_react10.default.createElement("g", null, /* @__PURE__ */ import_react10.default.createElement("g", null, /* @__PURE__ */ import_react10.default.createElement("clipPath", { id: "AltitudetapeClip" }, /* @__PURE__ */ import_react10.default.createElement("rect", { x: 29, y: 60, width: 83, height: 333 }))), /* @__PURE__ */ import_react10.default.createElement("g", { clipPath: "url(#AltitudetapeClip)" }, /* @__PURE__ */ import_react10.default.createElement("g", { transform: `translate(0, ${props.altitude / 3.309})` }, negativeTape, tape)), /* @__PURE__ */ import_react10.default.createElement("path", { d: "M 29 58 L 29 391", stroke: "white", strokeWidth: "2", fill: "none" }));
   };
 
   // src/instruments/src/PrimaryFlightDisplay/components/Altitude/selectedAltitudeBox.tsx
-  var import_react10 = __toESM(require_react());
+  var import_react11 = __toESM(require_react());
   var SelectedAltitudeBox = (props) => {
-    return /* @__PURE__ */ import_react10.default.createElement("g", null, /* @__PURE__ */ import_react10.default.createElement("rect", { x: "31", y: "1", rx: 2, ry: 2, width: "81", height: "58", stroke: "white", strokeWidth: 2, fill: "transparent" }), /* @__PURE__ */ import_react10.default.createElement("path", { d: "M 31 27 L 112 27", stroke: "white", strokeWidth: "2", fill: "none" }));
+    return /* @__PURE__ */ import_react11.default.createElement("g", null, /* @__PURE__ */ import_react11.default.createElement("rect", { x: "31", y: "1", rx: 2, ry: 2, width: "81", height: "58", stroke: "white", strokeWidth: 2, fill: "transparent" }), /* @__PURE__ */ import_react11.default.createElement("path", { d: "M 31 27 L 112 27", stroke: "white", strokeWidth: "2", fill: "none" }));
   };
 
   // src/instruments/src/PrimaryFlightDisplay/components/Altitude/baroSettingBox.tsx
-  var import_react11 = __toESM(require_react());
+  var import_react12 = __toESM(require_react());
   var BaroSettingBox = (props) => {
-    return /* @__PURE__ */ import_react11.default.createElement("g", null, /* @__PURE__ */ import_react11.default.createElement("rect", { x: "29", y: "391", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", strokeWidth: 2, fill: "black" }));
+    return /* @__PURE__ */ import_react12.default.createElement("g", null, /* @__PURE__ */ import_react12.default.createElement("rect", { x: "29", y: "391", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", strokeWidth: 2, fill: "black" }));
   };
 
   // src/instruments/src/PrimaryFlightDisplay/components/Altitude/Altitude.tsx
   var Altitude = (props) => {
-    return /* @__PURE__ */ import_react12.default.createElement("div", { className: "altitude-continer" }, /* @__PURE__ */ import_react12.default.createElement("svg", { className: "altitude-svg", viewBox: "0 0 120 422" }, /* @__PURE__ */ import_react12.default.createElement(AltitudeTape, null), /* @__PURE__ */ import_react12.default.createElement(SelectedAltitudeBox, null), /* @__PURE__ */ import_react12.default.createElement(BaroSettingBox, null)));
+    const [altitude] = useSimVar("INDICATED ALTITUDE", "feet");
+    return /* @__PURE__ */ import_react13.default.createElement("div", { className: "altitude-continer" }, /* @__PURE__ */ import_react13.default.createElement("svg", { className: "altitude-svg", viewBox: "0 0 120 422" }, /* @__PURE__ */ import_react13.default.createElement("rect", { x: "29", y: "0", width: "83", height: "422", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ import_react13.default.createElement(AltitudeTape, { altitude }), /* @__PURE__ */ import_react13.default.createElement(SelectedAltitudeBox, null), /* @__PURE__ */ import_react13.default.createElement(BaroSettingBox, null)));
   };
 
   // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/AttitudeDisplay.tsx
   var import_react17 = __toESM(require_react());
 
   // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/attitudeBackground.tsx
-  var import_react13 = __toESM(require_react());
+  var import_react14 = __toESM(require_react());
   var AttitudeBackground = (props) => {
     const isHorizonMarkerActive = () => {
       if (Math.abs(props.pitch) <= 17) {
@@ -21306,39 +21393,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         return { negative: false, value: props.pitch };
       }
     };
-    return /* @__PURE__ */ import_react13.default.createElement("g", { transform: `rotate(${props.bank}, 300, 255)` }, /* @__PURE__ */ import_react13.default.createElement("g", { transform: `translate(0,${getTranslation().value * 8.6})` }, /* @__PURE__ */ import_react13.default.createElement("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", className: "attitude-sky" }), /* @__PURE__ */ import_react13.default.createElement("rect", { x: "-2000", y: "254", width: "4600", height: "2205", className: "attitude-ground" }), isHorizonMarkerActive() && /* @__PURE__ */ import_react13.default.createElement("rect", { x: "0", y: "252", width: "600", height: "4", fill: "white", stroke: "black", strokeWidth: 1 })));
+    return /* @__PURE__ */ import_react14.default.createElement("g", { transform: `rotate(${props.bank}, 300, 255)` }, /* @__PURE__ */ import_react14.default.createElement("linearGradient", { id: "SkyGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "0%", "stop-color": "#020383" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "88%", "stop-color": "#020383" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "100%", "stop-color": "#1717cf" })), /* @__PURE__ */ import_react14.default.createElement("linearGradient", { id: "GroundGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "0%", "stop-color": "#674200" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "25%", "stop-color": "#352200" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "100%", "stop-color": "#352201" })), /* @__PURE__ */ import_react14.default.createElement("g", { transform: `translate(0,${getTranslation().value * 8.6})` }, /* @__PURE__ */ import_react14.default.createElement("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", fill: "url(#SkyGradiant)" }), /* @__PURE__ */ import_react14.default.createElement("rect", { x: "-2000", y: "254", width: "4600", height: "2205", fill: "url(#GroundGradiant)" }), isHorizonMarkerActive() && /* @__PURE__ */ import_react14.default.createElement("rect", { x: "0", y: "252", width: "600", height: "4", fill: "white", stroke: "black", strokeWidth: 1 })));
   };
 
   // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/attitudeForeground.tsx
   var import_react15 = __toESM(require_react());
-
-  // src/instruments/src/PrimaryFlightDisplay/util/pathWithBlackBackground.tsx
-  var import_react14 = __toESM(require_react());
-  var PathWithBlackBackground = (props) => {
-    return /* @__PURE__ */ import_react14.default.createElement("g", null, /* @__PURE__ */ import_react14.default.createElement(
-      "path",
-      {
-        d: props.d,
-        fill: props.forceTransparent ? "transparent" : "black",
-        strokeWidth: props.StrokeWidth,
-        stroke: props.fill,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      }
-    ), /* @__PURE__ */ import_react14.default.createElement(
-      "path",
-      {
-        d: props.d,
-        fill: props.fillTop2 ? props.fillTop2 : props.fillTop,
-        strokeWidth: props.strokeWidthTop,
-        stroke: props.fillTop,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      }
-    ));
-  };
-
-  // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/attitudeForeground.tsx
   var AttitudeForeground = (props) => {
     const isHorizonMarkerActive = () => {
       if (Math.abs(props.pitch) <= 17) {

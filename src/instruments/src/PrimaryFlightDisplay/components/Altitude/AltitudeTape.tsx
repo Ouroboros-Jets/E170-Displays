@@ -7,30 +7,49 @@
  */
 import React, { FC } from 'react';
 import { createArray } from 'instruments/common/util/createArray';
+import { PathWithBlackBackground } from '../../util/pathWithBlackBackground';
 
 const drawChevron = (double: boolean, y: number): JSX.Element => {
   const offset = -y / 3.31;
   if (double) {
     return (
       <g>
-        <path
-          d={`M 70 ${offset + 300} L 70 ${offset + 255} L38 ${offset + 223} L 70 ${offset + 190} L 70 ${offset + 148}`}
-          stroke="white"
-          strokeWidth="2"
-          fill="none"
+        <PathWithBlackBackground
+          d={`M 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181}`}
+          fill="black"
+          fillTop="white"
+          strokeWidthTop={2}
+          StrokeWidth={4}
+          fillTop2="transparent"
+          forceTransparent
+          forceEndCap
         />
-        <path d={`M 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181}`} stroke="white" strokeWidth="2" fill="none" />
+        <PathWithBlackBackground
+          d={`M 70 ${offset + 300} L 70 ${offset + 255} L38 ${offset + 223} L 70 ${offset + 190} L 70 ${offset + 148}`}
+          fill="black"
+          fillTop="white"
+          strokeWidthTop={2}
+          StrokeWidth={4}
+          fillTop2="transparent"
+          forceTransparent
+          forceEndCap
+        />
+
         {drawNumber(y)}
       </g>
     );
   } else {
     return (
       <g>
-        <path
+        <PathWithBlackBackground
           d={`M 70 ${offset + 300} L 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181} L 70 ${offset + 148}`}
-          stroke="white"
-          strokeWidth="2"
-          fill="none"
+          fill="black"
+          fillTop="white"
+          strokeWidthTop={2}
+          StrokeWidth={4}
+          fillTop2="transparent"
+          forceTransparent
+          forceEndCap
         />
         {drawNumber(y)}
       </g>
@@ -41,19 +60,29 @@ const drawChevron = (double: boolean, y: number): JSX.Element => {
 const drawTick = (y: number) => {
   const offset = -y / 3.31;
   return (
-    <path
+    <PathWithBlackBackground
       d={`M 30 ${offset + 222} L ${42} ${offset + 222}`}
-      stroke="white"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      fill="black"
+      fillTop="white"
+      strokeWidthTop={2}
+      StrokeWidth={4}
     />
   );
 };
 const drawNumber = (y: number) => {
   const offset = -y / 3.31;
   return (
-    <text x="46" y={offset + 224} fill="white" fontSize="22px" textAnchor="start" dominantBaseline="middle">
+    <text
+      x="46"
+      y={offset + 224}
+      stroke="black"
+      strokeWidth={2}
+      paintOrder="stroke"
+      fill="white"
+      fontSize="22px"
+      textAnchor="start"
+      dominantBaseline="middle"
+    >
       {y}
     </text>
   );
@@ -61,10 +90,10 @@ const drawNumber = (y: number) => {
 
 type T_altitudeTape = {
   invalid?: boolean;
-  altitude?: number;
+  altitude: number;
 };
 
-export const AltitudeTape: FC<T_altitudeTape> = ({ invalid, altitude }): JSX.Element => {
+export const AltitudeTape: FC<T_altitudeTape> = (props: T_altitudeTape): JSX.Element => {
   const tickMarks = createArray(600);
   const negativeTickMarks = createArray(30);
   const tape = tickMarks.map((tick: number) => {
@@ -87,9 +116,19 @@ export const AltitudeTape: FC<T_altitudeTape> = ({ invalid, altitude }): JSX.Ele
   });
   return (
     <g>
+      <g>
+        <clipPath id="AltitudetapeClip">
+          <rect x={29} y={60} width={83} height={333} />
+        </clipPath>
+      </g>
+
+      <g clipPath="url(#AltitudetapeClip)">
+        <g transform={`translate(0, ${props.altitude / 3.309})`}>
+          {negativeTape}
+          {tape}
+        </g>
+      </g>
       <path d="M 29 58 L 29 391" stroke="white" strokeWidth="2" fill="none" />
-      {negativeTape}
-      {tape}
     </g>
   );
 };

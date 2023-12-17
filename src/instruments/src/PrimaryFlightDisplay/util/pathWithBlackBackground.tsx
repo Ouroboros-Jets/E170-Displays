@@ -8,6 +8,7 @@ type T_pathWithBlackBackgroundProps = {
   strokeWidthTop: number;
   forceTransparent?: boolean;
   fillTop2?: string;
+  forceEndCap?: boolean;
 };
 
 export const PathWithBlackBackground: FC<T_pathWithBlackBackgroundProps> = (
@@ -20,7 +21,7 @@ export const PathWithBlackBackground: FC<T_pathWithBlackBackgroundProps> = (
         fill={props.forceTransparent ? 'transparent' : 'black'}
         strokeWidth={props.StrokeWidth}
         stroke={props.fill}
-        strokeLinecap="round"
+        strokeLinecap={props.forceEndCap ? 'butt' : 'round'}
         strokeLinejoin="round"
       />
       <path
@@ -28,7 +29,7 @@ export const PathWithBlackBackground: FC<T_pathWithBlackBackgroundProps> = (
         fill={props.fillTop2 ? props.fillTop2 : props.fillTop}
         strokeWidth={props.strokeWidthTop}
         stroke={props.fillTop}
-        strokeLinecap="round"
+        strokeLinecap={props.forceEndCap ? 'butt' : 'round'}
         strokeLinejoin="round"
       />
     </g>
