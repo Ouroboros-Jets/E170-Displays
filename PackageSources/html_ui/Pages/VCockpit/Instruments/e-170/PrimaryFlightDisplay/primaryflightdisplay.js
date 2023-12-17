@@ -2489,11 +2489,11 @@ class InstrumentLogic extends BaseInstrument {
       if (true) {
         (function() {
           "use strict";
-          var React11 = require_react();
+          var React20 = require_react();
           var _assign = require_object_assign();
           var Scheduler = require_scheduler();
           var tracing = require_tracing();
-          var ReactSharedInternals = React11.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React20.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           function warn(format) {
             {
               for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -2525,7 +2525,7 @@ class InstrumentLogic extends BaseInstrument {
               Function.prototype.apply.call(console[level], console, argsWithFormat);
             }
           }
-          if (!React11) {
+          if (!React20) {
             {
               throw Error("ReactDOM was loaded before React. Make sure you load the React package before loading ReactDOM.");
             }
@@ -3861,7 +3861,7 @@ class InstrumentLogic extends BaseInstrument {
           var didWarnInvalidChild = false;
           function flattenChildren(children) {
             var content = "";
-            React11.Children.forEach(children, function(child) {
+            React20.Children.forEach(children, function(child) {
               if (child == null) {
                 return;
               }
@@ -3872,7 +3872,7 @@ class InstrumentLogic extends BaseInstrument {
           function validateProps(element, props) {
             {
               if (typeof props.children === "object" && props.children !== null) {
-                React11.Children.forEach(props.children, function(child) {
+                React20.Children.forEach(props.children, function(child) {
                   if (child == null) {
                     return;
                   }
@@ -11075,7 +11075,7 @@ class InstrumentLogic extends BaseInstrument {
           }
           var fakeInternalInstance = {};
           var isArray = Array.isArray;
-          var emptyRefsObject = new React11.Component().refs;
+          var emptyRefsObject = new React20.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -20672,7 +20672,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // src/instruments/src/PrimaryFlightDisplay/index.tsx
-  var import_react10 = __toESM(require_react());
+  var import_react19 = __toESM(require_react());
 
   // src/instruments/common/Hooks/index.tsx
   var import_react3 = __toESM(require_react());
@@ -20871,7 +20871,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
 
   // src/instruments/src/PrimaryFlightDisplay/components/pfdProvider/pfdProvider.tsx
-  var import_react9 = __toESM(require_react());
+  var import_react18 = __toESM(require_react());
 
   // src/instruments/src/PrimaryFlightDisplay/components/FMA/FMA.tsx
   var import_react5 = __toESM(require_react());
@@ -21159,7 +21159,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     const startOffset = 200;
     const airspeedTapeScaling = 3.95;
     const array = createArray(tapeLength);
-    const drawTick = (small, y) => {
+    const drawTick2 = (small, y) => {
       return /* @__PURE__ */ import_react7.default.createElement(
         "path",
         {
@@ -21177,14 +21177,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       if (index < 200) {
         if (index % 10 === 0) {
-          return /* @__PURE__ */ import_react7.default.createElement("g", { key: index }, drawTick(false, index * spacing), /* @__PURE__ */ import_react7.default.createElement("text", { x: "53", y: -index * spacing + 9, textAnchor: "end", fill: "white", fontSize: "22" }, index));
+          return /* @__PURE__ */ import_react7.default.createElement("g", { key: index }, drawTick2(false, index * spacing), /* @__PURE__ */ import_react7.default.createElement("text", { x: "53", y: -index * spacing + 9, textAnchor: "end", fill: "white", fontSize: "22" }, index));
         } else
           return null;
       } else {
         if (index % 20 === 0) {
-          return /* @__PURE__ */ import_react7.default.createElement("g", { key: index }, drawTick(false, index * spacing), /* @__PURE__ */ import_react7.default.createElement("text", { x: "53", y: -index * spacing + 9, textAnchor: "end", fill: "white", fontSize: "22" }, index));
+          return /* @__PURE__ */ import_react7.default.createElement("g", { key: index }, drawTick2(false, index * spacing), /* @__PURE__ */ import_react7.default.createElement("text", { x: "53", y: -index * spacing + 9, textAnchor: "end", fill: "white", fontSize: "22" }, index));
         } else if (index % 20 === 10) {
-          return drawTick(false, index * spacing);
+          return drawTick2(false, index * spacing);
         } else
           return null;
       }
@@ -21197,16 +21197,469 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return /* @__PURE__ */ import_react8.default.createElement("div", null, /* @__PURE__ */ import_react8.default.createElement(AirspeedTape, null));
   };
 
+  // src/instruments/src/PrimaryFlightDisplay/components/Altitude/Altitude.tsx
+  var import_react12 = __toESM(require_react());
+
+  // src/instruments/src/PrimaryFlightDisplay/components/Altitude/AltitudeTape.tsx
+  var import_react9 = __toESM(require_react());
+  var drawChevron = (double, y) => {
+    const offset = -y / 3.31;
+    if (double) {
+      return /* @__PURE__ */ import_react9.default.createElement("g", null, /* @__PURE__ */ import_react9.default.createElement(
+        "path",
+        {
+          d: `M 70 ${offset + 300} L 70 ${offset + 255} L38 ${offset + 223} L 70 ${offset + 190} L 70 ${offset + 148}`,
+          stroke: "white",
+          strokeWidth: "2",
+          fill: "none"
+        }
+      ), /* @__PURE__ */ import_react9.default.createElement("path", { d: `M 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181}`, stroke: "white", strokeWidth: "2", fill: "none" }), drawNumber(y));
+    } else {
+      return /* @__PURE__ */ import_react9.default.createElement("g", null, /* @__PURE__ */ import_react9.default.createElement(
+        "path",
+        {
+          d: `M 70 ${offset + 300} L 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181} L 70 ${offset + 148}`,
+          stroke: "white",
+          strokeWidth: "2",
+          fill: "none"
+        }
+      ), drawNumber(y));
+    }
+  };
+  var drawTick = (y) => {
+    const offset = -y / 3.31;
+    return /* @__PURE__ */ import_react9.default.createElement(
+      "path",
+      {
+        d: `M 30 ${offset + 222} L ${42} ${offset + 222}`,
+        stroke: "white",
+        strokeWidth: "2",
+        strokeLinecap: "round",
+        strokeLinejoin: "round"
+      }
+    );
+  };
+  var drawNumber = (y) => {
+    const offset = -y / 3.31;
+    return /* @__PURE__ */ import_react9.default.createElement("text", { x: "46", y: offset + 224, fill: "white", fontSize: "22px", textAnchor: "start", dominantBaseline: "middle" }, y);
+  };
+  var AltitudeTape = ({ invalid, altitude }) => {
+    const tickMarks = createArray(600);
+    const negativeTickMarks = createArray(30);
+    const tape = tickMarks.map((tick) => {
+      if (tick % 10 === 0) {
+        return drawChevron(true, tick * 100);
+      }
+      if (tick % 5 === 0) {
+        return drawChevron(false, tick * 100);
+      }
+      return drawTick(tick * 100);
+    });
+    const negativeTape = negativeTickMarks.map((tick) => {
+      if (tick % 10 === 0) {
+        return drawChevron(true, tick * -100);
+      }
+      if (tick % 5 === 0) {
+        return drawChevron(false, tick * -100);
+      }
+      return drawTick(tick * -100);
+    });
+    return /* @__PURE__ */ import_react9.default.createElement("g", null, /* @__PURE__ */ import_react9.default.createElement("path", { d: "M 29 58 L 29 391", stroke: "white", strokeWidth: "2", fill: "none" }), negativeTape, tape);
+  };
+
+  // src/instruments/src/PrimaryFlightDisplay/components/Altitude/selectedAltitudeBox.tsx
+  var import_react10 = __toESM(require_react());
+  var SelectedAltitudeBox = (props) => {
+    return /* @__PURE__ */ import_react10.default.createElement("g", null, /* @__PURE__ */ import_react10.default.createElement("rect", { x: "31", y: "1", rx: 2, ry: 2, width: "81", height: "58", stroke: "white", strokeWidth: 2, fill: "transparent" }), /* @__PURE__ */ import_react10.default.createElement("path", { d: "M 31 27 L 112 27", stroke: "white", strokeWidth: "2", fill: "none" }));
+  };
+
+  // src/instruments/src/PrimaryFlightDisplay/components/Altitude/baroSettingBox.tsx
+  var import_react11 = __toESM(require_react());
+  var BaroSettingBox = (props) => {
+    return /* @__PURE__ */ import_react11.default.createElement("g", null, /* @__PURE__ */ import_react11.default.createElement("rect", { x: "29", y: "391", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", strokeWidth: 2, fill: "black" }));
+  };
+
+  // src/instruments/src/PrimaryFlightDisplay/components/Altitude/Altitude.tsx
+  var Altitude = (props) => {
+    return /* @__PURE__ */ import_react12.default.createElement("div", { className: "altitude-continer" }, /* @__PURE__ */ import_react12.default.createElement("svg", { className: "altitude-svg", viewBox: "0 0 120 422" }, /* @__PURE__ */ import_react12.default.createElement(AltitudeTape, null), /* @__PURE__ */ import_react12.default.createElement(SelectedAltitudeBox, null), /* @__PURE__ */ import_react12.default.createElement(BaroSettingBox, null)));
+  };
+
+  // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/AttitudeDisplay.tsx
+  var import_react17 = __toESM(require_react());
+
+  // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/attitudeBackground.tsx
+  var import_react13 = __toESM(require_react());
+  var AttitudeBackground = (props) => {
+    const isHorizonMarkerActive = () => {
+      if (Math.abs(props.pitch) <= 17) {
+        return true;
+      } else
+        return false;
+    };
+    const getTranslation = () => {
+      const pitch = Number;
+      if (props.pitch > 17) {
+        return { negative: false, value: 17 };
+      } else if (props.pitch < -17) {
+        return { negative: true, value: -17 };
+      } else {
+        return { negative: false, value: props.pitch };
+      }
+    };
+    return /* @__PURE__ */ import_react13.default.createElement("g", { transform: `rotate(${props.bank}, 300, 255)` }, /* @__PURE__ */ import_react13.default.createElement("g", { transform: `translate(0,${getTranslation().value * 8.6})` }, /* @__PURE__ */ import_react13.default.createElement("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", className: "attitude-sky" }), /* @__PURE__ */ import_react13.default.createElement("rect", { x: "-2000", y: "254", width: "4600", height: "2205", className: "attitude-ground" }), isHorizonMarkerActive() && /* @__PURE__ */ import_react13.default.createElement("rect", { x: "0", y: "252", width: "600", height: "4", fill: "white", stroke: "black", strokeWidth: 1 })));
+  };
+
+  // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/attitudeForeground.tsx
+  var import_react15 = __toESM(require_react());
+
+  // src/instruments/src/PrimaryFlightDisplay/util/pathWithBlackBackground.tsx
+  var import_react14 = __toESM(require_react());
+  var PathWithBlackBackground = (props) => {
+    return /* @__PURE__ */ import_react14.default.createElement("g", null, /* @__PURE__ */ import_react14.default.createElement(
+      "path",
+      {
+        d: props.d,
+        fill: props.forceTransparent ? "transparent" : "black",
+        strokeWidth: props.StrokeWidth,
+        stroke: props.fill,
+        strokeLinecap: "round",
+        strokeLinejoin: "round"
+      }
+    ), /* @__PURE__ */ import_react14.default.createElement(
+      "path",
+      {
+        d: props.d,
+        fill: props.fillTop2 ? props.fillTop2 : props.fillTop,
+        strokeWidth: props.strokeWidthTop,
+        stroke: props.fillTop,
+        strokeLinecap: "round",
+        strokeLinejoin: "round"
+      }
+    ));
+  };
+
+  // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/attitudeForeground.tsx
+  var AttitudeForeground = (props) => {
+    const isHorizonMarkerActive = () => {
+      if (Math.abs(props.pitch) <= 17) {
+        return true;
+      } else
+        return false;
+    };
+    let TickType;
+    ((TickType2) => {
+      TickType2[TickType2["TWO_FIVE"] = 0] = "TWO_FIVE";
+      TickType2[TickType2["FIVE"] = 1] = "FIVE";
+      TickType2[TickType2["SEVEN_FIVE"] = 2] = "SEVEN_FIVE";
+      TickType2[TickType2["TEN"] = 3] = "TEN";
+      TickType2[TickType2["FOURTY_SIXTY_NINETY"] = 4] = "FOURTY_SIXTY_NINETY";
+      TickType2[TickType2["ONE"] = 5] = "ONE";
+    })(TickType || (TickType = {}));
+    const pitchArray = createArray(180);
+    const drawTick2 = (type, y, value) => {
+      const OneTickWidth = 6;
+      const TwoFiveTickWidth = 10;
+      const FiveTickWidth = 25;
+      const SevenFiveTickWidth = 18;
+      const TenTickWidth = 52;
+      const FourtyTickWidth = 10;
+      const offset = -252;
+      const correctedY = -y * 8.6;
+      const center = 275;
+      const strokeWidth = 4.5;
+      const strokeWidthTop = 3;
+      switch (type) {
+        case 5 /* ONE */:
+          return /* @__PURE__ */ import_react15.default.createElement(
+            PathWithBlackBackground,
+            {
+              d: `M ${center - 0.5 * OneTickWidth} ${correctedY - offset} L ${center - 0.5 * OneTickWidth + OneTickWidth} ${correctedY - offset}`,
+              fill: "black",
+              fillTop: "white",
+              StrokeWidth: strokeWidth,
+              strokeWidthTop
+            }
+          );
+        case 0 /* TWO_FIVE */:
+          return /* @__PURE__ */ import_react15.default.createElement(
+            PathWithBlackBackground,
+            {
+              d: `M ${center - 0.5 * TwoFiveTickWidth} ${correctedY - offset} L ${center - 0.5 * TwoFiveTickWidth + TwoFiveTickWidth} ${correctedY - offset}`,
+              fill: "black",
+              fillTop: "white",
+              StrokeWidth: strokeWidth,
+              strokeWidthTop
+            }
+          );
+        case 1 /* FIVE */:
+          return /* @__PURE__ */ import_react15.default.createElement(
+            PathWithBlackBackground,
+            {
+              d: `M ${center - 0.5 * FiveTickWidth} ${correctedY - offset} L ${center - 0.5 * FiveTickWidth + FiveTickWidth} ${correctedY - offset}`,
+              fill: "black",
+              fillTop: "white",
+              StrokeWidth: strokeWidth,
+              strokeWidthTop
+            }
+          );
+        case 2 /* SEVEN_FIVE */:
+          return /* @__PURE__ */ import_react15.default.createElement(
+            PathWithBlackBackground,
+            {
+              d: `M ${center - 0.5 * SevenFiveTickWidth} ${correctedY - offset} L ${center - 0.5 * SevenFiveTickWidth + SevenFiveTickWidth} ${correctedY - offset}`,
+              fill: "black",
+              fillTop: "white",
+              StrokeWidth: strokeWidth,
+              strokeWidthTop
+            }
+          );
+        case 3 /* TEN */:
+          return /* @__PURE__ */ import_react15.default.createElement(import_react15.default.Fragment, null, /* @__PURE__ */ import_react15.default.createElement(
+            "text",
+            {
+              x: center - 45,
+              y: correctedY - offset + 2,
+              fill: "white",
+              fontSize: "22px",
+              textAnchor: "middle",
+              dominantBaseline: "middle",
+              stroke: "black",
+              strokeWidth: 2,
+              paintOrder: "stroke"
+            },
+            value
+          ), /* @__PURE__ */ import_react15.default.createElement(
+            PathWithBlackBackground,
+            {
+              d: `M ${center - 0.5 * TenTickWidth} ${correctedY - offset} L ${center - 0.5 * TenTickWidth + TenTickWidth} ${correctedY - offset}`,
+              fill: "black",
+              fillTop: "white",
+              StrokeWidth: strokeWidth,
+              strokeWidthTop
+            }
+          ), /* @__PURE__ */ import_react15.default.createElement(
+            "text",
+            {
+              x: center + 45,
+              y: correctedY - offset + 2,
+              fill: "white",
+              fontSize: "22px",
+              textAnchor: "middle",
+              dominantBaseline: "middle",
+              stroke: "black",
+              strokeWidth: 2,
+              paintOrder: "stroke"
+            },
+            value
+          ));
+        case 4 /* FOURTY_SIXTY_NINETY */:
+          return /* @__PURE__ */ import_react15.default.createElement(import_react15.default.Fragment, null, /* @__PURE__ */ import_react15.default.createElement(
+            PathWithBlackBackground,
+            {
+              d: `M ${center - FourtyTickWidth + 35} ${correctedY - offset} L ${center + 35 + FourtyTickWidth} ${correctedY - offset}`,
+              fill: "black",
+              fillTop: "white",
+              StrokeWidth: strokeWidth,
+              strokeWidthTop
+            }
+          ), /* @__PURE__ */ import_react15.default.createElement(
+            "text",
+            {
+              x: "260",
+              y: correctedY - offset + 5,
+              fill: "white",
+              fontSize: "22px",
+              textAnchor: "start",
+              dominantBaseline: "middle",
+              stroke: "black",
+              strokeWidth: 2,
+              paintOrder: "stroke"
+            },
+            value
+          ), /* @__PURE__ */ import_react15.default.createElement(
+            PathWithBlackBackground,
+            {
+              d: `M ${center - FourtyTickWidth - 35} ${correctedY - offset} L ${center - 35 + FourtyTickWidth} ${correctedY - offset}`,
+              fill: "black",
+              fillTop: "white",
+              StrokeWidth: strokeWidth,
+              strokeWidthTop
+            }
+          ));
+        default:
+          return /* @__PURE__ */ import_react15.default.createElement(import_react15.default.Fragment, null);
+      }
+    };
+    const DrawChevron = (y, direction) => {
+      const center = 275;
+      const color = "red";
+      const strokeWidth = 4;
+      const strokeWidthTop = 3;
+      const correctedY = -y * 8.6;
+      const offset = -252;
+      if (direction === 1) {
+        return /* @__PURE__ */ import_react15.default.createElement("g", null, /* @__PURE__ */ import_react15.default.createElement(
+          PathWithBlackBackground,
+          {
+            d: `M ${center} ${correctedY - offset - 8} L ${center - 45} ${correctedY - offset - 80} L ${center - 30} ${correctedY - offset - 80} L ${center} ${correctedY - offset - 35} L ${center + 30} ${correctedY - offset - 80} L ${center + 45} ${correctedY - offset - 80} L ${center} ${correctedY - offset - 8}`,
+            fill: "black",
+            fillTop: color,
+            StrokeWidth: strokeWidth,
+            strokeWidthTop,
+            fillTop2: "transparent",
+            forceTransparent: true
+          }
+        ));
+      } else {
+        return /* @__PURE__ */ import_react15.default.createElement("g", null, /* @__PURE__ */ import_react15.default.createElement(
+          PathWithBlackBackground,
+          {
+            d: `M ${center} ${correctedY - offset + 8} L ${center - 45} ${correctedY - offset + 60} L ${center - 30} ${correctedY - offset + 60} L ${center} ${correctedY - offset + 25} L ${center + 30} ${correctedY - offset + 60} L ${center + 45} ${correctedY - offset + 60} L ${center} ${correctedY - offset + 8}`,
+            fill: "black",
+            fillTop: color,
+            StrokeWidth: strokeWidth,
+            strokeWidthTop,
+            fillTop2: "transparent",
+            forceTransparent: true
+          }
+        ));
+      }
+    };
+    const createPitchMarkings = () => {
+      return pitchArray.map((pitch) => {
+        const pitchCorrected = pitch - 90;
+        switch (pitchCorrected) {
+          case -90:
+            return drawTick2(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected, Math.abs(pitchCorrected));
+          case -65:
+            return DrawChevron(pitchCorrected, 0);
+          case -60:
+            return drawTick2(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected, Math.abs(pitchCorrected));
+          case -46:
+            return DrawChevron(pitchCorrected, 0);
+          case -40:
+            return drawTick2(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected, Math.abs(pitchCorrected));
+          case -31:
+            return DrawChevron(pitchCorrected, 0);
+          case -30:
+            return drawTick2(3 /* TEN */, pitchCorrected, Math.abs(pitchCorrected));
+          case -25:
+            return drawTick2(1 /* FIVE */, pitchCorrected, Math.abs(pitchCorrected));
+          case -20:
+            return drawTick2(3 /* TEN */, pitchCorrected, Math.abs(pitchCorrected));
+          case -15:
+            return drawTick2(1 /* FIVE */, pitchCorrected, Math.abs(pitchCorrected));
+          case -10:
+            return drawTick2(3 /* TEN */, pitchCorrected, Math.abs(pitchCorrected));
+          case -7:
+            return drawTick2(2 /* SEVEN_FIVE */, pitchCorrected - 0.5, Math.abs(pitchCorrected - 0.5));
+          case -5:
+            return drawTick2(1 /* FIVE */, pitchCorrected, Math.abs(pitchCorrected));
+          case -4:
+            return drawTick2(5 /* ONE */, pitchCorrected, Math.abs(pitchCorrected));
+          case -3:
+            return drawTick2(5 /* ONE */, pitchCorrected, Math.abs(pitchCorrected));
+          case -2:
+            return drawTick2(5 /* ONE */, pitchCorrected, Math.abs(pitchCorrected));
+          case -1:
+            return drawTick2(5 /* ONE */, pitchCorrected, Math.abs(pitchCorrected));
+          case 2:
+            return drawTick2(2 /* SEVEN_FIVE */, pitchCorrected + 0.5, pitchCorrected + 0.5);
+          case 5:
+            return drawTick2(1 /* FIVE */, pitchCorrected, pitchCorrected);
+          case 7:
+            return drawTick2(2 /* SEVEN_FIVE */, pitchCorrected + 0.5, pitchCorrected + 0.5);
+          case 10:
+            return drawTick2(3 /* TEN */, pitchCorrected, pitchCorrected);
+          case 15:
+            return drawTick2(1 /* FIVE */, pitchCorrected, pitchCorrected);
+          case 20:
+            return drawTick2(3 /* TEN */, pitchCorrected, pitchCorrected);
+          case 25:
+            return drawTick2(1 /* FIVE */, pitchCorrected, pitchCorrected);
+          case 30:
+            return drawTick2(3 /* TEN */, pitchCorrected, pitchCorrected);
+          case 40:
+            return drawTick2(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected, pitchCorrected);
+          case 45:
+            return DrawChevron(pitchCorrected, 1);
+          case 60:
+            return drawTick2(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected, pitchCorrected);
+          case 65:
+            return DrawChevron(pitchCorrected, 1);
+          case 89:
+            return drawTick2(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected + 1, pitchCorrected + 1);
+          default:
+            return /* @__PURE__ */ import_react15.default.createElement(import_react15.default.Fragment, null);
+        }
+      });
+    };
+    const getTranslation = () => {
+      const pitch = Number;
+      if (props.pitch > 17) {
+        return { negative: false, value: 17 };
+      } else if (props.pitch < -17) {
+        return { negative: true, value: -17 };
+      } else {
+        return { negative: false, value: props.pitch };
+      }
+    };
+    return /* @__PURE__ */ import_react15.default.createElement("g", { transform: `rotate(${props.bank}, 300, 255)` }, /* @__PURE__ */ import_react15.default.createElement("clipPath", { id: "attitude-clip" }, /* @__PURE__ */ import_react15.default.createElement("path", { d: "m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" })), /* @__PURE__ */ import_react15.default.createElement("g", { clipPath: "url(#attitude-clip)" }, /* @__PURE__ */ import_react15.default.createElement("g", { transform: `translate(0,${getTranslation().value * 8.6})` }, /* @__PURE__ */ import_react15.default.createElement("rect", { x: "-500", y: "-2000", width: "1600", height: "2255", className: "attitude-sky" }), /* @__PURE__ */ import_react15.default.createElement("rect", { x: "-0", y: "254", width: "1600", height: "2205", className: "attitude-ground-inner" }), isHorizonMarkerActive() && /* @__PURE__ */ import_react15.default.createElement("rect", { x: "0", y: "252", width: "600", height: "4", fill: "white", stroke: "black", strokeWidth: 1 })), /* @__PURE__ */ import_react15.default.createElement("g", { transform: `translate(0,${`${props.pitch * 8.6}`} )` }, createPitchMarkings())));
+  };
+
+  // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/markers.tsx
+  var import_react16 = __toESM(require_react());
+  var AttitudeMarkers = () => {
+    return /* @__PURE__ */ import_react16.default.createElement("g", null, /* @__PURE__ */ import_react16.default.createElement(
+      PathWithBlackBackground,
+      {
+        d: "M 166 249 L 217 249  L 217 268 L 209 268 L 209 258 L 166 258 L 166 249",
+        fill: "black",
+        fillTop: "white",
+        StrokeWidth: 3,
+        strokeWidthTop: 2,
+        fillTop2: "black"
+      }
+    ), /* @__PURE__ */ import_react16.default.createElement(
+      PathWithBlackBackground,
+      {
+        d: "M 384 249 L 333 249 L 333 268 L 341 268 L 341 258 L 384 258 L 384 249",
+        fill: "black",
+        fillTop: "white",
+        StrokeWidth: 3,
+        strokeWidthTop: 2,
+        fillTop2: "black"
+      }
+    ), /* @__PURE__ */ import_react16.default.createElement(
+      PathWithBlackBackground,
+      {
+        d: "M 280 249 L 270 249 L 270 258 L 280 258 L 280 258 L 280 249",
+        fill: "black",
+        fillTop: "white",
+        StrokeWidth: 3,
+        strokeWidthTop: 2,
+        fillTop2: "black"
+      }
+    ));
+  };
+
+  // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/AttitudeDisplay.tsx
+  var AttitudeDisplay = (props) => {
+    const [bank] = useSimVar("PLANE BANK DEGREES", "degrees");
+    const [pitch] = useSimVar("PLANE PITCH DEGREES", "degrees");
+    return /* @__PURE__ */ import_react17.default.createElement("div", { className: "attitude-continer" }, /* @__PURE__ */ import_react17.default.createElement("svg", { className: "attitude-svg", viewBox: "0 0 600 460", width: "100%", height: "100%" }, /* @__PURE__ */ import_react17.default.createElement(AttitudeBackground, { bank, pitch }), /* @__PURE__ */ import_react17.default.createElement(AttitudeForeground, { bank, pitch }), /* @__PURE__ */ import_react17.default.createElement(AttitudeMarkers, null)));
+  };
+
   // src/instruments/src/PrimaryFlightDisplay/components/pfdProvider/pfdProvider.tsx
   var PFDProvider = () => {
-    return /* @__PURE__ */ import_react9.default.createElement("div", null, /* @__PURE__ */ import_react9.default.createElement("div", { className: "top-component" }, /* @__PURE__ */ import_react9.default.createElement(FMA, { x: 0, y: 0, vars: FmaVars() }), /* @__PURE__ */ import_react9.default.createElement(Airspeed, null)), /* @__PURE__ */ import_react9.default.createElement("div", { className: "bottom-component" }, "bottom"));
+    return /* @__PURE__ */ import_react18.default.createElement("div", null, /* @__PURE__ */ import_react18.default.createElement("div", { className: "top-component" }, /* @__PURE__ */ import_react18.default.createElement(AttitudeDisplay, null), /* @__PURE__ */ import_react18.default.createElement(FMA, { x: 0, y: 0, vars: FmaVars() }), /* @__PURE__ */ import_react18.default.createElement(Airspeed, null), /* @__PURE__ */ import_react18.default.createElement(Altitude, null)), /* @__PURE__ */ import_react18.default.createElement("div", { className: "bottom-component" }, "bottom"));
   };
 
   // src/instruments/src/PrimaryFlightDisplay/index.tsx
   var PrimaryFlightDisplay = () => {
-    return /* @__PURE__ */ import_react10.default.createElement("div", { id: "PFD-ROOT" }, /* @__PURE__ */ import_react10.default.createElement(PFDProvider, null));
+    return /* @__PURE__ */ import_react19.default.createElement("div", { id: "PFD-ROOT" }, /* @__PURE__ */ import_react19.default.createElement(PFDProvider, null));
   };
-  render(/* @__PURE__ */ import_react10.default.createElement(PrimaryFlightDisplay, null));
+  render(/* @__PURE__ */ import_react19.default.createElement(PrimaryFlightDisplay, null));
 })();
 /*
 object-assign

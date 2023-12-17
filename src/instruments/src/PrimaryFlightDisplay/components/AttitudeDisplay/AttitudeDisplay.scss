@@ -1,0 +1,21 @@
+:root {
+  --attitude-dark-brown: #794f00;
+  --attitude-light-brown: #8f5d00;
+  --attitude-blue: #0001d8;
+}
+.attitude-continer {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 460px;
+  width: 600px;
+}
+.attitude-sky {
+  fill: var(--attitude-blue);
+}
+.attitude-ground {
+  fill: var(--attitude-dark-brown);
+}
+.attitude-ground-inner {
+  fill: var(--attitude-light-brown);
+}

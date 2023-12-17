@@ -112,7 +112,7 @@
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 1000.0
+      "max": 250.0
     },
     "pinned": null
   },
@@ -212,13 +212,13 @@
     "name": "PLANE PITCH DEGREES",
     "index": 0,
     "unit": "radians",
-    "value": 0.0,
+    "value": -3.0,
     "control": {
       "type": "Slider",
-      "min": 0.0,
-      "max": 250.0
+      "min": -90.0,
+      "max": 90.0
     },
-    "pinned": null
+    "pinned": true
   },
   {
     "type": "A",
@@ -228,10 +228,10 @@
     "value": 0.0,
     "control": {
       "type": "Slider",
-      "min": 0.0,
-      "max": 250.0
+      "min": -90.0,
+      "max": 90.0
     },
-    "pinned": null
+    "pinned": true
   },
   {
     "type": "L",
