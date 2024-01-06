@@ -5,6 +5,7 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "resolveJsonModule": true,
+    "strictNullChecks": true,
     "moduleResolution": "node",
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
@@ -12,5 +13,6 @@
       "@instruments/common/*": ["./instruments/src/Common/*"]
     },
     "typeRoots": ["../typings/", "../node_modules/@types", "../node_modules/sass"]
-  }
+  },
+  "include": ["../.eslintrc.cjs", "instruments/src/**/*.ts", "instruments/src/**/*.tsx", "../mach.config.js"]
 }

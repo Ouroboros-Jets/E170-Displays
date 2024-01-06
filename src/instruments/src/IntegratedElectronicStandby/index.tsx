@@ -1,26 +1,22 @@
-import './index.scss';
-import React, { Component } from 'react';
-import IESRoot from './components/IESRoot/IESRoot';
-import { render } from '../../common/Hooks';
+import './index.scss'
+import React from 'react'
+import { IESRoot } from './components/root'
+import { render } from '../../common/Hooks'
 
-class IntegratedElectronicStandby extends Component {
-	state = {
-		isAligned: 0, //boolean overrated, we are simply enjoyers of numbers here
-	};
-	Align = (): void => {
-		this.setState({
-			isAligned: 1,
-		});
-	};
-	componentDidMount = (): void => {
-		setTimeout(this.Align, 4000); //90000ms is frfr number this just for debug cuh cause life to short to waste 90 seconds every time im tryna see if my shitty code works
-	};
-	render = (): React.ReactNode => {
-		return (
-			<div>
-				<IESRoot isAligning={this.state.isAligned} />
-			</div>
-		);
-	};
+// eslint-disable-next-line react-refresh/only-export-components
+const IntegratedElectronicStandby = (): JSX.Element => {
+  const [isAligned, setIsAligned] = React.useState<boolean>(false)
+  React.useEffect(() => {
+    setTimeout(() => {
+      setIsAligned(true)
+    }, 4000)
+  }, [])
+
+  return (
+    <div>
+      <IESRoot isAligning={isAligned} />
+    </div>
+  )
 }
-render(<IntegratedElectronicStandby />);
+
+render(<IntegratedElectronicStandby />)

@@ -1,7 +1,13 @@
-import { FSComponent, DisplayComponent, VNode } from '@microsoft/msfs-sdk';
+import React from 'react'
 
-export class IESRoot extends DisplayComponent<any> {
-  public render(): VNode {
-    return <div>IES Root</div>;
-  }
+type T_IESRootProps = {
+  isAligning: boolean
+}
+
+export const IESRoot: React.FC<T_IESRootProps> = (props: T_IESRootProps): JSX.Element => {
+  return (
+    <div>
+      <h1>IESRoot</h1>
+    </div>
+  )
 }

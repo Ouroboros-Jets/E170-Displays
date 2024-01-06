@@ -1,66 +1,68 @@
-import React, { FC, useEffect, useState } from 'react';
-import { getStyleForATMode, GetStringForATMode, ATModeTypes } from './FMA_Annunciators';
-import { reverseVideo } from 'instruments/common/util/reverseVideo';
-import './fma.scss';
+import React, { FC, useEffect, useState } from 'react'
+import { getStyleForATMode, GetStringForATMode, ATModeTypes } from './FMA_Annunciators'
+import { reverseVideo } from 'instruments/common/util/reverseVideo'
+import './fma.scss'
 
 export type FMAVars = {
-  v_AT_Mode: number;
-  v_AP_Status: number;
-  v_Lateral_Mode: number;
-  v_Vertical_Mode: number;
-  v_Armed_AT_Mode: number;
-  v_AT_Status: number;
-  v_Armed_Lateral_Mode: number;
-  v_Armed_Vertical_Mode: number;
-  v_Selection_Source: number;
-};
+  vAtMode: number
+  vApStatus: number
+  vLateralMode: number
+  vVerticalMode: number
+  vArmedAtMode: number
+  vAtStatus: number
+  vArmedLateralMode: number
+  vArmedVerticalMode: number
+  vSelectionSource: number
+}
 
 type T_FMAProps = {
-  x: number;
-  y: number;
-  vars: FMAVars;
-};
+  x: number
+  y: number
+  vars: FMAVars
+}
 
 export const FMA: FC<T_FMAProps> = (props: T_FMAProps): JSX.Element => {
-  const AT_Mode_ = props.vars.v_AT_Mode;
-  const AP_Status_ = props.vars.v_AP_Status;
-  const Lateral_Mode_ = props.vars.v_Lateral_Mode;
-  const Vertical_Mode_ = props.vars.v_Vertical_Mode;
-  const Armed_AT_Mode_ = props.vars.v_Armed_AT_Mode;
-  const AT_Status_ = props.vars.v_AT_Status;
-  const Armed_Lateral_Mode_ = props.vars.v_Armed_Lateral_Mode;
-  const Armed_Vertical_Mode_ = props.vars.v_Armed_Vertical_Mode;
-  const Selection_Source_ = props.vars.v_Selection_Source;
+  const AtMode = props.vars.vAtMode
+  const ApStatus = props.vars.vApStatus
+  const LateralMode = props.vars.vLateralMode
+  const VerticalMode = props.vars.vVerticalMode
+  const ArmedAtMode = props.vars.vArmedAtMode
+  const AtStatus = props.vars.vAtStatus
+  const ArmedLateralMode = props.vars.vArmedLateralMode
+  const ArmedVerticalMode = props.vars.vArmedVerticalMode
+  const SelectionSource = props.vars.vSelectionSource
 
   /**
    * todo: add logic for reverse video, dependent on the mode for each box, the prop is a boolean and we will just pass true if the mode has reverse video
    */
-  const [s_reverseVideo, setReverseVideo] = useState<boolean>(true);
+  const [sReverseVideo, setSReverseVideo] = useState<boolean>(true)
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setReverseVideo((prevValue) => !prevValue);
-    }, 500);
-    return () => clearInterval(intervalId);
-  }, []);
+      setSReverseVideo((prevValue) => !prevValue)
+    }, 500)
+    return () => {
+      clearInterval(intervalId)
+    }
+  }, [])
 
   type T_Colors = {
-    bg: string;
-    color: string;
-  };
+    bg: string
+    color: string
+  }
   const GetAtModeBoxColor = (): T_Colors => {
-    if (AT_Mode_ == ATModeTypes.AT_r_rv) {
+    if (AtMode === ATModeTypes.AT_r_rv) {
       return {
-        bg: reverseVideo({ color: 'red', backgroundColor: 'white', reverse: s_reverseVideo }).backgroundColor,
-        color: reverseVideo({ color: 'red', backgroundColor: 'white', reverse: s_reverseVideo }).color,
-      };
-    } else if (AT_Mode_ == ATModeTypes.AT_g_rv) {
+        bg: reverseVideo({ color: 'red', backgroundColor: 'white', reverse: sReverseVideo }).backgroundColor,
+        color: reverseVideo({ color: 'red', backgroundColor: 'white', reverse: sReverseVideo }).color
+      }
+    } else if (AtMode === ATModeTypes.AT_g_rv) {
       return {
-        bg: reverseVideo({ color: 'green', backgroundColor: 'white', reverse: s_reverseVideo }).backgroundColor,
-        color: reverseVideo({ color: 'green', backgroundColor: 'white', reverse: s_reverseVideo }).color,
-      };
-    } else return { bg: getStyleForATMode(AT_Mode_).backgroundColor, color: getStyleForATMode(AT_Mode_).color };
-  };
+        bg: reverseVideo({ color: 'green', backgroundColor: 'white', reverse: sReverseVideo }).backgroundColor,
+        color: reverseVideo({ color: 'green', backgroundColor: 'white', reverse: sReverseVideo }).color
+      }
+    } else return { bg: getStyleForATMode(AtMode).backgroundColor, color: getStyleForATMode(AT_Mode_).color }
+  }
 
   return (
     <div className="fma-container" style={{ left: props.x, top: props.y }}>
@@ -68,68 +70,72 @@ export const FMA: FC<T_FMAProps> = (props: T_FMAProps): JSX.Element => {
         AT_Mode_Box={{
           backgroundColor: GetAtModeBoxColor().bg,
           element: (
-            <GetStringForATMode ovrdFontColor={GetAtModeBoxColor().color} style={getStyleForATMode(AT_Mode_)} mode={AT_Mode_} />
-          ),
+            <GetStringForATMode
+              ovrdFontColor={GetAtModeBoxColor().color}
+              style={getStyleForATMode(AtMode)}
+              mode={AtMode}
+            />
+          )
         }}
         AP_Status_Box={{
-          backgroundColor: getStyleForATMode(AP_Status_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(AP_Status_)} mode={AP_Status_} />,
+          backgroundColor: getStyleForATMode(ApStatus).backgroundColor,
+          element: <GetStringForATMode style={getStyleForATMode(ApStatus)} mode={ApStatus} />
         }}
         AP_AT_Source_box={{
-          backgroundColor: getStyleForATMode(Selection_Source_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(Selection_Source_)} mode={Selection_Source_} />,
+          backgroundColor: getStyleForATMode(SelectionSource).backgroundColor,
+          element: <GetStringForATMode style={getStyleForATMode(SelectionSource)} mode={SelectionSource} />
         }}
         Lateral_Mode_Box={{
           backgroundColor: getStyleForATMode(Lateral_Mode_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(Lateral_Mode_)} mode={Lateral_Mode_} />,
+          element: <GetStringForATMode style={getStyleForATMode(Lateral_Mode_)} mode={Lateral_Mode_} />
         }}
         Vertical_Mode_Box={{
           backgroundColor: getStyleForATMode(Vertical_Mode_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(Vertical_Mode_)} mode={Vertical_Mode_} />,
+          element: <GetStringForATMode style={getStyleForATMode(Vertical_Mode_)} mode={Vertical_Mode_} />
         }}
         Armed_AT_Mode_Box={{
           backgroundColor: getStyleForATMode(Armed_AT_Mode_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(Armed_AT_Mode_)} mode={Armed_AT_Mode_} />,
+          element: <GetStringForATMode style={getStyleForATMode(Armed_AT_Mode_)} mode={Armed_AT_Mode_} />
         }}
         AT_Status_Box={{
           backgroundColor: getStyleForATMode(AT_Status_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(AT_Status_)} mode={AT_Status_} />,
+          element: <GetStringForATMode style={getStyleForATMode(AT_Status_)} mode={AT_Status_} />
         }}
         Armed_Lateral_Mode_Box={{
           backgroundColor: getStyleForATMode(Armed_Lateral_Mode_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(Armed_Lateral_Mode_)} mode={Armed_Lateral_Mode_} />,
+          element: <GetStringForATMode style={getStyleForATMode(Armed_Lateral_Mode_)} mode={Armed_Lateral_Mode_} />
         }}
         Armed_Vertical_Mode_Box={{
           backgroundColor: getStyleForATMode(Armed_Vertical_Mode_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(Armed_Vertical_Mode_)} mode={Armed_Vertical_Mode_} />,
+          element: <GetStringForATMode style={getStyleForATMode(Armed_Vertical_Mode_)} mode={Armed_Vertical_Mode_} />
         }}
-        Selection_Source_Box={{
-          backgroundColor: getStyleForATMode(Selection_Source_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(Selection_Source_)} mode={Selection_Source_} />,
+        SelectionSourceBox={{
+          backgroundColor: getStyleForATMode(SelectionSource).backgroundColor,
+          element: <GetStringForATMode style={getStyleForATMode(SelectionSource)} mode={SelectionSource} />
         }}
       />
     </div>
-  );
-};
+  )
+}
 
 type T_BoxProps = {
-  backgroundColor: string;
-  element: JSX.Element;
-  reverseVideo?: boolean;
-};
+  backgroundColor: string
+  element: JSX.Element
+  reverseVideo?: boolean
+}
 
 type T_FMAGridProps = {
-  AT_Mode_Box: T_BoxProps;
-  AP_Status_Box: T_BoxProps;
-  AP_AT_Source_box: T_BoxProps;
-  Lateral_Mode_Box: T_BoxProps;
-  Vertical_Mode_Box: T_BoxProps;
-  Armed_AT_Mode_Box: T_BoxProps;
-  AT_Status_Box: T_BoxProps;
-  Armed_Lateral_Mode_Box: T_BoxProps;
-  Armed_Vertical_Mode_Box: T_BoxProps;
-  Selection_Source_Box: T_BoxProps;
-};
+  AT_Mode_Box: T_BoxProps
+  AP_Status_Box: T_BoxProps
+  AP_AT_Source_box: T_BoxProps
+  Lateral_Mode_Box: T_BoxProps
+  Vertical_Mode_Box: T_BoxProps
+  Armed_AT_Mode_Box: T_BoxProps
+  AT_Status_Box: T_BoxProps
+  Armed_Lateral_Mode_Box: T_BoxProps
+  Armed_Vertical_Mode_Box: T_BoxProps
+  SelectionSourceBox: T_BoxProps
+}
 
 const FMAGrid: FC<T_FMAGridProps> = (props: T_FMAGridProps): JSX.Element => {
   return (
@@ -152,5 +158,5 @@ const FMAGrid: FC<T_FMAGridProps> = (props: T_FMAGridProps): JSX.Element => {
         {props.AT_Mode_Box.element}
       </text>
     </svg>
-  );
-};
+  )
+}
