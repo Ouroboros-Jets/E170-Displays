@@ -1,4 +1,4 @@
-/* temp_stylePlugin:src\instruments\src\PrimaryFlightDisplay\index.scss */
+/* temp_stylePlugin:instruments\src\PrimaryFlightDisplay\index.scss */
 .horizon {
   color: white;
 }
@@ -12,7 +12,7 @@
     sans-serif;
 }
 
-/* temp_stylePlugin:src\instruments\src\PrimaryFlightDisplay\components\pfdProvider\pfdProvider.scss */
+/* temp_stylePlugin:instruments\src\PrimaryFlightDisplay\components\pfdProvider\pfdProvider.scss */
 .top-component {
   height: 460px;
   width: 600px;
@@ -23,7 +23,7 @@
   background-color: rgba(255, 0, 0, 0.1);
 }
 
-/* temp_stylePlugin:src\instruments\src\PrimaryFlightDisplay\components\FMA\fma.scss */
+/* temp_stylePlugin:instruments\src\PrimaryFlightDisplay\components\FMA\fma.scss */
 .fma-container {
   height: 56px;
   width: 374px;
@@ -37,7 +37,7 @@
   width: 100%;
 }
 
-/* temp_stylePlugin:src\instruments\src\PrimaryFlightDisplay\components\Airspeed\airspeed.scss */
+/* temp_stylePlugin:instruments\src\PrimaryFlightDisplay\components\Airspeed\airspeed.scss */
 .airspeed-container {
   position: absolute;
   top: 54px;
@@ -52,7 +52,7 @@
   height: 100%;
 }
 
-/* temp_stylePlugin:src\instruments\src\PrimaryFlightDisplay\components\Altitude\altitude.scss */
+/* temp_stylePlugin:instruments\src\PrimaryFlightDisplay\components\Altitude\altitude.scss */
 .altitude-continer {
   position: absolute;
   top: 28px;
@@ -67,7 +67,7 @@
   height: 100%;
 }
 
-/* temp_stylePlugin:src\instruments\src\PrimaryFlightDisplay\components\AttitudeDisplay\AttitudeDisplay.scss */
+/* temp_stylePlugin:instruments\src\PrimaryFlightDisplay\components\AttitudeDisplay\AttitudeDisplay.scss */
 :root {
   --attitude-dark-brown: #794f00;
   --attitude-light-brown: #8f5d00;

@@ -22911,14 +22911,14 @@ class InstrumentLogic extends BaseInstrument {
     }
   });
 
-  // src/instruments/src/MultifunctionDisplay/index.tsx
+  // instruments/src/MultifunctionDisplay/index.tsx
   var import_react11 = __toESM(require_react());
 
-  // src/instruments/common/Hooks/index.tsx
+  // instruments/common/Hooks/index.tsx
   var import_react3 = __toESM(require_react());
   var import_react_dom = __toESM(require_react_dom());
 
-  // src/instruments/common/Hooks/defaults.tsx
+  // instruments/common/Hooks/defaults.tsx
   var reactMount = document.getElementById("MSFS_REACT_MOUNT");
   var getRenderTarget = () => reactMount;
   var getRootElement = () => {
@@ -22928,11 +22928,11 @@ class InstrumentLogic extends BaseInstrument {
     throw new Error("Could not find rootElement");
   };
 
-  // src/instruments/common/Hooks/simVars.tsx
+  // instruments/common/Hooks/simVars.tsx
   var React2 = __toESM(require_react());
   var import_react2 = __toESM(require_react());
 
-  // src/instruments/common/Hooks/hooks.tsx
+  // instruments/common/Hooks/hooks.tsx
   var import_react = __toESM(require_react());
   var useUpdate = (handler) => {
     const savedHandler = import_react.default.useRef(handler);
@@ -22950,7 +22950,7 @@ class InstrumentLogic extends BaseInstrument {
     }, []);
   };
 
-  // src/instruments/common/Hooks/simVars.tsx
+  // instruments/common/Hooks/simVars.tsx
   var normalizeUnitName = (unit) => {
     switch (unit) {
       case "bool":
@@ -23100,18 +23100,18 @@ class InstrumentLogic extends BaseInstrument {
     return (value) => contextValue.update(name, unit, value, proxy);
   };
 
-  // src/instruments/common/Hooks/index.tsx
+  // instruments/common/Hooks/index.tsx
   var render = (Slot) => {
     import_react_dom.default.render(/* @__PURE__ */ import_react3.default.createElement(SimVarProvider, null, Slot), getRenderTarget());
   };
 
-  // src/instruments/src/MultifunctionDisplay/components/mouse/mouse.tsx
+  // instruments/src/MultifunctionDisplay/components/mouse/mouse.tsx
   var import_react5 = __toESM(require_react());
 
-  // src/instruments/assets/svg/mouse.svg
+  // instruments/assets/svg/mouse.svg
   var mouse_default = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyNS4yLjMsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCgkgdmlld0JveD0iMCAwIDEwODAgMTA4MCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTA4MCAxMDgwOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPg0KCS5zdDB7b3BhY2l0eTowLjgxO30NCgkuc3Qxe2ZpbGw6IzhDOEM4Qzt9DQoJLnN0MntkaXNwbGF5Om5vbmU7fQ0KCS5zdDN7ZGlzcGxheTppbmxpbmU7b3BhY2l0eTowLjIxO30NCgkuc3Q0e2ZpbGw6I0ZGRkZGRjt9DQo8L3N0eWxlPg0KPGcgaWQ9IkNhbWFkYV8zIj4NCjwvZz4NCjxnIGlkPSJDYW1hZGFfM19jw7NwaWEiIGNsYXNzPSJzdDAiPg0KCTxnIGlkPSJWRVJUSUNBTCI+DQoJCTxnPg0KCQkJPHBvbHlnb24gY2xhc3M9InN0MSIgcG9pbnRzPSI1NzAuNzksNDQwLjA2IDUwOS4yOCw0NDAuMDUgNDg1LjU2LDAgNTI4LjI4LDAgNTMxLjQ0LDU1LjA1IDU0OC40NCw1NS4wNSA1NTEuNDIsMCA1OTQuNDQsMC4wMSAJCQkNCgkJCQkiLz4NCgkJCTxwb2x5Z29uIGNsYXNzPSJzdDEiIHBvaW50cz0iNTA5LjIyLDYzOS45NCA1NzAuNzIsNjM5Ljk1IDU5NC40NCwxMDgwIDU1MS43MiwxMDgwIDU0OC41NiwxMDI0Ljk1IDUzMS41NiwxMDI0Ljk1IDUyOC41OCwxMDgwIA0KCQkJCTQ4NS41NiwxMDc5Ljk5IAkJCSIvPg0KCQk8L2c+DQoJPC9nPg0KCTxnIGlkPSJIT1JJWk9OVEFMIj4NCgkJPGc+DQoJCQk8cG9seWdvbiBjbGFzcz0ic3QxIiBwb2ludHM9IjYzOS45NCw1NzAuNzkgNjM5Ljk1LDUwOS4yOCAxMDgwLDQ4NS41NiAxMDgwLDUyOC4yOCAxMDI0Ljk1LDUzMS40NCAxMDI0Ljk1LDU0OC40NCAxMDgwLDU1MS40MiANCgkJCQkxMDc5Ljk5LDU5NC40NCAJCQkiLz4NCgkJCTxwb2x5Z29uIGNsYXNzPSJzdDEiIHBvaW50cz0iNDQwLjA2LDUwOS4yMiA0NDAuMDUsNTcwLjcyIDAsNTk0LjQ0IDAsNTUxLjcyIDU1LjA1LDU0OC41NiA1NS4wNSw1MzEuNTYgMCw1MjguNTggMC4wMSw0ODUuNTYgCQkJDQoJCQkJIi8+DQoJCTwvZz4NCgk8L2c+DQoJPGcgaWQ9IkNhbWFkYV8xMSI+DQoJPC9nPg0KCTxnIGlkPSJDYW1hZGFfMTAiPg0KCTwvZz4NCgk8ZyBpZD0iQ2FtYWRhXzkiPg0KCTwvZz4NCgk8ZyBpZD0iQ2FtYWRhXzgiPg0KCTwvZz4NCgk8ZyBpZD0iQ2FtYWRhXzciPg0KCTwvZz4NCgk8ZyBpZD0iQ2FtYWRhXzYiPg0KCTwvZz4NCjwvZz4NCjxnIGlkPSJDYW1hZGFfMSIgY2xhc3M9InN0MiI+DQoJPGcgaWQ9IkNhbWFkYV8yIiBjbGFzcz0ic3QzIj4NCgk8L2c+DQo8L2c+DQo8ZyBpZD0iSU5ORVJfV0hJVEVfTUFSS192ZXJ0X2Rvd24iPg0KCTxnIGlkPSJJTk5FUl9XSElURV9NQVJLIj4NCgk8L2c+DQoJPGcgaWQ9IklOTkVSX1dISVRFX01BUktfdmVydF9kb3duX2PDs3BpYSI+DQoJCTxnPg0KCQkJPHBhdGggY2xhc3M9InN0NCIgZD0iTTUzNC4zMyw5ODRsMTEuNDQsMGM4LjA4LTQ1LDE0Ljk0LTk0LjAzLDE5LjUzLTE0Ni42N2M2LjI1LTcxLjY2LDcuMjUtMTM3Ljc5LDUuMjUtMTk3LjA3aC02MQ0KCQkJCWMtMi4xMSw1OS4wNi0xLjIxLDEyNS4wOSw1LjA1LDE5Ni43NEM1MTkuMjEsODg5Ljg1LDUyNi4xNSw5MzguOTksNTM0LjMzLDk4NHoiLz4NCgkJCTxwYXRoIGNsYXNzPSJzdDQiIGQ9Ik01NDUuNyw5NS4xaC0xMS40NGMtOC4wOCw0NS0xNC45NCw5NC4wMy0xOS41MywxNDYuNjdjLTYuMjUsNzEuNjYtNy4yNSwxMzcuNzktNS4yNSwxOTcuMDdoNjENCgkJCQljMi4xMS01OS4wNiwxLjIxLTEyNS4wOS01LjA1LTE5Ni43NEM1NjAuODIsMTg5LjI2LDU1My44OCwxNDAuMTIsNTQ1LjcsOTUuMXoiLz4NCgkJCTxwYXRoIGNsYXNzPSJzdDQiIGQ9Ik05NS41Nyw1MzQuMzNsMCwxMS40NGM0NSw4LjA4LDk0LjAzLDE0Ljk0LDE0Ni42NywxOS41M2M3MS42Niw2LjI1LDEzNy43OSw3LjI1LDE5Ny4wNyw1LjI1bDAtNjENCgkJCQljLTU5LjA2LTIuMTEtMTI1LjA5LTEuMjEtMTk2Ljc0LDUuMDVDMTg5LjcyLDUxOS4yMSwxNDAuNTgsNTI2LjE1LDk1LjU3LDUzNC4zM3oiLz4NCgkJPC9nPg0KCTwvZz4NCgk8ZyBpZD0iSU5ORVJfV0hJVEVfTUFSS19jw7NwaWEiPg0KCQk8cGF0aCBjbGFzcz0ic3Q0IiBkPSJNOTg0LjQ2LDU0NS42N3YtMTEuNDRjLTQ1LTguMDgtOTQuMDMtMTQuOTQtMTQ2LjY3LTE5LjUzYy03MS42Ni02LjI1LTEzNy43OS03LjI1LTE5Ny4wNy01LjI1djYxDQoJCQljNTkuMDYsMi4xMSwxMjUuMDksMS4yMSwxOTYuNzQtNS4wNUM4OTAuMzEsNTYwLjc5LDkzOS40NSw1NTMuODUsOTg0LjQ2LDU0NS42N3oiLz4NCgk8L2c+DQo8L2c+DQo8L3N2Zz4=";
 
-  // src/instruments/common/Hooks/getMousePosition.tsx
+  // instruments/common/Hooks/getMousePosition.tsx
   var import_react4 = __toESM(require_react());
   function useMousePosition() {
     const [mousePosition, setMousePosition] = (0, import_react4.useState)({ x: 0, y: 0 });
@@ -23128,13 +23128,13 @@ class InstrumentLogic extends BaseInstrument {
     return mousePosition;
   }
 
-  // src/instruments/src/MultifunctionDisplay/components/mouse/mouse.tsx
+  // instruments/src/MultifunctionDisplay/components/mouse/mouse.tsx
   var Mouse = () => {
     const { x, y } = useMousePosition();
     return /* @__PURE__ */ import_react5.default.createElement("div", { className: "mouse", style: { top: y - 25, left: x - 25 } }, /* @__PURE__ */ import_react5.default.createElement("img", { src: mouse_default, alt: "Mouse Cursor, This is broken if you see this" }));
   };
 
-  // src/instruments/src/MultifunctionDisplay/components/router/router.tsx
+  // instruments/src/MultifunctionDisplay/components/router/router.tsx
   var import_react6 = __toESM(require_react());
   var MfdRouter = (isCallingTop, topPageArg, bottomPageArg) => {
     const [topPage] = useObjLocalVar("MFD_ROUTER_TOP", "Number");
@@ -23177,13 +23177,13 @@ class InstrumentLogic extends BaseInstrument {
   };
   var router_default = MfdRouter;
 
-  // src/instruments/src/MultifunctionDisplay/components/displayProvider/displayProvider.tsx
+  // instruments/src/MultifunctionDisplay/components/displayProvider/displayProvider.tsx
   var import_react10 = __toESM(require_react());
 
-  // src/instruments/src/MultifunctionDisplay/components/buttonBars/buttonBars.tsx
+  // instruments/src/MultifunctionDisplay/components/buttonBars/buttonBars.tsx
   var import_react9 = __toESM(require_react());
 
-  // src/instruments/src/MultifunctionDisplay/components/buttonBars/buttonBarButton/buttonBarButton.tsx
+  // instruments/src/MultifunctionDisplay/components/buttonBars/buttonBarButton/buttonBarButton.tsx
   var import_react7 = __toESM(require_react());
   var ButtonBarButton = (props) => {
     const [topPage, setTopPage] = useObjLocalVar("MFD_ROUTER_TOP", "Number");
@@ -23200,10 +23200,10 @@ class InstrumentLogic extends BaseInstrument {
     return /* @__PURE__ */ import_react7.default.createElement("div", { onClick: () => handleButtonClick(props.routeTo), className: "button-container" }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "button-center" }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "button-children" }, props.text)), /* @__PURE__ */ import_react7.default.createElement("div", { className: "button-background" }));
   };
 
-  // src/instruments/src/MultifunctionDisplay/components/buttonBars/systemButton/systemButton.tsx
+  // instruments/src/MultifunctionDisplay/components/buttonBars/systemButton/systemButton.tsx
   var import_react8 = __toESM(require_react());
 
-  // src/instruments/src/MultifunctionDisplay/components/buttonBars/buttonBars.tsx
+  // instruments/src/MultifunctionDisplay/components/buttonBars/buttonBars.tsx
   var UpperButtonBar = (props) => {
     return /* @__PURE__ */ import_react9.default.createElement("div", { className: "upper-button-bar-container" }, /* @__PURE__ */ import_react9.default.createElement(ButtonBarButton, { text: "Map", isTop: true, routeTo: 0 }), /* @__PURE__ */ import_react9.default.createElement(ButtonBarButton, { text: "Plan", isTop: true, routeTo: 1 }), /* @__PURE__ */ import_react9.default.createElement(ButtonBarButton, { isSystemButton: true, text: "Systems", isTop: true, routeTo: 2 }));
   };
@@ -23211,14 +23211,14 @@ class InstrumentLogic extends BaseInstrument {
     return /* @__PURE__ */ import_react9.default.createElement("div", { className: "lower-button-bar-container" }, /* @__PURE__ */ import_react9.default.createElement(ButtonBarButton, { text: "TCAS", routeTo: 0 }), /* @__PURE__ */ import_react9.default.createElement(ButtonBarButton, { text: "Weather", routeTo: 1 }), /* @__PURE__ */ import_react9.default.createElement(ButtonBarButton, { text: "Checklist", routeTo: 2 }));
   };
 
-  // src/instruments/src/MultifunctionDisplay/components/displayProvider/displayProvider.tsx
+  // instruments/src/MultifunctionDisplay/components/displayProvider/displayProvider.tsx
   var DisplayProvider = (props) => {
     let resizePerportion = props.porportionSize;
     return /* @__PURE__ */ import_react10.default.createElement("div", { className: "MFD-container" }, /* @__PURE__ */ import_react10.default.createElement(UpperButtonBar, { currentPage: getTopPage() }), /* @__PURE__ */ import_react10.default.createElement("div", { className: "upper-content-container" }, props.topPage), /* @__PURE__ */ import_react10.default.createElement("div", { className: "center-divider" }), /* @__PURE__ */ import_react10.default.createElement("div", { className: "lower-content-container" }, props.bottomPage), /* @__PURE__ */ import_react10.default.createElement(LowerButtonBar, null));
   };
   var displayProvider_default = DisplayProvider;
 
-  // src/instruments/src/MultifunctionDisplay/index.tsx
+  // instruments/src/MultifunctionDisplay/index.tsx
   var MultifunctionDisplay = () => {
     return /* @__PURE__ */ import_react11.default.createElement("div", null, /* @__PURE__ */ import_react11.default.createElement(Mouse, null), /* @__PURE__ */ import_react11.default.createElement(displayProvider_default, { porportionSize: 0, topPage: router_default(true), bottomPage: router_default(false) }));
   };

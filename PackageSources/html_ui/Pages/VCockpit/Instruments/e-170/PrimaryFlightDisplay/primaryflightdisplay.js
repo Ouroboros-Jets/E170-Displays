@@ -22911,14 +22911,14 @@ class InstrumentLogic extends BaseInstrument {
     }
   });
 
-  // src/instruments/src/PrimaryFlightDisplay/index.tsx
+  // instruments/src/PrimaryFlightDisplay/index.tsx
   var import_react19 = __toESM(require_react());
 
-  // src/instruments/common/Hooks/index.tsx
+  // instruments/common/Hooks/index.tsx
   var import_react3 = __toESM(require_react());
   var import_react_dom = __toESM(require_react_dom());
 
-  // src/instruments/common/Hooks/defaults.tsx
+  // instruments/common/Hooks/defaults.tsx
   var reactMount = document.getElementById("MSFS_REACT_MOUNT");
   var getRenderTarget = () => reactMount;
   var getRootElement = () => {
@@ -22928,11 +22928,11 @@ class InstrumentLogic extends BaseInstrument {
     throw new Error("Could not find rootElement");
   };
 
-  // src/instruments/common/Hooks/simVars.tsx
+  // instruments/common/Hooks/simVars.tsx
   var React2 = __toESM(require_react());
   var import_react2 = __toESM(require_react());
 
-  // src/instruments/common/Hooks/hooks.tsx
+  // instruments/common/Hooks/hooks.tsx
   var import_react = __toESM(require_react());
   var useUpdate = (handler) => {
     const savedHandler = import_react.default.useRef(handler);
@@ -22950,7 +22950,7 @@ class InstrumentLogic extends BaseInstrument {
     }, []);
   };
 
-  // src/instruments/common/Hooks/simVars.tsx
+  // instruments/common/Hooks/simVars.tsx
   var normalizeUnitName = (unit) => {
     switch (unit) {
       case "bool":
@@ -23105,18 +23105,18 @@ class InstrumentLogic extends BaseInstrument {
     return (value) => contextValue.update(name, unit, value, proxy);
   };
 
-  // src/instruments/common/Hooks/index.tsx
+  // instruments/common/Hooks/index.tsx
   var render = (Slot) => {
     import_react_dom.default.render(/* @__PURE__ */ import_react3.default.createElement(SimVarProvider, null, Slot), getRenderTarget());
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/pfdProvider/pfdProvider.tsx
+  // instruments/src/PrimaryFlightDisplay/components/pfdProvider/pfdProvider.tsx
   var import_react18 = __toESM(require_react());
 
-  // src/instruments/src/PrimaryFlightDisplay/components/FMA/FMA.tsx
+  // instruments/src/PrimaryFlightDisplay/components/FMA/FMA.tsx
   var import_react5 = __toESM(require_react());
 
-  // src/instruments/src/PrimaryFlightDisplay/components/FMA/FMA_Annunciators.tsx
+  // instruments/src/PrimaryFlightDisplay/components/FMA/FMA_Annunciators.tsx
   var import_react4 = __toESM(require_react());
   var getStyleForATMode = (mode) => {
     switch (mode) {
@@ -23206,7 +23206,7 @@ class InstrumentLogic extends BaseInstrument {
     }
   };
 
-  // src/instruments/common/util/reverseVideo.ts
+  // instruments/common/util/reverseVideo.ts
   var reverseVideo = ({ color, backgroundColor, reverse }) => {
     if (reverse) {
       return {
@@ -23220,7 +23220,7 @@ class InstrumentLogic extends BaseInstrument {
     };
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/FMA/FMA.tsx
+  // instruments/src/PrimaryFlightDisplay/components/FMA/FMA.tsx
   var FMA = (props) => {
     const AtMode = props.vars.vAtMode;
     const ApStatus = props.vars.vApStatus;
@@ -23326,7 +23326,7 @@ class InstrumentLogic extends BaseInstrument {
     ), /* @__PURE__ */ import_react5.default.createElement("rect", { id: "AT_Mode_Box", x: "3", y: "3", width: "100", height: "26", fill: props.AT_Mode_Box.backgroundColor }), /* @__PURE__ */ import_react5.default.createElement("text", { x: 50, y: 25, textAnchor: "middle", color: "red", fontSize: 25 }, props.AT_Mode_Box.element));
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/FMA/FMA_Vars.tsx
+  // instruments/src/PrimaryFlightDisplay/components/FMA/FMA_Vars.tsx
   var FmaVars = () => {
     const [vAtMode] = useObjLocalVar("PFD_FMA_AT_Mode", "number");
     const [v_AP_Status] = useObjLocalVar("PFD_FMA_AP_Status", "number");
@@ -23351,13 +23351,13 @@ class InstrumentLogic extends BaseInstrument {
     return vars;
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeed.tsx
+  // instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeed.tsx
   var import_react9 = __toESM(require_react());
 
-  // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeedTape.tsx
+  // instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeedTape.tsx
   var import_react8 = __toESM(require_react());
 
-  // src/instruments/common/util/createArray.ts
+  // instruments/common/util/createArray.ts
   var createArray = (length) => {
     const array = new Array(length);
     for (let i = 0; i < length; i++) {
@@ -23366,7 +23366,7 @@ class InstrumentLogic extends BaseInstrument {
     return array;
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/selectedAirspeedBox.tsx
+  // instruments/src/PrimaryFlightDisplay/components/Airspeed/selectedAirspeedBox.tsx
   var import_react6 = __toESM(require_react());
   var SelectedAirspeedBox = (props) => {
     const invalidOutput = "---";
@@ -23389,7 +23389,7 @@ class InstrumentLogic extends BaseInstrument {
     return /* @__PURE__ */ import_react6.default.createElement("g", null, /* @__PURE__ */ import_react6.default.createElement("rect", { x: 1, y: 1, rx: 2, ry: 2, width: 80, height: 33, strokeWidth: 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ import_react6.default.createElement("text", { x: 41, y: 28, textAnchor: "middle", fill: getString().color, fontSize: "30" }, getString().element));
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/util/clampValue.ts
+  // instruments/src/PrimaryFlightDisplay/util/clampValue.ts
   var ClampValue = (value, min, max) => {
     if (value < min) {
       return min;
@@ -23400,7 +23400,7 @@ class InstrumentLogic extends BaseInstrument {
     }
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/util/pathWithBlackBackground.tsx
+  // instruments/src/PrimaryFlightDisplay/util/pathWithBlackBackground.tsx
   var import_react7 = __toESM(require_react());
   var PathWithBlackBackground = (props) => {
     return /* @__PURE__ */ import_react7.default.createElement("g", null, /* @__PURE__ */ import_react7.default.createElement(
@@ -23426,7 +23426,7 @@ class InstrumentLogic extends BaseInstrument {
     ));
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeedTape.tsx
+  // instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeedTape.tsx
   var AirspeedTape = () => {
     const [airspeed] = useSimVar("AIRSPEED INDICATED", "knots");
     const tapeLength = 942;
@@ -23493,15 +23493,15 @@ class InstrumentLogic extends BaseInstrument {
     return /* @__PURE__ */ import_react8.default.createElement("div", { className: "airspeed-container" }, /* @__PURE__ */ import_react8.default.createElement("svg", { className: "airspeed-svg", viewBox: "0 0 82 396" }, /* @__PURE__ */ import_react8.default.createElement("rect", { x: 0, y: 0, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ import_react8.default.createElement("clipPath", { id: "tapeClip" }, /* @__PURE__ */ import_react8.default.createElement("rect", { x: 0, y: 34, width: 81, height: 330 })), /* @__PURE__ */ import_react8.default.createElement("g", { clipPath: "url(#tapeClip)" }, /* @__PURE__ */ import_react8.default.createElement("g", { transform: `translate(0,${ClampValue(airspeed, 30, 900) * airspeedTapeScaling + startOffset})` }, Tape)), /* @__PURE__ */ import_react8.default.createElement(PathWithBlackBackground, { d: "M 81 32 L 81 364", fill: "black", fillTop: "white", strokeWidthTop: 2, StrokeWidth: 3 }), /* @__PURE__ */ import_react8.default.createElement(SelectedAirspeedBox, { selectedAirspeed: 0.79, mach: true, mode: 0 })));
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeed.tsx
+  // instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeed.tsx
   var Airspeed = () => {
     return /* @__PURE__ */ import_react9.default.createElement("div", null, /* @__PURE__ */ import_react9.default.createElement(AirspeedTape, null));
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/Altitude/Altitude.tsx
+  // instruments/src/PrimaryFlightDisplay/components/Altitude/Altitude.tsx
   var import_react13 = __toESM(require_react());
 
-  // src/instruments/src/PrimaryFlightDisplay/components/Altitude/AltitudeTape.tsx
+  // instruments/src/PrimaryFlightDisplay/components/Altitude/AltitudeTape.tsx
   var import_react10 = __toESM(require_react());
   var drawChevron = (double, y) => {
     const offset = -y / 3.31;
@@ -23602,28 +23602,28 @@ class InstrumentLogic extends BaseInstrument {
     return /* @__PURE__ */ import_react10.default.createElement("g", null, /* @__PURE__ */ import_react10.default.createElement("g", null, /* @__PURE__ */ import_react10.default.createElement("clipPath", { id: "AltitudetapeClip" }, /* @__PURE__ */ import_react10.default.createElement("rect", { x: 29, y: 60, width: 83, height: 333 }))), /* @__PURE__ */ import_react10.default.createElement("g", { clipPath: "url(#AltitudetapeClip)" }, /* @__PURE__ */ import_react10.default.createElement("g", { transform: `translate(0, ${props.altitude / 3.309})` }, negativeTape, tape)), /* @__PURE__ */ import_react10.default.createElement("path", { d: "M 29 58 L 29 391", stroke: "white", strokeWidth: "2", fill: "none" }));
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/Altitude/selectedAltitudeBox.tsx
+  // instruments/src/PrimaryFlightDisplay/components/Altitude/selectedAltitudeBox.tsx
   var import_react11 = __toESM(require_react());
   var SelectedAltitudeBox = (props) => {
     return /* @__PURE__ */ import_react11.default.createElement("g", null, /* @__PURE__ */ import_react11.default.createElement("rect", { x: "31", y: "1", rx: 2, ry: 2, width: "81", height: "58", stroke: "white", strokeWidth: 2, fill: "transparent" }), /* @__PURE__ */ import_react11.default.createElement("path", { d: "M 31 27 L 112 27", stroke: "white", strokeWidth: "2", fill: "none" }));
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/Altitude/baroSettingBox.tsx
+  // instruments/src/PrimaryFlightDisplay/components/Altitude/baroSettingBox.tsx
   var import_react12 = __toESM(require_react());
   var BaroSettingBox = (props) => {
     return /* @__PURE__ */ import_react12.default.createElement("g", null, /* @__PURE__ */ import_react12.default.createElement("rect", { x: "29", y: "391", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", strokeWidth: 2, fill: "black" }));
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/Altitude/Altitude.tsx
+  // instruments/src/PrimaryFlightDisplay/components/Altitude/Altitude.tsx
   var Altitude = (props) => {
     const [altitude] = useSimVar("INDICATED ALTITUDE", "feet");
     return /* @__PURE__ */ import_react13.default.createElement("div", { className: "altitude-continer" }, /* @__PURE__ */ import_react13.default.createElement("svg", { className: "altitude-svg", viewBox: "0 0 120 422" }, /* @__PURE__ */ import_react13.default.createElement("rect", { x: "29", y: "0", width: "83", height: "422", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ import_react13.default.createElement(AltitudeTape, { altitude }), /* @__PURE__ */ import_react13.default.createElement(SelectedAltitudeBox, null), /* @__PURE__ */ import_react13.default.createElement(BaroSettingBox, null)));
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/AttitudeDisplay.tsx
+  // instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/AttitudeDisplay.tsx
   var import_react17 = __toESM(require_react());
 
-  // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/attitudeBackground.tsx
+  // instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/attitudeBackground.tsx
   var import_react14 = __toESM(require_react());
   var AttitudeBackground = (props) => {
     const isHorizonMarkerActive = () => {
@@ -23644,7 +23644,7 @@ class InstrumentLogic extends BaseInstrument {
     return /* @__PURE__ */ import_react14.default.createElement("g", { transform: `rotate(${props.bank}, 275, 255)` }, /* @__PURE__ */ import_react14.default.createElement("linearGradient", { id: "SkyGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "0%", stopColor: "#020383" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "88%", stopColor: "#020383" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "100%", stopColor: "#1717cf" })), /* @__PURE__ */ import_react14.default.createElement("linearGradient", { id: "GroundGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "0%", stopColor: "#674200" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "25%", stopColor: "#352200" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "100%", stopColor: "#352201" })), /* @__PURE__ */ import_react14.default.createElement("g", { transform: `translate(0,${getTranslation().value * 8.6})` }, /* @__PURE__ */ import_react14.default.createElement("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", fill: "url(#SkyGradiant)" }), /* @__PURE__ */ import_react14.default.createElement("rect", { x: "-2000", y: "254", width: "4600", height: "2205", fill: "url(#GroundGradiant)" }), isHorizonMarkerActive() && /* @__PURE__ */ import_react14.default.createElement("rect", { x: "0", y: "252", width: "600", height: "4", fill: "white", stroke: "black", strokeWidth: 1 })));
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/attitudeForeground.tsx
+  // instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/attitudeForeground.tsx
   var import_react15 = __toESM(require_react());
   var AttitudeForeground = (props) => {
     const isHorizonMarkerActive = () => {
@@ -23913,7 +23913,7 @@ class InstrumentLogic extends BaseInstrument {
     return /* @__PURE__ */ import_react15.default.createElement("g", null, /* @__PURE__ */ import_react15.default.createElement("clipPath", { id: "attitude-clip" }, /* @__PURE__ */ import_react15.default.createElement("path", { d: "m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" })), /* @__PURE__ */ import_react15.default.createElement("g", { clipPath: "url(#attitude-clip)" }, /* @__PURE__ */ import_react15.default.createElement("g", { transform: `rotate(${props.bank}, 275, 255)` }, /* @__PURE__ */ import_react15.default.createElement("g", { transform: `translate(0,${getTranslation().value * 8.6})` }, /* @__PURE__ */ import_react15.default.createElement("rect", { x: "-500", y: "-2000", width: "1600", height: "2255", className: "attitude-sky" }), /* @__PURE__ */ import_react15.default.createElement("rect", { x: "-0", y: "254", width: "1600", height: "2205", className: "attitude-ground-inner" }), isHorizonMarkerActive() && /* @__PURE__ */ import_react15.default.createElement("rect", { x: "0", y: "252", width: "600", height: "4", fill: "white", stroke: "black", strokeWidth: 1 })), /* @__PURE__ */ import_react15.default.createElement("g", { transform: `translate(0,${`${props.pitch * 8.6}`} )` }, createPitchMarkings()))));
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/markers.tsx
+  // instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/markers.tsx
   var import_react16 = __toESM(require_react());
   var AttitudeMarkers = () => {
     return /* @__PURE__ */ import_react16.default.createElement("g", null, /* @__PURE__ */ import_react16.default.createElement(
@@ -23949,19 +23949,19 @@ class InstrumentLogic extends BaseInstrument {
     ));
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/AttitudeDisplay.tsx
+  // instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/AttitudeDisplay.tsx
   var AttitudeDisplay = (props) => {
     const [bank] = useSimVar("PLANE BANK DEGREES", "degrees");
     const [pitch] = useSimVar("PLANE PITCH DEGREES", "degrees");
     return /* @__PURE__ */ import_react17.default.createElement("div", { className: "attitude-continer" }, /* @__PURE__ */ import_react17.default.createElement("svg", { className: "attitude-svg", viewBox: "0 0 600 460", width: "100%", height: "100%" }, /* @__PURE__ */ import_react17.default.createElement(AttitudeBackground, { bank, pitch }), /* @__PURE__ */ import_react17.default.createElement(AttitudeForeground, { bank, pitch }), /* @__PURE__ */ import_react17.default.createElement(AttitudeMarkers, null)));
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/components/pfdProvider/pfdProvider.tsx
+  // instruments/src/PrimaryFlightDisplay/components/pfdProvider/pfdProvider.tsx
   var PFDProvider = () => {
     return /* @__PURE__ */ import_react18.default.createElement("div", null, /* @__PURE__ */ import_react18.default.createElement("div", { className: "top-component" }, /* @__PURE__ */ import_react18.default.createElement(AttitudeDisplay, null), /* @__PURE__ */ import_react18.default.createElement(FMA, { x: 0, y: 0, vars: FmaVars() }), /* @__PURE__ */ import_react18.default.createElement(Airspeed, null), /* @__PURE__ */ import_react18.default.createElement(Altitude, null)), /* @__PURE__ */ import_react18.default.createElement("div", { className: "bottom-component" }, "bottom"));
   };
 
-  // src/instruments/src/PrimaryFlightDisplay/index.tsx
+  // instruments/src/PrimaryFlightDisplay/index.tsx
   var PrimaryFlightDisplay = () => {
     return /* @__PURE__ */ import_react19.default.createElement("div", { id: "PFD-ROOT" }, /* @__PURE__ */ import_react19.default.createElement(PFDProvider, null));
   };

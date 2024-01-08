@@ -1,4 +1,4 @@
-/* temp_stylePlugin:src\instruments\src\MultifunctionDisplay\index.scss */
+/* temp_stylePlugin:instruments\src\MultifunctionDisplay\index.scss */
 @font-face {
   font-family: OuroborosMFD;
   src: url(/Fonts/Ouroboros_SCREEN_FONT.ttf) format("truetype");
@@ -19,7 +19,7 @@ div {
   color: white;
 }
 
-/* temp_stylePlugin:src\instruments\src\MultifunctionDisplay\components\mouse\mouse.scss */
+/* temp_stylePlugin:instruments\src\MultifunctionDisplay\components\mouse\mouse.scss */
 .mouse {
   position: fixed;
   z-index: 2000;
@@ -28,7 +28,7 @@ div {
   pointer-events: none;
 }
 
-/* temp_stylePlugin:src\instruments\src\MultifunctionDisplay\components\displayProvider\displayProvider.scss */
+/* temp_stylePlugin:instruments\src\MultifunctionDisplay\components\displayProvider\displayProvider.scss */
 .MFD-container {
   display: flex;
   width: 600px;
@@ -49,7 +49,7 @@ div {
   width: 600px;
 }
 
-/* temp_stylePlugin:src\instruments\src\MultifunctionDisplay\components\buttonBars\buttonBars.scss */
+/* temp_stylePlugin:instruments\src\MultifunctionDisplay\components\buttonBars\buttonBars.scss */
 .upper-button-bar-container {
   display: flex;
   flex-direction: row;

@@ -22911,11 +22911,11 @@ class InstrumentLogic extends BaseInstrument {
     }
   });
 
-  // src/instruments/common/Hooks/index.tsx
+  // instruments/common/Hooks/index.tsx
   var import_react3 = __toESM(require_react());
   var import_react_dom = __toESM(require_react_dom());
 
-  // src/instruments/common/Hooks/defaults.tsx
+  // instruments/common/Hooks/defaults.tsx
   var reactMount = document.getElementById("MSFS_REACT_MOUNT");
   var getRenderTarget = () => reactMount;
   var getRootElement = () => {
@@ -22925,11 +22925,11 @@ class InstrumentLogic extends BaseInstrument {
     throw new Error("Could not find rootElement");
   };
 
-  // src/instruments/common/Hooks/simVars.tsx
+  // instruments/common/Hooks/simVars.tsx
   var React2 = __toESM(require_react());
   var import_react2 = __toESM(require_react());
 
-  // src/instruments/common/Hooks/hooks.tsx
+  // instruments/common/Hooks/hooks.tsx
   var import_react = __toESM(require_react());
   var useUpdate = (handler) => {
     const savedHandler = import_react.default.useRef(handler);
@@ -22947,7 +22947,7 @@ class InstrumentLogic extends BaseInstrument {
     }, []);
   };
 
-  // src/instruments/common/Hooks/simVars.tsx
+  // instruments/common/Hooks/simVars.tsx
   var normalizeUnitName = (unit) => {
     switch (unit) {
       case "bool":
@@ -23078,12 +23078,12 @@ class InstrumentLogic extends BaseInstrument {
     );
   };
 
-  // src/instruments/common/Hooks/index.tsx
+  // instruments/common/Hooks/index.tsx
   var render = (Slot) => {
     import_react_dom.default.render(/* @__PURE__ */ import_react3.default.createElement(SimVarProvider, null, Slot), getRenderTarget());
   };
 
-  // src/instruments/src/RadioSelector/index.tsx
+  // instruments/src/RadioSelector/index.tsx
   var import_react4 = __toESM(require_react());
   var IESRoot = () => {
     return /* @__PURE__ */ import_react4.default.createElement("div", null, /* @__PURE__ */ import_react4.default.createElement("h1", null, "IESRoot"));

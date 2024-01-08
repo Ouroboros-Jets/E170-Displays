@@ -21,26 +21,26 @@ module.exports = {
     sassPlugin()
   ],
   instruments: [
-    reactInstrument('PrimaryFlightDisplay'),
-    reactInstrument('RadioSelector'),
-    reactInstrument('Clock'),
-    reactInstrument('IntegratedElectronicStandby'),
-    reactInstrument('EngineIndicatingAndCrewAlertingSystem'),
-    reactInstrument('MultifunctionControlDisplay'),
-    reactInstrument('MultifunctionDisplay'),
-    reactInstrument('ElectronicFlightBag'),
-    reactInstrument('DU-1310-2-PFD'),
-    reactInstrument('DU-1310-2-MFD')
+    reactInstrument('PrimaryFlightDisplay', undefined, false),
+    reactInstrument('RadioSelector', undefined, false),
+    reactInstrument('Clock', undefined, false),
+    reactInstrument('IntegratedElectronicStandby', undefined, false),
+    reactInstrument('EngineIndicatingAndCrewAlertingSystem', undefined, true),
+    reactInstrument('MultifunctionControlDisplay', undefined, false),
+    reactInstrument('MultifunctionDisplay', undefined, true),
+    reactInstrument('ElectronicFlightBag', undefined, true),
+    reactInstrument('DU-1310-2-PFD', undefined, true),
+    reactInstrument('DU-1310-2-MFD', undefined, true)
   ]
 }
 
-function reactInstrument(name, additionalImports) {
+function reactInstrument(name, additionalImports, isInteractive) {
   return {
     name,
-    index: `src/instruments/src/${name}/index.tsx`,
+    index: `instruments/src/${name}/index.tsx`,
     simulatorPackage: {
       type: 'react',
-      isInteractive: false,
+      isInteractive: isInteractive ?? false,
       fileName: name.toLowerCase(),
       imports: ['/JS/dataStorage.js', ...(additionalImports ?? [])]
     }

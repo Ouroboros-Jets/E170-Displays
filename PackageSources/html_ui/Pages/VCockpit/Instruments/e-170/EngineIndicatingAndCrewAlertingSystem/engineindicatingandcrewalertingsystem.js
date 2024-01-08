@@ -22911,14 +22911,14 @@ class InstrumentLogic extends BaseInstrument {
     }
   });
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/index.tsx
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/index.tsx
   var import_react10 = __toESM(require_react());
 
-  // src/instruments/common/Hooks/index.tsx
+  // instruments/common/Hooks/index.tsx
   var import_react3 = __toESM(require_react());
   var import_react_dom = __toESM(require_react_dom());
 
-  // src/instruments/common/Hooks/defaults.tsx
+  // instruments/common/Hooks/defaults.tsx
   var reactMount = document.getElementById("MSFS_REACT_MOUNT");
   var getRenderTarget = () => reactMount;
   var getRootElement = () => {
@@ -22928,11 +22928,11 @@ class InstrumentLogic extends BaseInstrument {
     throw new Error("Could not find rootElement");
   };
 
-  // src/instruments/common/Hooks/simVars.tsx
+  // instruments/common/Hooks/simVars.tsx
   var React2 = __toESM(require_react());
   var import_react2 = __toESM(require_react());
 
-  // src/instruments/common/Hooks/hooks.tsx
+  // instruments/common/Hooks/hooks.tsx
   var import_react = __toESM(require_react());
   var useUpdate = (handler) => {
     const savedHandler = import_react.default.useRef(handler);
@@ -22950,7 +22950,7 @@ class InstrumentLogic extends BaseInstrument {
     }, []);
   };
 
-  // src/instruments/common/Hooks/simVars.tsx
+  // instruments/common/Hooks/simVars.tsx
   var normalizeUnitName = (unit) => {
     switch (unit) {
       case "bool":
@@ -23105,33 +23105,33 @@ class InstrumentLogic extends BaseInstrument {
     return (value) => contextValue.update(name, unit, value, proxy);
   };
 
-  // src/instruments/common/Hooks/index.tsx
+  // instruments/common/Hooks/index.tsx
   var render = (Slot) => {
     import_react_dom.default.render(/* @__PURE__ */ import_react3.default.createElement(SimVarProvider, null, Slot), getRenderTarget());
   };
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/ComponentProvider/ComponentProvider.tsx
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/ComponentProvider/ComponentProvider.tsx
   var import_react9 = __toESM(require_react());
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/APU/APU.tsx
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/APU/APU.tsx
   var import_react4 = __toESM(require_react());
   var APU = (props) => {
     return /* @__PURE__ */ import_react4.default.createElement("div", null, /* @__PURE__ */ import_react4.default.createElement("div", null, "fuck nigga"));
   };
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Cabin/cabin.tsx
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Cabin/cabin.tsx
   var import_react5 = __toESM(require_react());
   var Cabin = () => {
     return /* @__PURE__ */ import_react5.default.createElement("div", null, /* @__PURE__ */ import_react5.default.createElement("div", null, "cabin"));
   };
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engine.tsx
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engine.tsx
   var import_react8 = __toESM(require_react());
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/n1Gauge.tsx
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/n1Gauge.tsx
   var import_react6 = __toESM(require_react());
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/hooks/getThrustRatingAnnunciatorString.ts
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/hooks/getThrustRatingAnnunciatorString.ts
   var getThrustRatingAnnunciatorString = (thrustRating) => {
     let annunciator = "";
     switch (thrustRating) {
@@ -23184,16 +23184,16 @@ class InstrumentLogic extends BaseInstrument {
     return annunciator;
   };
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/n1Gauge.tsx
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/n1Gauge.tsx
   var N1Gauge = (props) => {
     let annunciator = getThrustRatingAnnunciatorString(props.thrustRatingAnnunciator);
     return /* @__PURE__ */ import_react6.default.createElement("div", null, /* @__PURE__ */ import_react6.default.createElement("div", null, "n1 gauge ", annunciator));
   };
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGauge.tsx
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGauge.tsx
   var import_react7 = __toESM(require_react());
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGaugeColors.ts
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGaugeColors.ts
   var getIttGaugeColor = (redColor, yellowColor, limeColor, sFillColor, itt, redline, yellowline, forceRed) => {
     let fillColor;
     let needleColor;
@@ -23220,14 +23220,14 @@ class InstrumentLogic extends BaseInstrument {
     }
   };
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/gaugeUtil/gaugeUtil.ts
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/gaugeUtil/gaugeUtil.ts
   var findCoordsOnCircle = (centerX, centerY, radius, angle) => {
     let x = centerX + radius * Math.sin(angle * Math.PI / 180);
     let y = centerY - radius * Math.cos(angle * Math.PI / 180);
     return { x, y };
   };
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGauge.tsx
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGauge.tsx
   var IttGauge = (props) => {
     const [forceRed, setForceRed] = (0, import_react7.useState)(false);
     (0, import_react7.useEffect)(() => {
@@ -23326,7 +23326,7 @@ class InstrumentLogic extends BaseInstrument {
     forceRedInYellowTime: 12e4
   };
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engineParameters.ts
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engineParameters.ts
   var EngineParameters = {
     E170_ITT: {
       hardLimit: 1130,
@@ -23352,7 +23352,7 @@ class InstrumentLogic extends BaseInstrument {
     E170_N1: {}
   };
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engineVars.tsx
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engineVars.tsx
   var EngineVars = () => {
     const [thrustRatingAnnunciator] = useObjLocalVar("EICAS_THRUST_RATING_ANNUNCIATOR", "number");
     const [ittValue1] = useSimVar("TURB ENG1 ITT", "celsius");
@@ -23364,7 +23364,7 @@ class InstrumentLogic extends BaseInstrument {
     return { thrustRatingAnnunciator, ittValue1, ittValue2, eng1Fire, eng2Fire, eng1IttInvalid, eng2IttInvalid };
   };
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engine.tsx
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engine.tsx
   var Engine = (props) => {
     const vars = EngineVars();
     return /* @__PURE__ */ import_react8.default.createElement("div", { className: "engine-wrapper" }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "flex-row" }, /* @__PURE__ */ import_react8.default.createElement(
@@ -23418,12 +23418,12 @@ class InstrumentLogic extends BaseInstrument {
     )));
   };
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/ComponentProvider/ComponentProvider.tsx
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/ComponentProvider/ComponentProvider.tsx
   var ComponentProvider = (props) => {
     return /* @__PURE__ */ import_react9.default.createElement("div", { className: "component-provider-wrapper" }, /* @__PURE__ */ import_react9.default.createElement("div", { className: "component-provider-left" }, /* @__PURE__ */ import_react9.default.createElement("div", { className: "component-provider-engine" }, /* @__PURE__ */ import_react9.default.createElement(Engine, null)), /* @__PURE__ */ import_react9.default.createElement("div", { className: "component-provider-fuel" }, "Fuel"), /* @__PURE__ */ import_react9.default.createElement("div", { className: `component-provider-oil ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react9.default.createElement("div", null) : /* @__PURE__ */ import_react9.default.createElement("div", null, "oil")), /* @__PURE__ */ import_react9.default.createElement("div", { className: `component-provider-vib ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react9.default.createElement("div", null) : /* @__PURE__ */ import_react9.default.createElement("div", null, "vib")), /* @__PURE__ */ import_react9.default.createElement("div", { className: `component-provider-flaps ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react9.default.createElement("div", null) : /* @__PURE__ */ import_react9.default.createElement("div", null, "flaps"))), /* @__PURE__ */ import_react9.default.createElement("div", { className: "component-provider-right" }, /* @__PURE__ */ import_react9.default.createElement("div", { className: "component-provider-cas" }, "CAS MSG"), /* @__PURE__ */ import_react9.default.createElement("div", { className: `component-provider-lg ${props.declutter ? "declutter-hidden-right" : ""}` }, props.declutter ? /* @__PURE__ */ import_react9.default.createElement("div", null) : /* @__PURE__ */ import_react9.default.createElement("div", null, "lg")), /* @__PURE__ */ import_react9.default.createElement("div", { className: `component-provider-apu` }, props.declutter ? /* @__PURE__ */ import_react9.default.createElement("div", null) : /* @__PURE__ */ import_react9.default.createElement(APU, null)), /* @__PURE__ */ import_react9.default.createElement("div", { className: "component-provider-cabin" }, /* @__PURE__ */ import_react9.default.createElement(Cabin, null)), /* @__PURE__ */ import_react9.default.createElement("div", { className: "component-provider-trim" }, "Trim")));
   };
 
-  // src/instruments/src/EngineIndicatingAndCrewAlertingSystem/index.tsx
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/index.tsx
   var EngineIndicatingAndCrewAlertingSystem = () => {
     const [declutter] = useObjLocalVar("EICAS_DECLUTTER", "bool");
     return /* @__PURE__ */ import_react10.default.createElement("div", { id: "EICAS_ROOT" }, /* @__PURE__ */ import_react10.default.createElement(ComponentProvider, { declutter }));

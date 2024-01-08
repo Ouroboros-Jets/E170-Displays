@@ -1,4 +1,4 @@
-/* temp_stylePlugin:src\instruments\src\EngineIndicatingAndCrewAlertingSystem\Components\ComponentProvider\ComponentProvider.scss */
+/* temp_stylePlugin:instruments\src\EngineIndicatingAndCrewAlertingSystem\Components\ComponentProvider\ComponentProvider.scss */
 .component-provider-wrapper {
   color: white;
   display: flex;
@@ -88,9 +88,9 @@
   box-shadow: none;
 }
 
-/* temp_stylePlugin:src\instruments\src\EngineIndicatingAndCrewAlertingSystem\Components\Engine\components\n1Gauge.scss */
+/* temp_stylePlugin:instruments\src\EngineIndicatingAndCrewAlertingSystem\Components\Engine\components\n1Gauge.scss */
 
-/* temp_stylePlugin:src\instruments\src\EngineIndicatingAndCrewAlertingSystem\Components\Engine\components\ittGauge\ittGauge.scss */
+/* temp_stylePlugin:instruments\src\EngineIndicatingAndCrewAlertingSystem\Components\Engine\components\ittGauge\ittGauge.scss */
 .itt-gauge-container-absolute {
   position: absolute;
   width: 150px;
@@ -98,7 +98,7 @@
   top: 220px;
 }
 
-/* temp_stylePlugin:src\instruments\src\EngineIndicatingAndCrewAlertingSystem\Components\Engine\engine.scss */
+/* temp_stylePlugin:instruments\src\EngineIndicatingAndCrewAlertingSystem\Components\Engine\engine.scss */
 .engine-wrapper {
   display: flex;
   flex-direction: column;
@@ -113,7 +113,7 @@
   flex-direction: row;
 }
 
-/* temp_stylePlugin:src\instruments\src\EngineIndicatingAndCrewAlertingSystem\index.scss */
+/* temp_stylePlugin:instruments\src\EngineIndicatingAndCrewAlertingSystem\index.scss */
 #EICAS_ROOT {
   width: 600px;
   height: 800px;
