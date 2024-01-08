@@ -22485,7 +22485,7 @@ class InstrumentLogic extends BaseInstrument {
               unmarkContainerAsRoot(container);
             }
           };
-          function createRoot(container, options2) {
+          function createRoot2(container, options2) {
             if (!isValidContainer(container)) {
               throw new Error("createRoot(...): Target container is not a DOM element.");
             }
@@ -22844,7 +22844,7 @@ class InstrumentLogic extends BaseInstrument {
                 error('You are importing createRoot from "react-dom" which is not supported. You should instead import it from "react-dom/client".');
               }
             }
-            return createRoot(container, options2);
+            return createRoot2(container, options2);
           }
           function hydrateRoot$1(container, initialChildren, options2) {
             {
@@ -22911,6 +22911,37 @@ class InstrumentLogic extends BaseInstrument {
     }
   });
 
+  // node_modules/react-dom/client.js
+  var require_client = __commonJS({
+    "node_modules/react-dom/client.js"(exports) {
+      "use strict";
+      var m = require_react_dom();
+      if (false) {
+        exports.createRoot = m.createRoot;
+        exports.hydrateRoot = m.hydrateRoot;
+      } else {
+        i = m.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        exports.createRoot = function(c, o) {
+          i.usingClientEntryPoint = true;
+          try {
+            return m.createRoot(c, o);
+          } finally {
+            i.usingClientEntryPoint = false;
+          }
+        };
+        exports.hydrateRoot = function(c, h, o) {
+          i.usingClientEntryPoint = true;
+          try {
+            return m.hydrateRoot(c, h, o);
+          } finally {
+            i.usingClientEntryPoint = false;
+          }
+        };
+      }
+      var i;
+    }
+  });
+
   // instruments/src/IntegratedElectronicStandby/index.tsx
   var import_react5 = __toESM(require_react());
 
@@ -22922,13 +22953,12 @@ class InstrumentLogic extends BaseInstrument {
 
   // instruments/common/Hooks/index.tsx
   var import_react4 = __toESM(require_react());
-  var import_react_dom = __toESM(require_react_dom());
 
   // instruments/common/Hooks/defaults.tsx
   var reactMount = document.getElementById("MSFS_REACT_MOUNT");
   var getRenderTarget = () => reactMount;
   var getRootElement = () => {
-    if (reactMount == null ? void 0 : reactMount.parentElement) {
+    if ((reactMount == null ? void 0 : reactMount.parentElement) !== void 0 && (reactMount == null ? void 0 : reactMount.parentElement) !== null) {
       return reactMount.parentElement;
     }
     throw new Error("Could not find rootElement");
@@ -22995,7 +23025,7 @@ class InstrumentLogic extends BaseInstrument {
     unregister: errorCallback
   });
   var { Provider: InternalProvider } = context;
-  var SimVarProvider = ({ children }) => {
+  var SimVarProvider = (props) => {
     const listeners = (0, import_react3.useRef)({});
     const [cache, setCache] = (0, import_react3.useState)({});
     useUpdate((deltaTime) => {
@@ -23069,7 +23099,12 @@ class InstrumentLogic extends BaseInstrument {
       if (old.length === 1) {
         delete listeners.current[key];
       } else {
-        const index = listeners.current[key].indexOf(maxStaleness || 0);
+        let index;
+        if (maxStaleness !== void 0) {
+          index = listeners.current[key].indexOf(maxStaleness);
+        } else {
+          index = listeners.current[key].indexOf(0);
+        }
         listeners.current[key].splice(index, 1);
       }
     };
@@ -23083,13 +23118,15 @@ class InstrumentLogic extends BaseInstrument {
           unregister
         }
       },
-      children
+      props.children
     );
   };
 
   // instruments/common/Hooks/index.tsx
+  var import_client = __toESM(require_client());
   var render = (Slot) => {
-    import_react_dom.default.render(/* @__PURE__ */ import_react4.default.createElement(SimVarProvider, null, Slot), getRenderTarget());
+    const root = (0, import_client.createRoot)(getRenderTarget());
+    root.render(/* @__PURE__ */ import_react4.default.createElement(SimVarProvider, null, Slot));
   };
 
   // instruments/src/IntegratedElectronicStandby/index.tsx

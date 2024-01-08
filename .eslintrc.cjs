@@ -26,7 +26,6 @@ module.exports = {
     }
   },
   rules: {
-    'react-refresh/only-export-components': 'error',
     '@typescript-eslint/consistent-type-imports': ['error'],
     '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
     '@typescript-eslint/ban-types': 'off',

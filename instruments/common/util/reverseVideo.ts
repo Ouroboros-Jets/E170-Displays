@@ -1,18 +1,25 @@
 type T_ReverseVideo = {
-  color: string;
-  backgroundColor: string;
-  reverse: boolean;
-};
+  color: string
+  backgroundColor: string
+  reverse: boolean
+}
 
-export const reverseVideo = ({ color, backgroundColor, reverse }: T_ReverseVideo) => {
+export const reverseVideo = ({
+  color,
+  backgroundColor,
+  reverse
+}: T_ReverseVideo): {
+  color: string
+  backgroundColor: string
+} => {
   if (reverse) {
     return {
       color: backgroundColor,
-      backgroundColor: color,
-    };
+      backgroundColor: color
+    }
   }
   return {
     color,
-    backgroundColor,
-  };
-};
+    backgroundColor
+  }
+}

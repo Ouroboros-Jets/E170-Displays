@@ -13,7 +13,6 @@ import { PFDProvider } from './components/pfdProvider/pfdProvider'
  *
  */
 
-// eslint-disable-next-line react-refresh/only-export-components
 const PrimaryFlightDisplay = (): JSX.Element => {
   return (
     <div id="PFD-ROOT">

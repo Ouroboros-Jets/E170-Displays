@@ -22485,7 +22485,7 @@ class InstrumentLogic extends BaseInstrument {
               unmarkContainerAsRoot(container);
             }
           };
-          function createRoot(container, options2) {
+          function createRoot2(container, options2) {
             if (!isValidContainer(container)) {
               throw new Error("createRoot(...): Target container is not a DOM element.");
             }
@@ -22844,7 +22844,7 @@ class InstrumentLogic extends BaseInstrument {
                 error('You are importing createRoot from "react-dom" which is not supported. You should instead import it from "react-dom/client".');
               }
             }
-            return createRoot(container, options2);
+            return createRoot2(container, options2);
           }
           function hydrateRoot$1(container, initialChildren, options2) {
             {
@@ -22911,18 +22911,48 @@ class InstrumentLogic extends BaseInstrument {
     }
   });
 
+  // node_modules/react-dom/client.js
+  var require_client = __commonJS({
+    "node_modules/react-dom/client.js"(exports) {
+      "use strict";
+      var m = require_react_dom();
+      if (false) {
+        exports.createRoot = m.createRoot;
+        exports.hydrateRoot = m.hydrateRoot;
+      } else {
+        i = m.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        exports.createRoot = function(c, o) {
+          i.usingClientEntryPoint = true;
+          try {
+            return m.createRoot(c, o);
+          } finally {
+            i.usingClientEntryPoint = false;
+          }
+        };
+        exports.hydrateRoot = function(c, h, o) {
+          i.usingClientEntryPoint = true;
+          try {
+            return m.hydrateRoot(c, h, o);
+          } finally {
+            i.usingClientEntryPoint = false;
+          }
+        };
+      }
+      var i;
+    }
+  });
+
   // instruments/src/PrimaryFlightDisplay/index.tsx
   var import_react19 = __toESM(require_react());
 
   // instruments/common/Hooks/index.tsx
   var import_react3 = __toESM(require_react());
-  var import_react_dom = __toESM(require_react_dom());
 
   // instruments/common/Hooks/defaults.tsx
   var reactMount = document.getElementById("MSFS_REACT_MOUNT");
   var getRenderTarget = () => reactMount;
   var getRootElement = () => {
-    if (reactMount == null ? void 0 : reactMount.parentElement) {
+    if ((reactMount == null ? void 0 : reactMount.parentElement) !== void 0 && (reactMount == null ? void 0 : reactMount.parentElement) !== null) {
       return reactMount.parentElement;
     }
     throw new Error("Could not find rootElement");
@@ -22989,7 +23019,7 @@ class InstrumentLogic extends BaseInstrument {
     unregister: errorCallback
   });
   var { Provider: InternalProvider } = context;
-  var SimVarProvider = ({ children }) => {
+  var SimVarProvider = (props) => {
     const listeners = (0, import_react2.useRef)({});
     const [cache, setCache] = (0, import_react2.useState)({});
     useUpdate((deltaTime) => {
@@ -23063,7 +23093,12 @@ class InstrumentLogic extends BaseInstrument {
       if (old.length === 1) {
         delete listeners.current[key];
       } else {
-        const index = listeners.current[key].indexOf(maxStaleness || 0);
+        let index;
+        if (maxStaleness !== void 0) {
+          index = listeners.current[key].indexOf(maxStaleness);
+        } else {
+          index = listeners.current[key].indexOf(0);
+        }
         listeners.current[key].splice(index, 1);
       }
     };
@@ -23077,7 +23112,7 @@ class InstrumentLogic extends BaseInstrument {
           unregister
         }
       },
-      children
+      props.children
     );
   };
   var useSimVar = (name, unit, maxStaleness = 0) => {
@@ -23102,12 +23137,16 @@ class InstrumentLogic extends BaseInstrument {
   };
   var useSimVarSetter = (name, unit, proxy) => {
     const contextValue = (0, import_react2.useContext)(context);
-    return (value) => contextValue.update(name, unit, value, proxy);
+    return (value) => {
+      contextValue.update(name, unit, value, proxy);
+    };
   };
 
   // instruments/common/Hooks/index.tsx
+  var import_client = __toESM(require_client());
   var render = (Slot) => {
-    import_react_dom.default.render(/* @__PURE__ */ import_react3.default.createElement(SimVarProvider, null, Slot), getRenderTarget());
+    const root = (0, import_client.createRoot)(getRenderTarget());
+    root.render(/* @__PURE__ */ import_react3.default.createElement(SimVarProvider, null, Slot));
   };
 
   // instruments/src/PrimaryFlightDisplay/components/pfdProvider/pfdProvider.tsx
@@ -23121,49 +23160,24 @@ class InstrumentLogic extends BaseInstrument {
   var getStyleForATMode = (mode) => {
     switch (mode) {
       case 1 /* TO_w */:
-        return { color: "white", backgroundColor: "transparent", isReverseVideo: false };
-      case 2 /* TO_g */:
-        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
-      case 3 /* HOLD_g */:
-        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
       case 4 /* SPD_T_w */:
-        return { color: "white", backgroundColor: "transparent", isReverseVideo: false };
-      case 5 /* SPD_T_g */:
-        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
-      case 6 /* SPD_E_g */:
-        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
       case 7 /* RETD_w */:
         return { color: "white", backgroundColor: "transparent", isReverseVideo: false };
+      case 2 /* TO_g */:
+      case 3 /* HOLD_g */:
+      case 5 /* SPD_T_g */:
+      case 6 /* SPD_E_g */:
       case 8 /* RETD_g */:
-        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
       case 9 /* GA_g */:
+      case 11 /* AT_g */:
+      case 14 /* OVRD_g */:
+      case 15 /* DD_g */:
         return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
       case 10 /* LIM_a */:
         return { color: "amber", backgroundColor: "transparent", isReverseVideo: false };
-      case 11 /* AT_g */:
-        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
       case 12 /* AT_g_rv */:
-        return { color: "lime", backgroundColor: "transparent", isReverseVideo: true };
       case 13 /* AT_r_rv */:
-        return { color: "red", backgroundColor: "transparent", isReverseVideo: true };
-      case 14 /* OVRD_g */:
-        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
-      case 15 /* DD_g */:
-        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
-      case 0 /* NONE */:
-        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
-      case 0 /* NONE */:
-        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
-      case 0 /* NONE */:
-        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
-      case 0 /* NONE */:
-        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
-      case 0 /* NONE */:
-        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
-      case 0 /* NONE */:
-        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
-      case 0 /* NONE */:
-        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
+        return { color: "lime", backgroundColor: "transparent", isReverseVideo: true };
       default:
         return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
     }
