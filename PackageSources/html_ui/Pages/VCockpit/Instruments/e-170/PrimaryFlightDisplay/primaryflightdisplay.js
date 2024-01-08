@@ -23222,50 +23222,59 @@ class InstrumentLogic extends BaseInstrument {
 
   // src/instruments/src/PrimaryFlightDisplay/components/FMA/FMA.tsx
   var FMA = (props) => {
-    const AT_Mode_ = props.vars.v_AT_Mode;
-    const AP_Status_ = props.vars.v_AP_Status;
-    const Lateral_Mode_ = props.vars.v_Lateral_Mode;
-    const Vertical_Mode_ = props.vars.v_Vertical_Mode;
-    const Armed_AT_Mode_ = props.vars.v_Armed_AT_Mode;
-    const AT_Status_ = props.vars.v_AT_Status;
-    const Armed_Lateral_Mode_ = props.vars.v_Armed_Lateral_Mode;
-    const Armed_Vertical_Mode_ = props.vars.v_Armed_Vertical_Mode;
-    const Selection_Source_ = props.vars.v_Selection_Source;
-    const [s_reverseVideo, setReverseVideo] = (0, import_react5.useState)(true);
+    const AtMode = props.vars.vAtMode;
+    const ApStatus = props.vars.vApStatus;
+    const LateralMode = props.vars.vLateralMode;
+    const VerticalMode = props.vars.vVerticalMode;
+    const ArmedAtMode = props.vars.vArmedAtMode;
+    const AtStatus = props.vars.vAtStatus;
+    const ArmedLateralMode = props.vars.vArmedLateralMode;
+    const ArmedVerticalMode = props.vars.vArmedVerticalMode;
+    const SelectionSource = props.vars.vSelectionSource;
+    const [sReverseVideo, setSReverseVideo] = (0, import_react5.useState)(true);
     (0, import_react5.useEffect)(() => {
       const intervalId = setInterval(() => {
-        setReverseVideo((prevValue) => !prevValue);
+        setSReverseVideo((prevValue) => !prevValue);
       }, 500);
-      return () => clearInterval(intervalId);
+      return () => {
+        clearInterval(intervalId);
+      };
     }, []);
     const GetAtModeBoxColor = () => {
-      if (AT_Mode_ == 13 /* AT_r_rv */) {
+      if (AtMode === 13 /* AT_r_rv */) {
         return {
-          bg: reverseVideo({ color: "red", backgroundColor: "white", reverse: s_reverseVideo }).backgroundColor,
-          color: reverseVideo({ color: "red", backgroundColor: "white", reverse: s_reverseVideo }).color
+          bg: reverseVideo({ color: "red", backgroundColor: "white", reverse: sReverseVideo }).backgroundColor,
+          color: reverseVideo({ color: "red", backgroundColor: "white", reverse: sReverseVideo }).color
         };
-      } else if (AT_Mode_ == 12 /* AT_g_rv */) {
+      } else if (AtMode === 12 /* AT_g_rv */) {
         return {
-          bg: reverseVideo({ color: "green", backgroundColor: "white", reverse: s_reverseVideo }).backgroundColor,
-          color: reverseVideo({ color: "green", backgroundColor: "white", reverse: s_reverseVideo }).color
+          bg: reverseVideo({ color: "green", backgroundColor: "white", reverse: sReverseVideo }).backgroundColor,
+          color: reverseVideo({ color: "green", backgroundColor: "white", reverse: sReverseVideo }).color
         };
       } else
-        return { bg: getStyleForATMode(AT_Mode_).backgroundColor, color: getStyleForATMode(AT_Mode_).color };
+        return { bg: getStyleForATMode(AtMode).backgroundColor, color: getStyleForATMode(AT_Mode_).color };
     };
     return /* @__PURE__ */ import_react5.default.createElement("div", { className: "fma-container", style: { left: props.x, top: props.y } }, /* @__PURE__ */ import_react5.default.createElement(
       FMAGrid,
       {
         AT_Mode_Box: {
           backgroundColor: GetAtModeBoxColor().bg,
-          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { ovrdFontColor: GetAtModeBoxColor().color, style: getStyleForATMode(AT_Mode_), mode: AT_Mode_ })
+          element: /* @__PURE__ */ import_react5.default.createElement(
+            GetStringForATMode,
+            {
+              ovrdFontColor: GetAtModeBoxColor().color,
+              style: getStyleForATMode(AtMode),
+              mode: AtMode
+            }
+          )
         },
         AP_Status_Box: {
-          backgroundColor: getStyleForATMode(AP_Status_).backgroundColor,
-          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(AP_Status_), mode: AP_Status_ })
+          backgroundColor: getStyleForATMode(ApStatus).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(ApStatus), mode: ApStatus })
         },
         AP_AT_Source_box: {
-          backgroundColor: getStyleForATMode(Selection_Source_).backgroundColor,
-          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(Selection_Source_), mode: Selection_Source_ })
+          backgroundColor: getStyleForATMode(SelectionSource).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(SelectionSource), mode: SelectionSource })
         },
         Lateral_Mode_Box: {
           backgroundColor: getStyleForATMode(Lateral_Mode_).backgroundColor,
@@ -23291,9 +23300,9 @@ class InstrumentLogic extends BaseInstrument {
           backgroundColor: getStyleForATMode(Armed_Vertical_Mode_).backgroundColor,
           element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(Armed_Vertical_Mode_), mode: Armed_Vertical_Mode_ })
         },
-        Selection_Source_Box: {
-          backgroundColor: getStyleForATMode(Selection_Source_).backgroundColor,
-          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(Selection_Source_), mode: Selection_Source_ })
+        SelectionSourceBox: {
+          backgroundColor: getStyleForATMode(SelectionSource).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(SelectionSource), mode: SelectionSource })
         }
       }
     ));
@@ -23319,7 +23328,7 @@ class InstrumentLogic extends BaseInstrument {
 
   // src/instruments/src/PrimaryFlightDisplay/components/FMA/FMA_Vars.tsx
   var FmaVars = () => {
-    const [v_AT_Mode] = useObjLocalVar("PFD_FMA_AT_Mode", "number");
+    const [vAtMode] = useObjLocalVar("PFD_FMA_AT_Mode", "number");
     const [v_AP_Status] = useObjLocalVar("PFD_FMA_AP_Status", "number");
     const [v_Lateral_Mode] = useObjLocalVar("PFD_FMA_Lateral_Mode", "number");
     const [v_Vertical_Mode] = useObjLocalVar("PFD_FMA_Vertical_Mode", "number");
@@ -23329,7 +23338,7 @@ class InstrumentLogic extends BaseInstrument {
     const [v_Armed_Vertical_Mode] = useObjLocalVar("PFD_FMA_Armed_Vertical_Mode", "number");
     const [v_Selection_Source] = useObjLocalVar("PFD_FMA_Selection_Source", "number");
     const vars = {
-      v_AT_Mode,
+      vAtMode,
       v_AP_Status,
       v_Lateral_Mode,
       v_Vertical_Mode,
@@ -23398,20 +23407,20 @@ class InstrumentLogic extends BaseInstrument {
       "path",
       {
         d: props.d,
-        fill: props.forceTransparent ? "transparent" : "black",
+        fill: props.forceTransparent !== null && props.forceTransparent === true ? "transparent" : "black",
         strokeWidth: props.StrokeWidth,
         stroke: props.fill,
-        strokeLinecap: props.forceEndCap ? "butt" : "round",
+        strokeLinecap: props.forceEndCap !== null && props.forceEndCap === true ? "butt" : "round",
         strokeLinejoin: "round"
       }
     ), /* @__PURE__ */ import_react7.default.createElement(
       "path",
       {
         d: props.d,
-        fill: props.fillTop2 ? props.fillTop2 : props.fillTop,
+        fill: props.fillTop2 !== null ? props.fillTop2 : props.fillTop,
         strokeWidth: props.strokeWidthTop,
         stroke: props.fillTop,
-        strokeLinecap: props.forceEndCap ? "butt" : "round",
+        strokeLinecap: props.forceEndCap !== null && props.forceEndCap === true ? "butt" : "round",
         strokeLinejoin: "round"
       }
     ));
@@ -23624,7 +23633,6 @@ class InstrumentLogic extends BaseInstrument {
         return false;
     };
     const getTranslation = () => {
-      const pitch = Number;
       if (props.pitch > 17) {
         return { negative: false, value: 17 };
       } else if (props.pitch < -17) {
@@ -23633,7 +23641,7 @@ class InstrumentLogic extends BaseInstrument {
         return { negative: false, value: props.pitch };
       }
     };
-    return /* @__PURE__ */ import_react14.default.createElement("g", { transform: `rotate(${props.bank}, 275, 255)` }, /* @__PURE__ */ import_react14.default.createElement("linearGradient", { id: "SkyGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "0%", "stop-color": "#020383" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "88%", "stop-color": "#020383" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "100%", "stop-color": "#1717cf" })), /* @__PURE__ */ import_react14.default.createElement("linearGradient", { id: "GroundGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "0%", "stop-color": "#674200" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "25%", "stop-color": "#352200" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "100%", "stop-color": "#352201" })), /* @__PURE__ */ import_react14.default.createElement("g", { transform: `translate(0,${getTranslation().value * 8.6})` }, /* @__PURE__ */ import_react14.default.createElement("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", fill: "url(#SkyGradiant)" }), /* @__PURE__ */ import_react14.default.createElement("rect", { x: "-2000", y: "254", width: "4600", height: "2205", fill: "url(#GroundGradiant)" }), isHorizonMarkerActive() && /* @__PURE__ */ import_react14.default.createElement("rect", { x: "0", y: "252", width: "600", height: "4", fill: "white", stroke: "black", strokeWidth: 1 })));
+    return /* @__PURE__ */ import_react14.default.createElement("g", { transform: `rotate(${props.bank}, 275, 255)` }, /* @__PURE__ */ import_react14.default.createElement("linearGradient", { id: "SkyGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "0%", stopColor: "#020383" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "88%", stopColor: "#020383" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "100%", stopColor: "#1717cf" })), /* @__PURE__ */ import_react14.default.createElement("linearGradient", { id: "GroundGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "0%", stopColor: "#674200" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "25%", stopColor: "#352200" }), /* @__PURE__ */ import_react14.default.createElement("stop", { offset: "100%", stopColor: "#352201" })), /* @__PURE__ */ import_react14.default.createElement("g", { transform: `translate(0,${getTranslation().value * 8.6})` }, /* @__PURE__ */ import_react14.default.createElement("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", fill: "url(#SkyGradiant)" }), /* @__PURE__ */ import_react14.default.createElement("rect", { x: "-2000", y: "254", width: "4600", height: "2205", fill: "url(#GroundGradiant)" }), isHorizonMarkerActive() && /* @__PURE__ */ import_react14.default.createElement("rect", { x: "0", y: "252", width: "600", height: "4", fill: "white", stroke: "black", strokeWidth: 1 })));
   };
 
   // src/instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/attitudeForeground.tsx
@@ -23894,7 +23902,6 @@ class InstrumentLogic extends BaseInstrument {
       });
     };
     const getTranslation = () => {
-      const pitch = Number;
       if (props.pitch > 17) {
         return { negative: false, value: 17 };
       } else if (props.pitch < -17) {

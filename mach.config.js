@@ -34,7 +34,7 @@ module.exports = {
   ]
 }
 
-const reactInstrument = (name, additionalImports) => {
+function reactInstrument(name, additionalImports) {
   return {
     name,
     index: `src/instruments/src/${name}/index.tsx`,

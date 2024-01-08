@@ -22914,12 +22914,9 @@ class InstrumentLogic extends BaseInstrument {
   // src/instruments/src/ElectronicFlightBag/index.tsx
   var import_react4 = __toESM(require_react());
 
-  // src/instruments/common/Hooks/simVars.tsx
-  var React2 = __toESM(require_react());
-  var import_react2 = __toESM(require_react());
-
-  // src/instruments/common/Hooks/hooks.tsx
-  var import_react = __toESM(require_react());
+  // src/instruments/common/Hooks/index.tsx
+  var import_react3 = __toESM(require_react());
+  var import_react_dom = __toESM(require_react_dom());
 
   // src/instruments/common/Hooks/defaults.tsx
   var reactMount = document.getElementById("MSFS_REACT_MOUNT");
@@ -22931,7 +22928,12 @@ class InstrumentLogic extends BaseInstrument {
     throw new Error("Could not find rootElement");
   };
 
+  // src/instruments/common/Hooks/simVars.tsx
+  var React2 = __toESM(require_react());
+  var import_react2 = __toESM(require_react());
+
   // src/instruments/common/Hooks/hooks.tsx
+  var import_react = __toESM(require_react());
   var useUpdate = (handler) => {
     const savedHandler = import_react.default.useRef(handler);
     import_react.default.useEffect(() => {
@@ -23078,37 +23080,15 @@ class InstrumentLogic extends BaseInstrument {
       children
     );
   };
-  var useObjLocalVar = (name, unit, maxStaleness = 0) => {
-    const value = useSimVarValue("L:OBJ_E170_" + name, unit, maxStaleness);
-    const setter = useSimVarSetter("L:OBJ_E170_" + name, unit);
-    return [value, setter];
-  };
-  var useSimVarValue = (name, unit, maxStaleness) => {
-    const contextValue = (0, import_react2.useContext)(context);
-    (0, import_react2.useEffect)(() => {
-      contextValue.register(name, unit, maxStaleness, false);
-      return () => {
-        contextValue.unregister(name, unit, maxStaleness, false);
-      };
-    }, [name, unit, maxStaleness]);
-    return contextValue.retrieve(name, unit);
-  };
-  var useSimVarSetter = (name, unit, proxy) => {
-    const contextValue = (0, import_react2.useContext)(context);
-    return (value) => contextValue.update(name, unit, value, proxy);
-  };
 
   // src/instruments/common/Hooks/index.tsx
-  var import_react3 = __toESM(require_react());
-  var import_react_dom = __toESM(require_react_dom());
   var render = (Slot) => {
     import_react_dom.default.render(/* @__PURE__ */ import_react3.default.createElement(SimVarProvider, null, Slot), getRenderTarget());
   };
 
   // src/instruments/src/ElectronicFlightBag/index.tsx
   var ElectronicFlightBag = () => {
-    const [powered, setPowered] = useObjLocalVar("B_EFBPOWERED", "bool", 50);
-    return /* @__PURE__ */ import_react4.default.createElement("div", null, "efb");
+    return /* @__PURE__ */ import_react4.default.createElement("div", null, /* @__PURE__ */ import_react4.default.createElement("a", { href: "https://github.com/Tacotakedown/Ouroboros-Jets-EFB" }, "efb repo, cope with this"));
   };
   render(/* @__PURE__ */ import_react4.default.createElement(ElectronicFlightBag, null));
 })();
