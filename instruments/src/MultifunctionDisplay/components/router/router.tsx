@@ -1,25 +1,67 @@
 import React from 'react'
 import { useObjLocalVar } from 'instruments/common/Hooks/simVars'
 
-const MfdRouter = (isCallingTop: boolean, topPageArg?: number, bottomPageArg?: number): JSX.Element => {
+const MfdRouter = (
+  isCallingTop: boolean,
+  system: boolean,
+  topPageArg?: number,
+  bottomPageArg?: number
+): JSX.Element => {
   const [topPage] = useObjLocalVar('MFD_ROUTER_TOP', 'Number')
   const [bottomPage] = useObjLocalVar('MFD_ROUTER_BOTTOM', 'Number')
+  const [systemPage] = useObjLocalVar('MFD_ROUTER_SYSTEM', 'Number')
 
   let returnPage: JSX.Element = <></>
-
   if (isCallingTop) {
-    switch (topPage) {
-      case 0:
-        returnPage = <div>MAP</div>
-        break
-      case 1:
-        returnPage = <div>PLAN</div>
-        break
-      case 2:
-        returnPage = <div>SYSTEM</div>
-        break
-      default:
-        returnPage = <></>
+    if (system) {
+      switch (systemPage) {
+        case 0:
+          returnPage = <div>STATUS</div>
+          break
+        case 1:
+          returnPage = <div>FLIGHT CTRL</div>
+          break
+        case 2:
+          returnPage = <div>HYDRAULICS</div>
+          break
+        case 3:
+          returnPage = <div>FUEL</div>
+          break
+        case 4:
+          returnPage = <div>ELECTRICAL</div>
+          break
+        case 5:
+          returnPage = <div>ECS</div>
+          break
+        case 6:
+          returnPage = <div>ANTI-ICE</div>
+          break
+        case 7:
+          returnPage = <div>ENGINE MAINT</div>
+          break
+        case 8:
+          returnPage = <div>MAINTENANCE</div>
+          break
+        case 9:
+          returnPage = <div>SYS CONFIG</div>
+          break
+        default:
+          returnPage = <></>
+      }
+    } else {
+      switch (topPage) {
+        case 0:
+          returnPage = <div>MAP</div>
+          break
+        case 1:
+          returnPage = <div>PLAN</div>
+          break
+        case 2:
+          returnPage = <div>SYSTEM</div>
+          break
+        default:
+          returnPage = <></>
+      }
     }
   } else {
     switch (bottomPage) {

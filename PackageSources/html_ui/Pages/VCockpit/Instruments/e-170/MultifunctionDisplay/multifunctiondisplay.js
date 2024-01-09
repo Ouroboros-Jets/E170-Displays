@@ -23147,9 +23147,6 @@ class InstrumentLogic extends BaseInstrument {
   // instruments/src/MultifunctionDisplay/components/mouse/mouse.tsx
   var import_react5 = __toESM(require_react());
 
-  // instruments/assets/svg/mouse.svg
-  var mouse_default = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyNS4yLjMsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCgkgdmlld0JveD0iMCAwIDEwODAgMTA4MCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTA4MCAxMDgwOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPg0KCS5zdDB7b3BhY2l0eTowLjgxO30NCgkuc3Qxe2ZpbGw6IzhDOEM4Qzt9DQoJLnN0MntkaXNwbGF5Om5vbmU7fQ0KCS5zdDN7ZGlzcGxheTppbmxpbmU7b3BhY2l0eTowLjIxO30NCgkuc3Q0e2ZpbGw6I0ZGRkZGRjt9DQo8L3N0eWxlPg0KPGcgaWQ9IkNhbWFkYV8zIj4NCjwvZz4NCjxnIGlkPSJDYW1hZGFfM19jw7NwaWEiIGNsYXNzPSJzdDAiPg0KCTxnIGlkPSJWRVJUSUNBTCI+DQoJCTxnPg0KCQkJPHBvbHlnb24gY2xhc3M9InN0MSIgcG9pbnRzPSI1NzAuNzksNDQwLjA2IDUwOS4yOCw0NDAuMDUgNDg1LjU2LDAgNTI4LjI4LDAgNTMxLjQ0LDU1LjA1IDU0OC40NCw1NS4wNSA1NTEuNDIsMCA1OTQuNDQsMC4wMSAJCQkNCgkJCQkiLz4NCgkJCTxwb2x5Z29uIGNsYXNzPSJzdDEiIHBvaW50cz0iNTA5LjIyLDYzOS45NCA1NzAuNzIsNjM5Ljk1IDU5NC40NCwxMDgwIDU1MS43MiwxMDgwIDU0OC41NiwxMDI0Ljk1IDUzMS41NiwxMDI0Ljk1IDUyOC41OCwxMDgwIA0KCQkJCTQ4NS41NiwxMDc5Ljk5IAkJCSIvPg0KCQk8L2c+DQoJPC9nPg0KCTxnIGlkPSJIT1JJWk9OVEFMIj4NCgkJPGc+DQoJCQk8cG9seWdvbiBjbGFzcz0ic3QxIiBwb2ludHM9IjYzOS45NCw1NzAuNzkgNjM5Ljk1LDUwOS4yOCAxMDgwLDQ4NS41NiAxMDgwLDUyOC4yOCAxMDI0Ljk1LDUzMS40NCAxMDI0Ljk1LDU0OC40NCAxMDgwLDU1MS40MiANCgkJCQkxMDc5Ljk5LDU5NC40NCAJCQkiLz4NCgkJCTxwb2x5Z29uIGNsYXNzPSJzdDEiIHBvaW50cz0iNDQwLjA2LDUwOS4yMiA0NDAuMDUsNTcwLjcyIDAsNTk0LjQ0IDAsNTUxLjcyIDU1LjA1LDU0OC41NiA1NS4wNSw1MzEuNTYgMCw1MjguNTggMC4wMSw0ODUuNTYgCQkJDQoJCQkJIi8+DQoJCTwvZz4NCgk8L2c+DQoJPGcgaWQ9IkNhbWFkYV8xMSI+DQoJPC9nPg0KCTxnIGlkPSJDYW1hZGFfMTAiPg0KCTwvZz4NCgk8ZyBpZD0iQ2FtYWRhXzkiPg0KCTwvZz4NCgk8ZyBpZD0iQ2FtYWRhXzgiPg0KCTwvZz4NCgk8ZyBpZD0iQ2FtYWRhXzciPg0KCTwvZz4NCgk8ZyBpZD0iQ2FtYWRhXzYiPg0KCTwvZz4NCjwvZz4NCjxnIGlkPSJDYW1hZGFfMSIgY2xhc3M9InN0MiI+DQoJPGcgaWQ9IkNhbWFkYV8yIiBjbGFzcz0ic3QzIj4NCgk8L2c+DQo8L2c+DQo8ZyBpZD0iSU5ORVJfV0hJVEVfTUFSS192ZXJ0X2Rvd24iPg0KCTxnIGlkPSJJTk5FUl9XSElURV9NQVJLIj4NCgk8L2c+DQoJPGcgaWQ9IklOTkVSX1dISVRFX01BUktfdmVydF9kb3duX2PDs3BpYSI+DQoJCTxnPg0KCQkJPHBhdGggY2xhc3M9InN0NCIgZD0iTTUzNC4zMyw5ODRsMTEuNDQsMGM4LjA4LTQ1LDE0Ljk0LTk0LjAzLDE5LjUzLTE0Ni42N2M2LjI1LTcxLjY2LDcuMjUtMTM3Ljc5LDUuMjUtMTk3LjA3aC02MQ0KCQkJCWMtMi4xMSw1OS4wNi0xLjIxLDEyNS4wOSw1LjA1LDE5Ni43NEM1MTkuMjEsODg5Ljg1LDUyNi4xNSw5MzguOTksNTM0LjMzLDk4NHoiLz4NCgkJCTxwYXRoIGNsYXNzPSJzdDQiIGQ9Ik01NDUuNyw5NS4xaC0xMS40NGMtOC4wOCw0NS0xNC45NCw5NC4wMy0xOS41MywxNDYuNjdjLTYuMjUsNzEuNjYtNy4yNSwxMzcuNzktNS4yNSwxOTcuMDdoNjENCgkJCQljMi4xMS01OS4wNiwxLjIxLTEyNS4wOS01LjA1LTE5Ni43NEM1NjAuODIsMTg5LjI2LDU1My44OCwxNDAuMTIsNTQ1LjcsOTUuMXoiLz4NCgkJCTxwYXRoIGNsYXNzPSJzdDQiIGQ9Ik05NS41Nyw1MzQuMzNsMCwxMS40NGM0NSw4LjA4LDk0LjAzLDE0Ljk0LDE0Ni42NywxOS41M2M3MS42Niw2LjI1LDEzNy43OSw3LjI1LDE5Ny4wNyw1LjI1bDAtNjENCgkJCQljLTU5LjA2LTIuMTEtMTI1LjA5LTEuMjEtMTk2Ljc0LDUuMDVDMTg5LjcyLDUxOS4yMSwxNDAuNTgsNTI2LjE1LDk1LjU3LDUzNC4zM3oiLz4NCgkJPC9nPg0KCTwvZz4NCgk8ZyBpZD0iSU5ORVJfV0hJVEVfTUFSS19jw7NwaWEiPg0KCQk8cGF0aCBjbGFzcz0ic3Q0IiBkPSJNOTg0LjQ2LDU0NS42N3YtMTEuNDRjLTQ1LTguMDgtOTQuMDMtMTQuOTQtMTQ2LjY3LTE5LjUzYy03MS42Ni02LjI1LTEzNy43OS03LjI1LTE5Ny4wNy01LjI1djYxDQoJCQljNTkuMDYsMi4xMSwxMjUuMDksMS4yMSwxOTYuNzQtNS4wNUM4OTAuMzEsNTYwLjc5LDkzOS40NSw1NTMuODUsOTg0LjQ2LDU0NS42N3oiLz4NCgk8L2c+DQo8L2c+DQo8L3N2Zz4=";
-
   // instruments/common/Hooks/getMousePosition.tsx
   var import_react4 = __toESM(require_react());
   var useMousePosition = () => {
@@ -23170,28 +23167,133 @@ class InstrumentLogic extends BaseInstrument {
   // instruments/src/MultifunctionDisplay/components/mouse/mouse.tsx
   var Mouse = () => {
     const { x, y } = useMousePosition();
-    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "mouse", style: { top: y - 25, left: x - 25 } }, /* @__PURE__ */ import_react5.default.createElement("img", { src: mouse_default, alt: "Mouse Cursor, This is broken if you see this" }));
+    const MouseIcon = (props) => {
+      return /* @__PURE__ */ import_react5.default.createElement(
+        "svg",
+        {
+          version: "1.1",
+          xmlns: "http://www.w3.org/2000/svg",
+          x: "0px",
+          y: "0px",
+          viewBox: "0 0 1080 1080",
+          fill: "transparent",
+          width: props.width
+        },
+        /* @__PURE__ */ import_react5.default.createElement("g", { opacity: 0.8 }, /* @__PURE__ */ import_react5.default.createElement(
+          "polygon",
+          {
+            fill: "#8c8c8c",
+            points: "570.79,440.06 509.28,440.05 485.56,0 528.28,0 531.44,55.05 548.44,55.05 551.42,0 594.44,0.01 			\r\n				"
+          }
+        ), /* @__PURE__ */ import_react5.default.createElement(
+          "polygon",
+          {
+            fill: "#8c8c8c",
+            points: "509.22,639.94 570.72,639.95 594.44,1080 551.72,1080 548.56,1024.95 531.56,1024.95 528.58,1080 \r\n				485.56,1079.99 			"
+          }
+        ), /* @__PURE__ */ import_react5.default.createElement(
+          "polygon",
+          {
+            fill: "#8c8c8c",
+            points: "639.94,570.79 639.95,509.28 1080,485.56 1080,528.28 1024.95,531.44 1024.95,548.44 1080,551.42 \r\n				1079.99,594.44 			"
+          }
+        ), /* @__PURE__ */ import_react5.default.createElement(
+          "polygon",
+          {
+            fill: "#8c8c8c",
+            points: "440.06,509.22 440.05,570.72 0,594.44 0,551.72 55.05,548.56 55.05,531.56 0,528.58 0.01,485.56 			\r\n				"
+          }
+        )),
+        /* @__PURE__ */ import_react5.default.createElement(
+          "path",
+          {
+            fill: "white",
+            d: "M534.33,984l11.44,0c8.08-45,14.94-94.03,19.53-146.67c6.25-71.66,7.25-137.79,5.25-197.07h-61\r\n				c-2.11,59.06-1.21,125.09,5.05,196.74C519.21,889.85,526.15,938.99,534.33,984z"
+          }
+        ),
+        /* @__PURE__ */ import_react5.default.createElement(
+          "path",
+          {
+            fill: "white",
+            d: "M545.7,95.1h-11.44c-8.08,45-14.94,94.03-19.53,146.67c-6.25,71.66-7.25,137.79-5.25,197.07h61\r\n				c2.11-59.06,1.21-125.09-5.05-196.74C560.82,189.26,553.88,140.12,545.7,95.1z"
+          }
+        ),
+        /* @__PURE__ */ import_react5.default.createElement(
+          "path",
+          {
+            fill: "white",
+            d: "M95.57,534.33l0,11.44c45,8.08,94.03,14.94,146.67,19.53c71.66,6.25,137.79,7.25,197.07,5.25l0-61\r\n				c-59.06-2.11-125.09-1.21-196.74,5.05C189.72,519.21,140.58,526.15,95.57,534.33z"
+          }
+        ),
+        /* @__PURE__ */ import_react5.default.createElement(
+          "path",
+          {
+            fill: "white",
+            d: "M984.46,545.67v-11.44c-45-8.08-94.03-14.94-146.67-19.53c-71.66-6.25-137.79-7.25-197.07-5.25v61\r\n			c59.06,2.11,125.09,1.21,196.74-5.05C890.31,560.79,939.45,553.85,984.46,545.67z"
+          }
+        )
+      );
+    };
+    return /* @__PURE__ */ import_react5.default.createElement("div", { className: "mouse", style: { top: y - 25, left: x - 25 } }, /* @__PURE__ */ import_react5.default.createElement(MouseIcon, { width: 50 }));
   };
 
   // instruments/src/MultifunctionDisplay/components/router/router.tsx
   var import_react6 = __toESM(require_react());
-  var MfdRouter = (isCallingTop, topPageArg, bottomPageArg) => {
+  var MfdRouter = (isCallingTop, system, topPageArg, bottomPageArg) => {
     const [topPage] = useObjLocalVar("MFD_ROUTER_TOP", "Number");
     const [bottomPage] = useObjLocalVar("MFD_ROUTER_BOTTOM", "Number");
+    const [systemPage] = useObjLocalVar("MFD_ROUTER_SYSTEM", "Number");
     let returnPage = /* @__PURE__ */ import_react6.default.createElement(import_react6.default.Fragment, null);
     if (isCallingTop) {
-      switch (topPage) {
-        case 0:
-          returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "MAP");
-          break;
-        case 1:
-          returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "PLAN");
-          break;
-        case 2:
-          returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "SYSTEM");
-          break;
-        default:
-          returnPage = /* @__PURE__ */ import_react6.default.createElement(import_react6.default.Fragment, null);
+      if (system) {
+        switch (systemPage) {
+          case 0:
+            returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "STATUS");
+            break;
+          case 1:
+            returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "FLIGHT CTRL");
+            break;
+          case 2:
+            returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "HYDRAULICS");
+            break;
+          case 3:
+            returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "FUEL");
+            break;
+          case 4:
+            returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "ELECTRICAL");
+            break;
+          case 5:
+            returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "ECS");
+            break;
+          case 6:
+            returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "ANTI-ICE");
+            break;
+          case 7:
+            returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "ENGINE MAINT");
+            break;
+          case 8:
+            returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "MAINTENANCE");
+            break;
+          case 9:
+            returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "SYS CONFIG");
+            break;
+          default:
+            returnPage = /* @__PURE__ */ import_react6.default.createElement(import_react6.default.Fragment, null);
+        }
+      } else {
+        switch (topPage) {
+          case 0:
+            returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "MAP");
+            break;
+          case 1:
+            returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "PLAN");
+            break;
+          case 2:
+            returnPage = /* @__PURE__ */ import_react6.default.createElement("div", null, "SYSTEM");
+            break;
+          default:
+            returnPage = /* @__PURE__ */ import_react6.default.createElement(import_react6.default.Fragment, null);
+        }
       }
     } else {
       switch (bottomPage) {
@@ -23228,38 +23330,187 @@ class InstrumentLogic extends BaseInstrument {
     const [topPage, setTopPage] = useObjLocalVar("MFD_ROUTER_TOP", "Number");
     const [bottomPage, setBottomPage] = useObjLocalVar("MFD_ROUTER_BOTTOM", "Number");
     const handleButtonClick = (to) => {
-      if (props.isTop) {
+      if (props.isTop !== null && props.isTop !== void 0 && props.isTop) {
         setTopPage(to);
-        return;
+        props.setShowSystems(false);
       } else {
         setBottomPage(to);
-        return;
       }
     };
-    return /* @__PURE__ */ import_react7.default.createElement("div", { onClick: () => handleButtonClick(props.routeTo), className: "button-container" }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "button-center" }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "button-children" }, props.text)), /* @__PURE__ */ import_react7.default.createElement("div", { className: "button-background" }));
+    const handleSystemButtonClick = () => {
+      if (!props.showSystems) {
+        props.setShowSystems(true);
+      } else {
+        props.setSystemMenu(!props.systemMenu);
+      }
+    };
+    return /* @__PURE__ */ import_react7.default.createElement(
+      "div",
+      {
+        onClick: () => {
+          props.isSystemButton ? handleSystemButtonClick() : handleButtonClick(props.routeTo);
+        },
+        className: "button-container"
+      },
+      /* @__PURE__ */ import_react7.default.createElement("div", { className: "button-center" }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "button-children" }, props.text)),
+      /* @__PURE__ */ import_react7.default.createElement("div", { className: "button-background" })
+    );
   };
 
   // instruments/src/MultifunctionDisplay/components/buttonBars/systemButton/systemButton.tsx
   var import_react8 = __toESM(require_react());
+  var SystemButton = (props) => {
+    const [systemPage, setSystemPage] = useObjLocalVar("MFD_ROUTER_SYSTEM", "Number");
+    const handleSystemButtonClick = (route) => {
+      setSystemPage(route);
+    };
+    let isActive = false;
+    if (systemPage === props.routeTo) {
+      isActive = true;
+    } else {
+      isActive = false;
+    }
+    return /* @__PURE__ */ import_react8.default.createElement("div", null, /* @__PURE__ */ import_react8.default.createElement(
+      "div",
+      {
+        className: `system-button ${isActive ? "active" : ""}`,
+        onClick: () => {
+          handleSystemButtonClick(props.routeTo);
+        }
+      },
+      props.text
+    ));
+  };
 
   // instruments/src/MultifunctionDisplay/components/buttonBars/buttonBars.tsx
+  var SystemButtonBar = (props) => {
+    if (!props.isShown) {
+      return /* @__PURE__ */ import_react9.default.createElement(import_react9.default.Fragment, null);
+    } else {
+      return /* @__PURE__ */ import_react9.default.createElement("div", { className: `system-button-bar-container ${props.isShown ? "shown" : "hidden"}` }, /* @__PURE__ */ import_react9.default.createElement(SystemButton, { text: "Status", routeTo: 0 }), /* @__PURE__ */ import_react9.default.createElement(SystemButton, { text: " Flight Ctrl", routeTo: 1 }), /* @__PURE__ */ import_react9.default.createElement(SystemButton, { text: "Hydraulics", routeTo: 2 }), /* @__PURE__ */ import_react9.default.createElement(SystemButton, { text: "Fuel", routeTo: 3 }), /* @__PURE__ */ import_react9.default.createElement(SystemButton, { text: "Electrical", routeTo: 4 }), /* @__PURE__ */ import_react9.default.createElement(SystemButton, { text: "ECS", routeTo: 5 }), /* @__PURE__ */ import_react9.default.createElement(SystemButton, { text: "Anti-Ice", routeTo: 6 }), /* @__PURE__ */ import_react9.default.createElement(SystemButton, { text: "Engine Maint", disabled: true, routeTo: 7 }), /* @__PURE__ */ import_react9.default.createElement(SystemButton, { text: "Maintenance", routeTo: 8 }), /* @__PURE__ */ import_react9.default.createElement(SystemButton, { text: "Sys Config", routeTo: 9 }));
+    }
+  };
   var UpperButtonBar = (props) => {
-    return /* @__PURE__ */ import_react9.default.createElement("div", { className: "upper-button-bar-container" }, /* @__PURE__ */ import_react9.default.createElement(ButtonBarButton, { text: "Map", isTop: true, routeTo: 0 }), /* @__PURE__ */ import_react9.default.createElement(ButtonBarButton, { text: "Plan", isTop: true, routeTo: 1 }), /* @__PURE__ */ import_react9.default.createElement(ButtonBarButton, { isSystemButton: true, text: "Systems", isTop: true, routeTo: 2 }));
+    return /* @__PURE__ */ import_react9.default.createElement("div", { className: "upper-button-bar-container" }, /* @__PURE__ */ import_react9.default.createElement(
+      ButtonBarButton,
+      {
+        text: "Map",
+        isSystemButton: false,
+        systemMenu: false,
+        showSystems: props.showSystems,
+        setShowSystems: props.setShowSystems,
+        setSystemMenu: () => {
+        },
+        isTop: true,
+        routeTo: 0
+      }
+    ), /* @__PURE__ */ import_react9.default.createElement(
+      ButtonBarButton,
+      {
+        text: "Plan",
+        isSystemButton: false,
+        systemMenu: false,
+        setSystemMenu: () => {
+        },
+        showSystems: props.showSystems,
+        setShowSystems: props.setShowSystems,
+        isTop: true,
+        routeTo: 1
+      }
+    ), /* @__PURE__ */ import_react9.default.createElement(
+      ButtonBarButton,
+      {
+        text: "Systems",
+        isSystemButton: true,
+        systemMenu: props.systemMenu,
+        setSystemMenu: props.setSystemMenu,
+        showSystems: props.showSystems,
+        setShowSystems: props.setShowSystems,
+        isTop: true,
+        routeTo: 2
+      }
+    ));
   };
   var LowerButtonBar = () => {
-    return /* @__PURE__ */ import_react9.default.createElement("div", { className: "lower-button-bar-container" }, /* @__PURE__ */ import_react9.default.createElement(ButtonBarButton, { text: "TCAS", routeTo: 0 }), /* @__PURE__ */ import_react9.default.createElement(ButtonBarButton, { text: "Weather", routeTo: 1 }), /* @__PURE__ */ import_react9.default.createElement(ButtonBarButton, { text: "Checklist", routeTo: 2 }));
+    return /* @__PURE__ */ import_react9.default.createElement("div", { className: "lower-button-bar-container" }, /* @__PURE__ */ import_react9.default.createElement(
+      ButtonBarButton,
+      {
+        text: "TCAS",
+        isSystemButton: false,
+        systemMenu: false,
+        setSystemMenu: () => {
+        },
+        showSystems: false,
+        setShowSystems: () => {
+        },
+        isTop: false,
+        routeTo: 0
+      }
+    ), /* @__PURE__ */ import_react9.default.createElement(
+      ButtonBarButton,
+      {
+        text: "Weather",
+        isSystemButton: false,
+        systemMenu: false,
+        setSystemMenu: () => {
+        },
+        showSystems: false,
+        setShowSystems: () => {
+        },
+        isTop: false,
+        routeTo: 1
+      }
+    ), /* @__PURE__ */ import_react9.default.createElement(
+      ButtonBarButton,
+      {
+        text: "Checklist",
+        isSystemButton: false,
+        systemMenu: false,
+        setSystemMenu: () => {
+        },
+        showSystems: false,
+        setShowSystems: () => {
+        },
+        isTop: false,
+        routeTo: 2
+      }
+    ));
   };
 
   // instruments/src/MultifunctionDisplay/components/displayProvider/displayProvider.tsx
   var DisplayProvider = (props) => {
-    let resizePerportion = props.porportionSize;
-    return /* @__PURE__ */ import_react10.default.createElement("div", { className: "MFD-container" }, /* @__PURE__ */ import_react10.default.createElement(UpperButtonBar, { currentPage: getTopPage() }), /* @__PURE__ */ import_react10.default.createElement("div", { className: "upper-content-container" }, props.topPage), /* @__PURE__ */ import_react10.default.createElement("div", { className: "center-divider" }), /* @__PURE__ */ import_react10.default.createElement("div", { className: "lower-content-container" }, props.bottomPage), /* @__PURE__ */ import_react10.default.createElement(LowerButtonBar, null));
+    const [systemMenu, setSystemMenu] = import_react10.default.useState(false);
+    return /* @__PURE__ */ import_react10.default.createElement("div", { className: "MFD-container" }, /* @__PURE__ */ import_react10.default.createElement(
+      UpperButtonBar,
+      {
+        setShowSystems: props.setShowSystems,
+        showSystems: props.showSystems,
+        setSystemMenu,
+        systemMenu,
+        currentPage: getTopPage()
+      }
+    ), /* @__PURE__ */ import_react10.default.createElement("div", { className: "upper-content-container" }, /* @__PURE__ */ import_react10.default.createElement(SystemButtonBar, { isShown: systemMenu }), " ", props.topPage), /* @__PURE__ */ import_react10.default.createElement("div", { className: "center-divider" }), /* @__PURE__ */ import_react10.default.createElement("div", { className: "lower-content-container" }, props.bottomPage), /* @__PURE__ */ import_react10.default.createElement(LowerButtonBar, null));
   };
   var displayProvider_default = DisplayProvider;
 
   // instruments/src/MultifunctionDisplay/index.tsx
   var MultifunctionDisplay = () => {
-    return /* @__PURE__ */ import_react11.default.createElement("div", null, /* @__PURE__ */ import_react11.default.createElement(Mouse, null), /* @__PURE__ */ import_react11.default.createElement(displayProvider_default, { porportionSize: 0, topPage: router_default(true), bottomPage: router_default(false) }));
+    const [isSystem, setIsSystem] = import_react11.default.useState(false);
+    const [systemMenu, setSystemMenu] = import_react11.default.useState(false);
+    const [showSystems, setShowSystems] = import_react11.default.useState(false);
+    return /* @__PURE__ */ import_react11.default.createElement("div", null, /* @__PURE__ */ import_react11.default.createElement(Mouse, null), /* @__PURE__ */ import_react11.default.createElement(
+      displayProvider_default,
+      {
+        systemMenu,
+        setSystemMenu,
+        showSystems,
+        setShowSystems,
+        porportionSize: 0,
+        topPage: router_default(true, showSystems),
+        setIsSystem,
+        bottomPage: router_default(false, false)
+      }
+    ));
   };
   render(/* @__PURE__ */ import_react11.default.createElement(MultifunctionDisplay, null));
 })();

@@ -4,7 +4,7 @@
     "name": "OBJ_E170_MFD_ROUTER_TOP",
     "index": 0,
     "unit": "Number",
-    "value": 0.0,
+    "value": 1.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -99,7 +99,7 @@
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 50000.0
+      "max": 250.0
     },
     "pinned": null
   },
@@ -215,10 +215,10 @@
     "value": -3.0,
     "control": {
       "type": "Slider",
-      "min": -90.0,
-      "max": 90.0
+      "min": 0.0,
+      "max": 250.0
     },
-    "pinned": true
+    "pinned": null
   },
   {
     "type": "A",
@@ -228,10 +228,10 @@
     "value": -28.0,
     "control": {
       "type": "Slider",
-      "min": -90.0,
-      "max": 90.0
+      "min": 0.0,
+      "max": 250.0
     },
-    "pinned": true
+    "pinned": null
   },
   {
     "type": "L",
@@ -512,6 +512,19 @@
     "index": 0,
     "unit": "number",
     "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_MFD_ROUTER_SYSTEM",
+    "index": 0,
+    "unit": "Number",
+    "value": 7.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

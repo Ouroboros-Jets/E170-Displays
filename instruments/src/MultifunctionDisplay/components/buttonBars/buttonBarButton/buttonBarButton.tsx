@@ -3,10 +3,14 @@ import '../buttonBars.scss'
 import { useObjLocalVar } from 'instruments/common/Hooks/simVars'
 
 type T_ButtonBarButtonProps = {
-  isSystemButton?: boolean
+  isSystemButton: boolean
   text: string
-  isTop?: boolean
+  isTop: boolean
   routeTo: number
+  setSystemMenu: React.Dispatch<React.SetStateAction<boolean>>
+  systemMenu: boolean
+  setShowSystems: React.Dispatch<React.SetStateAction<boolean>>
+  showSystems: boolean
 }
 
 export const ButtonBarButton: React.FC<T_ButtonBarButtonProps> = (props: T_ButtonBarButtonProps): JSX.Element => {
@@ -15,15 +19,24 @@ export const ButtonBarButton: React.FC<T_ButtonBarButtonProps> = (props: T_Butto
   const handleButtonClick = (to: number): void => {
     if (props.isTop !== null && props.isTop !== undefined && props.isTop) {
       setTopPage(to)
+      props.setShowSystems(false)
     } else {
       setBottomPage(to)
+    }
+  }
+
+  const handleSystemButtonClick = (): void => {
+    if (!props.showSystems) {
+      props.setShowSystems(true)
+    } else {
+      props.setSystemMenu(!props.systemMenu)
     }
   }
 
   return (
     <div
       onClick={() => {
-        handleButtonClick(props.routeTo)
+        props.isSystemButton ? handleSystemButtonClick() : handleButtonClick(props.routeTo)
       }}
       className="button-container"
     >

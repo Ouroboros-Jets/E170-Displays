@@ -23221,7 +23221,11 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/common/util/reverseVideo.ts
-  var reverseVideo = ({ color, backgroundColor, reverse }) => {
+  var reverseVideo = ({
+    color,
+    backgroundColor,
+    reverse
+  }) => {
     if (reverse) {
       return {
         color: backgroundColor,

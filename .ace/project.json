@@ -1,7 +1,7 @@
 {
   "name": "Ouroboros E-170/175",
   "paths": {
-    "instruments": "src\\instruments\\src",
+    "instruments": "instruments\\src",
     "bundles": "bundles",
     "html_ui": "PackageSources\\html_ui"
   },
