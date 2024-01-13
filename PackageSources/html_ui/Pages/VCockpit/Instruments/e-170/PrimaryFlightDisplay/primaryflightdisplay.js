@@ -1046,7 +1046,7 @@ class InstrumentLogic extends BaseInstrument {
             }
             return dispatcher.useContext(Context);
           }
-          function useState3(initialState) {
+          function useState5(initialState) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useState(initialState);
           }
@@ -1058,7 +1058,7 @@ class InstrumentLogic extends BaseInstrument {
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect3(create, deps) {
+          function useEffect5(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1838,7 +1838,7 @@ class InstrumentLogic extends BaseInstrument {
           exports.useContext = useContext2;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect3;
+          exports.useEffect = useEffect5;
           exports.useId = useId;
           exports.useImperativeHandle = useImperativeHandle;
           exports.useInsertionEffect = useInsertionEffect;
@@ -1846,7 +1846,7 @@ class InstrumentLogic extends BaseInstrument {
           exports.useMemo = useMemo;
           exports.useReducer = useReducer;
           exports.useRef = useRef2;
-          exports.useState = useState3;
+          exports.useState = useState5;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
           exports.version = ReactVersion;
@@ -2342,9 +2342,9 @@ class InstrumentLogic extends BaseInstrument {
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React20 = require_react();
+          var React34 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React20.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React34.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -3865,7 +3865,7 @@ class InstrumentLogic extends BaseInstrument {
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React20.Children.forEach(props.children, function(child) {
+                  React34.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -12026,7 +12026,7 @@ class InstrumentLogic extends BaseInstrument {
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React20.Component().refs;
+          var emptyRefsObject = new React34.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -22943,7 +22943,7 @@ class InstrumentLogic extends BaseInstrument {
   });
 
   // instruments/src/PrimaryFlightDisplay/index.tsx
-  var import_react19 = __toESM(require_react());
+  var import_react34 = __toESM(require_react());
 
   // instruments/common/Hooks/index.tsx
   var import_react3 = __toESM(require_react());
@@ -23270,7 +23270,7 @@ class InstrumentLogic extends BaseInstrument {
           color: reverseVideo({ color: "green", backgroundColor: "white", reverse: sReverseVideo }).color
         };
       } else
-        return { bg: getStyleForATMode(AtMode).backgroundColor, color: getStyleForATMode(AT_Mode_).color };
+        return { bg: getStyleForATMode(AtMode).backgroundColor, color: getStyleForATMode(AtMode).color };
     };
     return /* @__PURE__ */ import_react5.default.createElement("div", { className: "fma-container", style: { left: props.x, top: props.y } }, /* @__PURE__ */ import_react5.default.createElement(
       FMAGrid,
@@ -23295,28 +23295,28 @@ class InstrumentLogic extends BaseInstrument {
           element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(SelectionSource), mode: SelectionSource })
         },
         Lateral_Mode_Box: {
-          backgroundColor: getStyleForATMode(Lateral_Mode_).backgroundColor,
-          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(Lateral_Mode_), mode: Lateral_Mode_ })
+          backgroundColor: getStyleForATMode(LateralMode).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(LateralMode), mode: LateralMode })
         },
         Vertical_Mode_Box: {
-          backgroundColor: getStyleForATMode(Vertical_Mode_).backgroundColor,
-          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(Vertical_Mode_), mode: Vertical_Mode_ })
+          backgroundColor: getStyleForATMode(VerticalMode).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(VerticalMode), mode: VerticalMode })
         },
         Armed_AT_Mode_Box: {
-          backgroundColor: getStyleForATMode(Armed_AT_Mode_).backgroundColor,
-          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(Armed_AT_Mode_), mode: Armed_AT_Mode_ })
+          backgroundColor: getStyleForATMode(ArmedAtMode).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(ArmedAtMode), mode: ArmedAtMode })
         },
         AT_Status_Box: {
-          backgroundColor: getStyleForATMode(AT_Status_).backgroundColor,
-          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(AT_Status_), mode: AT_Status_ })
+          backgroundColor: getStyleForATMode(AtStatus).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(AtStatus), mode: AtStatus })
         },
         Armed_Lateral_Mode_Box: {
-          backgroundColor: getStyleForATMode(Armed_Lateral_Mode_).backgroundColor,
-          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(Armed_Lateral_Mode_), mode: Armed_Lateral_Mode_ })
+          backgroundColor: getStyleForATMode(ArmedLateralMode).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(ArmedLateralMode), mode: ArmedLateralMode })
         },
         Armed_Vertical_Mode_Box: {
-          backgroundColor: getStyleForATMode(Armed_Vertical_Mode_).backgroundColor,
-          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(Armed_Vertical_Mode_), mode: Armed_Vertical_Mode_ })
+          backgroundColor: getStyleForATMode(ArmedVerticalMode).backgroundColor,
+          element: /* @__PURE__ */ import_react5.default.createElement(GetStringForATMode, { style: getStyleForATMode(ArmedVerticalMode), mode: ArmedVerticalMode })
         },
         SelectionSourceBox: {
           backgroundColor: getStyleForATMode(SelectionSource).backgroundColor,
@@ -23979,11 +23979,823 @@ class InstrumentLogic extends BaseInstrument {
     return /* @__PURE__ */ import_react18.default.createElement("div", null, /* @__PURE__ */ import_react18.default.createElement("div", { className: "top-component" }, /* @__PURE__ */ import_react18.default.createElement(AttitudeDisplay, null), /* @__PURE__ */ import_react18.default.createElement(FMA, { x: 0, y: 0, vars: FmaVars() }), /* @__PURE__ */ import_react18.default.createElement(Airspeed, null), /* @__PURE__ */ import_react18.default.createElement(Altitude, null)), /* @__PURE__ */ import_react18.default.createElement("div", { className: "bottom-component" }, "bottom"));
   };
 
-  // instruments/src/PrimaryFlightDisplay/index.tsx
-  var PrimaryFlightDisplay = () => {
-    return /* @__PURE__ */ import_react19.default.createElement("div", { id: "PFD-ROOT" }, /* @__PURE__ */ import_react19.default.createElement(PFDProvider, null));
+  // instruments/common/Reversionary/Reversionary.ts
+  var getDisplayState = (display, state) => {
+    const PfdIndex = 0;
+    const Pfd2Index = 4;
+    const MfdIndex = 1;
+    const Mfd2Index = 3;
+    const EicasIndex = 2;
+    switch (display) {
+      case "PFD":
+        return state[PfdIndex];
+      case "PFD2":
+        return state[Pfd2Index];
+      case "MFD":
+        return state[MfdIndex];
+      case "MFD2":
+        return state[Mfd2Index];
+      case "EICAS":
+        return state[EicasIndex];
+      default:
+        console.error("failed to get state of selected display");
+        return false;
+    }
   };
-  render(/* @__PURE__ */ import_react19.default.createElement(PrimaryFlightDisplay, null));
+  var cDisplayFaulureState = [false, false, true, false, false];
+  var AutoReversionary = (state) => {
+    const displayFaulureState = state;
+    const pfdState = getDisplayState("PFD", displayFaulureState);
+    const pfd2State = getDisplayState("PFD2", displayFaulureState);
+    const mfdState = getDisplayState("MFD", displayFaulureState);
+    const mfd2State = getDisplayState("MFD2", displayFaulureState);
+    const eicasState = getDisplayState("EICAS", displayFaulureState);
+    const rDisplayTypesDefault = ["PFD", "MFD", "EICAS", "MFD2", "PFD2"];
+    if (pfdState && pfd2State && eicasState) {
+      return ["FAILED", "PFD", "FAILED", "EICAS", "FAILED"];
+    } else if (pfdState && pfd2State) {
+      return ["FAILED", "PFD", "EICAS", "PFD", "FAILED"];
+    } else if (mfdState && mfd2State) {
+      return ["PFD", "FAILED", "EICAS", "FAILED", "PFD2"];
+    } else if (pfdState && eicasState) {
+      return ["FAILED", "PFD", "FAILED", "EICAS", "PFD2"];
+    } else if (pfd2State && eicasState) {
+      return ["PFD", "EICAS", "FAILED", "PFD2", "FAILED"];
+    } else if (eicasState) {
+      return ["PFD", "EICAS", "FAILED", "EICAS", "PFD2"];
+    } else if (pfdState) {
+      return ["FAILED", "PFD", "EICAS", "MFD2", "PFD2"];
+    } else if (pfd2State) {
+      return ["PFD", "MFD", "EICAS", "PFD2", "FAILED"];
+    } else if (mfdState) {
+      return ["PFD", "FAILED", "EICAS", "MFD2", "PFD2"];
+    } else if (mfd2State) {
+      return ["PFD", "MFD", "EICAS", "FAILED", "PFD2"];
+    } else
+      return rDisplayTypesDefault;
+  };
+
+  // instruments/src/MultifunctionDisplay/index.tsx
+  var import_react33 = __toESM(require_react());
+
+  // instruments/src/MultifunctionDisplay/components/mouse/mouse.tsx
+  var import_react20 = __toESM(require_react());
+
+  // instruments/common/Hooks/getMousePosition.tsx
+  var import_react19 = __toESM(require_react());
+  var useMousePosition = () => {
+    const [mousePosition, setMousePosition] = (0, import_react19.useState)({ x: 0, y: 0 });
+    (0, import_react19.useEffect)(() => {
+      const mouseMoveHandler = (event) => {
+        const { clientX, clientY } = event;
+        setMousePosition({ x: clientX, y: clientY });
+      };
+      document.addEventListener("mousemove", mouseMoveHandler);
+      return () => {
+        document.removeEventListener("mousemove", mouseMoveHandler);
+      };
+    }, []);
+    return mousePosition;
+  };
+
+  // instruments/src/MultifunctionDisplay/components/mouse/mouse.tsx
+  var Mouse = () => {
+    const { x, y } = useMousePosition();
+    const MouseIcon = (props) => {
+      return /* @__PURE__ */ import_react20.default.createElement(
+        "svg",
+        {
+          version: "1.1",
+          xmlns: "http://www.w3.org/2000/svg",
+          x: "0px",
+          y: "0px",
+          viewBox: "0 0 1080 1080",
+          fill: "transparent",
+          width: props.width
+        },
+        /* @__PURE__ */ import_react20.default.createElement("g", { opacity: 0.8 }, /* @__PURE__ */ import_react20.default.createElement(
+          "polygon",
+          {
+            fill: "#8c8c8c",
+            points: "570.79,440.06 509.28,440.05 485.56,0 528.28,0 531.44,55.05 548.44,55.05 551.42,0 594.44,0.01 			\r\n				"
+          }
+        ), /* @__PURE__ */ import_react20.default.createElement(
+          "polygon",
+          {
+            fill: "#8c8c8c",
+            points: "509.22,639.94 570.72,639.95 594.44,1080 551.72,1080 548.56,1024.95 531.56,1024.95 528.58,1080 \r\n				485.56,1079.99 			"
+          }
+        ), /* @__PURE__ */ import_react20.default.createElement(
+          "polygon",
+          {
+            fill: "#8c8c8c",
+            points: "639.94,570.79 639.95,509.28 1080,485.56 1080,528.28 1024.95,531.44 1024.95,548.44 1080,551.42 \r\n				1079.99,594.44 			"
+          }
+        ), /* @__PURE__ */ import_react20.default.createElement(
+          "polygon",
+          {
+            fill: "#8c8c8c",
+            points: "440.06,509.22 440.05,570.72 0,594.44 0,551.72 55.05,548.56 55.05,531.56 0,528.58 0.01,485.56 			\r\n				"
+          }
+        )),
+        /* @__PURE__ */ import_react20.default.createElement(
+          "path",
+          {
+            fill: "white",
+            d: "M534.33,984l11.44,0c8.08-45,14.94-94.03,19.53-146.67c6.25-71.66,7.25-137.79,5.25-197.07h-61\r\n				c-2.11,59.06-1.21,125.09,5.05,196.74C519.21,889.85,526.15,938.99,534.33,984z"
+          }
+        ),
+        /* @__PURE__ */ import_react20.default.createElement(
+          "path",
+          {
+            fill: "white",
+            d: "M545.7,95.1h-11.44c-8.08,45-14.94,94.03-19.53,146.67c-6.25,71.66-7.25,137.79-5.25,197.07h61\r\n				c2.11-59.06,1.21-125.09-5.05-196.74C560.82,189.26,553.88,140.12,545.7,95.1z"
+          }
+        ),
+        /* @__PURE__ */ import_react20.default.createElement(
+          "path",
+          {
+            fill: "white",
+            d: "M95.57,534.33l0,11.44c45,8.08,94.03,14.94,146.67,19.53c71.66,6.25,137.79,7.25,197.07,5.25l0-61\r\n				c-59.06-2.11-125.09-1.21-196.74,5.05C189.72,519.21,140.58,526.15,95.57,534.33z"
+          }
+        ),
+        /* @__PURE__ */ import_react20.default.createElement(
+          "path",
+          {
+            fill: "white",
+            d: "M984.46,545.67v-11.44c-45-8.08-94.03-14.94-146.67-19.53c-71.66-6.25-137.79-7.25-197.07-5.25v61\r\n			c59.06,2.11,125.09,1.21,196.74-5.05C890.31,560.79,939.45,553.85,984.46,545.67z"
+          }
+        )
+      );
+    };
+    return /* @__PURE__ */ import_react20.default.createElement("div", { className: "mouse", style: { top: y - 25, left: x - 25 } }, /* @__PURE__ */ import_react20.default.createElement(MouseIcon, { width: 50 }));
+  };
+
+  // instruments/src/MultifunctionDisplay/components/router/router.tsx
+  var import_react21 = __toESM(require_react());
+  var MfdRouter = (isCallingTop, system, topPageArg, bottomPageArg) => {
+    const [topPage] = useObjLocalVar("MFD_ROUTER_TOP", "Number");
+    const [bottomPage] = useObjLocalVar("MFD_ROUTER_BOTTOM", "Number");
+    const [systemPage] = useObjLocalVar("MFD_ROUTER_SYSTEM", "Number");
+    let returnPage = /* @__PURE__ */ import_react21.default.createElement(import_react21.default.Fragment, null);
+    if (isCallingTop) {
+      if (system) {
+        switch (systemPage) {
+          case 0:
+            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "STATUS");
+            break;
+          case 1:
+            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "FLIGHT CTRL");
+            break;
+          case 2:
+            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "HYDRAULICS");
+            break;
+          case 3:
+            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "FUEL");
+            break;
+          case 4:
+            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "ELECTRICAL");
+            break;
+          case 5:
+            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "ECS");
+            break;
+          case 6:
+            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "ANTI-ICE");
+            break;
+          case 7:
+            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "ENGINE MAINT");
+            break;
+          case 8:
+            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "MAINTENANCE");
+            break;
+          case 9:
+            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "SYS CONFIG");
+            break;
+          default:
+            returnPage = /* @__PURE__ */ import_react21.default.createElement(import_react21.default.Fragment, null);
+        }
+      } else {
+        switch (topPage) {
+          case 0:
+            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "MAP");
+            break;
+          case 1:
+            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "PLAN");
+            break;
+          case 2:
+            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "SYSTEM");
+            break;
+          default:
+            returnPage = /* @__PURE__ */ import_react21.default.createElement(import_react21.default.Fragment, null);
+        }
+      }
+    } else {
+      switch (bottomPage) {
+        case 0:
+          returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "TCAS");
+          break;
+        case 1:
+          returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "WEATHER");
+          break;
+        case 2:
+          returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "CHECKLIST");
+          break;
+        default:
+          returnPage = /* @__PURE__ */ import_react21.default.createElement(import_react21.default.Fragment, null);
+      }
+    }
+    return returnPage;
+  };
+  var getTopPage = () => {
+    const [topPage] = useObjLocalVar("MFD_ROUTER_TOP", "Number");
+    return topPage;
+  };
+  var router_default = MfdRouter;
+
+  // instruments/src/MultifunctionDisplay/components/displayProvider/displayProvider.tsx
+  var import_react25 = __toESM(require_react());
+
+  // instruments/src/MultifunctionDisplay/components/buttonBars/buttonBars.tsx
+  var import_react24 = __toESM(require_react());
+
+  // instruments/src/MultifunctionDisplay/components/buttonBars/buttonBarButton/buttonBarButton.tsx
+  var import_react22 = __toESM(require_react());
+  var ButtonBarButton = (props) => {
+    const [topPage, setTopPage] = useObjLocalVar("MFD_ROUTER_TOP", "Number");
+    const [bottomPage, setBottomPage] = useObjLocalVar("MFD_ROUTER_BOTTOM", "Number");
+    const handleButtonClick = (to) => {
+      if (props.isTop !== null && props.isTop !== void 0 && props.isTop) {
+        setTopPage(to);
+        props.setShowSystems(false);
+      } else {
+        setBottomPage(to);
+      }
+    };
+    const handleSystemButtonClick = () => {
+      if (!props.showSystems) {
+        props.setShowSystems(true);
+      } else {
+        props.setSystemMenu(!props.systemMenu);
+      }
+    };
+    return /* @__PURE__ */ import_react22.default.createElement(
+      "div",
+      {
+        onClick: () => {
+          props.isSystemButton ? handleSystemButtonClick() : handleButtonClick(props.routeTo);
+        },
+        className: "button-container"
+      },
+      /* @__PURE__ */ import_react22.default.createElement("div", { className: "button-center" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "button-children" }, props.text)),
+      /* @__PURE__ */ import_react22.default.createElement("div", { className: "button-background" })
+    );
+  };
+
+  // instruments/src/MultifunctionDisplay/components/buttonBars/systemButton/systemButton.tsx
+  var import_react23 = __toESM(require_react());
+  var SystemButton = (props) => {
+    const [systemPage, setSystemPage] = useObjLocalVar("MFD_ROUTER_SYSTEM", "Number");
+    const handleSystemButtonClick = (route) => {
+      setSystemPage(route);
+    };
+    let isActive = false;
+    if (systemPage === props.routeTo) {
+      isActive = true;
+    } else {
+      isActive = false;
+    }
+    return /* @__PURE__ */ import_react23.default.createElement("div", null, /* @__PURE__ */ import_react23.default.createElement(
+      "div",
+      {
+        className: `system-button ${isActive ? "active" : ""}`,
+        onClick: () => {
+          handleSystemButtonClick(props.routeTo);
+        }
+      },
+      props.text
+    ));
+  };
+
+  // instruments/src/MultifunctionDisplay/components/buttonBars/buttonBars.tsx
+  var SystemButtonBar = (props) => {
+    if (!props.isShown) {
+      return /* @__PURE__ */ import_react24.default.createElement(import_react24.default.Fragment, null);
+    } else {
+      return /* @__PURE__ */ import_react24.default.createElement("div", { className: `system-button-bar-container ${props.isShown ? "shown" : "hidden"}` }, /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Status", routeTo: 0 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: " Flight Ctrl", routeTo: 1 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Hydraulics", routeTo: 2 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Fuel", routeTo: 3 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Electrical", routeTo: 4 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "ECS", routeTo: 5 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Anti-Ice", routeTo: 6 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Engine Maint", disabled: true, routeTo: 7 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Maintenance", routeTo: 8 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Sys Config", routeTo: 9 }));
+    }
+  };
+  var UpperButtonBar = (props) => {
+    return /* @__PURE__ */ import_react24.default.createElement("div", { className: "upper-button-bar-container" }, /* @__PURE__ */ import_react24.default.createElement(
+      ButtonBarButton,
+      {
+        text: "Map",
+        isSystemButton: false,
+        systemMenu: false,
+        showSystems: props.showSystems,
+        setShowSystems: props.setShowSystems,
+        setSystemMenu: () => {
+        },
+        isTop: true,
+        routeTo: 0
+      }
+    ), /* @__PURE__ */ import_react24.default.createElement(
+      ButtonBarButton,
+      {
+        text: "Plan",
+        isSystemButton: false,
+        systemMenu: false,
+        setSystemMenu: () => {
+        },
+        showSystems: props.showSystems,
+        setShowSystems: props.setShowSystems,
+        isTop: true,
+        routeTo: 1
+      }
+    ), /* @__PURE__ */ import_react24.default.createElement(
+      ButtonBarButton,
+      {
+        text: "Systems",
+        isSystemButton: true,
+        systemMenu: props.systemMenu,
+        setSystemMenu: props.setSystemMenu,
+        showSystems: props.showSystems,
+        setShowSystems: props.setShowSystems,
+        isTop: true,
+        routeTo: 2
+      }
+    ));
+  };
+  var LowerButtonBar = () => {
+    return /* @__PURE__ */ import_react24.default.createElement("div", { className: "lower-button-bar-container" }, /* @__PURE__ */ import_react24.default.createElement(
+      ButtonBarButton,
+      {
+        text: "TCAS",
+        isSystemButton: false,
+        systemMenu: false,
+        setSystemMenu: () => {
+        },
+        showSystems: false,
+        setShowSystems: () => {
+        },
+        isTop: false,
+        routeTo: 0
+      }
+    ), /* @__PURE__ */ import_react24.default.createElement(
+      ButtonBarButton,
+      {
+        text: "Weather",
+        isSystemButton: false,
+        systemMenu: false,
+        setSystemMenu: () => {
+        },
+        showSystems: false,
+        setShowSystems: () => {
+        },
+        isTop: false,
+        routeTo: 1
+      }
+    ), /* @__PURE__ */ import_react24.default.createElement(
+      ButtonBarButton,
+      {
+        text: "Checklist",
+        isSystemButton: false,
+        systemMenu: false,
+        setSystemMenu: () => {
+        },
+        showSystems: false,
+        setShowSystems: () => {
+        },
+        isTop: false,
+        routeTo: 2
+      }
+    ));
+  };
+
+  // instruments/src/MultifunctionDisplay/components/displayProvider/displayProvider.tsx
+  var DisplayProvider = (props) => {
+    const [systemMenu, setSystemMenu] = import_react25.default.useState(false);
+    return /* @__PURE__ */ import_react25.default.createElement("div", { className: "MFD-container" }, /* @__PURE__ */ import_react25.default.createElement(
+      UpperButtonBar,
+      {
+        setShowSystems: props.setShowSystems,
+        showSystems: props.showSystems,
+        setSystemMenu,
+        systemMenu,
+        currentPage: getTopPage()
+      }
+    ), /* @__PURE__ */ import_react25.default.createElement("div", { className: "upper-content-container" }, /* @__PURE__ */ import_react25.default.createElement(SystemButtonBar, { isShown: systemMenu }), " ", props.topPage), /* @__PURE__ */ import_react25.default.createElement("div", { className: "center-divider" }), /* @__PURE__ */ import_react25.default.createElement("div", { className: "lower-content-container" }, props.bottomPage), /* @__PURE__ */ import_react25.default.createElement(LowerButtonBar, null));
+  };
+  var displayProvider_default = DisplayProvider;
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/index.tsx
+  var import_react32 = __toESM(require_react());
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/ComponentProvider/ComponentProvider.tsx
+  var import_react31 = __toESM(require_react());
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/APU/APU.tsx
+  var import_react26 = __toESM(require_react());
+  var APU = (props) => {
+    return /* @__PURE__ */ import_react26.default.createElement("div", null, /* @__PURE__ */ import_react26.default.createElement("div", null, "fuck nigga"));
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Cabin/cabin.tsx
+  var import_react27 = __toESM(require_react());
+  var Cabin = () => {
+    return /* @__PURE__ */ import_react27.default.createElement("div", null, /* @__PURE__ */ import_react27.default.createElement("div", null, "cabin"));
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engine.tsx
+  var import_react30 = __toESM(require_react());
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/n1Gauge.tsx
+  var import_react28 = __toESM(require_react());
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/hooks/getThrustRatingAnnunciatorString.ts
+  var getThrustRatingAnnunciatorString = (thrustRating) => {
+    let annunciator = "";
+    switch (thrustRating) {
+      case 0 /* GA */:
+        annunciator = "GA";
+        break;
+      case 1 /* GA_RSV */:
+        annunciator = "GA RSV";
+        break;
+      case 2 /* TO_1_RSV */:
+        annunciator = "T/O-1 RSV";
+        break;
+      case 3 /* TO_1 */:
+        annunciator = "T/O-1";
+        break;
+      case 4 /* FLEX_TO_1 */:
+        annunciator = "FLEX T/O-1";
+        break;
+      case 5 /* TO_2_RSV */:
+        annunciator = "T/O-2 RSV";
+        break;
+      case 6 /* TO_2 */:
+        annunciator = "T/O-2";
+        break;
+      case 7 /* FLEX_TO_2 */:
+        annunciator = "FLEX T/O-2";
+        break;
+      case 8 /* TO_3_RSV */:
+        annunciator = "T/O-3 RSV";
+        break;
+      case 9 /* TO_3 */:
+        annunciator = "T/O-3";
+        break;
+      case 10 /* FLEX_TO_3 */:
+        annunciator = "FLEX T/O-3";
+        break;
+      case 11 /* CON */:
+        annunciator = "CON";
+        break;
+      case 12 /* CLB_1 */:
+        annunciator = "CLB-1";
+        break;
+      case 13 /* CLB_2 */:
+        annunciator = "CLB-2";
+        break;
+      case 14 /* CRZ */:
+        annunciator = "CRZ";
+        break;
+    }
+    return annunciator;
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/n1Gauge.tsx
+  var N1Gauge = (props) => {
+    let annunciator = getThrustRatingAnnunciatorString(props.thrustRatingAnnunciator);
+    return /* @__PURE__ */ import_react28.default.createElement("div", null, /* @__PURE__ */ import_react28.default.createElement("div", null, "n1 gauge ", annunciator));
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGauge.tsx
+  var import_react29 = __toESM(require_react());
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGaugeColors.ts
+  var getIttGaugeColor = (redColor, yellowColor, limeColor, sFillColor, itt, redline, yellowline, forceRed) => {
+    let fillColor;
+    let needleColor;
+    if (itt >= redline) {
+      fillColor = redColor;
+      needleColor = "#fffeff";
+    } else if (forceRed) {
+      fillColor = redColor;
+      needleColor = "#fffeff";
+    } else if (itt >= yellowline && !forceRed) {
+      fillColor = yellowColor;
+      needleColor = yellowColor;
+    } else {
+      fillColor = sFillColor;
+      needleColor = limeColor;
+    }
+    return { fillColor, needleColor };
+  };
+  var limiter = (limit, value) => {
+    if (value > limit) {
+      return limit;
+    } else {
+      return value;
+    }
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/gaugeUtil/gaugeUtil.ts
+  var findCoordsOnCircle = (centerX, centerY, radius, angle) => {
+    let x = centerX + radius * Math.sin(angle * Math.PI / 180);
+    let y = centerY - radius * Math.cos(angle * Math.PI / 180);
+    return { x, y };
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGauge.tsx
+  var IttGauge = (props) => {
+    const [forceRed, setForceRed] = (0, import_react29.useState)(false);
+    (0, import_react29.useEffect)(() => {
+      if (props.ittValue > props.yellowLineValue) {
+        const timer = setTimeout(() => {
+          setForceRed(true);
+        }, props.forceRedInYellowTime);
+        return () => clearTimeout(timer);
+      } else {
+        setForceRed(false);
+      }
+    }, [props.ittValue]);
+    return /* @__PURE__ */ import_react29.default.createElement("div", { className: "itt-gauge-container-absolute", style: { left: `${props.left}px`, top: `${props.top}px` } }, /* @__PURE__ */ import_react29.default.createElement("svg", { viewBox: "0 0 100 100", xmlns: "http://www.w3.org/2000/svg" }, props.invalid ? null : /* @__PURE__ */ import_react29.default.createElement("g", { transform: `rotate(-135 50 50)` }, /* @__PURE__ */ import_react29.default.createElement(
+      "path",
+      {
+        id: "filler",
+        d: `m 50 50 L 50 15 A 35 35 0 ${limiter(props.hardLimit, props.ittValue) / props.scaling > 180 ? 1 : 0} 1 ${findCoordsOnCircle(50, 50, 35, limiter(props.hardLimit, props.ittValue) / props.scaling).x} ${findCoordsOnCircle(50, 50, 35, limiter(props.hardLimit, props.ittValue) / props.scaling).y} Z`,
+        fill: getIttGaugeColor(
+          props.redColor,
+          props.yellowColor,
+          props.limeColor,
+          props.fillerColor,
+          props.ittValue,
+          props.redlineValue,
+          props.yellowLineValue,
+          forceRed
+        ).fillColor
+      }
+    )), /* @__PURE__ */ import_react29.default.createElement("circle", { cx: 50, cy: 50, r: 35, stroke: "white", "stroke-width": 2, fill: "transparent" }), props.invalid ? null : /* @__PURE__ */ import_react29.default.createElement("g", { transform: `rotate(-135 50 50)` }, /* @__PURE__ */ import_react29.default.createElement(
+      "path",
+      {
+        stroke: props.redColor,
+        strokeWidth: 2,
+        strokeLinecap: "round",
+        id: "redlineBug",
+        d: `m ${findCoordsOnCircle(50, 50, 35, props.redlineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 35, props.redlineValue / props.scaling).y} L${findCoordsOnCircle(50, 50, 30, props.redlineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 30, props.redlineValue / props.scaling).y}`
+      }
+    ), /* @__PURE__ */ import_react29.default.createElement(
+      "path",
+      {
+        stroke: props.yellowColor,
+        strokeWidth: 2,
+        strokeLinecap: "round",
+        id: "yellowlineBug",
+        d: `m ${findCoordsOnCircle(50, 50, 35, props.yellowLineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 35, props.yellowLineValue / props.scaling).y} L${findCoordsOnCircle(50, 50, 30, props.yellowLineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 30, props.yellowLineValue / props.scaling).y}`
+      }
+    ), /* @__PURE__ */ import_react29.default.createElement("g", { transform: `rotate(${limiter(props.hardLimit, props.ittValue) / props.scaling} 50 50)` }, /* @__PURE__ */ import_react29.default.createElement(
+      "path",
+      {
+        d: `M 48.5 50 L 48.5 30 L50 17.5L 51.5 30 L 51.5 50 `,
+        fill: getIttGaugeColor(
+          props.redColor,
+          props.yellowColor,
+          props.limeColor,
+          props.fillerColor,
+          props.ittValue,
+          props.redlineValue,
+          props.yellowLineValue,
+          forceRed
+        ).needleColor,
+        stroke: "black",
+        paintOrder: "stroke",
+        strokeWidth: 1.5,
+        strokeLinecap: "round",
+        strokeLinejoin: "round"
+      }
+    ))), /* @__PURE__ */ import_react29.default.createElement("circle", { cx: 50, cy: 50, r: 3, stroke: "white", strokeWidth: 1, fill: "black" }), props.fire ? /* @__PURE__ */ import_react29.default.createElement("g", null, /* @__PURE__ */ import_react29.default.createElement(
+      "rect",
+      {
+        x: 30,
+        y: 32.5,
+        width: 40,
+        height: 25,
+        fill: props.redColor,
+        stroke: "black",
+        strokeWidth: 2,
+        strokeLinejoin: "round"
+      }
+    ), /* @__PURE__ */ import_react29.default.createElement("text", { x: 50, y: 50, textAnchor: "middle", fill: "white", fontSize: 15 }, "FIRE")) : null, /* @__PURE__ */ import_react29.default.createElement("rect", { x: 25, y: 75, width: 50, height: 20, fill: "black", stroke: "white", strokeWidth: 2, strokeLinejoin: "round" }), /* @__PURE__ */ import_react29.default.createElement("text", { x: 50, y: 90, textAnchor: "middle", fill: `${props.invalid ? props.amberColor : props.limeColor}`, fontSize: 10 }, props.invalid == false ? props.ittValue.toFixed(0) : "----")));
+  };
+  IttGauge.defaultProps = {
+    ittValue: 0,
+    redlineValue: 0,
+    yellowLineValue: 0,
+    fire: false,
+    invalid: false,
+    left: 0,
+    top: 0,
+    hardLimit: 0,
+    scaling: 0,
+    amberColor: "yellow",
+    redColor: "red",
+    limeColor: "lime",
+    yellowColor: "yellow",
+    fillerColor: "grey",
+    forceRedInYellowTime: 12e4
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engineParameters.ts
+  var EngineParameters = {
+    E170_ITT: {
+      hardLimit: 1130,
+      scaling: 4.2,
+      amberColor: "orange",
+      redColor: "red",
+      limeColor: "lime",
+      yellowColor: "yellow",
+      fillerColor: "grey",
+      redlineValue: 1050,
+      yellowLineValue: 950,
+      forceRedInYellowTime: 12e4,
+      leftGague: {
+        x: 11,
+        y: 210
+      },
+      rightGague: {
+        x: 192,
+        y: 210
+      }
+    },
+    E190_ITT: {},
+    E170_N1: {}
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engineVars.tsx
+  var EngineVars = () => {
+    const [thrustRatingAnnunciator] = useObjLocalVar("EICAS_THRUST_RATING_ANNUNCIATOR", "number");
+    const [ittValue1] = useSimVar("TURB ENG1 ITT", "celsius");
+    const [ittValue2] = useSimVar("TURB ENG2 ITT", "celsius");
+    const [eng1Fire] = useObjLocalVar("EICAS_ENG1_FIRE", "bool");
+    const [eng2Fire] = useObjLocalVar("EICAS_ENG2_FIRE", "bool");
+    const [eng1IttInvalid] = useObjLocalVar("EICAS_ENG1_ITT_INVALID", "bool");
+    const [eng2IttInvalid] = useObjLocalVar("EICAS_ENG2_ITT_INVALID", "bool");
+    return { thrustRatingAnnunciator, ittValue1, ittValue2, eng1Fire, eng2Fire, eng1IttInvalid, eng2IttInvalid };
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engine.tsx
+  var Engine = (props) => {
+    const vars = EngineVars();
+    return /* @__PURE__ */ import_react30.default.createElement("div", { className: "engine-wrapper" }, /* @__PURE__ */ import_react30.default.createElement("div", { className: "flex-row" }, /* @__PURE__ */ import_react30.default.createElement(
+      N1Gauge,
+      {
+        n1Value: 0,
+        redlineValue: 100,
+        commandedN1: 0,
+        thrustRatingAnnunciator: vars.thrustRatingAnnunciator,
+        invalid: false,
+        attcsState: 0
+      }
+    ), /* @__PURE__ */ import_react30.default.createElement(N1Gauge, { n1Value: 0, redlineValue: 100, commandedN1: 0, thrustRatingAnnunciator: 1, invalid: false, attcsState: 0 })), /* @__PURE__ */ import_react30.default.createElement("div", { className: "flex-row" }, /* @__PURE__ */ import_react30.default.createElement(
+      IttGauge,
+      {
+        ittValue: vars.ittValue1,
+        redlineValue: EngineParameters.E170_ITT.redlineValue,
+        yellowLineValue: EngineParameters.E170_ITT.yellowLineValue,
+        fire: vars.eng1Fire,
+        invalid: vars.eng1IttInvalid,
+        left: EngineParameters.E170_ITT.leftGague.x,
+        top: EngineParameters.E170_ITT.leftGague.y,
+        hardLimit: EngineParameters.E170_ITT.hardLimit,
+        scaling: EngineParameters.E170_ITT.scaling,
+        amberColor: EngineParameters.E170_ITT.amberColor,
+        redColor: EngineParameters.E170_ITT.redColor,
+        limeColor: EngineParameters.E170_ITT.limeColor,
+        yellowColor: EngineParameters.E170_ITT.yellowColor,
+        fillerColor: EngineParameters.E170_ITT.fillerColor,
+        forceRedInYellowTime: EngineParameters.E170_ITT.forceRedInYellowTime
+      }
+    ), /* @__PURE__ */ import_react30.default.createElement(
+      IttGauge,
+      {
+        ittValue: vars.ittValue2,
+        redlineValue: EngineParameters.E170_ITT.redlineValue,
+        yellowLineValue: EngineParameters.E170_ITT.yellowLineValue,
+        fire: vars.eng2Fire,
+        invalid: vars.eng2IttInvalid,
+        left: EngineParameters.E170_ITT.rightGague.x,
+        top: EngineParameters.E170_ITT.rightGague.y,
+        hardLimit: EngineParameters.E170_ITT.hardLimit,
+        scaling: EngineParameters.E170_ITT.scaling,
+        amberColor: EngineParameters.E170_ITT.amberColor,
+        redColor: EngineParameters.E170_ITT.redColor,
+        limeColor: EngineParameters.E170_ITT.limeColor,
+        yellowColor: EngineParameters.E170_ITT.yellowColor,
+        fillerColor: EngineParameters.E170_ITT.fillerColor,
+        forceRedInYellowTime: EngineParameters.E170_ITT.forceRedInYellowTime
+      }
+    )));
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/ComponentProvider/ComponentProvider.tsx
+  var ComponentProvider = (props) => {
+    return /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-wrapper" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-left" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-engine" }, /* @__PURE__ */ import_react31.default.createElement(Engine, null)), /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-fuel" }, "Fuel"), /* @__PURE__ */ import_react31.default.createElement("div", { className: `component-provider-oil ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react31.default.createElement("div", null) : /* @__PURE__ */ import_react31.default.createElement("div", null, "oil")), /* @__PURE__ */ import_react31.default.createElement("div", { className: `component-provider-vib ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react31.default.createElement("div", null) : /* @__PURE__ */ import_react31.default.createElement("div", null, "vib")), /* @__PURE__ */ import_react31.default.createElement("div", { className: `component-provider-flaps ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react31.default.createElement("div", null) : /* @__PURE__ */ import_react31.default.createElement("div", null, "flaps"))), /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-right" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-cas" }, "CAS MSG"), /* @__PURE__ */ import_react31.default.createElement("div", { className: `component-provider-lg ${props.declutter ? "declutter-hidden-right" : ""}` }, props.declutter ? /* @__PURE__ */ import_react31.default.createElement("div", null) : /* @__PURE__ */ import_react31.default.createElement("div", null, "lg")), /* @__PURE__ */ import_react31.default.createElement("div", { className: `component-provider-apu` }, props.declutter ? /* @__PURE__ */ import_react31.default.createElement("div", null) : /* @__PURE__ */ import_react31.default.createElement(APU, null)), /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-cabin" }, /* @__PURE__ */ import_react31.default.createElement(Cabin, null)), /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-trim" }, "Trim")));
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/index.tsx
+  var EngineIndicatingAndCrewAlertingSystem = () => {
+    const [declutter] = useObjLocalVar("EICAS_DECLUTTER", "bool");
+    return /* @__PURE__ */ import_react32.default.createElement("div", { id: "EICAS_ROOT" }, /* @__PURE__ */ import_react32.default.createElement(ComponentProvider, { declutter }));
+  };
+  var EicasState = getDisplayState("EICAS", cDisplayFaulureState);
+  var EICAS = () => {
+    const displayStates = AutoReversionary(cDisplayFaulureState);
+    switch (displayStates[2]) {
+      case "PFD":
+        return /* @__PURE__ */ import_react32.default.createElement(PrimaryFlightDisplayContent, null);
+      case "PFD2":
+        return /* @__PURE__ */ import_react32.default.createElement("div", null, " PFD2 ");
+      case "MFD":
+        return /* @__PURE__ */ import_react32.default.createElement(MultifunctionDisplayContent, null);
+      case "MFD2":
+        return /* @__PURE__ */ import_react32.default.createElement("div", null, " MFD2 ");
+      case "EICAS":
+        return /* @__PURE__ */ import_react32.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
+      case "FAILED":
+        return /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, null);
+      default:
+        return /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, null);
+    }
+  };
+  render(EicasState ? /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, null) : /* @__PURE__ */ import_react32.default.createElement(EICAS, null));
+
+  // instruments/src/MultifunctionDisplay/index.tsx
+  var MultifunctionDisplayContent = () => {
+    const [isSystem, setIsSystem] = import_react33.default.useState(false);
+    const [systemMenu, setSystemMenu] = import_react33.default.useState(false);
+    const [showSystems, setShowSystems] = import_react33.default.useState(false);
+    return /* @__PURE__ */ import_react33.default.createElement("div", null, /* @__PURE__ */ import_react33.default.createElement(Mouse, null), /* @__PURE__ */ import_react33.default.createElement(
+      displayProvider_default,
+      {
+        systemMenu,
+        setSystemMenu,
+        showSystems,
+        setShowSystems,
+        porportionSize: 0,
+        topPage: router_default(true, showSystems),
+        setIsSystem,
+        bottomPage: router_default(false, false)
+      }
+    ));
+  };
+  var MfdState = getDisplayState("MFD", cDisplayFaulureState);
+  var MFD = () => {
+    const displayStates = AutoReversionary(cDisplayFaulureState);
+    switch (displayStates[1]) {
+      case "PFD":
+        return /* @__PURE__ */ import_react33.default.createElement(PrimaryFlightDisplayContent, null);
+      case "PFD2":
+        return /* @__PURE__ */ import_react33.default.createElement("div", null, " PFD2 ");
+      case "MFD":
+        return /* @__PURE__ */ import_react33.default.createElement(MultifunctionDisplayContent, null);
+      case "MFD2":
+        return /* @__PURE__ */ import_react33.default.createElement("div", null, " MFD2 ");
+      case "EICAS":
+        return /* @__PURE__ */ import_react33.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
+      case "FAILED":
+        return /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null);
+      default:
+        return /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null);
+    }
+  };
+  render(MfdState ? /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null) : /* @__PURE__ */ import_react33.default.createElement(MFD, null));
+
+  // instruments/src/PrimaryFlightDisplay/index.tsx
+  var PrimaryFlightDisplayContent = () => {
+    return /* @__PURE__ */ import_react34.default.createElement("div", { id: "PFD-ROOT" }, /* @__PURE__ */ import_react34.default.createElement(PFDProvider, null));
+  };
+  var PfdState = getDisplayState("PFD", cDisplayFaulureState);
+  var PFD = () => {
+    const displayStates = AutoReversionary(cDisplayFaulureState);
+    switch (displayStates[0]) {
+      case "PFD":
+        return /* @__PURE__ */ import_react34.default.createElement(PrimaryFlightDisplayContent, null);
+      case "PFD2":
+        return /* @__PURE__ */ import_react34.default.createElement("div", null, " PFD2 ");
+      case "MFD":
+        return /* @__PURE__ */ import_react34.default.createElement(MultifunctionDisplayContent, null);
+      case "MFD2":
+        return /* @__PURE__ */ import_react34.default.createElement("div", null, " MFD2 ");
+      case "EICAS":
+        return /* @__PURE__ */ import_react34.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
+      case "FAILED":
+        return /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null);
+      default:
+        return /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null);
+    }
+  };
+  render(PfdState ? /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null) : /* @__PURE__ */ import_react34.default.createElement(PFD, null));
 })();
 /**
  * @license React

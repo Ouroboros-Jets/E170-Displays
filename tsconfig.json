@@ -14,5 +14,12 @@
     },
     "typeRoots": ["./typings/", "./node_modules/@types", "../node_modules/sass"]
   },
-  "include": ["../.eslintrc.cjs", "instruments/src/**/*.ts", "instruments/src/**/*.tsx", "../mach.config.js"]
+  "include": [
+    "../.eslintrc.cjs",
+    "instruments/src/**/*.ts",
+    "instruments/src/**/*.tsx",
+    "instruments/common/**/*.ts",
+    "instruments/common/**/*.tsx",
+    "../mach.config.js"
+  ]
 }

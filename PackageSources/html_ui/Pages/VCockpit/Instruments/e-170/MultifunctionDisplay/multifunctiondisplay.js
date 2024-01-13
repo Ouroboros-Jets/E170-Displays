@@ -1046,7 +1046,7 @@ class InstrumentLogic extends BaseInstrument {
             }
             return dispatcher.useContext(Context);
           }
-          function useState3(initialState) {
+          function useState5(initialState) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useState(initialState);
           }
@@ -1058,7 +1058,7 @@ class InstrumentLogic extends BaseInstrument {
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect3(create, deps) {
+          function useEffect5(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1838,7 +1838,7 @@ class InstrumentLogic extends BaseInstrument {
           exports.useContext = useContext2;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect3;
+          exports.useEffect = useEffect5;
           exports.useId = useId;
           exports.useImperativeHandle = useImperativeHandle;
           exports.useInsertionEffect = useInsertionEffect;
@@ -1846,7 +1846,7 @@ class InstrumentLogic extends BaseInstrument {
           exports.useMemo = useMemo;
           exports.useReducer = useReducer;
           exports.useRef = useRef2;
-          exports.useState = useState3;
+          exports.useState = useState5;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
           exports.version = ReactVersion;
@@ -2342,9 +2342,9 @@ class InstrumentLogic extends BaseInstrument {
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React11 = require_react();
+          var React34 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React11.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React34.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -3865,7 +3865,7 @@ class InstrumentLogic extends BaseInstrument {
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React11.Children.forEach(props.children, function(child) {
+                  React34.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -12026,7 +12026,7 @@ class InstrumentLogic extends BaseInstrument {
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React11.Component().refs;
+          var emptyRefsObject = new React34.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -22943,7 +22943,7 @@ class InstrumentLogic extends BaseInstrument {
   });
 
   // instruments/src/MultifunctionDisplay/index.tsx
-  var import_react11 = __toESM(require_react());
+  var import_react34 = __toESM(require_react());
 
   // instruments/common/Hooks/index.tsx
   var import_react3 = __toESM(require_react());
@@ -23114,6 +23114,11 @@ class InstrumentLogic extends BaseInstrument {
       },
       props.children
     );
+  };
+  var useSimVar = (name, unit, maxStaleness = 0) => {
+    const value = useSimVarValue(name, unit, maxStaleness);
+    const setter = useSimVarSetter(name, unit);
+    return [value, setter];
   };
   var useObjLocalVar = (name, unit, maxStaleness = 0) => {
     const value = useSimVarValue("L:OBJ_E170_" + name, unit, maxStaleness);
@@ -23493,12 +23498,1270 @@ class InstrumentLogic extends BaseInstrument {
   };
   var displayProvider_default = DisplayProvider;
 
+  // instruments/common/Reversionary/Reversionary.ts
+  var getDisplayState = (display, state) => {
+    const PfdIndex = 0;
+    const Pfd2Index = 4;
+    const MfdIndex = 1;
+    const Mfd2Index = 3;
+    const EicasIndex = 2;
+    switch (display) {
+      case "PFD":
+        return state[PfdIndex];
+      case "PFD2":
+        return state[Pfd2Index];
+      case "MFD":
+        return state[MfdIndex];
+      case "MFD2":
+        return state[Mfd2Index];
+      case "EICAS":
+        return state[EicasIndex];
+      default:
+        console.error("failed to get state of selected display");
+        return false;
+    }
+  };
+  var cDisplayFaulureState = [false, false, true, false, false];
+  var AutoReversionary = (state) => {
+    const displayFaulureState = state;
+    const pfdState = getDisplayState("PFD", displayFaulureState);
+    const pfd2State = getDisplayState("PFD2", displayFaulureState);
+    const mfdState = getDisplayState("MFD", displayFaulureState);
+    const mfd2State = getDisplayState("MFD2", displayFaulureState);
+    const eicasState = getDisplayState("EICAS", displayFaulureState);
+    const rDisplayTypesDefault = ["PFD", "MFD", "EICAS", "MFD2", "PFD2"];
+    if (pfdState && pfd2State && eicasState) {
+      return ["FAILED", "PFD", "FAILED", "EICAS", "FAILED"];
+    } else if (pfdState && pfd2State) {
+      return ["FAILED", "PFD", "EICAS", "PFD", "FAILED"];
+    } else if (mfdState && mfd2State) {
+      return ["PFD", "FAILED", "EICAS", "FAILED", "PFD2"];
+    } else if (pfdState && eicasState) {
+      return ["FAILED", "PFD", "FAILED", "EICAS", "PFD2"];
+    } else if (pfd2State && eicasState) {
+      return ["PFD", "EICAS", "FAILED", "PFD2", "FAILED"];
+    } else if (eicasState) {
+      return ["PFD", "EICAS", "FAILED", "EICAS", "PFD2"];
+    } else if (pfdState) {
+      return ["FAILED", "PFD", "EICAS", "MFD2", "PFD2"];
+    } else if (pfd2State) {
+      return ["PFD", "MFD", "EICAS", "PFD2", "FAILED"];
+    } else if (mfdState) {
+      return ["PFD", "FAILED", "EICAS", "MFD2", "PFD2"];
+    } else if (mfd2State) {
+      return ["PFD", "MFD", "EICAS", "FAILED", "PFD2"];
+    } else
+      return rDisplayTypesDefault;
+  };
+
+  // instruments/src/PrimaryFlightDisplay/index.tsx
+  var import_react33 = __toESM(require_react());
+
+  // instruments/src/PrimaryFlightDisplay/components/pfdProvider/pfdProvider.tsx
+  var import_react25 = __toESM(require_react());
+
+  // instruments/src/PrimaryFlightDisplay/components/FMA/FMA.tsx
+  var import_react12 = __toESM(require_react());
+
+  // instruments/src/PrimaryFlightDisplay/components/FMA/FMA_Annunciators.tsx
+  var import_react11 = __toESM(require_react());
+  var getStyleForATMode = (mode) => {
+    switch (mode) {
+      case 1 /* TO_w */:
+      case 4 /* SPD_T_w */:
+      case 7 /* RETD_w */:
+        return { color: "white", backgroundColor: "transparent", isReverseVideo: false };
+      case 2 /* TO_g */:
+      case 3 /* HOLD_g */:
+      case 5 /* SPD_T_g */:
+      case 6 /* SPD_E_g */:
+      case 8 /* RETD_g */:
+      case 9 /* GA_g */:
+      case 11 /* AT_g */:
+      case 14 /* OVRD_g */:
+      case 15 /* DD_g */:
+        return { color: "lime", backgroundColor: "transparent", isReverseVideo: false };
+      case 10 /* LIM_a */:
+        return { color: "amber", backgroundColor: "transparent", isReverseVideo: false };
+      case 12 /* AT_g_rv */:
+      case 13 /* AT_r_rv */:
+        return { color: "lime", backgroundColor: "transparent", isReverseVideo: true };
+      default:
+        return { color: "transparent", backgroundColor: "transparent", isReverseVideo: false };
+    }
+  };
+  var GetStringForATMode = (props) => {
+    const textColor = props.style.color;
+    switch (props.mode) {
+      case 1 /* TO_w */:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", { fill: textColor }, "TO");
+      case 2 /* TO_g */:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", { fill: textColor }, "TO");
+      case 3 /* HOLD_g */:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", { fill: textColor }, "HOLD");
+      case 4 /* SPD_T_w */:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", { fill: textColor }, "SPD", /* @__PURE__ */ import_react11.default.createElement("tspan", { fontSize: 20 }, "T"));
+      case 5 /* SPD_T_g */:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", { fill: textColor }, "SPD", /* @__PURE__ */ import_react11.default.createElement("tspan", { fontSize: 20 }, "T"));
+      case 6 /* SPD_E_g */:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", { fill: textColor }, "SPD", /* @__PURE__ */ import_react11.default.createElement("tspan", { fontSize: 20 }, "E"));
+      case 7 /* RETD_w */:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", { fill: textColor }, "RETD");
+      case 8 /* RETD_g */:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", { fill: textColor }, "RETD");
+      case 9 /* GA_g */:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", { fill: textColor }, "GA");
+      case 10 /* LIM_a */:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", { fill: textColor }, "LIM");
+      case 11 /* AT_g */:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", { fill: textColor }, "AT");
+      case 12 /* AT_g_rv */:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", { fill: props.ovrdFontColor != null ? props.ovrdFontColor : textColor }, "AT");
+      case 13 /* AT_r_rv */:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", { fill: props.ovrdFontColor != null ? props.ovrdFontColor : textColor }, "AT");
+      case 14 /* OVRD_g */:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", { fill: textColor }, "OVRD");
+      case 15 /* DD_g */:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", { fill: textColor }, "DD");
+      default:
+        return /* @__PURE__ */ import_react11.default.createElement("tspan", null);
+    }
+  };
+
+  // instruments/common/util/reverseVideo.ts
+  var reverseVideo = ({
+    color,
+    backgroundColor,
+    reverse
+  }) => {
+    if (reverse) {
+      return {
+        color: backgroundColor,
+        backgroundColor: color
+      };
+    }
+    return {
+      color,
+      backgroundColor
+    };
+  };
+
+  // instruments/src/PrimaryFlightDisplay/components/FMA/FMA.tsx
+  var FMA = (props) => {
+    const AtMode = props.vars.vAtMode;
+    const ApStatus = props.vars.vApStatus;
+    const LateralMode = props.vars.vLateralMode;
+    const VerticalMode = props.vars.vVerticalMode;
+    const ArmedAtMode = props.vars.vArmedAtMode;
+    const AtStatus = props.vars.vAtStatus;
+    const ArmedLateralMode = props.vars.vArmedLateralMode;
+    const ArmedVerticalMode = props.vars.vArmedVerticalMode;
+    const SelectionSource = props.vars.vSelectionSource;
+    const [sReverseVideo, setSReverseVideo] = (0, import_react12.useState)(true);
+    (0, import_react12.useEffect)(() => {
+      const intervalId = setInterval(() => {
+        setSReverseVideo((prevValue) => !prevValue);
+      }, 500);
+      return () => {
+        clearInterval(intervalId);
+      };
+    }, []);
+    const GetAtModeBoxColor = () => {
+      if (AtMode === 13 /* AT_r_rv */) {
+        return {
+          bg: reverseVideo({ color: "red", backgroundColor: "white", reverse: sReverseVideo }).backgroundColor,
+          color: reverseVideo({ color: "red", backgroundColor: "white", reverse: sReverseVideo }).color
+        };
+      } else if (AtMode === 12 /* AT_g_rv */) {
+        return {
+          bg: reverseVideo({ color: "green", backgroundColor: "white", reverse: sReverseVideo }).backgroundColor,
+          color: reverseVideo({ color: "green", backgroundColor: "white", reverse: sReverseVideo }).color
+        };
+      } else
+        return { bg: getStyleForATMode(AtMode).backgroundColor, color: getStyleForATMode(AtMode).color };
+    };
+    return /* @__PURE__ */ import_react12.default.createElement("div", { className: "fma-container", style: { left: props.x, top: props.y } }, /* @__PURE__ */ import_react12.default.createElement(
+      FMAGrid,
+      {
+        AT_Mode_Box: {
+          backgroundColor: GetAtModeBoxColor().bg,
+          element: /* @__PURE__ */ import_react12.default.createElement(
+            GetStringForATMode,
+            {
+              ovrdFontColor: GetAtModeBoxColor().color,
+              style: getStyleForATMode(AtMode),
+              mode: AtMode
+            }
+          )
+        },
+        AP_Status_Box: {
+          backgroundColor: getStyleForATMode(ApStatus).backgroundColor,
+          element: /* @__PURE__ */ import_react12.default.createElement(GetStringForATMode, { style: getStyleForATMode(ApStatus), mode: ApStatus })
+        },
+        AP_AT_Source_box: {
+          backgroundColor: getStyleForATMode(SelectionSource).backgroundColor,
+          element: /* @__PURE__ */ import_react12.default.createElement(GetStringForATMode, { style: getStyleForATMode(SelectionSource), mode: SelectionSource })
+        },
+        Lateral_Mode_Box: {
+          backgroundColor: getStyleForATMode(LateralMode).backgroundColor,
+          element: /* @__PURE__ */ import_react12.default.createElement(GetStringForATMode, { style: getStyleForATMode(LateralMode), mode: LateralMode })
+        },
+        Vertical_Mode_Box: {
+          backgroundColor: getStyleForATMode(VerticalMode).backgroundColor,
+          element: /* @__PURE__ */ import_react12.default.createElement(GetStringForATMode, { style: getStyleForATMode(VerticalMode), mode: VerticalMode })
+        },
+        Armed_AT_Mode_Box: {
+          backgroundColor: getStyleForATMode(ArmedAtMode).backgroundColor,
+          element: /* @__PURE__ */ import_react12.default.createElement(GetStringForATMode, { style: getStyleForATMode(ArmedAtMode), mode: ArmedAtMode })
+        },
+        AT_Status_Box: {
+          backgroundColor: getStyleForATMode(AtStatus).backgroundColor,
+          element: /* @__PURE__ */ import_react12.default.createElement(GetStringForATMode, { style: getStyleForATMode(AtStatus), mode: AtStatus })
+        },
+        Armed_Lateral_Mode_Box: {
+          backgroundColor: getStyleForATMode(ArmedLateralMode).backgroundColor,
+          element: /* @__PURE__ */ import_react12.default.createElement(GetStringForATMode, { style: getStyleForATMode(ArmedLateralMode), mode: ArmedLateralMode })
+        },
+        Armed_Vertical_Mode_Box: {
+          backgroundColor: getStyleForATMode(ArmedVerticalMode).backgroundColor,
+          element: /* @__PURE__ */ import_react12.default.createElement(GetStringForATMode, { style: getStyleForATMode(ArmedVerticalMode), mode: ArmedVerticalMode })
+        },
+        SelectionSourceBox: {
+          backgroundColor: getStyleForATMode(SelectionSource).backgroundColor,
+          element: /* @__PURE__ */ import_react12.default.createElement(GetStringForATMode, { style: getStyleForATMode(SelectionSource), mode: SelectionSource })
+        }
+      }
+    ));
+  };
+  var FMAGrid = (props) => {
+    return /* @__PURE__ */ import_react12.default.createElement("svg", { className: "fma-svg", viewBox: "0 0 374 56", xmlns: "http://www.w3.org/2000/svg" }, /* @__PURE__ */ import_react12.default.createElement(
+      "rect",
+      {
+        x: "1.5",
+        y: "1.5",
+        width: "371",
+        height: "53",
+        fill: "transparent",
+        stroke: "white",
+        strokeWidth: 3,
+        strokeLinejoin: "round",
+        strokeMiterlimit: "round",
+        rx: 2,
+        ry: 2
+      }
+    ), /* @__PURE__ */ import_react12.default.createElement("rect", { id: "AT_Mode_Box", x: "3", y: "3", width: "100", height: "26", fill: props.AT_Mode_Box.backgroundColor }), /* @__PURE__ */ import_react12.default.createElement("text", { x: 50, y: 25, textAnchor: "middle", color: "red", fontSize: 25 }, props.AT_Mode_Box.element));
+  };
+
+  // instruments/src/PrimaryFlightDisplay/components/FMA/FMA_Vars.tsx
+  var FmaVars = () => {
+    const [vAtMode] = useObjLocalVar("PFD_FMA_AT_Mode", "number");
+    const [v_AP_Status] = useObjLocalVar("PFD_FMA_AP_Status", "number");
+    const [v_Lateral_Mode] = useObjLocalVar("PFD_FMA_Lateral_Mode", "number");
+    const [v_Vertical_Mode] = useObjLocalVar("PFD_FMA_Vertical_Mode", "number");
+    const [v_Armed_AT_Mode] = useObjLocalVar("PFD_FMA_Armed_AT_Mode", "number");
+    const [v_AT_Status] = useObjLocalVar("PFD_FMA_AT_Status", "number");
+    const [v_Armed_Lateral_Mode] = useObjLocalVar("PFD_FMA_Armed_Lateral_Mode", "number");
+    const [v_Armed_Vertical_Mode] = useObjLocalVar("PFD_FMA_Armed_Vertical_Mode", "number");
+    const [v_Selection_Source] = useObjLocalVar("PFD_FMA_Selection_Source", "number");
+    const vars = {
+      vAtMode,
+      v_AP_Status,
+      v_Lateral_Mode,
+      v_Vertical_Mode,
+      v_Armed_AT_Mode,
+      v_AT_Status,
+      v_Armed_Lateral_Mode,
+      v_Armed_Vertical_Mode,
+      v_Selection_Source
+    };
+    return vars;
+  };
+
+  // instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeed.tsx
+  var import_react16 = __toESM(require_react());
+
+  // instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeedTape.tsx
+  var import_react15 = __toESM(require_react());
+
+  // instruments/common/util/createArray.ts
+  var createArray = (length) => {
+    const array = new Array(length);
+    for (let i = 0; i < length; i++) {
+      array[i] = i;
+    }
+    return array;
+  };
+
+  // instruments/src/PrimaryFlightDisplay/components/Airspeed/selectedAirspeedBox.tsx
+  var import_react13 = __toESM(require_react());
+  var SelectedAirspeedBox = (props) => {
+    const invalidOutput = "---";
+    const getString = () => {
+      switch (props.mode) {
+        case 0 /* FMS */:
+          return {
+            element: /* @__PURE__ */ import_react13.default.createElement("tspan", null, props.selectedAirspeed, props.mach ? /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: "white", fontSize: 14 }, "M") : ""),
+            color: "magenta"
+          };
+        case 1 /* MAN */:
+          return {
+            element: /* @__PURE__ */ import_react13.default.createElement("tspan", null, props.selectedAirspeed, props.mach ? /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: "white", fontSize: 14 }, "M") : ""),
+            color: "cyan"
+          };
+        case 2 /* INOP */:
+          return { element: /* @__PURE__ */ import_react13.default.createElement("tspan", null, invalidOutput), color: "yellow" };
+      }
+    };
+    return /* @__PURE__ */ import_react13.default.createElement("g", null, /* @__PURE__ */ import_react13.default.createElement("rect", { x: 1, y: 1, rx: 2, ry: 2, width: 80, height: 33, strokeWidth: 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ import_react13.default.createElement("text", { x: 41, y: 28, textAnchor: "middle", fill: getString().color, fontSize: "30" }, getString().element));
+  };
+
+  // instruments/src/PrimaryFlightDisplay/util/clampValue.ts
+  var ClampValue = (value, min, max) => {
+    if (value < min) {
+      return min;
+    } else if (value > max) {
+      return max;
+    } else {
+      return value;
+    }
+  };
+
+  // instruments/src/PrimaryFlightDisplay/util/pathWithBlackBackground.tsx
+  var import_react14 = __toESM(require_react());
+  var PathWithBlackBackground = (props) => {
+    return /* @__PURE__ */ import_react14.default.createElement("g", null, /* @__PURE__ */ import_react14.default.createElement(
+      "path",
+      {
+        d: props.d,
+        fill: props.forceTransparent !== null && props.forceTransparent === true ? "transparent" : "black",
+        strokeWidth: props.StrokeWidth,
+        stroke: props.fill,
+        strokeLinecap: props.forceEndCap !== null && props.forceEndCap === true ? "butt" : "round",
+        strokeLinejoin: "round"
+      }
+    ), /* @__PURE__ */ import_react14.default.createElement(
+      "path",
+      {
+        d: props.d,
+        fill: props.fillTop2 !== null ? props.fillTop2 : props.fillTop,
+        strokeWidth: props.strokeWidthTop,
+        stroke: props.fillTop,
+        strokeLinecap: props.forceEndCap !== null && props.forceEndCap === true ? "butt" : "round",
+        strokeLinejoin: "round"
+      }
+    ));
+  };
+
+  // instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeedTape.tsx
+  var AirspeedTape = () => {
+    const [airspeed] = useSimVar("AIRSPEED INDICATED", "knots");
+    const tapeLength = 942;
+    const spacing = 3.95;
+    const startOffset = 200;
+    const airspeedTapeScaling = 3.95;
+    const array = createArray(tapeLength);
+    const drawTick2 = (small, y) => {
+      return /* @__PURE__ */ import_react15.default.createElement(
+        PathWithBlackBackground,
+        {
+          d: `M 81 ${-y} L ${small ? 70 : 58} ${-y}`,
+          fill: "black",
+          fillTop: "white",
+          strokeWidthTop: 3,
+          StrokeWidth: 5
+        }
+      );
+    };
+    const Tape = array.map((item, index) => {
+      if (index < 30) {
+        return null;
+      }
+      if (index < 200) {
+        if (index % 10 === 0) {
+          return /* @__PURE__ */ import_react15.default.createElement("g", { key: index }, drawTick2(false, index * spacing), /* @__PURE__ */ import_react15.default.createElement(
+            "text",
+            {
+              x: "53",
+              y: -index * spacing + 9,
+              stroke: "black",
+              strokeWidth: 2,
+              paintOrder: "stroke",
+              textAnchor: "end",
+              fill: "white",
+              fontSize: "22"
+            },
+            index
+          ));
+        } else
+          return null;
+      } else {
+        if (index % 20 === 0) {
+          return /* @__PURE__ */ import_react15.default.createElement("g", { key: index }, drawTick2(false, index * spacing), /* @__PURE__ */ import_react15.default.createElement(
+            "text",
+            {
+              x: "53",
+              y: -index * spacing + 9,
+              stroke: "black",
+              strokeWidth: 2,
+              paintOrder: "stroke",
+              textAnchor: "end",
+              fill: "white",
+              fontSize: "22"
+            },
+            index
+          ));
+        } else if (index % 20 === 10) {
+          return drawTick2(false, index * spacing);
+        } else
+          return null;
+      }
+    });
+    return /* @__PURE__ */ import_react15.default.createElement("div", { className: "airspeed-container" }, /* @__PURE__ */ import_react15.default.createElement("svg", { className: "airspeed-svg", viewBox: "0 0 82 396" }, /* @__PURE__ */ import_react15.default.createElement("rect", { x: 0, y: 0, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ import_react15.default.createElement("clipPath", { id: "tapeClip" }, /* @__PURE__ */ import_react15.default.createElement("rect", { x: 0, y: 34, width: 81, height: 330 })), /* @__PURE__ */ import_react15.default.createElement("g", { clipPath: "url(#tapeClip)" }, /* @__PURE__ */ import_react15.default.createElement("g", { transform: `translate(0,${ClampValue(airspeed, 30, 900) * airspeedTapeScaling + startOffset})` }, Tape)), /* @__PURE__ */ import_react15.default.createElement(PathWithBlackBackground, { d: "M 81 32 L 81 364", fill: "black", fillTop: "white", strokeWidthTop: 2, StrokeWidth: 3 }), /* @__PURE__ */ import_react15.default.createElement(SelectedAirspeedBox, { selectedAirspeed: 0.79, mach: true, mode: 0 })));
+  };
+
+  // instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeed.tsx
+  var Airspeed = () => {
+    return /* @__PURE__ */ import_react16.default.createElement("div", null, /* @__PURE__ */ import_react16.default.createElement(AirspeedTape, null));
+  };
+
+  // instruments/src/PrimaryFlightDisplay/components/Altitude/Altitude.tsx
+  var import_react20 = __toESM(require_react());
+
+  // instruments/src/PrimaryFlightDisplay/components/Altitude/AltitudeTape.tsx
+  var import_react17 = __toESM(require_react());
+  var drawChevron = (double, y) => {
+    const offset = -y / 3.31;
+    if (double) {
+      return /* @__PURE__ */ import_react17.default.createElement("g", null, /* @__PURE__ */ import_react17.default.createElement(
+        PathWithBlackBackground,
+        {
+          d: `M 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181}`,
+          fill: "black",
+          fillTop: "white",
+          strokeWidthTop: 2,
+          StrokeWidth: 4,
+          fillTop2: "transparent",
+          forceTransparent: true,
+          forceEndCap: true
+        }
+      ), /* @__PURE__ */ import_react17.default.createElement(
+        PathWithBlackBackground,
+        {
+          d: `M 70 ${offset + 300} L 70 ${offset + 255} L38 ${offset + 223} L 70 ${offset + 190} L 70 ${offset + 148}`,
+          fill: "black",
+          fillTop: "white",
+          strokeWidthTop: 2,
+          StrokeWidth: 4,
+          fillTop2: "transparent",
+          forceTransparent: true,
+          forceEndCap: true
+        }
+      ), drawNumber(y));
+    } else {
+      return /* @__PURE__ */ import_react17.default.createElement("g", null, /* @__PURE__ */ import_react17.default.createElement(
+        PathWithBlackBackground,
+        {
+          d: `M 70 ${offset + 300} L 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181} L 70 ${offset + 148}`,
+          fill: "black",
+          fillTop: "white",
+          strokeWidthTop: 2,
+          StrokeWidth: 4,
+          fillTop2: "transparent",
+          forceTransparent: true,
+          forceEndCap: true
+        }
+      ), drawNumber(y));
+    }
+  };
+  var drawTick = (y) => {
+    const offset = -y / 3.31;
+    return /* @__PURE__ */ import_react17.default.createElement(
+      PathWithBlackBackground,
+      {
+        d: `M 30 ${offset + 222} L ${42} ${offset + 222}`,
+        fill: "black",
+        fillTop: "white",
+        strokeWidthTop: 2,
+        StrokeWidth: 4
+      }
+    );
+  };
+  var drawNumber = (y) => {
+    const offset = -y / 3.31;
+    return /* @__PURE__ */ import_react17.default.createElement(
+      "text",
+      {
+        x: "46",
+        y: offset + 224,
+        stroke: "black",
+        strokeWidth: 2,
+        paintOrder: "stroke",
+        fill: "white",
+        fontSize: "22px",
+        textAnchor: "start",
+        dominantBaseline: "middle"
+      },
+      y
+    );
+  };
+  var AltitudeTape = (props) => {
+    const tickMarks = createArray(600);
+    const negativeTickMarks = createArray(30);
+    const tape = tickMarks.map((tick) => {
+      if (tick % 10 === 0) {
+        return drawChevron(true, tick * 100);
+      }
+      if (tick % 5 === 0) {
+        return drawChevron(false, tick * 100);
+      }
+      return drawTick(tick * 100);
+    });
+    const negativeTape = negativeTickMarks.map((tick) => {
+      if (tick % 10 === 0) {
+        return drawChevron(true, tick * -100);
+      }
+      if (tick % 5 === 0) {
+        return drawChevron(false, tick * -100);
+      }
+      return drawTick(tick * -100);
+    });
+    return /* @__PURE__ */ import_react17.default.createElement("g", null, /* @__PURE__ */ import_react17.default.createElement("g", null, /* @__PURE__ */ import_react17.default.createElement("clipPath", { id: "AltitudetapeClip" }, /* @__PURE__ */ import_react17.default.createElement("rect", { x: 29, y: 60, width: 83, height: 333 }))), /* @__PURE__ */ import_react17.default.createElement("g", { clipPath: "url(#AltitudetapeClip)" }, /* @__PURE__ */ import_react17.default.createElement("g", { transform: `translate(0, ${props.altitude / 3.309})` }, negativeTape, tape)), /* @__PURE__ */ import_react17.default.createElement("path", { d: "M 29 58 L 29 391", stroke: "white", strokeWidth: "2", fill: "none" }));
+  };
+
+  // instruments/src/PrimaryFlightDisplay/components/Altitude/selectedAltitudeBox.tsx
+  var import_react18 = __toESM(require_react());
+  var SelectedAltitudeBox = (props) => {
+    return /* @__PURE__ */ import_react18.default.createElement("g", null, /* @__PURE__ */ import_react18.default.createElement("rect", { x: "31", y: "1", rx: 2, ry: 2, width: "81", height: "58", stroke: "white", strokeWidth: 2, fill: "transparent" }), /* @__PURE__ */ import_react18.default.createElement("path", { d: "M 31 27 L 112 27", stroke: "white", strokeWidth: "2", fill: "none" }));
+  };
+
+  // instruments/src/PrimaryFlightDisplay/components/Altitude/baroSettingBox.tsx
+  var import_react19 = __toESM(require_react());
+  var BaroSettingBox = (props) => {
+    return /* @__PURE__ */ import_react19.default.createElement("g", null, /* @__PURE__ */ import_react19.default.createElement("rect", { x: "29", y: "391", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", strokeWidth: 2, fill: "black" }));
+  };
+
+  // instruments/src/PrimaryFlightDisplay/components/Altitude/Altitude.tsx
+  var Altitude = (props) => {
+    const [altitude] = useSimVar("INDICATED ALTITUDE", "feet");
+    return /* @__PURE__ */ import_react20.default.createElement("div", { className: "altitude-continer" }, /* @__PURE__ */ import_react20.default.createElement("svg", { className: "altitude-svg", viewBox: "0 0 120 422" }, /* @__PURE__ */ import_react20.default.createElement("rect", { x: "29", y: "0", width: "83", height: "422", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ import_react20.default.createElement(AltitudeTape, { altitude }), /* @__PURE__ */ import_react20.default.createElement(SelectedAltitudeBox, null), /* @__PURE__ */ import_react20.default.createElement(BaroSettingBox, null)));
+  };
+
+  // instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/AttitudeDisplay.tsx
+  var import_react24 = __toESM(require_react());
+
+  // instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/attitudeBackground.tsx
+  var import_react21 = __toESM(require_react());
+  var AttitudeBackground = (props) => {
+    const isHorizonMarkerActive = () => {
+      if (Math.abs(props.pitch) <= 17) {
+        return true;
+      } else
+        return false;
+    };
+    const getTranslation = () => {
+      if (props.pitch > 17) {
+        return { negative: false, value: 17 };
+      } else if (props.pitch < -17) {
+        return { negative: true, value: -17 };
+      } else {
+        return { negative: false, value: props.pitch };
+      }
+    };
+    return /* @__PURE__ */ import_react21.default.createElement("g", { transform: `rotate(${props.bank}, 275, 255)` }, /* @__PURE__ */ import_react21.default.createElement("linearGradient", { id: "SkyGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0%", stopColor: "#020383" }), /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "88%", stopColor: "#020383" }), /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "100%", stopColor: "#1717cf" })), /* @__PURE__ */ import_react21.default.createElement("linearGradient", { id: "GroundGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0%", stopColor: "#674200" }), /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "25%", stopColor: "#352200" }), /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "100%", stopColor: "#352201" })), /* @__PURE__ */ import_react21.default.createElement("g", { transform: `translate(0,${getTranslation().value * 8.6})` }, /* @__PURE__ */ import_react21.default.createElement("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", fill: "url(#SkyGradiant)" }), /* @__PURE__ */ import_react21.default.createElement("rect", { x: "-2000", y: "254", width: "4600", height: "2205", fill: "url(#GroundGradiant)" }), isHorizonMarkerActive() && /* @__PURE__ */ import_react21.default.createElement("rect", { x: "0", y: "252", width: "600", height: "4", fill: "white", stroke: "black", strokeWidth: 1 })));
+  };
+
+  // instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/attitudeForeground.tsx
+  var import_react22 = __toESM(require_react());
+  var AttitudeForeground = (props) => {
+    const isHorizonMarkerActive = () => {
+      if (Math.abs(props.pitch) <= 17) {
+        return true;
+      } else
+        return false;
+    };
+    let TickType;
+    ((TickType2) => {
+      TickType2[TickType2["TWO_FIVE"] = 0] = "TWO_FIVE";
+      TickType2[TickType2["FIVE"] = 1] = "FIVE";
+      TickType2[TickType2["SEVEN_FIVE"] = 2] = "SEVEN_FIVE";
+      TickType2[TickType2["TEN"] = 3] = "TEN";
+      TickType2[TickType2["FOURTY_SIXTY_NINETY"] = 4] = "FOURTY_SIXTY_NINETY";
+      TickType2[TickType2["ONE"] = 5] = "ONE";
+    })(TickType || (TickType = {}));
+    const pitchArray = createArray(180);
+    const drawTick2 = (type, y, value) => {
+      const OneTickWidth = 6;
+      const TwoFiveTickWidth = 10;
+      const FiveTickWidth = 25;
+      const SevenFiveTickWidth = 18;
+      const TenTickWidth = 52;
+      const FourtyTickWidth = 10;
+      const offset = -252;
+      const correctedY = -y * 8.6;
+      const center = 275;
+      const strokeWidth = 4.5;
+      const strokeWidthTop = 3;
+      switch (type) {
+        case 5 /* ONE */:
+          return /* @__PURE__ */ import_react22.default.createElement(
+            PathWithBlackBackground,
+            {
+              d: `M ${center - 0.5 * OneTickWidth} ${correctedY - offset} L ${center - 0.5 * OneTickWidth + OneTickWidth} ${correctedY - offset}`,
+              fill: "black",
+              fillTop: "white",
+              StrokeWidth: strokeWidth,
+              strokeWidthTop
+            }
+          );
+        case 0 /* TWO_FIVE */:
+          return /* @__PURE__ */ import_react22.default.createElement(
+            PathWithBlackBackground,
+            {
+              d: `M ${center - 0.5 * TwoFiveTickWidth} ${correctedY - offset} L ${center - 0.5 * TwoFiveTickWidth + TwoFiveTickWidth} ${correctedY - offset}`,
+              fill: "black",
+              fillTop: "white",
+              StrokeWidth: strokeWidth,
+              strokeWidthTop
+            }
+          );
+        case 1 /* FIVE */:
+          return /* @__PURE__ */ import_react22.default.createElement(
+            PathWithBlackBackground,
+            {
+              d: `M ${center - 0.5 * FiveTickWidth} ${correctedY - offset} L ${center - 0.5 * FiveTickWidth + FiveTickWidth} ${correctedY - offset}`,
+              fill: "black",
+              fillTop: "white",
+              StrokeWidth: strokeWidth,
+              strokeWidthTop
+            }
+          );
+        case 2 /* SEVEN_FIVE */:
+          return /* @__PURE__ */ import_react22.default.createElement(
+            PathWithBlackBackground,
+            {
+              d: `M ${center - 0.5 * SevenFiveTickWidth} ${correctedY - offset} L ${center - 0.5 * SevenFiveTickWidth + SevenFiveTickWidth} ${correctedY - offset}`,
+              fill: "black",
+              fillTop: "white",
+              StrokeWidth: strokeWidth,
+              strokeWidthTop
+            }
+          );
+        case 3 /* TEN */:
+          return /* @__PURE__ */ import_react22.default.createElement(import_react22.default.Fragment, null, /* @__PURE__ */ import_react22.default.createElement(
+            "text",
+            {
+              x: center - 45,
+              y: correctedY - offset + 2,
+              fill: "white",
+              fontSize: "22px",
+              textAnchor: "middle",
+              dominantBaseline: "middle",
+              stroke: "black",
+              strokeWidth: 2,
+              paintOrder: "stroke"
+            },
+            value
+          ), /* @__PURE__ */ import_react22.default.createElement(
+            PathWithBlackBackground,
+            {
+              d: `M ${center - 0.5 * TenTickWidth} ${correctedY - offset} L ${center - 0.5 * TenTickWidth + TenTickWidth} ${correctedY - offset}`,
+              fill: "black",
+              fillTop: "white",
+              StrokeWidth: strokeWidth,
+              strokeWidthTop
+            }
+          ), /* @__PURE__ */ import_react22.default.createElement(
+            "text",
+            {
+              x: center + 45,
+              y: correctedY - offset + 2,
+              fill: "white",
+              fontSize: "22px",
+              textAnchor: "middle",
+              dominantBaseline: "middle",
+              stroke: "black",
+              strokeWidth: 2,
+              paintOrder: "stroke"
+            },
+            value
+          ));
+        case 4 /* FOURTY_SIXTY_NINETY */:
+          return /* @__PURE__ */ import_react22.default.createElement(import_react22.default.Fragment, null, /* @__PURE__ */ import_react22.default.createElement(
+            PathWithBlackBackground,
+            {
+              d: `M ${center - FourtyTickWidth + 35} ${correctedY - offset} L ${center + 35 + FourtyTickWidth} ${correctedY - offset}`,
+              fill: "black",
+              fillTop: "white",
+              StrokeWidth: strokeWidth,
+              strokeWidthTop
+            }
+          ), /* @__PURE__ */ import_react22.default.createElement(
+            "text",
+            {
+              x: "260",
+              y: correctedY - offset + 5,
+              fill: "white",
+              fontSize: "22px",
+              textAnchor: "start",
+              dominantBaseline: "middle",
+              stroke: "black",
+              strokeWidth: 2,
+              paintOrder: "stroke"
+            },
+            value
+          ), /* @__PURE__ */ import_react22.default.createElement(
+            PathWithBlackBackground,
+            {
+              d: `M ${center - FourtyTickWidth - 35} ${correctedY - offset} L ${center - 35 + FourtyTickWidth} ${correctedY - offset}`,
+              fill: "black",
+              fillTop: "white",
+              StrokeWidth: strokeWidth,
+              strokeWidthTop
+            }
+          ));
+        default:
+          return /* @__PURE__ */ import_react22.default.createElement(import_react22.default.Fragment, null);
+      }
+    };
+    const DrawChevron = (y, direction) => {
+      const center = 275;
+      const color = "red";
+      const strokeWidth = 4;
+      const strokeWidthTop = 3;
+      const correctedY = -y * 8.6;
+      const offset = -252;
+      if (direction === 1) {
+        return /* @__PURE__ */ import_react22.default.createElement("g", null, /* @__PURE__ */ import_react22.default.createElement(
+          PathWithBlackBackground,
+          {
+            d: `M ${center} ${correctedY - offset - 8} L ${center - 45} ${correctedY - offset - 80} L ${center - 30} ${correctedY - offset - 80} L ${center} ${correctedY - offset - 35} L ${center + 30} ${correctedY - offset - 80} L ${center + 45} ${correctedY - offset - 80} L ${center} ${correctedY - offset - 8}`,
+            fill: "black",
+            fillTop: color,
+            StrokeWidth: strokeWidth,
+            strokeWidthTop,
+            fillTop2: "transparent",
+            forceTransparent: true
+          }
+        ));
+      } else {
+        return /* @__PURE__ */ import_react22.default.createElement("g", null, /* @__PURE__ */ import_react22.default.createElement(
+          PathWithBlackBackground,
+          {
+            d: `M ${center} ${correctedY - offset + 8} L ${center - 45} ${correctedY - offset + 60} L ${center - 30} ${correctedY - offset + 60} L ${center} ${correctedY - offset + 25} L ${center + 30} ${correctedY - offset + 60} L ${center + 45} ${correctedY - offset + 60} L ${center} ${correctedY - offset + 8}`,
+            fill: "black",
+            fillTop: color,
+            StrokeWidth: strokeWidth,
+            strokeWidthTop,
+            fillTop2: "transparent",
+            forceTransparent: true
+          }
+        ));
+      }
+    };
+    const createPitchMarkings = () => {
+      return pitchArray.map((pitch) => {
+        const pitchCorrected = pitch - 90;
+        switch (pitchCorrected) {
+          case -90:
+            return drawTick2(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected, Math.abs(pitchCorrected));
+          case -65:
+            return DrawChevron(pitchCorrected, 0);
+          case -60:
+            return drawTick2(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected, Math.abs(pitchCorrected));
+          case -46:
+            return DrawChevron(pitchCorrected, 0);
+          case -40:
+            return drawTick2(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected, Math.abs(pitchCorrected));
+          case -31:
+            return DrawChevron(pitchCorrected, 0);
+          case -30:
+            return drawTick2(3 /* TEN */, pitchCorrected, Math.abs(pitchCorrected));
+          case -25:
+            return drawTick2(1 /* FIVE */, pitchCorrected, Math.abs(pitchCorrected));
+          case -20:
+            return drawTick2(3 /* TEN */, pitchCorrected, Math.abs(pitchCorrected));
+          case -15:
+            return drawTick2(1 /* FIVE */, pitchCorrected, Math.abs(pitchCorrected));
+          case -10:
+            return drawTick2(3 /* TEN */, pitchCorrected, Math.abs(pitchCorrected));
+          case -7:
+            return drawTick2(2 /* SEVEN_FIVE */, pitchCorrected - 0.5, Math.abs(pitchCorrected - 0.5));
+          case -5:
+            return drawTick2(1 /* FIVE */, pitchCorrected, Math.abs(pitchCorrected));
+          case -4:
+            return drawTick2(5 /* ONE */, pitchCorrected, Math.abs(pitchCorrected));
+          case -3:
+            return drawTick2(5 /* ONE */, pitchCorrected, Math.abs(pitchCorrected));
+          case -2:
+            return drawTick2(5 /* ONE */, pitchCorrected, Math.abs(pitchCorrected));
+          case -1:
+            return drawTick2(5 /* ONE */, pitchCorrected, Math.abs(pitchCorrected));
+          case 2:
+            return drawTick2(2 /* SEVEN_FIVE */, pitchCorrected + 0.5, pitchCorrected + 0.5);
+          case 5:
+            return drawTick2(1 /* FIVE */, pitchCorrected, pitchCorrected);
+          case 7:
+            return drawTick2(2 /* SEVEN_FIVE */, pitchCorrected + 0.5, pitchCorrected + 0.5);
+          case 10:
+            return drawTick2(3 /* TEN */, pitchCorrected, pitchCorrected);
+          case 15:
+            return drawTick2(1 /* FIVE */, pitchCorrected, pitchCorrected);
+          case 20:
+            return drawTick2(3 /* TEN */, pitchCorrected, pitchCorrected);
+          case 25:
+            return drawTick2(1 /* FIVE */, pitchCorrected, pitchCorrected);
+          case 30:
+            return drawTick2(3 /* TEN */, pitchCorrected, pitchCorrected);
+          case 40:
+            return drawTick2(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected, pitchCorrected);
+          case 45:
+            return DrawChevron(pitchCorrected, 1);
+          case 60:
+            return drawTick2(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected, pitchCorrected);
+          case 65:
+            return DrawChevron(pitchCorrected, 1);
+          case 89:
+            return drawTick2(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected + 1, pitchCorrected + 1);
+          default:
+            return /* @__PURE__ */ import_react22.default.createElement(import_react22.default.Fragment, null);
+        }
+      });
+    };
+    const getTranslation = () => {
+      if (props.pitch > 17) {
+        return { negative: false, value: 17 };
+      } else if (props.pitch < -17) {
+        return { negative: true, value: -17 };
+      } else {
+        return { negative: false, value: props.pitch };
+      }
+    };
+    return /* @__PURE__ */ import_react22.default.createElement("g", null, /* @__PURE__ */ import_react22.default.createElement("clipPath", { id: "attitude-clip" }, /* @__PURE__ */ import_react22.default.createElement("path", { d: "m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" })), /* @__PURE__ */ import_react22.default.createElement("g", { clipPath: "url(#attitude-clip)" }, /* @__PURE__ */ import_react22.default.createElement("g", { transform: `rotate(${props.bank}, 275, 255)` }, /* @__PURE__ */ import_react22.default.createElement("g", { transform: `translate(0,${getTranslation().value * 8.6})` }, /* @__PURE__ */ import_react22.default.createElement("rect", { x: "-500", y: "-2000", width: "1600", height: "2255", className: "attitude-sky" }), /* @__PURE__ */ import_react22.default.createElement("rect", { x: "-0", y: "254", width: "1600", height: "2205", className: "attitude-ground-inner" }), isHorizonMarkerActive() && /* @__PURE__ */ import_react22.default.createElement("rect", { x: "0", y: "252", width: "600", height: "4", fill: "white", stroke: "black", strokeWidth: 1 })), /* @__PURE__ */ import_react22.default.createElement("g", { transform: `translate(0,${`${props.pitch * 8.6}`} )` }, createPitchMarkings()))));
+  };
+
+  // instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/markers.tsx
+  var import_react23 = __toESM(require_react());
+  var AttitudeMarkers = () => {
+    return /* @__PURE__ */ import_react23.default.createElement("g", null, /* @__PURE__ */ import_react23.default.createElement(
+      PathWithBlackBackground,
+      {
+        d: "M 166 249 L 217 249  L 217 268 L 209 268 L 209 258 L 166 258 L 166 249",
+        fill: "black",
+        fillTop: "white",
+        StrokeWidth: 3,
+        strokeWidthTop: 2,
+        fillTop2: "black"
+      }
+    ), /* @__PURE__ */ import_react23.default.createElement(
+      PathWithBlackBackground,
+      {
+        d: "M 384 249 L 333 249 L 333 268 L 341 268 L 341 258 L 384 258 L 384 249",
+        fill: "black",
+        fillTop: "white",
+        StrokeWidth: 3,
+        strokeWidthTop: 2,
+        fillTop2: "black"
+      }
+    ), /* @__PURE__ */ import_react23.default.createElement(
+      PathWithBlackBackground,
+      {
+        d: "M 280 249 L 270 249 L 270 258 L 280 258 L 280 258 L 280 249",
+        fill: "black",
+        fillTop: "white",
+        StrokeWidth: 3,
+        strokeWidthTop: 2,
+        fillTop2: "black"
+      }
+    ));
+  };
+
+  // instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/AttitudeDisplay.tsx
+  var AttitudeDisplay = (props) => {
+    const [bank] = useSimVar("PLANE BANK DEGREES", "degrees");
+    const [pitch] = useSimVar("PLANE PITCH DEGREES", "degrees");
+    return /* @__PURE__ */ import_react24.default.createElement("div", { className: "attitude-continer" }, /* @__PURE__ */ import_react24.default.createElement("svg", { className: "attitude-svg", viewBox: "0 0 600 460", width: "100%", height: "100%" }, /* @__PURE__ */ import_react24.default.createElement(AttitudeBackground, { bank, pitch }), /* @__PURE__ */ import_react24.default.createElement(AttitudeForeground, { bank, pitch }), /* @__PURE__ */ import_react24.default.createElement(AttitudeMarkers, null)));
+  };
+
+  // instruments/src/PrimaryFlightDisplay/components/pfdProvider/pfdProvider.tsx
+  var PFDProvider = () => {
+    return /* @__PURE__ */ import_react25.default.createElement("div", null, /* @__PURE__ */ import_react25.default.createElement("div", { className: "top-component" }, /* @__PURE__ */ import_react25.default.createElement(AttitudeDisplay, null), /* @__PURE__ */ import_react25.default.createElement(FMA, { x: 0, y: 0, vars: FmaVars() }), /* @__PURE__ */ import_react25.default.createElement(Airspeed, null), /* @__PURE__ */ import_react25.default.createElement(Altitude, null)), /* @__PURE__ */ import_react25.default.createElement("div", { className: "bottom-component" }, "bottom"));
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/index.tsx
+  var import_react32 = __toESM(require_react());
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/ComponentProvider/ComponentProvider.tsx
+  var import_react31 = __toESM(require_react());
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/APU/APU.tsx
+  var import_react26 = __toESM(require_react());
+  var APU = (props) => {
+    return /* @__PURE__ */ import_react26.default.createElement("div", null, /* @__PURE__ */ import_react26.default.createElement("div", null, "fuck nigga"));
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Cabin/cabin.tsx
+  var import_react27 = __toESM(require_react());
+  var Cabin = () => {
+    return /* @__PURE__ */ import_react27.default.createElement("div", null, /* @__PURE__ */ import_react27.default.createElement("div", null, "cabin"));
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engine.tsx
+  var import_react30 = __toESM(require_react());
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/n1Gauge.tsx
+  var import_react28 = __toESM(require_react());
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/hooks/getThrustRatingAnnunciatorString.ts
+  var getThrustRatingAnnunciatorString = (thrustRating) => {
+    let annunciator = "";
+    switch (thrustRating) {
+      case 0 /* GA */:
+        annunciator = "GA";
+        break;
+      case 1 /* GA_RSV */:
+        annunciator = "GA RSV";
+        break;
+      case 2 /* TO_1_RSV */:
+        annunciator = "T/O-1 RSV";
+        break;
+      case 3 /* TO_1 */:
+        annunciator = "T/O-1";
+        break;
+      case 4 /* FLEX_TO_1 */:
+        annunciator = "FLEX T/O-1";
+        break;
+      case 5 /* TO_2_RSV */:
+        annunciator = "T/O-2 RSV";
+        break;
+      case 6 /* TO_2 */:
+        annunciator = "T/O-2";
+        break;
+      case 7 /* FLEX_TO_2 */:
+        annunciator = "FLEX T/O-2";
+        break;
+      case 8 /* TO_3_RSV */:
+        annunciator = "T/O-3 RSV";
+        break;
+      case 9 /* TO_3 */:
+        annunciator = "T/O-3";
+        break;
+      case 10 /* FLEX_TO_3 */:
+        annunciator = "FLEX T/O-3";
+        break;
+      case 11 /* CON */:
+        annunciator = "CON";
+        break;
+      case 12 /* CLB_1 */:
+        annunciator = "CLB-1";
+        break;
+      case 13 /* CLB_2 */:
+        annunciator = "CLB-2";
+        break;
+      case 14 /* CRZ */:
+        annunciator = "CRZ";
+        break;
+    }
+    return annunciator;
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/n1Gauge.tsx
+  var N1Gauge = (props) => {
+    let annunciator = getThrustRatingAnnunciatorString(props.thrustRatingAnnunciator);
+    return /* @__PURE__ */ import_react28.default.createElement("div", null, /* @__PURE__ */ import_react28.default.createElement("div", null, "n1 gauge ", annunciator));
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGauge.tsx
+  var import_react29 = __toESM(require_react());
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGaugeColors.ts
+  var getIttGaugeColor = (redColor, yellowColor, limeColor, sFillColor, itt, redline, yellowline, forceRed) => {
+    let fillColor;
+    let needleColor;
+    if (itt >= redline) {
+      fillColor = redColor;
+      needleColor = "#fffeff";
+    } else if (forceRed) {
+      fillColor = redColor;
+      needleColor = "#fffeff";
+    } else if (itt >= yellowline && !forceRed) {
+      fillColor = yellowColor;
+      needleColor = yellowColor;
+    } else {
+      fillColor = sFillColor;
+      needleColor = limeColor;
+    }
+    return { fillColor, needleColor };
+  };
+  var limiter = (limit, value) => {
+    if (value > limit) {
+      return limit;
+    } else {
+      return value;
+    }
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/gaugeUtil/gaugeUtil.ts
+  var findCoordsOnCircle = (centerX, centerY, radius, angle) => {
+    let x = centerX + radius * Math.sin(angle * Math.PI / 180);
+    let y = centerY - radius * Math.cos(angle * Math.PI / 180);
+    return { x, y };
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGauge.tsx
+  var IttGauge = (props) => {
+    const [forceRed, setForceRed] = (0, import_react29.useState)(false);
+    (0, import_react29.useEffect)(() => {
+      if (props.ittValue > props.yellowLineValue) {
+        const timer = setTimeout(() => {
+          setForceRed(true);
+        }, props.forceRedInYellowTime);
+        return () => clearTimeout(timer);
+      } else {
+        setForceRed(false);
+      }
+    }, [props.ittValue]);
+    return /* @__PURE__ */ import_react29.default.createElement("div", { className: "itt-gauge-container-absolute", style: { left: `${props.left}px`, top: `${props.top}px` } }, /* @__PURE__ */ import_react29.default.createElement("svg", { viewBox: "0 0 100 100", xmlns: "http://www.w3.org/2000/svg" }, props.invalid ? null : /* @__PURE__ */ import_react29.default.createElement("g", { transform: `rotate(-135 50 50)` }, /* @__PURE__ */ import_react29.default.createElement(
+      "path",
+      {
+        id: "filler",
+        d: `m 50 50 L 50 15 A 35 35 0 ${limiter(props.hardLimit, props.ittValue) / props.scaling > 180 ? 1 : 0} 1 ${findCoordsOnCircle(50, 50, 35, limiter(props.hardLimit, props.ittValue) / props.scaling).x} ${findCoordsOnCircle(50, 50, 35, limiter(props.hardLimit, props.ittValue) / props.scaling).y} Z`,
+        fill: getIttGaugeColor(
+          props.redColor,
+          props.yellowColor,
+          props.limeColor,
+          props.fillerColor,
+          props.ittValue,
+          props.redlineValue,
+          props.yellowLineValue,
+          forceRed
+        ).fillColor
+      }
+    )), /* @__PURE__ */ import_react29.default.createElement("circle", { cx: 50, cy: 50, r: 35, stroke: "white", "stroke-width": 2, fill: "transparent" }), props.invalid ? null : /* @__PURE__ */ import_react29.default.createElement("g", { transform: `rotate(-135 50 50)` }, /* @__PURE__ */ import_react29.default.createElement(
+      "path",
+      {
+        stroke: props.redColor,
+        strokeWidth: 2,
+        strokeLinecap: "round",
+        id: "redlineBug",
+        d: `m ${findCoordsOnCircle(50, 50, 35, props.redlineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 35, props.redlineValue / props.scaling).y} L${findCoordsOnCircle(50, 50, 30, props.redlineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 30, props.redlineValue / props.scaling).y}`
+      }
+    ), /* @__PURE__ */ import_react29.default.createElement(
+      "path",
+      {
+        stroke: props.yellowColor,
+        strokeWidth: 2,
+        strokeLinecap: "round",
+        id: "yellowlineBug",
+        d: `m ${findCoordsOnCircle(50, 50, 35, props.yellowLineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 35, props.yellowLineValue / props.scaling).y} L${findCoordsOnCircle(50, 50, 30, props.yellowLineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 30, props.yellowLineValue / props.scaling).y}`
+      }
+    ), /* @__PURE__ */ import_react29.default.createElement("g", { transform: `rotate(${limiter(props.hardLimit, props.ittValue) / props.scaling} 50 50)` }, /* @__PURE__ */ import_react29.default.createElement(
+      "path",
+      {
+        d: `M 48.5 50 L 48.5 30 L50 17.5L 51.5 30 L 51.5 50 `,
+        fill: getIttGaugeColor(
+          props.redColor,
+          props.yellowColor,
+          props.limeColor,
+          props.fillerColor,
+          props.ittValue,
+          props.redlineValue,
+          props.yellowLineValue,
+          forceRed
+        ).needleColor,
+        stroke: "black",
+        paintOrder: "stroke",
+        strokeWidth: 1.5,
+        strokeLinecap: "round",
+        strokeLinejoin: "round"
+      }
+    ))), /* @__PURE__ */ import_react29.default.createElement("circle", { cx: 50, cy: 50, r: 3, stroke: "white", strokeWidth: 1, fill: "black" }), props.fire ? /* @__PURE__ */ import_react29.default.createElement("g", null, /* @__PURE__ */ import_react29.default.createElement(
+      "rect",
+      {
+        x: 30,
+        y: 32.5,
+        width: 40,
+        height: 25,
+        fill: props.redColor,
+        stroke: "black",
+        strokeWidth: 2,
+        strokeLinejoin: "round"
+      }
+    ), /* @__PURE__ */ import_react29.default.createElement("text", { x: 50, y: 50, textAnchor: "middle", fill: "white", fontSize: 15 }, "FIRE")) : null, /* @__PURE__ */ import_react29.default.createElement("rect", { x: 25, y: 75, width: 50, height: 20, fill: "black", stroke: "white", strokeWidth: 2, strokeLinejoin: "round" }), /* @__PURE__ */ import_react29.default.createElement("text", { x: 50, y: 90, textAnchor: "middle", fill: `${props.invalid ? props.amberColor : props.limeColor}`, fontSize: 10 }, props.invalid == false ? props.ittValue.toFixed(0) : "----")));
+  };
+  IttGauge.defaultProps = {
+    ittValue: 0,
+    redlineValue: 0,
+    yellowLineValue: 0,
+    fire: false,
+    invalid: false,
+    left: 0,
+    top: 0,
+    hardLimit: 0,
+    scaling: 0,
+    amberColor: "yellow",
+    redColor: "red",
+    limeColor: "lime",
+    yellowColor: "yellow",
+    fillerColor: "grey",
+    forceRedInYellowTime: 12e4
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engineParameters.ts
+  var EngineParameters = {
+    E170_ITT: {
+      hardLimit: 1130,
+      scaling: 4.2,
+      amberColor: "orange",
+      redColor: "red",
+      limeColor: "lime",
+      yellowColor: "yellow",
+      fillerColor: "grey",
+      redlineValue: 1050,
+      yellowLineValue: 950,
+      forceRedInYellowTime: 12e4,
+      leftGague: {
+        x: 11,
+        y: 210
+      },
+      rightGague: {
+        x: 192,
+        y: 210
+      }
+    },
+    E190_ITT: {},
+    E170_N1: {}
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engineVars.tsx
+  var EngineVars = () => {
+    const [thrustRatingAnnunciator] = useObjLocalVar("EICAS_THRUST_RATING_ANNUNCIATOR", "number");
+    const [ittValue1] = useSimVar("TURB ENG1 ITT", "celsius");
+    const [ittValue2] = useSimVar("TURB ENG2 ITT", "celsius");
+    const [eng1Fire] = useObjLocalVar("EICAS_ENG1_FIRE", "bool");
+    const [eng2Fire] = useObjLocalVar("EICAS_ENG2_FIRE", "bool");
+    const [eng1IttInvalid] = useObjLocalVar("EICAS_ENG1_ITT_INVALID", "bool");
+    const [eng2IttInvalid] = useObjLocalVar("EICAS_ENG2_ITT_INVALID", "bool");
+    return { thrustRatingAnnunciator, ittValue1, ittValue2, eng1Fire, eng2Fire, eng1IttInvalid, eng2IttInvalid };
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engine.tsx
+  var Engine = (props) => {
+    const vars = EngineVars();
+    return /* @__PURE__ */ import_react30.default.createElement("div", { className: "engine-wrapper" }, /* @__PURE__ */ import_react30.default.createElement("div", { className: "flex-row" }, /* @__PURE__ */ import_react30.default.createElement(
+      N1Gauge,
+      {
+        n1Value: 0,
+        redlineValue: 100,
+        commandedN1: 0,
+        thrustRatingAnnunciator: vars.thrustRatingAnnunciator,
+        invalid: false,
+        attcsState: 0
+      }
+    ), /* @__PURE__ */ import_react30.default.createElement(N1Gauge, { n1Value: 0, redlineValue: 100, commandedN1: 0, thrustRatingAnnunciator: 1, invalid: false, attcsState: 0 })), /* @__PURE__ */ import_react30.default.createElement("div", { className: "flex-row" }, /* @__PURE__ */ import_react30.default.createElement(
+      IttGauge,
+      {
+        ittValue: vars.ittValue1,
+        redlineValue: EngineParameters.E170_ITT.redlineValue,
+        yellowLineValue: EngineParameters.E170_ITT.yellowLineValue,
+        fire: vars.eng1Fire,
+        invalid: vars.eng1IttInvalid,
+        left: EngineParameters.E170_ITT.leftGague.x,
+        top: EngineParameters.E170_ITT.leftGague.y,
+        hardLimit: EngineParameters.E170_ITT.hardLimit,
+        scaling: EngineParameters.E170_ITT.scaling,
+        amberColor: EngineParameters.E170_ITT.amberColor,
+        redColor: EngineParameters.E170_ITT.redColor,
+        limeColor: EngineParameters.E170_ITT.limeColor,
+        yellowColor: EngineParameters.E170_ITT.yellowColor,
+        fillerColor: EngineParameters.E170_ITT.fillerColor,
+        forceRedInYellowTime: EngineParameters.E170_ITT.forceRedInYellowTime
+      }
+    ), /* @__PURE__ */ import_react30.default.createElement(
+      IttGauge,
+      {
+        ittValue: vars.ittValue2,
+        redlineValue: EngineParameters.E170_ITT.redlineValue,
+        yellowLineValue: EngineParameters.E170_ITT.yellowLineValue,
+        fire: vars.eng2Fire,
+        invalid: vars.eng2IttInvalid,
+        left: EngineParameters.E170_ITT.rightGague.x,
+        top: EngineParameters.E170_ITT.rightGague.y,
+        hardLimit: EngineParameters.E170_ITT.hardLimit,
+        scaling: EngineParameters.E170_ITT.scaling,
+        amberColor: EngineParameters.E170_ITT.amberColor,
+        redColor: EngineParameters.E170_ITT.redColor,
+        limeColor: EngineParameters.E170_ITT.limeColor,
+        yellowColor: EngineParameters.E170_ITT.yellowColor,
+        fillerColor: EngineParameters.E170_ITT.fillerColor,
+        forceRedInYellowTime: EngineParameters.E170_ITT.forceRedInYellowTime
+      }
+    )));
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/ComponentProvider/ComponentProvider.tsx
+  var ComponentProvider = (props) => {
+    return /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-wrapper" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-left" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-engine" }, /* @__PURE__ */ import_react31.default.createElement(Engine, null)), /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-fuel" }, "Fuel"), /* @__PURE__ */ import_react31.default.createElement("div", { className: `component-provider-oil ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react31.default.createElement("div", null) : /* @__PURE__ */ import_react31.default.createElement("div", null, "oil")), /* @__PURE__ */ import_react31.default.createElement("div", { className: `component-provider-vib ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react31.default.createElement("div", null) : /* @__PURE__ */ import_react31.default.createElement("div", null, "vib")), /* @__PURE__ */ import_react31.default.createElement("div", { className: `component-provider-flaps ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react31.default.createElement("div", null) : /* @__PURE__ */ import_react31.default.createElement("div", null, "flaps"))), /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-right" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-cas" }, "CAS MSG"), /* @__PURE__ */ import_react31.default.createElement("div", { className: `component-provider-lg ${props.declutter ? "declutter-hidden-right" : ""}` }, props.declutter ? /* @__PURE__ */ import_react31.default.createElement("div", null) : /* @__PURE__ */ import_react31.default.createElement("div", null, "lg")), /* @__PURE__ */ import_react31.default.createElement("div", { className: `component-provider-apu` }, props.declutter ? /* @__PURE__ */ import_react31.default.createElement("div", null) : /* @__PURE__ */ import_react31.default.createElement(APU, null)), /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-cabin" }, /* @__PURE__ */ import_react31.default.createElement(Cabin, null)), /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-trim" }, "Trim")));
+  };
+
+  // instruments/src/EngineIndicatingAndCrewAlertingSystem/index.tsx
+  var EngineIndicatingAndCrewAlertingSystem = () => {
+    const [declutter] = useObjLocalVar("EICAS_DECLUTTER", "bool");
+    return /* @__PURE__ */ import_react32.default.createElement("div", { id: "EICAS_ROOT" }, /* @__PURE__ */ import_react32.default.createElement(ComponentProvider, { declutter }));
+  };
+  var EicasState = getDisplayState("EICAS", cDisplayFaulureState);
+  var EICAS = () => {
+    const displayStates = AutoReversionary(cDisplayFaulureState);
+    switch (displayStates[2]) {
+      case "PFD":
+        return /* @__PURE__ */ import_react32.default.createElement(PrimaryFlightDisplayContent, null);
+      case "PFD2":
+        return /* @__PURE__ */ import_react32.default.createElement("div", null, " PFD2 ");
+      case "MFD":
+        return /* @__PURE__ */ import_react32.default.createElement(MultifunctionDisplayContent, null);
+      case "MFD2":
+        return /* @__PURE__ */ import_react32.default.createElement("div", null, " MFD2 ");
+      case "EICAS":
+        return /* @__PURE__ */ import_react32.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
+      case "FAILED":
+        return /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, null);
+      default:
+        return /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, null);
+    }
+  };
+  render(EicasState ? /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, null) : /* @__PURE__ */ import_react32.default.createElement(EICAS, null));
+
+  // instruments/src/PrimaryFlightDisplay/index.tsx
+  var PrimaryFlightDisplayContent = () => {
+    return /* @__PURE__ */ import_react33.default.createElement("div", { id: "PFD-ROOT" }, /* @__PURE__ */ import_react33.default.createElement(PFDProvider, null));
+  };
+  var PfdState = getDisplayState("PFD", cDisplayFaulureState);
+  var PFD = () => {
+    const displayStates = AutoReversionary(cDisplayFaulureState);
+    switch (displayStates[0]) {
+      case "PFD":
+        return /* @__PURE__ */ import_react33.default.createElement(PrimaryFlightDisplayContent, null);
+      case "PFD2":
+        return /* @__PURE__ */ import_react33.default.createElement("div", null, " PFD2 ");
+      case "MFD":
+        return /* @__PURE__ */ import_react33.default.createElement(MultifunctionDisplayContent, null);
+      case "MFD2":
+        return /* @__PURE__ */ import_react33.default.createElement("div", null, " MFD2 ");
+      case "EICAS":
+        return /* @__PURE__ */ import_react33.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
+      case "FAILED":
+        return /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null);
+      default:
+        return /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null);
+    }
+  };
+  render(PfdState ? /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null) : /* @__PURE__ */ import_react33.default.createElement(PFD, null));
+
   // instruments/src/MultifunctionDisplay/index.tsx
-  var MultifunctionDisplay = () => {
-    const [isSystem, setIsSystem] = import_react11.default.useState(false);
-    const [systemMenu, setSystemMenu] = import_react11.default.useState(false);
-    const [showSystems, setShowSystems] = import_react11.default.useState(false);
-    return /* @__PURE__ */ import_react11.default.createElement("div", null, /* @__PURE__ */ import_react11.default.createElement(Mouse, null), /* @__PURE__ */ import_react11.default.createElement(
+  var MultifunctionDisplayContent = () => {
+    const [isSystem, setIsSystem] = import_react34.default.useState(false);
+    const [systemMenu, setSystemMenu] = import_react34.default.useState(false);
+    const [showSystems, setShowSystems] = import_react34.default.useState(false);
+    return /* @__PURE__ */ import_react34.default.createElement("div", null, /* @__PURE__ */ import_react34.default.createElement(Mouse, null), /* @__PURE__ */ import_react34.default.createElement(
       displayProvider_default,
       {
         systemMenu,
@@ -23512,7 +24775,27 @@ class InstrumentLogic extends BaseInstrument {
       }
     ));
   };
-  render(/* @__PURE__ */ import_react11.default.createElement(MultifunctionDisplay, null));
+  var MfdState = getDisplayState("MFD", cDisplayFaulureState);
+  var MFD = () => {
+    const displayStates = AutoReversionary(cDisplayFaulureState);
+    switch (displayStates[1]) {
+      case "PFD":
+        return /* @__PURE__ */ import_react34.default.createElement(PrimaryFlightDisplayContent, null);
+      case "PFD2":
+        return /* @__PURE__ */ import_react34.default.createElement("div", null, " PFD2 ");
+      case "MFD":
+        return /* @__PURE__ */ import_react34.default.createElement(MultifunctionDisplayContent, null);
+      case "MFD2":
+        return /* @__PURE__ */ import_react34.default.createElement("div", null, " MFD2 ");
+      case "EICAS":
+        return /* @__PURE__ */ import_react34.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
+      case "FAILED":
+        return /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null);
+      default:
+        return /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null);
+    }
+  };
+  render(MfdState ? /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null) : /* @__PURE__ */ import_react34.default.createElement(MFD, null));
 })();
 /**
  * @license React

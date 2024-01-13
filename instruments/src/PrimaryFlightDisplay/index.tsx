@@ -2,6 +2,9 @@ import React from 'react'
 import { render } from 'instruments/common/Hooks'
 import './index.scss'
 import { PFDProvider } from './components/pfdProvider/pfdProvider'
+import { AutoReversionary, getDisplayState, cDisplayFaulureState } from 'instruments/common/Reversionary/Reversionary'
+import { MultifunctionDisplayContent } from '../MultifunctionDisplay'
+import { EngineIndicatingAndCrewAlertingSystem } from '../EngineIndicatingAndCrewAlertingSystem'
 
 /**
  * some insight to the PFD and how we are going to address reversionary modes
@@ -13,7 +16,7 @@ import { PFDProvider } from './components/pfdProvider/pfdProvider'
  *
  */
 
-const PrimaryFlightDisplay = (): JSX.Element => {
+export const PrimaryFlightDisplayContent = (): JSX.Element => {
   return (
     <div id="PFD-ROOT">
       <PFDProvider />
@@ -21,4 +24,26 @@ const PrimaryFlightDisplay = (): JSX.Element => {
   )
 }
 
-render(<PrimaryFlightDisplay />)
+const PfdState = getDisplayState('PFD', cDisplayFaulureState)
+
+const PFD = (): JSX.Element => {
+  const displayStates = AutoReversionary(cDisplayFaulureState)
+  switch (displayStates[0]) {
+    case 'PFD':
+      return <PrimaryFlightDisplayContent />
+    case 'PFD2':
+      return <div> PFD2 </div>
+    case 'MFD':
+      return <MultifunctionDisplayContent />
+    case 'MFD2':
+      return <div> MFD2 </div>
+    case 'EICAS':
+      return <EngineIndicatingAndCrewAlertingSystem />
+    case 'FAILED':
+      return <></>
+    default:
+      return <></>
+  }
+}
+
+render(PfdState ? <></> : <PFD />)

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { type FC, useEffect, useState } from 'react'
 import { getStyleForATMode, GetStringForATMode, ATModeTypes } from './FMA_Annunciators'
 import { reverseVideo } from 'instruments/common/util/reverseVideo'
 import './fma.scss'
@@ -61,7 +61,7 @@ export const FMA: FC<T_FMAProps> = (props: T_FMAProps): JSX.Element => {
         bg: reverseVideo({ color: 'green', backgroundColor: 'white', reverse: sReverseVideo }).backgroundColor,
         color: reverseVideo({ color: 'green', backgroundColor: 'white', reverse: sReverseVideo }).color
       }
-    } else return { bg: getStyleForATMode(AtMode).backgroundColor, color: getStyleForATMode(AT_Mode_).color }
+    } else return { bg: getStyleForATMode(AtMode).backgroundColor, color: getStyleForATMode(AtMode).color }
   }
 
   return (
@@ -86,28 +86,28 @@ export const FMA: FC<T_FMAProps> = (props: T_FMAProps): JSX.Element => {
           element: <GetStringForATMode style={getStyleForATMode(SelectionSource)} mode={SelectionSource} />
         }}
         Lateral_Mode_Box={{
-          backgroundColor: getStyleForATMode(Lateral_Mode_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(Lateral_Mode_)} mode={Lateral_Mode_} />
+          backgroundColor: getStyleForATMode(LateralMode).backgroundColor,
+          element: <GetStringForATMode style={getStyleForATMode(LateralMode)} mode={LateralMode} />
         }}
         Vertical_Mode_Box={{
-          backgroundColor: getStyleForATMode(Vertical_Mode_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(Vertical_Mode_)} mode={Vertical_Mode_} />
+          backgroundColor: getStyleForATMode(VerticalMode).backgroundColor,
+          element: <GetStringForATMode style={getStyleForATMode(VerticalMode)} mode={VerticalMode} />
         }}
         Armed_AT_Mode_Box={{
-          backgroundColor: getStyleForATMode(Armed_AT_Mode_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(Armed_AT_Mode_)} mode={Armed_AT_Mode_} />
+          backgroundColor: getStyleForATMode(ArmedAtMode).backgroundColor,
+          element: <GetStringForATMode style={getStyleForATMode(ArmedAtMode)} mode={ArmedAtMode} />
         }}
         AT_Status_Box={{
-          backgroundColor: getStyleForATMode(AT_Status_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(AT_Status_)} mode={AT_Status_} />
+          backgroundColor: getStyleForATMode(AtStatus).backgroundColor,
+          element: <GetStringForATMode style={getStyleForATMode(AtStatus)} mode={AtStatus} />
         }}
         Armed_Lateral_Mode_Box={{
-          backgroundColor: getStyleForATMode(Armed_Lateral_Mode_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(Armed_Lateral_Mode_)} mode={Armed_Lateral_Mode_} />
+          backgroundColor: getStyleForATMode(ArmedLateralMode).backgroundColor,
+          element: <GetStringForATMode style={getStyleForATMode(ArmedLateralMode)} mode={ArmedLateralMode} />
         }}
         Armed_Vertical_Mode_Box={{
-          backgroundColor: getStyleForATMode(Armed_Vertical_Mode_).backgroundColor,
-          element: <GetStringForATMode style={getStyleForATMode(Armed_Vertical_Mode_)} mode={Armed_Vertical_Mode_} />
+          backgroundColor: getStyleForATMode(ArmedVerticalMode).backgroundColor,
+          element: <GetStringForATMode style={getStyleForATMode(ArmedVerticalMode)} mode={ArmedVerticalMode} />
         }}
         SelectionSourceBox={{
           backgroundColor: getStyleForATMode(SelectionSource).backgroundColor,
