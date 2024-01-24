@@ -12,14 +12,20 @@
     "paths": {
       "@instruments/common/*": ["./instruments/src/Common/*"]
     },
-    "typeRoots": ["./typings/", "./node_modules/@types", "../node_modules/sass"]
+    "typeRoots": ["./typings/", "./node_modules/@types", "./node_modules/sass"]
   },
   "include": [
-    "../.eslintrc.cjs",
+    ".eslintrc.cjs",
+    "node_modules/@types",
     "instruments/src/**/*.ts",
     "instruments/src/**/*.tsx",
     "instruments/common/**/*.ts",
     "instruments/common/**/*.tsx",
-    "../mach.config.js"
-  ]
+    "Systems/src/**/*.ts",
+    "Systems/src/**/*.tsx",
+    "Systems/common/**/*.ts",
+    "Systems/common/**/*.tsx",
+    "mach.config.js"
+  ],
+  "exclude": ["node_modules"]
 }

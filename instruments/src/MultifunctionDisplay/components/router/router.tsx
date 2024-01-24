@@ -1,5 +1,6 @@
 import React from 'react'
 import { useObjLocalVar } from 'instruments/common/Hooks/simVars'
+import { Status } from '../pages/Status/Status'
 
 const MfdRouter = (
   isCallingTop: boolean,
@@ -16,7 +17,7 @@ const MfdRouter = (
     if (system) {
       switch (systemPage) {
         case 0:
-          returnPage = <div>STATUS</div>
+          returnPage = <Status />
           break
         case 1:
           returnPage = <div>FLIGHT CTRL</div>
@@ -35,15 +36,6 @@ const MfdRouter = (
           break
         case 6:
           returnPage = <div>ANTI-ICE</div>
-          break
-        case 7:
-          returnPage = <div>ENGINE MAINT</div>
-          break
-        case 8:
-          returnPage = <div>MAINTENANCE</div>
-          break
-        case 9:
-          returnPage = <div>SYS CONFIG</div>
           break
         default:
           returnPage = <></>

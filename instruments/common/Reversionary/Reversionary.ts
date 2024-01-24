@@ -25,7 +25,11 @@ export const getDisplayState = (display: DisplayKinds, state: boolean[]): boolea
       return false
   }
 }
-export const cDisplayFaulureState: boolean[] = [false, false, true, false, false] // const for now, this will be returned by the WASM module
+export const cDisplayFaulureState: boolean[] = [false, false, false, false, false] // const for now, this will be returned by the WASM module
+
+export const booleanArrayToString = (arr: boolean[]): string => arr.map(String).join(',')
+
+export const stringToBooleanArray = (string: string): boolean[] => string.split(',').map(Boolean)
 
 export const AutoReversionary = (state: boolean[]): DisplayKinds[] => {
   const displayFaulureState = state // true for failed

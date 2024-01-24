@@ -1054,7 +1054,7 @@ class InstrumentLogic extends BaseInstrument {
             var dispatcher = resolveDispatcher();
             return dispatcher.useReducer(reducer, initialArg, init);
           }
-          function useRef2(initialValue) {
+          function useRef3(initialValue) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
@@ -1845,7 +1845,7 @@ class InstrumentLogic extends BaseInstrument {
           exports.useLayoutEffect = useLayoutEffect;
           exports.useMemo = useMemo;
           exports.useReducer = useReducer;
-          exports.useRef = useRef2;
+          exports.useRef = useRef3;
           exports.useState = useState5;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
@@ -2342,9 +2342,9 @@ class InstrumentLogic extends BaseInstrument {
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React34 = require_react();
+          var React36 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React34.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React36.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -3865,7 +3865,7 @@ class InstrumentLogic extends BaseInstrument {
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React34.Children.forEach(props.children, function(child) {
+                  React36.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -12026,7 +12026,7 @@ class InstrumentLogic extends BaseInstrument {
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React34.Component().refs;
+          var emptyRefsObject = new React36.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -22943,7 +22943,7 @@ class InstrumentLogic extends BaseInstrument {
   });
 
   // instruments/src/PrimaryFlightDisplay/index.tsx
-  var import_react34 = __toESM(require_react());
+  var import_react36 = __toESM(require_react());
 
   // instruments/common/Hooks/index.tsx
   var import_react3 = __toESM(require_react());
@@ -24002,7 +24002,7 @@ class InstrumentLogic extends BaseInstrument {
         return false;
     }
   };
-  var cDisplayFaulureState = [false, false, true, false, false];
+  var cDisplayFaulureState = [false, false, false, false, false];
   var AutoReversionary = (state) => {
     const displayFaulureState = state;
     const pfdState = getDisplayState("PFD", displayFaulureState);
@@ -24036,7 +24036,7 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/MultifunctionDisplay/index.tsx
-  var import_react33 = __toESM(require_react());
+  var import_react35 = __toESM(require_react());
 
   // instruments/src/MultifunctionDisplay/components/mouse/mouse.tsx
   var import_react20 = __toESM(require_react());
@@ -24132,76 +24132,360 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/MultifunctionDisplay/components/router/router.tsx
+  var import_react23 = __toESM(require_react());
+
+  // instruments/src/MultifunctionDisplay/components/pages/Status/Status.tsx
+  var import_react22 = __toESM(require_react());
+
+  // instruments/src/MultifunctionDisplay/components/pages/Status/StatusAircraft.tsx
   var import_react21 = __toESM(require_react());
+  var StatusAircraft = (props) => {
+    return /* @__PURE__ */ import_react21.default.createElement(
+      "svg",
+      {
+        version: "1.1",
+        id: "Camada_2",
+        xmlns: "http://www.w3.org/2000/svg",
+        x: "0px",
+        y: "0px",
+        viewBox: "0 0 1920 1920",
+        fill: "none",
+        width: props.width
+      },
+      /* @__PURE__ */ import_react21.default.createElement("g", { id: "MOTORES" }, /* @__PURE__ */ import_react21.default.createElement(
+        "linearGradient",
+        {
+          id: "SVGID_1_",
+          gradientUnits: "userSpaceOnUse",
+          x1: "520.83093",
+          y1: "785.70612",
+          x2: "697.17657",
+          y2: "785.70612"
+        },
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.3396", stopColor: "#FFFFFF" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.39836", stopColor: "#F2F2F2" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.50637", stopColor: "#D1D1D1" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.65164", stopColor: "#9A9A9A" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.82635", stopColor: "#505050" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "1", stopColor: "#000000" })
+      ), /* @__PURE__ */ import_react21.default.createElement(
+        "path",
+        {
+          fill: "url(#SVGID_1_)",
+          d: "M642.29419,865.7323H532.25793c-6.31097,0-11.427-5.11609-11.427-11.42706V705.67993h121.46326V865.7323z"
+        }
+      ), /* @__PURE__ */ import_react21.default.createElement(
+        "linearGradient",
+        {
+          id: "SVGID_00000092455199779198811710000003780962693569852805_",
+          gradientUnits: "userSpaceOnUse",
+          x1: "520.83093",
+          y1: "705.67993",
+          x2: "724.66937",
+          y2: "705.67993"
+        },
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0", stopColor: "#FFFFFF" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.08898", stopColor: "#F2F2F2" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.25253", stopColor: "#D1D1D1" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.4725", stopColor: "#9A9A9A" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.73705", stopColor: "#505050" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "1", stopColor: "#000000" })
+      ), /* @__PURE__ */ import_react21.default.createElement(
+        "ellipse",
+        {
+          fill: "url(#SVGID_00000092455199779198811710000003780962693569852805_)",
+          cx: "581.56256",
+          cy: "705.67993",
+          rx: "60.73164",
+          ry: "20.41857"
+        }
+      ), /* @__PURE__ */ import_react21.default.createElement("ellipse", { fill: "#515151", cx: "581.56256", cy: "702.48334", rx: "37.72652", ry: "12.68402" })),
+      /* @__PURE__ */ import_react21.default.createElement("g", { id: "MOTORES_c\xF3pia" }, /* @__PURE__ */ import_react21.default.createElement(
+        "linearGradient",
+        {
+          id: "SVGID_00000153689851858018853260000014087626480813077402_",
+          gradientUnits: "userSpaceOnUse",
+          x1: "1230.14575",
+          y1: "785.70612",
+          x2: "1511.43567",
+          y2: "785.70612"
+        },
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.28116", stopColor: "#FFFFFF" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.32986", stopColor: "#F2F2F2" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.41937", stopColor: "#D1D1D1" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.53977", stopColor: "#9A9A9A" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.68456", stopColor: "#505050" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.82848", stopColor: "#000000" })
+      ), /* @__PURE__ */ import_react21.default.createElement(
+        "path",
+        {
+          fill: "url(#SVGID_00000153689851858018853260000014087626480813077402_)",
+          d: "M1272.67017,865.7323h110.03625   c6.31091,0,11.427-5.11609,11.427-11.42706V705.67993h-121.46326V865.7323z"
+        }
+      ), /* @__PURE__ */ import_react21.default.createElement(
+        "linearGradient",
+        {
+          id: "SVGID_00000119094201414517340830000004489712999405384850_",
+          gradientUnits: "userSpaceOnUse",
+          x1: "1272.67017",
+          y1: "705.67993",
+          x2: "1476.50867",
+          y2: "705.67993"
+        },
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0", stopColor: "#FFFFFF" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.08898", stopColor: "#F2F2F2" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.25253", stopColor: "#D1D1D1" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.4725", stopColor: "#9A9A9A" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.73705", stopColor: "#505050" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "1", stopColor: "#000000" })
+      ), /* @__PURE__ */ import_react21.default.createElement(
+        "ellipse",
+        {
+          fill: "url(#SVGID_00000119094201414517340830000004489712999405384850_)",
+          cx: "1333.40186",
+          cy: "705.67993",
+          rx: "60.73164",
+          ry: "20.41857"
+        }
+      ), /* @__PURE__ */ import_react21.default.createElement("ellipse", { fill: "#515151", cx: "1333.40186", cy: "702.48334", rx: "37.72652", ry: "12.68402" })),
+      /* @__PURE__ */ import_react21.default.createElement(
+        "path",
+        {
+          id: "Entire_Plane_00000026849517666099132690000016535438464612460194_",
+          fill: "white",
+          d: "M1039.97766,1618.66541  l-0.09595,0.35168l205.18677,149.31104l6.93665,109.67346l-253.58264-90.71802l-25.25244,90.65405h-0.09595v0.06396h-28.67297  l-26.56354-95.32092h-0.03198l-257.32233,95.32092l11.50751-109.67346l205.60193-149.59863V1035.3269H735.47418  l-576.40204,143.52502V1035.3269l718.52057-339.12213V205.59824c0,0,0.06403-0.73515,0.25598-2.04585  c0.03198-0.25577,0.06403-0.51135,0.09601-0.79913c0.03198-0.22379,0.06396-0.47937,0.09601-0.73514  c0.0636-0.51157,0.15955-1.05492,0.22357-1.66228c0.0636-0.51135,0.12756-1.02292,0.22357-1.56627  c0.06403-0.54337,0.15997-1.11871,0.224-1.75807c0,0,0,0,0-0.032c0.06396-0.38356,0.12799-0.79913,0.19159-1.21471  c0,0,0-0.032,0-0.064c0.06396-0.41556,0.12799-0.83113,0.19159-1.27849c-0.03162-0.032-0.03162-0.032,0-0.064  c0.28796-1.82207,0.60754-3.83591,0.92712-6.00954c0.19196-1.08672,0.35193-2.20563,0.54352-3.38834  c0.09601-0.60735,0.19159-1.21471,0.2876-1.82205c0.31995-1.79007,0.63916-3.70792,0.95911-5.68976  c0.09601-0.67136,0.224-1.3107,0.35156-1.98186c0.38361-2.17383,0.79919-4.41125,1.2467-6.71288  c0.06403-0.35156,0.12799-0.67114,0.19202-1.02292c0.83112-4.34726,1.75787-8.85431,2.78058-13.45735  c0.35199-1.66226,0.70312-3.32454,1.0871-4.9866c2.10944-9.42987,4.44287-19.01952,6.9043-27.77804  c0.28796-0.95912,0.54352-1.91805,0.83112-2.87698c0.03198-0.12779,0.06403-0.22378,0.09601-0.31957  c3.06854-10.10121,6.5531-19.59487,10.48474-27.42646c0-0.064,0.03204-0.12779,0.06403-0.15979  c0.06396-0.22379,0.19196-0.38358,0.2876-0.60735c9.78125-19.2753,30.6228-48.26804,52.42346-48.14005  c0.73517,0,1.47034,0.032,2.20544,0.12779v-0.12779c8.02338,0.44757,31.64594,7.44782,48.39581,46.57377  c0.09601,0.19178,0.16003,0.38357,0.25562,0.57536c4.12366,9.74944,7.54419,18.69975,10.42078,26.85091  c0.06403,0.12799,0.09601,0.28777,0.15997,0.41557c8.69452,24.77327,12.17902,42.13052,14.16046,52.23174  c3.99573,20.61778,5.81799,36.79233,5.81799,36.79233v490.99014l720.9502,338.89832v143.52502l-585.44836-143.52502h-135.50183  V1618.66541z"
+        }
+      ),
+      /* @__PURE__ */ import_react21.default.createElement(
+        "linearGradient",
+        {
+          id: "Spmbra_Asa_Esquerda_00000090265377321321966480000011189789117097124238_",
+          gradientUnits: "userSpaceOnUse",
+          x1: "489.93106",
+          y1: "827.56134",
+          x2: "573.74213",
+          y2: "1006.17511"
+        },
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.08309", stopColor: "#000000" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.3257", stopColor: "#FFFFFF" })
+      ),
+      /* @__PURE__ */ import_react21.default.createElement(
+        "polygon",
+        {
+          id: "Spmbra_Asa_Esquerda_00000116222053508422501510000018322529384858228378_",
+          fill: "url(#Spmbra_Asa_Esquerda_00000090265377321321966480000011189789117097124238_)",
+          points: "  159.08128,1035.31824 877.59613,696.20166 877.59613,742.60028 159.08128,1080.00293 "
+        }
+      ),
+      /* @__PURE__ */ import_react21.default.createElement(
+        "linearGradient",
+        {
+          id: "Sombra_Asa_Direita_00000036942568648626228890000008706638215806472080_",
+          gradientUnits: "userSpaceOnUse",
+          x1: "728.49353",
+          y1: "828.04791",
+          x2: "811.84949",
+          y2: "1005.69183",
+          gradientTransform: "matrix(-1 0 0 1 2156.10376 0)"
+        },
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.08309", stopColor: "#000000" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.3257", stopColor: "#FFFFFF" })
+      ),
+      /* @__PURE__ */ import_react21.default.createElement(
+        "polygon",
+        {
+          id: "Sombra_Asa_Direita_00000016774635496930687650000008789609284131109785_",
+          fill: "url(#Sombra_Asa_Direita_00000036942568648626228890000008706638215806472080_)",
+          points: "  1760.92163,1035.31824 1039.49316,696.20166 1039.49316,742.60028 1760.92163,1076.6936 "
+        }
+      ),
+      /* @__PURE__ */ import_react21.default.createElement(
+        "linearGradient",
+        {
+          id: "Sombra_Profundor_Direito_00000086664353386781293090000000288991115658468520_",
+          gradientUnits: "userSpaceOnUse",
+          x1: "903.28253",
+          y1: "1556.68652",
+          x2: "1231.08923",
+          y2: "2006.78723",
+          gradientTransform: "matrix(-1 0 0 1 2156.10376 0)"
+        },
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.27684", stopColor: "#000000" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.33977", stopColor: "#FFFFFF" })
+      ),
+      /* @__PURE__ */ import_react21.default.createElement(
+        "polygon",
+        {
+          id: "Sombra_Profundor_Direito_00000111178635039311351020000014020286933857283981_",
+          fill: "url(#Sombra_Profundor_Direito_00000086664353386781293090000000288991115658468520_)",
+          points: "  1245.08435,1768.34143 1039.49292,1618.72778 1034.74951,1638.05493 1246.81433,1795.80762 "
+        }
+      ),
+      /* @__PURE__ */ import_react21.default.createElement(
+        "linearGradient",
+        {
+          id: "Sombra_Profundor_Esquerdo_00000152970251056522488500000012121874038699989421_",
+          gradientUnits: "userSpaceOnUse",
+          x1: "277.83145",
+          y1: "1561.60388",
+          x2: "594.9314",
+          y2: "1997.00354",
+          gradientTransform: "matrix(1 0 0 1 389.44678 0)"
+        },
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.27684", stopColor: "#000000" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.33977", stopColor: "#FFFFFF" })
+      ),
+      /* @__PURE__ */ import_react21.default.createElement(
+        "polygon",
+        {
+          id: "Sombra_Profundor_Esquerdo_00000096748327342622766530000009076308292836533427_",
+          fill: "url(#Sombra_Profundor_Esquerdo_00000152970251056522488500000012121874038699989421_)",
+          points: "  672.02179,1768.34167 877.61322,1618.72815 882.35663,1638.05518 669.11658,1795.80798 "
+        }
+      ),
+      /* @__PURE__ */ import_react21.default.createElement(
+        "linearGradient",
+        {
+          id: "Sonbra_Fuselagem_Esquerda_00000016062324977607661850000015790484510643223209_",
+          gradientUnits: "userSpaceOnUse",
+          x1: "973.0741",
+          y1: "960",
+          x2: "723.72314",
+          y2: "960"
+        },
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.17532", stopColor: "#FFFFFF" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.28503", stopColor: "#E4E4E4" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.52191", stopColor: "#9D9D9D" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.86488", stopColor: "#2E2E2E" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "1", stopColor: "#000000" })
+      ),
+      /* @__PURE__ */ import_react21.default.createElement(
+        "path",
+        {
+          id: "Sonbra_Fuselagem_Esquerda_00000083056583888906148110000015529978866744628377_",
+          fill: "url(#Sonbra_Fuselagem_Esquerda_00000016062324977607661850000015790484510643223209_)",
+          d: "  M973.0741,1877.93762v0.06396h-28.67297l-26.56354-95.32092h-0.03198l-40.21289-163.85547V205.59824  c0,0,0.06403-0.73515,0.25598-2.04585c0.03198-0.25577,0.06403-0.51135,0.09601-0.79913  c0.03198-0.22379,0.06396-0.47937,0.09601-0.73514c0.0636-0.51157,0.15955-1.05492,0.22357-1.66228  c0.0636-0.51135,0.12756-1.02292,0.22357-1.56627c0.06403-0.54337,0.15997-1.11871,0.224-1.75807c0,0,0,0,0-0.032  c0.06396-0.38356,0.12799-0.79913,0.19159-1.21471c0,0,0-0.032,0-0.064c0.06396-0.41556,0.12799-0.83113,0.19159-1.27849  c-0.03162-0.032-0.03162-0.032,0-0.064c0.28796-1.82207,0.60754-3.83591,0.92712-6.00954  c0.19196-1.08672,0.35193-2.20563,0.54352-3.38834c0.09601-0.60735,0.19159-1.21471,0.2876-1.82205  c0.31995-1.79007,0.63916-3.70792,0.95911-5.68976c0.09601-0.67136,0.224-1.3107,0.35156-1.98186  c0.38361-2.17383,0.79919-4.41125,1.2467-6.71288c0.06403-0.35156,0.12799-0.67114,0.19202-1.02292  c0.83112-4.34726,1.75787-8.85431,2.78058-13.45735c0.35199-1.66226,0.70312-3.32454,1.0871-4.9866  c2.10944-9.42987,4.44287-19.01952,6.9043-27.77804c0.28796-0.95912,0.54352-1.91805,0.83112-2.87698  c0.03198-0.12779,0.06403-0.22378,0.09601-0.31957c3.06854-10.10121,6.5531-19.59487,10.48474-27.42646  c0-0.064,0.03204-0.12779,0.06403-0.15979c0.06396-0.22379,0.19196-0.38358,0.2876-0.60735  c9.78125-19.2753,30.6228-48.26804,52.42346-48.14005c0.73517,0,1.47034,0.032,2.20544,0.12779v1835.81104H973.0741z"
+        }
+      ),
+      /* @__PURE__ */ import_react21.default.createElement(
+        "linearGradient",
+        {
+          id: "Sombra_Fuselagem_Direita_00000168075213921141438920000007246505118741225384_",
+          gradientUnits: "userSpaceOnUse",
+          x1: "960.76703",
+          y1: "959.9682",
+          x2: "1942.00342",
+          y2: "959.9682"
+        },
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.02318", stopColor: "#FFFFFF" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.04119", stopColor: "#F0F0F0" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.07575", stopColor: "#C9C9C9" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.12333", stopColor: "#8A8A8A" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.18147", stopColor: "#343434" }),
+        /* @__PURE__ */ import_react21.default.createElement("stop", { offset: "0.21482", stopColor: "#000000" })
+      ),
+      /* @__PURE__ */ import_react21.default.createElement(
+        "path",
+        {
+          id: "Sombra_Fuselagem_Direita_00000054977883063755247410000015215662013012450970_",
+          fill: "url(#Sombra_Fuselagem_Direita_00000168075213921141438920000007246505118741225384_)",
+          d: "  M1039.97766,205.43845v1413.22693l-0.09595,0.35168l-40.1485,163.59961l-1.31073,4.66687l-25.25244,90.65405h-12.40302V41.99878  c8.02338,0.44757,31.64594,7.44782,48.39581,46.57377c0.09601,0.19178,0.16003,0.38357,0.25562,0.57536  c4.12366,9.74944,7.54419,18.69975,10.42078,26.85091c0.06403,0.12799,0.09601,0.28777,0.15997,0.41557  c8.69452,24.77327,12.17902,42.13052,14.16046,52.23174C1038.1554,189.2639,1039.97766,205.43845,1039.97766,205.43845z"
+        }
+      ),
+      /* @__PURE__ */ import_react21.default.createElement("g", { id: "COCKPIT_WINDOWS" }, /* @__PURE__ */ import_react21.default.createElement(
+        "path",
+        {
+          fill: "black",
+          d: "M906.81653,159.10268l14.70435,40.26453l-14.42633,27.31786l-13.50452-21.17513c0,0-3.02319-8.61726,0-17.30896   C896.61328,179.50928,906.81653,159.10268,906.81653,159.10268z"
+        }
+      ), /* @__PURE__ */ import_react21.default.createElement(
+        "path",
+        {
+          fill: "black",
+          d: "M913.44556,149.76274l14.72681,43.9705c0,0,18.64661-16.04097,24.8006-16.04097v-50.17848   C952.97296,127.51379,930.4873,127.04041,913.44556,149.76274z"
+        }
+      ), /* @__PURE__ */ import_react21.default.createElement(
+        "path",
+        {
+          fill: "black",
+          d: "M1015.06647,159.10268l-14.70435,40.26453l14.42633,27.31786l13.50452-21.17513c0,0,3.02319-8.61726,0-17.30896   S1015.06647,159.10268,1015.06647,159.10268z"
+        }
+      ), /* @__PURE__ */ import_react21.default.createElement(
+        "path",
+        {
+          fill: "black",
+          d: "M1008.43744,149.76274l-14.72681,43.9705c0,0-18.64661-16.04097-24.8006-16.04097v-50.17848   C968.91003,127.51379,991.39569,127.04041,1008.43744,149.76274z"
+        }
+      ))
+    );
+  };
+
+  // instruments/src/MultifunctionDisplay/components/pages/Status/Status.tsx
+  var Status = () => {
+    return /* @__PURE__ */ import_react22.default.createElement(StatusAircraft, { width: 300 });
+  };
+
+  // instruments/src/MultifunctionDisplay/components/router/router.tsx
   var MfdRouter = (isCallingTop, system, topPageArg, bottomPageArg) => {
     const [topPage] = useObjLocalVar("MFD_ROUTER_TOP", "Number");
     const [bottomPage] = useObjLocalVar("MFD_ROUTER_BOTTOM", "Number");
     const [systemPage] = useObjLocalVar("MFD_ROUTER_SYSTEM", "Number");
-    let returnPage = /* @__PURE__ */ import_react21.default.createElement(import_react21.default.Fragment, null);
+    let returnPage = /* @__PURE__ */ import_react23.default.createElement(import_react23.default.Fragment, null);
     if (isCallingTop) {
       if (system) {
         switch (systemPage) {
           case 0:
-            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "STATUS");
+            returnPage = /* @__PURE__ */ import_react23.default.createElement(Status, null);
             break;
           case 1:
-            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "FLIGHT CTRL");
+            returnPage = /* @__PURE__ */ import_react23.default.createElement("div", null, "FLIGHT CTRL");
             break;
           case 2:
-            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "HYDRAULICS");
+            returnPage = /* @__PURE__ */ import_react23.default.createElement("div", null, "HYDRAULICS");
             break;
           case 3:
-            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "FUEL");
+            returnPage = /* @__PURE__ */ import_react23.default.createElement("div", null, "FUEL");
             break;
           case 4:
-            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "ELECTRICAL");
+            returnPage = /* @__PURE__ */ import_react23.default.createElement("div", null, "ELECTRICAL");
             break;
           case 5:
-            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "ECS");
+            returnPage = /* @__PURE__ */ import_react23.default.createElement("div", null, "ECS");
             break;
           case 6:
-            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "ANTI-ICE");
-            break;
-          case 7:
-            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "ENGINE MAINT");
-            break;
-          case 8:
-            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "MAINTENANCE");
-            break;
-          case 9:
-            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "SYS CONFIG");
+            returnPage = /* @__PURE__ */ import_react23.default.createElement("div", null, "ANTI-ICE");
             break;
           default:
-            returnPage = /* @__PURE__ */ import_react21.default.createElement(import_react21.default.Fragment, null);
+            returnPage = /* @__PURE__ */ import_react23.default.createElement(import_react23.default.Fragment, null);
         }
       } else {
         switch (topPage) {
           case 0:
-            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "MAP");
+            returnPage = /* @__PURE__ */ import_react23.default.createElement("div", null, "MAP");
             break;
           case 1:
-            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "PLAN");
+            returnPage = /* @__PURE__ */ import_react23.default.createElement("div", null, "PLAN");
             break;
           case 2:
-            returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "SYSTEM");
+            returnPage = /* @__PURE__ */ import_react23.default.createElement("div", null, "SYSTEM");
             break;
           default:
-            returnPage = /* @__PURE__ */ import_react21.default.createElement(import_react21.default.Fragment, null);
+            returnPage = /* @__PURE__ */ import_react23.default.createElement(import_react23.default.Fragment, null);
         }
       }
     } else {
       switch (bottomPage) {
         case 0:
-          returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "TCAS");
+          returnPage = /* @__PURE__ */ import_react23.default.createElement("div", null, "TCAS");
           break;
         case 1:
-          returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "WEATHER");
+          returnPage = /* @__PURE__ */ import_react23.default.createElement("div", null, "WEATHER");
           break;
         case 2:
-          returnPage = /* @__PURE__ */ import_react21.default.createElement("div", null, "CHECKLIST");
+          returnPage = /* @__PURE__ */ import_react23.default.createElement("div", null, "CHECKLIST");
           break;
         default:
-          returnPage = /* @__PURE__ */ import_react21.default.createElement(import_react21.default.Fragment, null);
+          returnPage = /* @__PURE__ */ import_react23.default.createElement(import_react23.default.Fragment, null);
       }
     }
     return returnPage;
@@ -24213,22 +24497,25 @@ class InstrumentLogic extends BaseInstrument {
   var router_default = MfdRouter;
 
   // instruments/src/MultifunctionDisplay/components/displayProvider/displayProvider.tsx
-  var import_react25 = __toESM(require_react());
+  var import_react27 = __toESM(require_react());
 
   // instruments/src/MultifunctionDisplay/components/buttonBars/buttonBars.tsx
-  var import_react24 = __toESM(require_react());
+  var import_react26 = __toESM(require_react());
 
   // instruments/src/MultifunctionDisplay/components/buttonBars/buttonBarButton/buttonBarButton.tsx
-  var import_react22 = __toESM(require_react());
+  var import_react24 = __toESM(require_react());
   var ButtonBarButton = (props) => {
     const [topPage, setTopPage] = useObjLocalVar("MFD_ROUTER_TOP", "Number");
+    const [systemPage] = useObjLocalVar("MFD_ROUTER_SYSTEM", "Number");
     const [bottomPage, setBottomPage] = useObjLocalVar("MFD_ROUTER_BOTTOM", "Number");
     const handleButtonClick = (to) => {
       if (props.isTop !== null && props.isTop !== void 0 && props.isTop) {
         setTopPage(to);
         props.setShowSystems(false);
+        props.setSystemMenu(false);
       } else {
         setBottomPage(to);
+        props.setSystemMenu(false);
       }
     };
     const handleSystemButtonClick = () => {
@@ -24238,7 +24525,27 @@ class InstrumentLogic extends BaseInstrument {
         props.setSystemMenu(!props.systemMenu);
       }
     };
-    return /* @__PURE__ */ import_react22.default.createElement(
+    const getSystemText = (page) => {
+      switch (page) {
+        case 0:
+          return "Status";
+        case 1:
+          return "Flt Ctl";
+        case 2:
+          return "Hyd";
+        case 3:
+          return "Fuel";
+        case 4:
+          return "Elec";
+        case 5:
+          return "ECS";
+        case 6:
+          return "AntiIce";
+        default:
+          return "";
+      }
+    };
+    return /* @__PURE__ */ import_react24.default.createElement(
       "div",
       {
         onClick: () => {
@@ -24246,46 +24553,71 @@ class InstrumentLogic extends BaseInstrument {
         },
         className: "button-container"
       },
-      /* @__PURE__ */ import_react22.default.createElement("div", { className: "button-center" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "button-children" }, props.text)),
-      /* @__PURE__ */ import_react22.default.createElement("div", { className: "button-background" })
+      /* @__PURE__ */ import_react24.default.createElement("div", { className: "button-center" }, /* @__PURE__ */ import_react24.default.createElement("div", { className: "button-children" }, props.text, props.isSystemButton && /* @__PURE__ */ import_react24.default.createElement("div", { className: "system-button-current-page" }, getSystemText(systemPage)))),
+      /* @__PURE__ */ import_react24.default.createElement("div", { className: "button-background" })
     );
   };
 
   // instruments/src/MultifunctionDisplay/components/buttonBars/systemButton/systemButton.tsx
-  var import_react23 = __toESM(require_react());
+  var import_react25 = __toESM(require_react());
   var SystemButton = (props) => {
     const [systemPage, setSystemPage] = useObjLocalVar("MFD_ROUTER_SYSTEM", "Number");
     const handleSystemButtonClick = (route) => {
       setSystemPage(route);
+      props.setShown(false);
     };
-    let isActive = false;
-    if (systemPage === props.routeTo) {
-      isActive = true;
-    } else {
-      isActive = false;
-    }
-    return /* @__PURE__ */ import_react23.default.createElement("div", null, /* @__PURE__ */ import_react23.default.createElement(
+    const isActive = systemPage === props.routeTo;
+    const [isHovered, setIsHovered] = import_react25.default.useState(false);
+    return /* @__PURE__ */ import_react25.default.createElement(
       "div",
       {
-        className: `system-button ${isActive ? "active" : ""}`,
-        onClick: () => {
-          handleSystemButtonClick(props.routeTo);
-        }
+        onMouseEnter: () => {
+          setIsHovered(true);
+        },
+        onMouseLeave: () => {
+          setIsHovered(false);
+        },
+        className: "system-button-wrapper"
       },
-      props.text
-    ));
+      isHovered && /* @__PURE__ */ import_react25.default.createElement(
+        "div",
+        {
+          onClick: () => {
+            props.setShown(false);
+          },
+          className: "system-menu-close-button",
+          style: { top: `${props.routeTo * 45}px` }
+        },
+        /* @__PURE__ */ import_react25.default.createElement("div", { className: "system-button-center-close" }, /* @__PURE__ */ import_react25.default.createElement("div", { className: "system-button-children-close" }, "X")),
+        /* @__PURE__ */ import_react25.default.createElement("div", { className: "system-button-background-close" })
+      ),
+      /* @__PURE__ */ import_react25.default.createElement(
+        "div",
+        {
+          className: `system-button-container`,
+          style: { top: `${props.routeTo * 45}px` },
+          onClick: () => {
+            handleSystemButtonClick(props.routeTo);
+          }
+        },
+        /* @__PURE__ */ import_react25.default.createElement("div", { className: "system-button-center" }, /* @__PURE__ */ import_react25.default.createElement("div", { className: "system-button-children" }, props.text, /* @__PURE__ */ import_react25.default.createElement("div", { className: "active-circle-outer" }, isActive && /* @__PURE__ */ import_react25.default.createElement("div", { className: "active-circle-inner" })))),
+        /* @__PURE__ */ import_react25.default.createElement("div", { className: "system-button-background" })
+      )
+    );
   };
 
   // instruments/src/MultifunctionDisplay/components/buttonBars/buttonBars.tsx
   var SystemButtonBar = (props) => {
     if (!props.isShown) {
-      return /* @__PURE__ */ import_react24.default.createElement(import_react24.default.Fragment, null);
+      return /* @__PURE__ */ import_react26.default.createElement(import_react26.default.Fragment, null);
     } else {
-      return /* @__PURE__ */ import_react24.default.createElement("div", { className: `system-button-bar-container ${props.isShown ? "shown" : "hidden"}` }, /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Status", routeTo: 0 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: " Flight Ctrl", routeTo: 1 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Hydraulics", routeTo: 2 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Fuel", routeTo: 3 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Electrical", routeTo: 4 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "ECS", routeTo: 5 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Anti-Ice", routeTo: 6 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Engine Maint", disabled: true, routeTo: 7 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Maintenance", routeTo: 8 }), /* @__PURE__ */ import_react24.default.createElement(SystemButton, { text: "Sys Config", routeTo: 9 }));
+      return /* @__PURE__ */ import_react26.default.createElement("div", { className: `system-button-bar-container ${props.isShown ? "shown" : "hidden"}` }, props.text.map((text, index) => {
+        return /* @__PURE__ */ import_react26.default.createElement(SystemButton, { setShown: props.setShown, text, key: index, routeTo: index });
+      }));
     }
   };
   var UpperButtonBar = (props) => {
-    return /* @__PURE__ */ import_react24.default.createElement("div", { className: "upper-button-bar-container" }, /* @__PURE__ */ import_react24.default.createElement(
+    return /* @__PURE__ */ import_react26.default.createElement("div", { className: "upper-button-bar-container" }, /* @__PURE__ */ import_react26.default.createElement(
       ButtonBarButton,
       {
         text: "Map",
@@ -24298,7 +24630,7 @@ class InstrumentLogic extends BaseInstrument {
         isTop: true,
         routeTo: 0
       }
-    ), /* @__PURE__ */ import_react24.default.createElement(
+    ), /* @__PURE__ */ import_react26.default.createElement(
       ButtonBarButton,
       {
         text: "Plan",
@@ -24311,7 +24643,7 @@ class InstrumentLogic extends BaseInstrument {
         isTop: true,
         routeTo: 1
       }
-    ), /* @__PURE__ */ import_react24.default.createElement(
+    ), /* @__PURE__ */ import_react26.default.createElement(
       ButtonBarButton,
       {
         text: "Systems",
@@ -24326,7 +24658,7 @@ class InstrumentLogic extends BaseInstrument {
     ));
   };
   var LowerButtonBar = () => {
-    return /* @__PURE__ */ import_react24.default.createElement("div", { className: "lower-button-bar-container" }, /* @__PURE__ */ import_react24.default.createElement(
+    return /* @__PURE__ */ import_react26.default.createElement("div", { className: "lower-button-bar-container" }, /* @__PURE__ */ import_react26.default.createElement(
       ButtonBarButton,
       {
         text: "TCAS",
@@ -24340,7 +24672,7 @@ class InstrumentLogic extends BaseInstrument {
         isTop: false,
         routeTo: 0
       }
-    ), /* @__PURE__ */ import_react24.default.createElement(
+    ), /* @__PURE__ */ import_react26.default.createElement(
       ButtonBarButton,
       {
         text: "Weather",
@@ -24354,7 +24686,7 @@ class InstrumentLogic extends BaseInstrument {
         isTop: false,
         routeTo: 1
       }
-    ), /* @__PURE__ */ import_react24.default.createElement(
+    ), /* @__PURE__ */ import_react26.default.createElement(
       ButtonBarButton,
       {
         text: "Checklist",
@@ -24373,8 +24705,8 @@ class InstrumentLogic extends BaseInstrument {
 
   // instruments/src/MultifunctionDisplay/components/displayProvider/displayProvider.tsx
   var DisplayProvider = (props) => {
-    const [systemMenu, setSystemMenu] = import_react25.default.useState(false);
-    return /* @__PURE__ */ import_react25.default.createElement("div", { className: "MFD-container" }, /* @__PURE__ */ import_react25.default.createElement(
+    const [systemMenu, setSystemMenu] = import_react27.default.useState(false);
+    return /* @__PURE__ */ import_react27.default.createElement("div", { className: "MFD-container" }, /* @__PURE__ */ import_react27.default.createElement(
       UpperButtonBar,
       {
         setShowSystems: props.setShowSystems,
@@ -24383,33 +24715,40 @@ class InstrumentLogic extends BaseInstrument {
         systemMenu,
         currentPage: getTopPage()
       }
-    ), /* @__PURE__ */ import_react25.default.createElement("div", { className: "upper-content-container" }, /* @__PURE__ */ import_react25.default.createElement(SystemButtonBar, { isShown: systemMenu }), " ", props.topPage), /* @__PURE__ */ import_react25.default.createElement("div", { className: "center-divider" }), /* @__PURE__ */ import_react25.default.createElement("div", { className: "lower-content-container" }, props.bottomPage), /* @__PURE__ */ import_react25.default.createElement(LowerButtonBar, null));
+    ), /* @__PURE__ */ import_react27.default.createElement("div", { className: "upper-content-container" }, /* @__PURE__ */ import_react27.default.createElement(
+      SystemButtonBar,
+      {
+        isShown: systemMenu,
+        setShown: setSystemMenu,
+        text: ["Status", "Flight Ctrl", "Hydraulics", "Fuel", "Electrical", "ECS", "Anti-Ice"]
+      }
+    ), props.topPage), /* @__PURE__ */ import_react27.default.createElement("div", { className: "center-divider" }), /* @__PURE__ */ import_react27.default.createElement("div", { className: "lower-content-container" }, props.bottomPage), /* @__PURE__ */ import_react27.default.createElement(LowerButtonBar, null));
   };
   var displayProvider_default = DisplayProvider;
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/index.tsx
-  var import_react32 = __toESM(require_react());
+  var import_react34 = __toESM(require_react());
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/ComponentProvider/ComponentProvider.tsx
-  var import_react31 = __toESM(require_react());
+  var import_react33 = __toESM(require_react());
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/APU/APU.tsx
-  var import_react26 = __toESM(require_react());
+  var import_react28 = __toESM(require_react());
   var APU = (props) => {
-    return /* @__PURE__ */ import_react26.default.createElement("div", null, /* @__PURE__ */ import_react26.default.createElement("div", null, "fuck nigga"));
+    return /* @__PURE__ */ import_react28.default.createElement("div", null, /* @__PURE__ */ import_react28.default.createElement("div", null, "fuck nigga"));
   };
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Cabin/cabin.tsx
-  var import_react27 = __toESM(require_react());
+  var import_react29 = __toESM(require_react());
   var Cabin = () => {
-    return /* @__PURE__ */ import_react27.default.createElement("div", null, /* @__PURE__ */ import_react27.default.createElement("div", null, "cabin"));
+    return /* @__PURE__ */ import_react29.default.createElement("div", null, /* @__PURE__ */ import_react29.default.createElement("div", null, "cabin"));
   };
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engine.tsx
-  var import_react30 = __toESM(require_react());
+  var import_react32 = __toESM(require_react());
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/n1Gauge.tsx
-  var import_react28 = __toESM(require_react());
+  var import_react30 = __toESM(require_react());
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/hooks/getThrustRatingAnnunciatorString.ts
   var getThrustRatingAnnunciatorString = (thrustRating) => {
@@ -24467,11 +24806,11 @@ class InstrumentLogic extends BaseInstrument {
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/n1Gauge.tsx
   var N1Gauge = (props) => {
     let annunciator = getThrustRatingAnnunciatorString(props.thrustRatingAnnunciator);
-    return /* @__PURE__ */ import_react28.default.createElement("div", null, /* @__PURE__ */ import_react28.default.createElement("div", null, "n1 gauge ", annunciator));
+    return /* @__PURE__ */ import_react30.default.createElement("div", null, /* @__PURE__ */ import_react30.default.createElement("div", null, "n1 gauge ", annunciator));
   };
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGauge.tsx
-  var import_react29 = __toESM(require_react());
+  var import_react31 = __toESM(require_react());
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGaugeColors.ts
   var getIttGaugeColor = (redColor, yellowColor, limeColor, sFillColor, itt, redline, yellowline, forceRed) => {
@@ -24509,8 +24848,8 @@ class InstrumentLogic extends BaseInstrument {
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGauge.tsx
   var IttGauge = (props) => {
-    const [forceRed, setForceRed] = (0, import_react29.useState)(false);
-    (0, import_react29.useEffect)(() => {
+    const [forceRed, setForceRed] = (0, import_react31.useState)(false);
+    (0, import_react31.useEffect)(() => {
       if (props.ittValue > props.yellowLineValue) {
         const timer = setTimeout(() => {
           setForceRed(true);
@@ -24520,7 +24859,7 @@ class InstrumentLogic extends BaseInstrument {
         setForceRed(false);
       }
     }, [props.ittValue]);
-    return /* @__PURE__ */ import_react29.default.createElement("div", { className: "itt-gauge-container-absolute", style: { left: `${props.left}px`, top: `${props.top}px` } }, /* @__PURE__ */ import_react29.default.createElement("svg", { viewBox: "0 0 100 100", xmlns: "http://www.w3.org/2000/svg" }, props.invalid ? null : /* @__PURE__ */ import_react29.default.createElement("g", { transform: `rotate(-135 50 50)` }, /* @__PURE__ */ import_react29.default.createElement(
+    return /* @__PURE__ */ import_react31.default.createElement("div", { className: "itt-gauge-container-absolute", style: { left: `${props.left}px`, top: `${props.top}px` } }, /* @__PURE__ */ import_react31.default.createElement("svg", { viewBox: "0 0 100 100", xmlns: "http://www.w3.org/2000/svg" }, props.invalid ? null : /* @__PURE__ */ import_react31.default.createElement("g", { transform: `rotate(-135 50 50)` }, /* @__PURE__ */ import_react31.default.createElement(
       "path",
       {
         id: "filler",
@@ -24536,7 +24875,7 @@ class InstrumentLogic extends BaseInstrument {
           forceRed
         ).fillColor
       }
-    )), /* @__PURE__ */ import_react29.default.createElement("circle", { cx: 50, cy: 50, r: 35, stroke: "white", "stroke-width": 2, fill: "transparent" }), props.invalid ? null : /* @__PURE__ */ import_react29.default.createElement("g", { transform: `rotate(-135 50 50)` }, /* @__PURE__ */ import_react29.default.createElement(
+    )), /* @__PURE__ */ import_react31.default.createElement("circle", { cx: 50, cy: 50, r: 35, stroke: "white", "stroke-width": 2, fill: "transparent" }), props.invalid ? null : /* @__PURE__ */ import_react31.default.createElement("g", { transform: `rotate(-135 50 50)` }, /* @__PURE__ */ import_react31.default.createElement(
       "path",
       {
         stroke: props.redColor,
@@ -24545,7 +24884,7 @@ class InstrumentLogic extends BaseInstrument {
         id: "redlineBug",
         d: `m ${findCoordsOnCircle(50, 50, 35, props.redlineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 35, props.redlineValue / props.scaling).y} L${findCoordsOnCircle(50, 50, 30, props.redlineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 30, props.redlineValue / props.scaling).y}`
       }
-    ), /* @__PURE__ */ import_react29.default.createElement(
+    ), /* @__PURE__ */ import_react31.default.createElement(
       "path",
       {
         stroke: props.yellowColor,
@@ -24554,7 +24893,7 @@ class InstrumentLogic extends BaseInstrument {
         id: "yellowlineBug",
         d: `m ${findCoordsOnCircle(50, 50, 35, props.yellowLineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 35, props.yellowLineValue / props.scaling).y} L${findCoordsOnCircle(50, 50, 30, props.yellowLineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 30, props.yellowLineValue / props.scaling).y}`
       }
-    ), /* @__PURE__ */ import_react29.default.createElement("g", { transform: `rotate(${limiter(props.hardLimit, props.ittValue) / props.scaling} 50 50)` }, /* @__PURE__ */ import_react29.default.createElement(
+    ), /* @__PURE__ */ import_react31.default.createElement("g", { transform: `rotate(${limiter(props.hardLimit, props.ittValue) / props.scaling} 50 50)` }, /* @__PURE__ */ import_react31.default.createElement(
       "path",
       {
         d: `M 48.5 50 L 48.5 30 L50 17.5L 51.5 30 L 51.5 50 `,
@@ -24574,7 +24913,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeLinecap: "round",
         strokeLinejoin: "round"
       }
-    ))), /* @__PURE__ */ import_react29.default.createElement("circle", { cx: 50, cy: 50, r: 3, stroke: "white", strokeWidth: 1, fill: "black" }), props.fire ? /* @__PURE__ */ import_react29.default.createElement("g", null, /* @__PURE__ */ import_react29.default.createElement(
+    ))), /* @__PURE__ */ import_react31.default.createElement("circle", { cx: 50, cy: 50, r: 3, stroke: "white", strokeWidth: 1, fill: "black" }), props.fire ? /* @__PURE__ */ import_react31.default.createElement("g", null, /* @__PURE__ */ import_react31.default.createElement(
       "rect",
       {
         x: 30,
@@ -24586,7 +24925,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: 2,
         strokeLinejoin: "round"
       }
-    ), /* @__PURE__ */ import_react29.default.createElement("text", { x: 50, y: 50, textAnchor: "middle", fill: "white", fontSize: 15 }, "FIRE")) : null, /* @__PURE__ */ import_react29.default.createElement("rect", { x: 25, y: 75, width: 50, height: 20, fill: "black", stroke: "white", strokeWidth: 2, strokeLinejoin: "round" }), /* @__PURE__ */ import_react29.default.createElement("text", { x: 50, y: 90, textAnchor: "middle", fill: `${props.invalid ? props.amberColor : props.limeColor}`, fontSize: 10 }, props.invalid == false ? props.ittValue.toFixed(0) : "----")));
+    ), /* @__PURE__ */ import_react31.default.createElement("text", { x: 50, y: 50, textAnchor: "middle", fill: "white", fontSize: 15 }, "FIRE")) : null, /* @__PURE__ */ import_react31.default.createElement("rect", { x: 25, y: 75, width: 50, height: 20, fill: "black", stroke: "white", strokeWidth: 2, strokeLinejoin: "round" }), /* @__PURE__ */ import_react31.default.createElement("text", { x: 50, y: 90, textAnchor: "middle", fill: `${props.invalid ? props.amberColor : props.limeColor}`, fontSize: 10 }, props.invalid == false ? props.ittValue.toFixed(0) : "----")));
   };
   IttGauge.defaultProps = {
     ittValue: 0,
@@ -24647,7 +24986,7 @@ class InstrumentLogic extends BaseInstrument {
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engine.tsx
   var Engine = (props) => {
     const vars = EngineVars();
-    return /* @__PURE__ */ import_react30.default.createElement("div", { className: "engine-wrapper" }, /* @__PURE__ */ import_react30.default.createElement("div", { className: "flex-row" }, /* @__PURE__ */ import_react30.default.createElement(
+    return /* @__PURE__ */ import_react32.default.createElement("div", { className: "engine-wrapper" }, /* @__PURE__ */ import_react32.default.createElement("div", { className: "flex-row" }, /* @__PURE__ */ import_react32.default.createElement(
       N1Gauge,
       {
         n1Value: 0,
@@ -24657,7 +24996,7 @@ class InstrumentLogic extends BaseInstrument {
         invalid: false,
         attcsState: 0
       }
-    ), /* @__PURE__ */ import_react30.default.createElement(N1Gauge, { n1Value: 0, redlineValue: 100, commandedN1: 0, thrustRatingAnnunciator: 1, invalid: false, attcsState: 0 })), /* @__PURE__ */ import_react30.default.createElement("div", { className: "flex-row" }, /* @__PURE__ */ import_react30.default.createElement(
+    ), /* @__PURE__ */ import_react32.default.createElement(N1Gauge, { n1Value: 0, redlineValue: 100, commandedN1: 0, thrustRatingAnnunciator: 1, invalid: false, attcsState: 0 })), /* @__PURE__ */ import_react32.default.createElement("div", { className: "flex-row" }, /* @__PURE__ */ import_react32.default.createElement(
       IttGauge,
       {
         ittValue: vars.ittValue1,
@@ -24676,7 +25015,7 @@ class InstrumentLogic extends BaseInstrument {
         fillerColor: EngineParameters.E170_ITT.fillerColor,
         forceRedInYellowTime: EngineParameters.E170_ITT.forceRedInYellowTime
       }
-    ), /* @__PURE__ */ import_react30.default.createElement(
+    ), /* @__PURE__ */ import_react32.default.createElement(
       IttGauge,
       {
         ittValue: vars.ittValue2,
@@ -24700,42 +25039,42 @@ class InstrumentLogic extends BaseInstrument {
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/ComponentProvider/ComponentProvider.tsx
   var ComponentProvider = (props) => {
-    return /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-wrapper" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-left" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-engine" }, /* @__PURE__ */ import_react31.default.createElement(Engine, null)), /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-fuel" }, "Fuel"), /* @__PURE__ */ import_react31.default.createElement("div", { className: `component-provider-oil ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react31.default.createElement("div", null) : /* @__PURE__ */ import_react31.default.createElement("div", null, "oil")), /* @__PURE__ */ import_react31.default.createElement("div", { className: `component-provider-vib ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react31.default.createElement("div", null) : /* @__PURE__ */ import_react31.default.createElement("div", null, "vib")), /* @__PURE__ */ import_react31.default.createElement("div", { className: `component-provider-flaps ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react31.default.createElement("div", null) : /* @__PURE__ */ import_react31.default.createElement("div", null, "flaps"))), /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-right" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-cas" }, "CAS MSG"), /* @__PURE__ */ import_react31.default.createElement("div", { className: `component-provider-lg ${props.declutter ? "declutter-hidden-right" : ""}` }, props.declutter ? /* @__PURE__ */ import_react31.default.createElement("div", null) : /* @__PURE__ */ import_react31.default.createElement("div", null, "lg")), /* @__PURE__ */ import_react31.default.createElement("div", { className: `component-provider-apu` }, props.declutter ? /* @__PURE__ */ import_react31.default.createElement("div", null) : /* @__PURE__ */ import_react31.default.createElement(APU, null)), /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-cabin" }, /* @__PURE__ */ import_react31.default.createElement(Cabin, null)), /* @__PURE__ */ import_react31.default.createElement("div", { className: "component-provider-trim" }, "Trim")));
+    return /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-wrapper" }, /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-left" }, /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-engine" }, /* @__PURE__ */ import_react33.default.createElement(Engine, null)), /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-fuel" }, "Fuel"), /* @__PURE__ */ import_react33.default.createElement("div", { className: `component-provider-oil ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react33.default.createElement("div", null) : /* @__PURE__ */ import_react33.default.createElement("div", null, "oil")), /* @__PURE__ */ import_react33.default.createElement("div", { className: `component-provider-vib ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react33.default.createElement("div", null) : /* @__PURE__ */ import_react33.default.createElement("div", null, "vib")), /* @__PURE__ */ import_react33.default.createElement("div", { className: `component-provider-flaps ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react33.default.createElement("div", null) : /* @__PURE__ */ import_react33.default.createElement("div", null, "flaps"))), /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-right" }, /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-cas" }, "CAS MSG"), /* @__PURE__ */ import_react33.default.createElement("div", { className: `component-provider-lg ${props.declutter ? "declutter-hidden-right" : ""}` }, props.declutter ? /* @__PURE__ */ import_react33.default.createElement("div", null) : /* @__PURE__ */ import_react33.default.createElement("div", null, "lg")), /* @__PURE__ */ import_react33.default.createElement("div", { className: `component-provider-apu` }, props.declutter ? /* @__PURE__ */ import_react33.default.createElement("div", null) : /* @__PURE__ */ import_react33.default.createElement(APU, null)), /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-cabin" }, /* @__PURE__ */ import_react33.default.createElement(Cabin, null)), /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-trim" }, "Trim")));
   };
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/index.tsx
   var EngineIndicatingAndCrewAlertingSystem = () => {
     const [declutter] = useObjLocalVar("EICAS_DECLUTTER", "bool");
-    return /* @__PURE__ */ import_react32.default.createElement("div", { id: "EICAS_ROOT" }, /* @__PURE__ */ import_react32.default.createElement(ComponentProvider, { declutter }));
+    return /* @__PURE__ */ import_react34.default.createElement("div", { id: "EICAS_ROOT" }, /* @__PURE__ */ import_react34.default.createElement(ComponentProvider, { declutter }));
   };
   var EicasState = getDisplayState("EICAS", cDisplayFaulureState);
   var EICAS = () => {
     const displayStates = AutoReversionary(cDisplayFaulureState);
     switch (displayStates[2]) {
       case "PFD":
-        return /* @__PURE__ */ import_react32.default.createElement(PrimaryFlightDisplayContent, null);
+        return /* @__PURE__ */ import_react34.default.createElement(PrimaryFlightDisplayContent, null);
       case "PFD2":
-        return /* @__PURE__ */ import_react32.default.createElement("div", null, " PFD2 ");
+        return /* @__PURE__ */ import_react34.default.createElement("div", null, " PFD2 ");
       case "MFD":
-        return /* @__PURE__ */ import_react32.default.createElement(MultifunctionDisplayContent, null);
+        return /* @__PURE__ */ import_react34.default.createElement(MultifunctionDisplayContent, null);
       case "MFD2":
-        return /* @__PURE__ */ import_react32.default.createElement("div", null, " MFD2 ");
+        return /* @__PURE__ */ import_react34.default.createElement("div", null, " MFD2 ");
       case "EICAS":
-        return /* @__PURE__ */ import_react32.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
+        return /* @__PURE__ */ import_react34.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
       case "FAILED":
-        return /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, null);
+        return /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null);
       default:
-        return /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, null);
+        return /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null);
     }
   };
-  render(EicasState ? /* @__PURE__ */ import_react32.default.createElement(import_react32.default.Fragment, null) : /* @__PURE__ */ import_react32.default.createElement(EICAS, null));
+  render(EicasState ? /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null) : /* @__PURE__ */ import_react34.default.createElement(EICAS, null));
 
   // instruments/src/MultifunctionDisplay/index.tsx
   var MultifunctionDisplayContent = () => {
-    const [isSystem, setIsSystem] = import_react33.default.useState(false);
-    const [systemMenu, setSystemMenu] = import_react33.default.useState(false);
-    const [showSystems, setShowSystems] = import_react33.default.useState(false);
-    return /* @__PURE__ */ import_react33.default.createElement("div", null, /* @__PURE__ */ import_react33.default.createElement(Mouse, null), /* @__PURE__ */ import_react33.default.createElement(
+    const [isSystem, setIsSystem] = import_react35.default.useState(false);
+    const [systemMenu, setSystemMenu] = import_react35.default.useState(false);
+    const [showSystems, setShowSystems] = import_react35.default.useState(false);
+    return /* @__PURE__ */ import_react35.default.createElement("div", null, /* @__PURE__ */ import_react35.default.createElement(Mouse, null), /* @__PURE__ */ import_react35.default.createElement(
       displayProvider_default,
       {
         systemMenu,
@@ -24754,48 +25093,48 @@ class InstrumentLogic extends BaseInstrument {
     const displayStates = AutoReversionary(cDisplayFaulureState);
     switch (displayStates[1]) {
       case "PFD":
-        return /* @__PURE__ */ import_react33.default.createElement(PrimaryFlightDisplayContent, null);
+        return /* @__PURE__ */ import_react35.default.createElement(PrimaryFlightDisplayContent, null);
       case "PFD2":
-        return /* @__PURE__ */ import_react33.default.createElement("div", null, " PFD2 ");
+        return /* @__PURE__ */ import_react35.default.createElement("div", null, " PFD2 ");
       case "MFD":
-        return /* @__PURE__ */ import_react33.default.createElement(MultifunctionDisplayContent, null);
+        return /* @__PURE__ */ import_react35.default.createElement(MultifunctionDisplayContent, null);
       case "MFD2":
-        return /* @__PURE__ */ import_react33.default.createElement("div", null, " MFD2 ");
+        return /* @__PURE__ */ import_react35.default.createElement("div", null, " MFD2 ");
       case "EICAS":
-        return /* @__PURE__ */ import_react33.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
+        return /* @__PURE__ */ import_react35.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
       case "FAILED":
-        return /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null);
+        return /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null);
       default:
-        return /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null);
+        return /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null);
     }
   };
-  render(MfdState ? /* @__PURE__ */ import_react33.default.createElement(import_react33.default.Fragment, null) : /* @__PURE__ */ import_react33.default.createElement(MFD, null));
+  render(MfdState ? /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null) : /* @__PURE__ */ import_react35.default.createElement(MFD, null));
 
   // instruments/src/PrimaryFlightDisplay/index.tsx
   var PrimaryFlightDisplayContent = () => {
-    return /* @__PURE__ */ import_react34.default.createElement("div", { id: "PFD-ROOT" }, /* @__PURE__ */ import_react34.default.createElement(PFDProvider, null));
+    return /* @__PURE__ */ import_react36.default.createElement("div", { id: "PFD-ROOT" }, /* @__PURE__ */ import_react36.default.createElement(PFDProvider, null));
   };
   var PfdState = getDisplayState("PFD", cDisplayFaulureState);
   var PFD = () => {
     const displayStates = AutoReversionary(cDisplayFaulureState);
     switch (displayStates[0]) {
       case "PFD":
-        return /* @__PURE__ */ import_react34.default.createElement(PrimaryFlightDisplayContent, null);
+        return /* @__PURE__ */ import_react36.default.createElement(PrimaryFlightDisplayContent, null);
       case "PFD2":
-        return /* @__PURE__ */ import_react34.default.createElement("div", null, " PFD2 ");
+        return /* @__PURE__ */ import_react36.default.createElement("div", null, " PFD2 ");
       case "MFD":
-        return /* @__PURE__ */ import_react34.default.createElement(MultifunctionDisplayContent, null);
+        return /* @__PURE__ */ import_react36.default.createElement(MultifunctionDisplayContent, null);
       case "MFD2":
-        return /* @__PURE__ */ import_react34.default.createElement("div", null, " MFD2 ");
+        return /* @__PURE__ */ import_react36.default.createElement("div", null, " MFD2 ");
       case "EICAS":
-        return /* @__PURE__ */ import_react34.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
+        return /* @__PURE__ */ import_react36.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
       case "FAILED":
-        return /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null);
+        return /* @__PURE__ */ import_react36.default.createElement(import_react36.default.Fragment, null);
       default:
-        return /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null);
+        return /* @__PURE__ */ import_react36.default.createElement(import_react36.default.Fragment, null);
     }
   };
-  render(PfdState ? /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null) : /* @__PURE__ */ import_react34.default.createElement(PFD, null));
+  render(PfdState ? /* @__PURE__ */ import_react36.default.createElement(import_react36.default.Fragment, null) : /* @__PURE__ */ import_react36.default.createElement(PFD, null));
 })();
 /**
  * @license React

@@ -4,7 +4,7 @@
     "name": "OBJ_E170_MFD_ROUTER_TOP",
     "index": 0,
     "unit": "Number",
-    "value": 0.0,
+    "value": 1.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -524,7 +524,7 @@
     "name": "OBJ_E170_MFD_ROUTER_SYSTEM",
     "index": 0,
     "unit": "Number",
-    "value": 4.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

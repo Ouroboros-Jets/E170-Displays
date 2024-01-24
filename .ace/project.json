@@ -32,6 +32,15 @@
       "height": 800,
       "x": 5820,
       "y": 2500
+    },
+    {
+      "uuid": "1049efd5-a3c5-4dec-8209-76121d47e607",
+      "name": "Systems",
+      "element": "Instrument",
+      "width": 550,
+      "height": 550,
+      "x": 8220,
+      "y": 2860
     }
   ]
 }

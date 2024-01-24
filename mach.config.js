@@ -30,7 +30,8 @@ module.exports = {
     reactInstrument('MultifunctionDisplay', undefined, true),
     reactInstrument('ElectronicFlightBag', undefined, true),
     reactInstrument('DU-1310-2-PFD', undefined, true),
-    reactInstrument('DU-1310-2-MFD', undefined, true)
+    reactInstrument('DU-1310-2-MFD', undefined, true),
+    reactInstrument('Systems', undefined)
   ]
 }
 
@@ -41,6 +42,19 @@ function reactInstrument(name, additionalImports, isInteractive) {
     simulatorPackage: {
       type: 'react',
       isInteractive: isInteractive ?? false,
+      fileName: name.toLowerCase(),
+      imports: ['/JS/dataStorage.js', ...(additionalImports ?? [])]
+    }
+  }
+}
+
+function reactSystem(name, additionalImports) {
+  return {
+    name,
+    index: `Systems/src/${name}/index.tsx`,
+    simulatorPackage: {
+      type: 'react',
+      isInteractive: false,
       fileName: name.toLowerCase(),
       imports: ['/JS/dataStorage.js', ...(additionalImports ?? [])]
     }

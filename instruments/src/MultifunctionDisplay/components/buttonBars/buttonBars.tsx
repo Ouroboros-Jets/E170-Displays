@@ -6,6 +6,8 @@ import { SystemButton } from './systemButton/systemButton'
 
 type T_SystemButtonBarProps = {
   isShown: boolean
+  setShown: React.Dispatch<React.SetStateAction<boolean>>
+  text: string[]
 }
 export const SystemButtonBar: React.FC<T_SystemButtonBarProps> = (props: T_SystemButtonBarProps): JSX.Element => {
   if (!props.isShown) {
@@ -13,16 +15,9 @@ export const SystemButtonBar: React.FC<T_SystemButtonBarProps> = (props: T_Syste
   } else {
     return (
       <div className={`system-button-bar-container ${props.isShown ? 'shown' : 'hidden'}`}>
-        <SystemButton text="Status" routeTo={0} />
-        <SystemButton text=" Flight Ctrl" routeTo={1} />
-        <SystemButton text="Hydraulics" routeTo={2} />
-        <SystemButton text="Fuel" routeTo={3} />
-        <SystemButton text="Electrical" routeTo={4} />
-        <SystemButton text="ECS" routeTo={5} />
-        <SystemButton text="Anti-Ice" routeTo={6} />
-        <SystemButton text="Engine Maint" disabled routeTo={7} />
-        <SystemButton text="Maintenance" routeTo={8} />
-        <SystemButton text="Sys Config" routeTo={9} />
+        {props.text.map((text, index) => {
+          return <SystemButton setShown={props.setShown} text={text} key={index} routeTo={index} />
+        })}
       </div>
     )
   }

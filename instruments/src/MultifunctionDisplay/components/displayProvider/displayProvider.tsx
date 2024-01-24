@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import './displayProvider.scss'
 import { LowerButtonBar, SystemButtonBar, UpperButtonBar } from '../buttonBars/buttonBars'
 import { getTopPage } from '../router/router'
@@ -33,7 +33,12 @@ const DisplayProvider: React.FC<T_DisplayProviderProps> = (props: T_DisplayProvi
         currentPage={getTopPage()}
       />
       <div className="upper-content-container">
-        <SystemButtonBar isShown={systemMenu} /> {props.topPage}
+        <SystemButtonBar
+          isShown={systemMenu}
+          setShown={setSystemMenu}
+          text={['Status', 'Flight Ctrl', 'Hydraulics', 'Fuel', 'Electrical', 'ECS', 'Anti-Ice']}
+        />
+        {props.topPage}
       </div>
       <div className="center-divider" />
       <div className="lower-content-container">{props.bottomPage}</div>
