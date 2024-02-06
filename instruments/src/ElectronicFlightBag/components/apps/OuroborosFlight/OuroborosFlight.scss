@@ -1,0 +1,41 @@
+.ouroboros-flight-root {
+  height: 1536px;
+  width: 2048px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--containerBackground);
+}
+.ouroboros-flight-container {
+  height: 100%;
+  // background-color: rgba($color: aqua, $alpha: 0.1);
+}
+
+.open {
+  transform: scale(1);
+  transition: ease-in-out 0.3s;
+}
+.closed {
+  transform: scale(0.1);
+  content: '';
+}
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+.loading-watermark {
+  animation: watermark-spin 1.5s reverse infinite;
+  transform: translate(-30px, 16px);
+}
+
+@keyframes watermark-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

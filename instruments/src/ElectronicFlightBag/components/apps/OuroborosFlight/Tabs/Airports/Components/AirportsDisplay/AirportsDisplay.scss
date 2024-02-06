@@ -1,0 +1,26 @@
+.airport-display {
+  background-color: var(--notAsDarkBGColor);
+  position: absolute;
+  left: 640px;
+  top: 140px;
+  height: 552px;
+  width: 1407px;
+}
+.airport-display-left-content {
+}
+.airport-display-divider {
+  display: flex;
+  flex-direction: row;
+}
+.airport-display-title-group {
+  display: flex;
+  flex-direction: row;
+  padding: 30px;
+  width: 1350px;
+  justify-content: space-between;
+  align-items: center;
+}
+.airport-display-airport {
+  width: 1300px;
+  font-size: 60px;
+}

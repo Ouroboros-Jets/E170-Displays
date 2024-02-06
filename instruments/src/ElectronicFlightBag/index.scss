@@ -1,13 +1,52 @@
 :root {
-	// background-color: #200f3a;
-	color: white;
-	--redish: #b51f42;
-	--image: url('https://images6.alphacoders.com/132/1323578.png');
-
-	font-size: xx-large;
-	font-family: Arial, Helvetica, sans-serif;
+  --containerBackground: #180a2a;
+  --notAsDarkBGColor: #26133e;
+  --backgroundColor: #210e3a;
+  --darkPurple: #36185c;
+  --lightPurple: #a359ff;
+  --checklistButtonPurple: #4a2e8e;
+  --notSoLightPurple: #674592;
+  --darkBlue: #0042ff;
+  --blue: #2a2fff;
+  --darkerBlue: #16175c;
+  --lightBlue: #007eff;
+  --veryDarkBlue: #0f1039;
+  --veryVeryDarkBlue: #090923;
+  --ifrRed: #ff2584;
+  --lifrPink: #ff5dad;
+  --mvfrDark: #2a2fff;
+  --mvfrMedium: #2a9dff;
+  --mvfrLight: #2ac5ff;
 }
+html {
+  width: 2048px;
+  height: 1536px;
+  user-select: none;
+}
+
 body {
-	background-image: var(--image);
-	background-size: cover;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: black;
+  color: white;
+  font-size: 30px;
+  // background-image: url('./ref.png');
+  background-repeat: no-repeat;
+  width: 2048px;
+  height: 1536px;
+}
+.ipadContainer {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 2048px;
+  height: 1536px;
+  //   background-color: black;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }

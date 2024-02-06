@@ -41,6 +41,15 @@
       "height": 550,
       "x": 8220,
       "y": 2860
+    },
+    {
+      "uuid": "ec9f0165-900f-4c85-b714-8509adca769a",
+      "name": "ElectronicFlightBag",
+      "element": "Instrument",
+      "width": 2048,
+      "height": 1536,
+      "x": 5760,
+      "y": 3360
     }
   ]
 }

@@ -1,0 +1,116 @@
+.procedure-wrapper {
+  display: flex;
+  flex-direction: row;
+  padding: 60px 40px 0px 40px;
+  background-color: var(--darkerBlue);
+  // background-color: red;
+
+  position: absolute;
+  width: 1328px;
+  top: 756px;
+  left: 640px;
+  height: 628px;
+}
+.chart-container {
+  position: absolute;
+  top: -756px;
+  left: -640px;
+  z-index: 9999;
+  width: 2048px;
+  height: 1443px;
+  background-color: var(--containerBackground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.chart-header {
+  display: flex;
+  width: 2048px;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+}
+.chart {
+  max-width: 2000px;
+  max-height: 1370px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.procedure-buttons-continer {
+  border-top-left-radius: 20px;
+  background-color: var(--veryVeryDarkBlue);
+  height: 628px;
+}
+.procedure-button {
+  display: flex;
+  flex-direction: row;
+  width: 500px;
+  border-top: 1px solid var(--notSoLightPurple);
+  background-color: var(--veryDarkBlue);
+  height: 80px;
+  align-items: center;
+  padding: 0px 20px 0px 20px;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.procedure-buttons-title {
+  padding: 10px;
+}
+.active-proc::before {
+  position: absolute;
+  left: 50px;
+  width: 520px;
+  height: 50px;
+  content: '';
+  background-color: var(--blue);
+  border-radius: 10px;
+}
+.procedure-text {
+  z-index: 30;
+  display: flex;
+  height: 80px;
+  width: 500px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.procedure-chart-buttons-container {
+  background-color: var(--veryVeryDarkBlue);
+  width: 750px;
+  border-top-right-radius: 20px;
+  padding-right: 20px;
+  height: 628px;
+  overflow-y: scroll;
+}
+.procedure-page-chart-button {
+  padding: 20px;
+  border-top: 1px solid var(--notSoLightPurple);
+  background-color: var(--veryDarkBlue);
+  height: 30px;
+}
+.procedure-page-chart-button-text {
+  z-index: 30;
+  position: sticky;
+}
+.chart-close {
+  background-color: var(--blue);
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--notSoLightPurple);
+}
+.psudo-hover {
+  position: absolute;
+  width: 720px;
+  height: 50px;
+  z-index: 2;
+  // background-color: var(--blue);
+  border: 3px solid var(--blue);
+  border-radius: 10px;
+  pointer-events: none;
+  transition: 0.1s ease-in;
+}
+.chart-sorter-wrapper {
+  height: 500px;
+  overflow-y: scroll;
+}
