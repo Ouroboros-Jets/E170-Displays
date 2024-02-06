@@ -1,0 +1,17 @@
+.status-svg-container {
+  position: absolute;
+  width: 600px;
+  z-index: 4;
+  height: 455px;
+}
+.doors-status {
+  position: absolute;
+  left: 303px;
+  top: 56px;
+  display: flex;
+  flex-direction: column;
+  width: 290px;
+  justify-content: space-between;
+  height: 450px;
+  //   background-color: red;
+}

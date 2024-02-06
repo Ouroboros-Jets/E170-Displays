@@ -1,5 +1,6 @@
 import { render } from 'instruments/common/Hooks'
 import React from 'react'
+import './index.scss'
 
 // eslint-disable-next-line react-refresh/only-export-components
 const IESRoot = (): JSX.Element => {

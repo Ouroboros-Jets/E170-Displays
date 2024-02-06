@@ -2342,9 +2342,9 @@ class InstrumentLogic extends BaseInstrument {
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React36 = require_react();
+          var React37 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React36.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React37.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -3865,7 +3865,7 @@ class InstrumentLogic extends BaseInstrument {
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React36.Children.forEach(props.children, function(child) {
+                  React37.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -12026,7 +12026,7 @@ class InstrumentLogic extends BaseInstrument {
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React36.Component().refs;
+          var emptyRefsObject = new React37.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -22943,7 +22943,7 @@ class InstrumentLogic extends BaseInstrument {
   });
 
   // instruments/src/MultifunctionDisplay/index.tsx
-  var import_react36 = __toESM(require_react());
+  var import_react37 = __toESM(require_react());
 
   // instruments/common/Hooks/index.tsx
   var import_react3 = __toESM(require_react());
@@ -23243,9 +23243,12 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/MultifunctionDisplay/components/router/router.tsx
-  var import_react8 = __toESM(require_react());
+  var import_react9 = __toESM(require_react());
 
   // instruments/src/MultifunctionDisplay/components/pages/Status/Status.tsx
+  var import_react8 = __toESM(require_react());
+
+  // instruments/src/MultifunctionDisplay/components/pages/Status/StatusDisplayProvider/StatusDisplayProvider.tsx
   var import_react7 = __toESM(require_react());
 
   // instruments/src/MultifunctionDisplay/components/pages/Status/StatusAircraft.tsx
@@ -23263,7 +23266,7 @@ class InstrumentLogic extends BaseInstrument {
         fill: "none",
         width: props.width
       },
-      /* @__PURE__ */ import_react6.default.createElement("g", { id: "MOTORES" }, /* @__PURE__ */ import_react6.default.createElement(
+      /* @__PURE__ */ import_react6.default.createElement("g", { transform: "translate(-150,0)" }, /* @__PURE__ */ import_react6.default.createElement("g", { id: "MOTORES" }, /* @__PURE__ */ import_react6.default.createElement(
         "linearGradient",
         {
           id: "SVGID_1_",
@@ -23310,8 +23313,7 @@ class InstrumentLogic extends BaseInstrument {
           rx: "60.73164",
           ry: "20.41857"
         }
-      ), /* @__PURE__ */ import_react6.default.createElement("ellipse", { fill: "#515151", cx: "581.56256", cy: "702.48334", rx: "37.72652", ry: "12.68402" })),
-      /* @__PURE__ */ import_react6.default.createElement("g", { id: "MOTORES_c\xF3pia" }, /* @__PURE__ */ import_react6.default.createElement(
+      ), /* @__PURE__ */ import_react6.default.createElement("ellipse", { fill: "#515151", cx: "581.56256", cy: "702.48334", rx: "37.72652", ry: "12.68402" })), /* @__PURE__ */ import_react6.default.createElement("g", { id: "MOTORES_c\xF3pia" }, /* @__PURE__ */ import_react6.default.createElement(
         "linearGradient",
         {
           id: "SVGID_00000153689851858018853260000014087626480813077402_",
@@ -23358,16 +23360,14 @@ class InstrumentLogic extends BaseInstrument {
           rx: "60.73164",
           ry: "20.41857"
         }
-      ), /* @__PURE__ */ import_react6.default.createElement("ellipse", { fill: "#515151", cx: "1333.40186", cy: "702.48334", rx: "37.72652", ry: "12.68402" })),
-      /* @__PURE__ */ import_react6.default.createElement(
+      ), /* @__PURE__ */ import_react6.default.createElement("ellipse", { fill: "#515151", cx: "1333.40186", cy: "702.48334", rx: "37.72652", ry: "12.68402" })), /* @__PURE__ */ import_react6.default.createElement(
         "path",
         {
           id: "Entire_Plane_00000026849517666099132690000016535438464612460194_",
           fill: "white",
           d: "M1039.97766,1618.66541  l-0.09595,0.35168l205.18677,149.31104l6.93665,109.67346l-253.58264-90.71802l-25.25244,90.65405h-0.09595v0.06396h-28.67297  l-26.56354-95.32092h-0.03198l-257.32233,95.32092l11.50751-109.67346l205.60193-149.59863V1035.3269H735.47418  l-576.40204,143.52502V1035.3269l718.52057-339.12213V205.59824c0,0,0.06403-0.73515,0.25598-2.04585  c0.03198-0.25577,0.06403-0.51135,0.09601-0.79913c0.03198-0.22379,0.06396-0.47937,0.09601-0.73514  c0.0636-0.51157,0.15955-1.05492,0.22357-1.66228c0.0636-0.51135,0.12756-1.02292,0.22357-1.56627  c0.06403-0.54337,0.15997-1.11871,0.224-1.75807c0,0,0,0,0-0.032c0.06396-0.38356,0.12799-0.79913,0.19159-1.21471  c0,0,0-0.032,0-0.064c0.06396-0.41556,0.12799-0.83113,0.19159-1.27849c-0.03162-0.032-0.03162-0.032,0-0.064  c0.28796-1.82207,0.60754-3.83591,0.92712-6.00954c0.19196-1.08672,0.35193-2.20563,0.54352-3.38834  c0.09601-0.60735,0.19159-1.21471,0.2876-1.82205c0.31995-1.79007,0.63916-3.70792,0.95911-5.68976  c0.09601-0.67136,0.224-1.3107,0.35156-1.98186c0.38361-2.17383,0.79919-4.41125,1.2467-6.71288  c0.06403-0.35156,0.12799-0.67114,0.19202-1.02292c0.83112-4.34726,1.75787-8.85431,2.78058-13.45735  c0.35199-1.66226,0.70312-3.32454,1.0871-4.9866c2.10944-9.42987,4.44287-19.01952,6.9043-27.77804  c0.28796-0.95912,0.54352-1.91805,0.83112-2.87698c0.03198-0.12779,0.06403-0.22378,0.09601-0.31957  c3.06854-10.10121,6.5531-19.59487,10.48474-27.42646c0-0.064,0.03204-0.12779,0.06403-0.15979  c0.06396-0.22379,0.19196-0.38358,0.2876-0.60735c9.78125-19.2753,30.6228-48.26804,52.42346-48.14005  c0.73517,0,1.47034,0.032,2.20544,0.12779v-0.12779c8.02338,0.44757,31.64594,7.44782,48.39581,46.57377  c0.09601,0.19178,0.16003,0.38357,0.25562,0.57536c4.12366,9.74944,7.54419,18.69975,10.42078,26.85091  c0.06403,0.12799,0.09601,0.28777,0.15997,0.41557c8.69452,24.77327,12.17902,42.13052,14.16046,52.23174  c3.99573,20.61778,5.81799,36.79233,5.81799,36.79233v490.99014l720.9502,338.89832v143.52502l-585.44836-143.52502h-135.50183  V1618.66541z"
         }
-      ),
-      /* @__PURE__ */ import_react6.default.createElement(
+      ), /* @__PURE__ */ import_react6.default.createElement(
         "linearGradient",
         {
           id: "Spmbra_Asa_Esquerda_00000090265377321321966480000011189789117097124238_",
@@ -23379,16 +23379,14 @@ class InstrumentLogic extends BaseInstrument {
         },
         /* @__PURE__ */ import_react6.default.createElement("stop", { offset: "0.08309", stopColor: "#000000" }),
         /* @__PURE__ */ import_react6.default.createElement("stop", { offset: "0.3257", stopColor: "#FFFFFF" })
-      ),
-      /* @__PURE__ */ import_react6.default.createElement(
+      ), /* @__PURE__ */ import_react6.default.createElement(
         "polygon",
         {
           id: "Spmbra_Asa_Esquerda_00000116222053508422501510000018322529384858228378_",
           fill: "url(#Spmbra_Asa_Esquerda_00000090265377321321966480000011189789117097124238_)",
           points: "  159.08128,1035.31824 877.59613,696.20166 877.59613,742.60028 159.08128,1080.00293 "
         }
-      ),
-      /* @__PURE__ */ import_react6.default.createElement(
+      ), /* @__PURE__ */ import_react6.default.createElement(
         "linearGradient",
         {
           id: "Sombra_Asa_Direita_00000036942568648626228890000008706638215806472080_",
@@ -23401,16 +23399,14 @@ class InstrumentLogic extends BaseInstrument {
         },
         /* @__PURE__ */ import_react6.default.createElement("stop", { offset: "0.08309", stopColor: "#000000" }),
         /* @__PURE__ */ import_react6.default.createElement("stop", { offset: "0.3257", stopColor: "#FFFFFF" })
-      ),
-      /* @__PURE__ */ import_react6.default.createElement(
+      ), /* @__PURE__ */ import_react6.default.createElement(
         "polygon",
         {
           id: "Sombra_Asa_Direita_00000016774635496930687650000008789609284131109785_",
           fill: "url(#Sombra_Asa_Direita_00000036942568648626228890000008706638215806472080_)",
           points: "  1760.92163,1035.31824 1039.49316,696.20166 1039.49316,742.60028 1760.92163,1076.6936 "
         }
-      ),
-      /* @__PURE__ */ import_react6.default.createElement(
+      ), /* @__PURE__ */ import_react6.default.createElement(
         "linearGradient",
         {
           id: "Sombra_Profundor_Direito_00000086664353386781293090000000288991115658468520_",
@@ -23423,16 +23419,14 @@ class InstrumentLogic extends BaseInstrument {
         },
         /* @__PURE__ */ import_react6.default.createElement("stop", { offset: "0.27684", stopColor: "#000000" }),
         /* @__PURE__ */ import_react6.default.createElement("stop", { offset: "0.33977", stopColor: "#FFFFFF" })
-      ),
-      /* @__PURE__ */ import_react6.default.createElement(
+      ), /* @__PURE__ */ import_react6.default.createElement(
         "polygon",
         {
           id: "Sombra_Profundor_Direito_00000111178635039311351020000014020286933857283981_",
           fill: "url(#Sombra_Profundor_Direito_00000086664353386781293090000000288991115658468520_)",
           points: "  1245.08435,1768.34143 1039.49292,1618.72778 1034.74951,1638.05493 1246.81433,1795.80762 "
         }
-      ),
-      /* @__PURE__ */ import_react6.default.createElement(
+      ), /* @__PURE__ */ import_react6.default.createElement(
         "linearGradient",
         {
           id: "Sombra_Profundor_Esquerdo_00000152970251056522488500000012121874038699989421_",
@@ -23445,16 +23439,14 @@ class InstrumentLogic extends BaseInstrument {
         },
         /* @__PURE__ */ import_react6.default.createElement("stop", { offset: "0.27684", stopColor: "#000000" }),
         /* @__PURE__ */ import_react6.default.createElement("stop", { offset: "0.33977", stopColor: "#FFFFFF" })
-      ),
-      /* @__PURE__ */ import_react6.default.createElement(
+      ), /* @__PURE__ */ import_react6.default.createElement(
         "polygon",
         {
           id: "Sombra_Profundor_Esquerdo_00000096748327342622766530000009076308292836533427_",
           fill: "url(#Sombra_Profundor_Esquerdo_00000152970251056522488500000012121874038699989421_)",
           points: "  672.02179,1768.34167 877.61322,1618.72815 882.35663,1638.05518 669.11658,1795.80798 "
         }
-      ),
-      /* @__PURE__ */ import_react6.default.createElement(
+      ), /* @__PURE__ */ import_react6.default.createElement(
         "linearGradient",
         {
           id: "Sonbra_Fuselagem_Esquerda_00000016062324977607661850000015790484510643223209_",
@@ -23469,16 +23461,14 @@ class InstrumentLogic extends BaseInstrument {
         /* @__PURE__ */ import_react6.default.createElement("stop", { offset: "0.52191", stopColor: "#9D9D9D" }),
         /* @__PURE__ */ import_react6.default.createElement("stop", { offset: "0.86488", stopColor: "#2E2E2E" }),
         /* @__PURE__ */ import_react6.default.createElement("stop", { offset: "1", stopColor: "#000000" })
-      ),
-      /* @__PURE__ */ import_react6.default.createElement(
+      ), /* @__PURE__ */ import_react6.default.createElement(
         "path",
         {
           id: "Sonbra_Fuselagem_Esquerda_00000083056583888906148110000015529978866744628377_",
           fill: "url(#Sonbra_Fuselagem_Esquerda_00000016062324977607661850000015790484510643223209_)",
           d: "  M973.0741,1877.93762v0.06396h-28.67297l-26.56354-95.32092h-0.03198l-40.21289-163.85547V205.59824  c0,0,0.06403-0.73515,0.25598-2.04585c0.03198-0.25577,0.06403-0.51135,0.09601-0.79913  c0.03198-0.22379,0.06396-0.47937,0.09601-0.73514c0.0636-0.51157,0.15955-1.05492,0.22357-1.66228  c0.0636-0.51135,0.12756-1.02292,0.22357-1.56627c0.06403-0.54337,0.15997-1.11871,0.224-1.75807c0,0,0,0,0-0.032  c0.06396-0.38356,0.12799-0.79913,0.19159-1.21471c0,0,0-0.032,0-0.064c0.06396-0.41556,0.12799-0.83113,0.19159-1.27849  c-0.03162-0.032-0.03162-0.032,0-0.064c0.28796-1.82207,0.60754-3.83591,0.92712-6.00954  c0.19196-1.08672,0.35193-2.20563,0.54352-3.38834c0.09601-0.60735,0.19159-1.21471,0.2876-1.82205  c0.31995-1.79007,0.63916-3.70792,0.95911-5.68976c0.09601-0.67136,0.224-1.3107,0.35156-1.98186  c0.38361-2.17383,0.79919-4.41125,1.2467-6.71288c0.06403-0.35156,0.12799-0.67114,0.19202-1.02292  c0.83112-4.34726,1.75787-8.85431,2.78058-13.45735c0.35199-1.66226,0.70312-3.32454,1.0871-4.9866  c2.10944-9.42987,4.44287-19.01952,6.9043-27.77804c0.28796-0.95912,0.54352-1.91805,0.83112-2.87698  c0.03198-0.12779,0.06403-0.22378,0.09601-0.31957c3.06854-10.10121,6.5531-19.59487,10.48474-27.42646  c0-0.064,0.03204-0.12779,0.06403-0.15979c0.06396-0.22379,0.19196-0.38358,0.2876-0.60735  c9.78125-19.2753,30.6228-48.26804,52.42346-48.14005c0.73517,0,1.47034,0.032,2.20544,0.12779v1835.81104H973.0741z"
         }
-      ),
-      /* @__PURE__ */ import_react6.default.createElement(
+      ), /* @__PURE__ */ import_react6.default.createElement(
         "linearGradient",
         {
           id: "Sombra_Fuselagem_Direita_00000168075213921141438920000007246505118741225384_",
@@ -23494,16 +23484,14 @@ class InstrumentLogic extends BaseInstrument {
         /* @__PURE__ */ import_react6.default.createElement("stop", { offset: "0.12333", stopColor: "#8A8A8A" }),
         /* @__PURE__ */ import_react6.default.createElement("stop", { offset: "0.18147", stopColor: "#343434" }),
         /* @__PURE__ */ import_react6.default.createElement("stop", { offset: "0.21482", stopColor: "#000000" })
-      ),
-      /* @__PURE__ */ import_react6.default.createElement(
+      ), /* @__PURE__ */ import_react6.default.createElement(
         "path",
         {
           id: "Sombra_Fuselagem_Direita_00000054977883063755247410000015215662013012450970_",
           fill: "url(#Sombra_Fuselagem_Direita_00000168075213921141438920000007246505118741225384_)",
           d: "  M1039.97766,205.43845v1413.22693l-0.09595,0.35168l-40.1485,163.59961l-1.31073,4.66687l-25.25244,90.65405h-12.40302V41.99878  c8.02338,0.44757,31.64594,7.44782,48.39581,46.57377c0.09601,0.19178,0.16003,0.38357,0.25562,0.57536  c4.12366,9.74944,7.54419,18.69975,10.42078,26.85091c0.06403,0.12799,0.09601,0.28777,0.15997,0.41557  c8.69452,24.77327,12.17902,42.13052,14.16046,52.23174C1038.1554,189.2639,1039.97766,205.43845,1039.97766,205.43845z"
         }
-      ),
-      /* @__PURE__ */ import_react6.default.createElement("g", { id: "COCKPIT_WINDOWS" }, /* @__PURE__ */ import_react6.default.createElement(
+      ), /* @__PURE__ */ import_react6.default.createElement("g", { id: "COCKPIT_WINDOWS" }, /* @__PURE__ */ import_react6.default.createElement(
         "path",
         {
           fill: "black",
@@ -23527,13 +23515,177 @@ class InstrumentLogic extends BaseInstrument {
           fill: "black",
           d: "M1008.43744,149.76274l-14.72681,43.9705c0,0-18.64661-16.04097-24.8006-16.04097v-50.17848   C968.91003,127.51379,991.39569,127.04041,1008.43744,149.76274z"
         }
-      ))
+      )))
     );
+  };
+
+  // instruments/src/MultifunctionDisplay/components/pages/Status/StatusDisplayProvider/StatusDisplayProvider.tsx
+  var isE190 = false;
+  var StatusDisplayProvider = (props) => {
+    return /* @__PURE__ */ import_react7.default.createElement("div", null, /* @__PURE__ */ import_react7.default.createElement("div", { className: "status-svg-container" }, /* @__PURE__ */ import_react7.default.createElement("svg", { viewBox: "0 0 600 455", width: "100%", height: "100%" }, /* @__PURE__ */ import_react7.default.createElement("path", { d: "M 300 0 L 300 455", stroke: "white", strokeWidth: 4 }), /* @__PURE__ */ import_react7.default.createElement("g", null, (props.doors.fwdEntry || props.doors.rearEntry) && /* @__PURE__ */ import_react7.default.createElement("text", { x: 480, y: 20, fill: "red", fontSize: 17 }, "PASSENGER"), (props.doors.fwdService || props.doors.rearService) && /* @__PURE__ */ import_react7.default.createElement("text", { x: 480, y: 40, fill: "red", fontSize: 17 }, "SERVICE"), (props.doors.fwdBaggage || props.doors.rearBaggage) && /* @__PURE__ */ import_react7.default.createElement("text", { x: 480, y: 60, fill: "red", fontSize: 17 }, "CARGO"), props.doors.refuel && /* @__PURE__ */ import_react7.default.createElement("text", { x: 480, y: 80, fill: "yellow", fontSize: 17 }, "FUELING"), props.doors.fwdElectronics && /* @__PURE__ */ import_react7.default.createElement("text", { x: 480, y: 100, fill: "yellow", fontSize: 17 }, "FWD EBAY"), props.doors.centralElectronics && /* @__PURE__ */ import_react7.default.createElement("text", { x: 480, y: 120, fill: "yellow", fontSize: 17 }, "CENTER EBAY"), props.doors.hydraulic && /* @__PURE__ */ import_react7.default.createElement("text", { x: 480, y: 140, fill: "yellow", fontSize: 17 }, "HYD")), /* @__PURE__ */ import_react7.default.createElement("g", null, /* @__PURE__ */ import_react7.default.createElement(
+      "rect",
+      {
+        width: 12,
+        height: 12,
+        x: 444,
+        y: 114,
+        fill: props.doors.fwdElectronics ? "yellow" : "lime",
+        stroke: "black",
+        strokeWidth: 1,
+        rx: 2,
+        ry: 2
+      }
+    ), /* @__PURE__ */ import_react7.default.createElement(
+      "rect",
+      {
+        width: 12,
+        height: 12,
+        x: 434,
+        y: 160,
+        fill: props.doors.fwdEntry ? "red" : "lime",
+        stroke: "black",
+        strokeWidth: 1,
+        rx: 2,
+        ry: 2
+      }
+    ), /* @__PURE__ */ import_react7.default.createElement(
+      "rect",
+      {
+        width: 12,
+        height: 12,
+        x: 454,
+        y: 160,
+        fill: props.doors.fwdService ? "red" : "lime",
+        stroke: "black",
+        strokeWidth: 1,
+        rx: 2,
+        ry: 2
+      }
+    ), /* @__PURE__ */ import_react7.default.createElement(
+      "rect",
+      {
+        width: 12,
+        height: 12,
+        x: 454,
+        y: 200,
+        fill: props.doors.fwdBaggage ? "red" : "lime",
+        stroke: "black",
+        strokeWidth: 1,
+        rx: 2,
+        ry: 2
+      }
+    ), isE190 && /* @__PURE__ */ import_react7.default.createElement("g", null, /* @__PURE__ */ import_react7.default.createElement("rect", { width: 12, height: 12, x: 434, y: 255, fill: "lime", stroke: "black", strokeWidth: 1, rx: 2, ry: 2 }), /* @__PURE__ */ import_react7.default.createElement("rect", { width: 12, height: 12, x: 454, y: 255, fill: "lime", stroke: "black", strokeWidth: 1, rx: 2, ry: 2 })), /* @__PURE__ */ import_react7.default.createElement(
+      "rect",
+      {
+        width: 12,
+        height: 12,
+        x: 434,
+        y: 290,
+        fill: props.doors.centralElectronics ? "yellow" : "lime",
+        stroke: "black",
+        strokeWidth: 1,
+        rx: 2,
+        ry: 2
+      }
+    ), /* @__PURE__ */ import_react7.default.createElement(
+      "rect",
+      {
+        width: 12,
+        height: 12,
+        x: 454,
+        y: 315,
+        fill: props.doors.rearBaggage ? "red" : "lime",
+        stroke: "black",
+        strokeWidth: 1,
+        rx: 2,
+        ry: 2
+      }
+    ), /* @__PURE__ */ import_react7.default.createElement(
+      "rect",
+      {
+        width: 12,
+        height: 12,
+        x: 434,
+        y: 350,
+        fill: props.doors.rearEntry ? "red" : "lime",
+        stroke: "black",
+        strokeWidth: 1,
+        rx: 2,
+        ry: 2
+      }
+    ), /* @__PURE__ */ import_react7.default.createElement(
+      "rect",
+      {
+        width: 12,
+        height: 12,
+        x: 454,
+        y: 350,
+        fill: props.doors.rearService ? "red" : "lime",
+        stroke: "black",
+        strokeWidth: 1,
+        rx: 2,
+        ry: 2
+      }
+    ), /* @__PURE__ */ import_react7.default.createElement(
+      "rect",
+      {
+        width: 12,
+        height: 12,
+        x: 454,
+        y: 385,
+        fill: props.doors.hydraulic ? "yellow" : "lime",
+        stroke: "black",
+        strokeWidth: 1,
+        rx: 2,
+        ry: 2
+      }
+    ), /* @__PURE__ */ import_react7.default.createElement("g", { transform: "rotate(23, 540, 271)" }, /* @__PURE__ */ import_react7.default.createElement(
+      "rect",
+      {
+        width: 12,
+        height: 12,
+        x: 534,
+        y: 265,
+        fill: props.doors.refuel ? "yellow" : "lime",
+        stroke: "black",
+        strokeWidth: 1,
+        rx: 2,
+        ry: 2
+      }
+    ))))), /* @__PURE__ */ import_react7.default.createElement("div", { className: "doors-status" }, "DOORS", /* @__PURE__ */ import_react7.default.createElement(StatusAircraft, { width: 350 })), /* @__PURE__ */ import_react7.default.createElement("div", null, "mm"));
   };
 
   // instruments/src/MultifunctionDisplay/components/pages/Status/Status.tsx
   var Status = () => {
-    return /* @__PURE__ */ import_react7.default.createElement(StatusAircraft, { width: 300 });
+    return /* @__PURE__ */ import_react8.default.createElement(
+      StatusDisplayProvider,
+      {
+        stats: { flight: "SKW1001", TAT: 10, SAT: 10, GW: 10, TimeH: 10, TimeM: 10 },
+        Elec: { Bat1: 27.6, Bat2: 27.7 },
+        Oil: { eng1Level: 7, eng2Level: 7 },
+        Oxygen: 1e3,
+        Brakes: {
+          EmerAccu1: 10,
+          EmerAccu2: 10,
+          Temp1Ib: 10,
+          Temp2Ib: 10,
+          Temp1Ob: 10,
+          Temp2Ob: 10
+        },
+        doors: {
+          fwdElectronics: true,
+          fwdService: true,
+          fwdEntry: true,
+          fwdBaggage: true,
+          centralElectronics: true,
+          rearBaggage: true,
+          rearService: true,
+          rearEntry: true,
+          hydraulic: true,
+          refuel: true
+        }
+      }
+    );
   };
 
   // instruments/src/MultifunctionDisplay/components/router/router.tsx
@@ -23541,62 +23693,62 @@ class InstrumentLogic extends BaseInstrument {
     const [topPage] = useObjLocalVar("MFD_ROUTER_TOP", "Number");
     const [bottomPage] = useObjLocalVar("MFD_ROUTER_BOTTOM", "Number");
     const [systemPage] = useObjLocalVar("MFD_ROUTER_SYSTEM", "Number");
-    let returnPage = /* @__PURE__ */ import_react8.default.createElement(import_react8.default.Fragment, null);
+    let returnPage = /* @__PURE__ */ import_react9.default.createElement(import_react9.default.Fragment, null);
     if (isCallingTop) {
       if (system) {
         switch (systemPage) {
           case 0:
-            returnPage = /* @__PURE__ */ import_react8.default.createElement(Status, null);
+            returnPage = /* @__PURE__ */ import_react9.default.createElement(Status, null);
             break;
           case 1:
-            returnPage = /* @__PURE__ */ import_react8.default.createElement("div", null, "FLIGHT CTRL");
+            returnPage = /* @__PURE__ */ import_react9.default.createElement("div", null, "FLIGHT CTRL");
             break;
           case 2:
-            returnPage = /* @__PURE__ */ import_react8.default.createElement("div", null, "HYDRAULICS");
+            returnPage = /* @__PURE__ */ import_react9.default.createElement("div", null, "HYDRAULICS");
             break;
           case 3:
-            returnPage = /* @__PURE__ */ import_react8.default.createElement("div", null, "FUEL");
+            returnPage = /* @__PURE__ */ import_react9.default.createElement("div", null, "FUEL");
             break;
           case 4:
-            returnPage = /* @__PURE__ */ import_react8.default.createElement("div", null, "ELECTRICAL");
+            returnPage = /* @__PURE__ */ import_react9.default.createElement("div", null, "ELECTRICAL");
             break;
           case 5:
-            returnPage = /* @__PURE__ */ import_react8.default.createElement("div", null, "ECS");
+            returnPage = /* @__PURE__ */ import_react9.default.createElement("div", null, "ECS");
             break;
           case 6:
-            returnPage = /* @__PURE__ */ import_react8.default.createElement("div", null, "ANTI-ICE");
+            returnPage = /* @__PURE__ */ import_react9.default.createElement("div", null, "ANTI-ICE");
             break;
           default:
-            returnPage = /* @__PURE__ */ import_react8.default.createElement(import_react8.default.Fragment, null);
+            returnPage = /* @__PURE__ */ import_react9.default.createElement(import_react9.default.Fragment, null);
         }
       } else {
         switch (topPage) {
           case 0:
-            returnPage = /* @__PURE__ */ import_react8.default.createElement("div", null, "MAP");
+            returnPage = /* @__PURE__ */ import_react9.default.createElement("div", null, "MAP");
             break;
           case 1:
-            returnPage = /* @__PURE__ */ import_react8.default.createElement("div", null, "PLAN");
+            returnPage = /* @__PURE__ */ import_react9.default.createElement("div", null, "PLAN");
             break;
           case 2:
-            returnPage = /* @__PURE__ */ import_react8.default.createElement("div", null, "SYSTEM");
+            returnPage = /* @__PURE__ */ import_react9.default.createElement("div", null, "SYSTEM");
             break;
           default:
-            returnPage = /* @__PURE__ */ import_react8.default.createElement(import_react8.default.Fragment, null);
+            returnPage = /* @__PURE__ */ import_react9.default.createElement(import_react9.default.Fragment, null);
         }
       }
     } else {
       switch (bottomPage) {
         case 0:
-          returnPage = /* @__PURE__ */ import_react8.default.createElement("div", null, "TCAS");
+          returnPage = /* @__PURE__ */ import_react9.default.createElement("div", null, "TCAS");
           break;
         case 1:
-          returnPage = /* @__PURE__ */ import_react8.default.createElement("div", null, "WEATHER");
+          returnPage = /* @__PURE__ */ import_react9.default.createElement("div", null, "WEATHER");
           break;
         case 2:
-          returnPage = /* @__PURE__ */ import_react8.default.createElement("div", null, "CHECKLIST");
+          returnPage = /* @__PURE__ */ import_react9.default.createElement("div", null, "CHECKLIST");
           break;
         default:
-          returnPage = /* @__PURE__ */ import_react8.default.createElement(import_react8.default.Fragment, null);
+          returnPage = /* @__PURE__ */ import_react9.default.createElement(import_react9.default.Fragment, null);
       }
     }
     return returnPage;
@@ -23608,13 +23760,13 @@ class InstrumentLogic extends BaseInstrument {
   var router_default = MfdRouter;
 
   // instruments/src/MultifunctionDisplay/components/displayProvider/displayProvider.tsx
-  var import_react12 = __toESM(require_react());
+  var import_react13 = __toESM(require_react());
 
   // instruments/src/MultifunctionDisplay/components/buttonBars/buttonBars.tsx
-  var import_react11 = __toESM(require_react());
+  var import_react12 = __toESM(require_react());
 
   // instruments/src/MultifunctionDisplay/components/buttonBars/buttonBarButton/buttonBarButton.tsx
-  var import_react9 = __toESM(require_react());
+  var import_react10 = __toESM(require_react());
   var ButtonBarButton = (props) => {
     const [topPage, setTopPage] = useObjLocalVar("MFD_ROUTER_TOP", "Number");
     const [systemPage] = useObjLocalVar("MFD_ROUTER_SYSTEM", "Number");
@@ -23626,7 +23778,6 @@ class InstrumentLogic extends BaseInstrument {
         props.setSystemMenu(false);
       } else {
         setBottomPage(to);
-        props.setSystemMenu(false);
       }
     };
     const handleSystemButtonClick = () => {
@@ -23656,7 +23807,7 @@ class InstrumentLogic extends BaseInstrument {
           return "";
       }
     };
-    return /* @__PURE__ */ import_react9.default.createElement(
+    return /* @__PURE__ */ import_react10.default.createElement(
       "div",
       {
         onClick: () => {
@@ -23664,13 +23815,13 @@ class InstrumentLogic extends BaseInstrument {
         },
         className: "button-container"
       },
-      /* @__PURE__ */ import_react9.default.createElement("div", { className: "button-center" }, /* @__PURE__ */ import_react9.default.createElement("div", { className: "button-children" }, props.text, props.isSystemButton && /* @__PURE__ */ import_react9.default.createElement("div", { className: "system-button-current-page" }, getSystemText(systemPage)))),
-      /* @__PURE__ */ import_react9.default.createElement("div", { className: "button-background" })
+      /* @__PURE__ */ import_react10.default.createElement("div", { className: "button-center" }, /* @__PURE__ */ import_react10.default.createElement("div", { className: "button-children" }, props.text, props.isSystemButton && /* @__PURE__ */ import_react10.default.createElement("div", { className: "system-button-current-page" }, getSystemText(systemPage)))),
+      /* @__PURE__ */ import_react10.default.createElement("div", { className: "button-background" })
     );
   };
 
   // instruments/src/MultifunctionDisplay/components/buttonBars/systemButton/systemButton.tsx
-  var import_react10 = __toESM(require_react());
+  var import_react11 = __toESM(require_react());
   var SystemButton = (props) => {
     const [systemPage, setSystemPage] = useObjLocalVar("MFD_ROUTER_SYSTEM", "Number");
     const handleSystemButtonClick = (route) => {
@@ -23678,8 +23829,8 @@ class InstrumentLogic extends BaseInstrument {
       props.setShown(false);
     };
     const isActive = systemPage === props.routeTo;
-    const [isHovered, setIsHovered] = import_react10.default.useState(false);
-    return /* @__PURE__ */ import_react10.default.createElement(
+    const [isHovered, setIsHovered] = import_react11.default.useState(false);
+    return /* @__PURE__ */ import_react11.default.createElement(
       "div",
       {
         onMouseEnter: () => {
@@ -23690,7 +23841,7 @@ class InstrumentLogic extends BaseInstrument {
         },
         className: "system-button-wrapper"
       },
-      isHovered && /* @__PURE__ */ import_react10.default.createElement(
+      isHovered && /* @__PURE__ */ import_react11.default.createElement(
         "div",
         {
           onClick: () => {
@@ -23699,10 +23850,10 @@ class InstrumentLogic extends BaseInstrument {
           className: "system-menu-close-button",
           style: { top: `${props.routeTo * 45}px` }
         },
-        /* @__PURE__ */ import_react10.default.createElement("div", { className: "system-button-center-close" }, /* @__PURE__ */ import_react10.default.createElement("div", { className: "system-button-children-close" }, "X")),
-        /* @__PURE__ */ import_react10.default.createElement("div", { className: "system-button-background-close" })
+        /* @__PURE__ */ import_react11.default.createElement("div", { className: "system-button-center-close" }, /* @__PURE__ */ import_react11.default.createElement("div", { className: "system-button-children-close" }, "X")),
+        /* @__PURE__ */ import_react11.default.createElement("div", { className: "system-button-background-close" })
       ),
-      /* @__PURE__ */ import_react10.default.createElement(
+      /* @__PURE__ */ import_react11.default.createElement(
         "div",
         {
           className: `system-button-container`,
@@ -23711,8 +23862,8 @@ class InstrumentLogic extends BaseInstrument {
             handleSystemButtonClick(props.routeTo);
           }
         },
-        /* @__PURE__ */ import_react10.default.createElement("div", { className: "system-button-center" }, /* @__PURE__ */ import_react10.default.createElement("div", { className: "system-button-children" }, props.text, /* @__PURE__ */ import_react10.default.createElement("div", { className: "active-circle-outer" }, isActive && /* @__PURE__ */ import_react10.default.createElement("div", { className: "active-circle-inner" })))),
-        /* @__PURE__ */ import_react10.default.createElement("div", { className: "system-button-background" })
+        /* @__PURE__ */ import_react11.default.createElement("div", { className: "system-button-center" }, /* @__PURE__ */ import_react11.default.createElement("div", { className: "system-button-children" }, props.text, /* @__PURE__ */ import_react11.default.createElement("div", { className: "active-circle-outer" }, isActive && /* @__PURE__ */ import_react11.default.createElement("div", { className: "active-circle-inner" })))),
+        /* @__PURE__ */ import_react11.default.createElement("div", { className: "system-button-background" })
       )
     );
   };
@@ -23720,15 +23871,15 @@ class InstrumentLogic extends BaseInstrument {
   // instruments/src/MultifunctionDisplay/components/buttonBars/buttonBars.tsx
   var SystemButtonBar = (props) => {
     if (!props.isShown) {
-      return /* @__PURE__ */ import_react11.default.createElement(import_react11.default.Fragment, null);
+      return /* @__PURE__ */ import_react12.default.createElement(import_react12.default.Fragment, null);
     } else {
-      return /* @__PURE__ */ import_react11.default.createElement("div", { className: `system-button-bar-container ${props.isShown ? "shown" : "hidden"}` }, props.text.map((text, index) => {
-        return /* @__PURE__ */ import_react11.default.createElement(SystemButton, { setShown: props.setShown, text, key: index, routeTo: index });
+      return /* @__PURE__ */ import_react12.default.createElement("div", { className: `system-button-bar-container ${props.isShown ? "shown" : "hidden"}` }, props.text.map((text, index) => {
+        return /* @__PURE__ */ import_react12.default.createElement(SystemButton, { setShown: props.setShown, text, key: index, routeTo: index });
       }));
     }
   };
   var UpperButtonBar = (props) => {
-    return /* @__PURE__ */ import_react11.default.createElement("div", { className: "upper-button-bar-container" }, /* @__PURE__ */ import_react11.default.createElement(
+    return /* @__PURE__ */ import_react12.default.createElement("div", { className: "upper-button-bar-container" }, /* @__PURE__ */ import_react12.default.createElement(
       ButtonBarButton,
       {
         text: "Map",
@@ -23741,7 +23892,7 @@ class InstrumentLogic extends BaseInstrument {
         isTop: true,
         routeTo: 0
       }
-    ), /* @__PURE__ */ import_react11.default.createElement(
+    ), /* @__PURE__ */ import_react12.default.createElement(
       ButtonBarButton,
       {
         text: "Plan",
@@ -23754,7 +23905,7 @@ class InstrumentLogic extends BaseInstrument {
         isTop: true,
         routeTo: 1
       }
-    ), /* @__PURE__ */ import_react11.default.createElement(
+    ), /* @__PURE__ */ import_react12.default.createElement(
       ButtonBarButton,
       {
         text: "Systems",
@@ -23769,7 +23920,7 @@ class InstrumentLogic extends BaseInstrument {
     ));
   };
   var LowerButtonBar = () => {
-    return /* @__PURE__ */ import_react11.default.createElement("div", { className: "lower-button-bar-container" }, /* @__PURE__ */ import_react11.default.createElement(
+    return /* @__PURE__ */ import_react12.default.createElement("div", { className: "lower-button-bar-container" }, /* @__PURE__ */ import_react12.default.createElement(
       ButtonBarButton,
       {
         text: "TCAS",
@@ -23783,7 +23934,7 @@ class InstrumentLogic extends BaseInstrument {
         isTop: false,
         routeTo: 0
       }
-    ), /* @__PURE__ */ import_react11.default.createElement(
+    ), /* @__PURE__ */ import_react12.default.createElement(
       ButtonBarButton,
       {
         text: "Weather",
@@ -23797,7 +23948,7 @@ class InstrumentLogic extends BaseInstrument {
         isTop: false,
         routeTo: 1
       }
-    ), /* @__PURE__ */ import_react11.default.createElement(
+    ), /* @__PURE__ */ import_react12.default.createElement(
       ButtonBarButton,
       {
         text: "Checklist",
@@ -23816,8 +23967,8 @@ class InstrumentLogic extends BaseInstrument {
 
   // instruments/src/MultifunctionDisplay/components/displayProvider/displayProvider.tsx
   var DisplayProvider = (props) => {
-    const [systemMenu, setSystemMenu] = import_react12.default.useState(false);
-    return /* @__PURE__ */ import_react12.default.createElement("div", { className: "MFD-container" }, /* @__PURE__ */ import_react12.default.createElement(
+    const [systemMenu, setSystemMenu] = import_react13.default.useState(false);
+    return /* @__PURE__ */ import_react13.default.createElement("div", { className: "MFD-container" }, /* @__PURE__ */ import_react13.default.createElement(
       UpperButtonBar,
       {
         setShowSystems: props.setShowSystems,
@@ -23826,14 +23977,14 @@ class InstrumentLogic extends BaseInstrument {
         systemMenu,
         currentPage: getTopPage()
       }
-    ), /* @__PURE__ */ import_react12.default.createElement("div", { className: "upper-content-container" }, /* @__PURE__ */ import_react12.default.createElement(
+    ), /* @__PURE__ */ import_react13.default.createElement("div", { className: "upper-content-container" }, /* @__PURE__ */ import_react13.default.createElement(
       SystemButtonBar,
       {
         isShown: systemMenu,
         setShown: setSystemMenu,
         text: ["Status", "Flight Ctrl", "Hydraulics", "Fuel", "Electrical", "ECS", "Anti-Ice"]
       }
-    ), props.topPage), /* @__PURE__ */ import_react12.default.createElement("div", { className: "center-divider" }), /* @__PURE__ */ import_react12.default.createElement("div", { className: "lower-content-container" }, props.bottomPage), /* @__PURE__ */ import_react12.default.createElement(LowerButtonBar, null));
+    ), props.topPage), /* @__PURE__ */ import_react13.default.createElement("div", { className: "center-divider" }), /* @__PURE__ */ import_react13.default.createElement("div", { className: "lower-content-container" }, props.bottomPage), /* @__PURE__ */ import_react13.default.createElement(LowerButtonBar, null));
   };
   var displayProvider_default = DisplayProvider;
 
@@ -23894,16 +24045,16 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/PrimaryFlightDisplay/index.tsx
-  var import_react35 = __toESM(require_react());
+  var import_react36 = __toESM(require_react());
 
   // instruments/src/PrimaryFlightDisplay/components/pfdProvider/pfdProvider.tsx
-  var import_react27 = __toESM(require_react());
+  var import_react28 = __toESM(require_react());
 
   // instruments/src/PrimaryFlightDisplay/components/FMA/FMA.tsx
-  var import_react14 = __toESM(require_react());
+  var import_react15 = __toESM(require_react());
 
   // instruments/src/PrimaryFlightDisplay/components/FMA/FMA_Annunciators.tsx
-  var import_react13 = __toESM(require_react());
+  var import_react14 = __toESM(require_react());
   var getStyleForATMode = (mode) => {
     switch (mode) {
       case 1 /* TO_w */:
@@ -23933,37 +24084,37 @@ class InstrumentLogic extends BaseInstrument {
     const textColor = props.style.color;
     switch (props.mode) {
       case 1 /* TO_w */:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: textColor }, "TO");
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", { fill: textColor }, "TO");
       case 2 /* TO_g */:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: textColor }, "TO");
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", { fill: textColor }, "TO");
       case 3 /* HOLD_g */:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: textColor }, "HOLD");
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", { fill: textColor }, "HOLD");
       case 4 /* SPD_T_w */:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: textColor }, "SPD", /* @__PURE__ */ import_react13.default.createElement("tspan", { fontSize: 20 }, "T"));
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", { fill: textColor }, "SPD", /* @__PURE__ */ import_react14.default.createElement("tspan", { fontSize: 20 }, "T"));
       case 5 /* SPD_T_g */:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: textColor }, "SPD", /* @__PURE__ */ import_react13.default.createElement("tspan", { fontSize: 20 }, "T"));
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", { fill: textColor }, "SPD", /* @__PURE__ */ import_react14.default.createElement("tspan", { fontSize: 20 }, "T"));
       case 6 /* SPD_E_g */:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: textColor }, "SPD", /* @__PURE__ */ import_react13.default.createElement("tspan", { fontSize: 20 }, "E"));
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", { fill: textColor }, "SPD", /* @__PURE__ */ import_react14.default.createElement("tspan", { fontSize: 20 }, "E"));
       case 7 /* RETD_w */:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: textColor }, "RETD");
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", { fill: textColor }, "RETD");
       case 8 /* RETD_g */:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: textColor }, "RETD");
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", { fill: textColor }, "RETD");
       case 9 /* GA_g */:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: textColor }, "GA");
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", { fill: textColor }, "GA");
       case 10 /* LIM_a */:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: textColor }, "LIM");
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", { fill: textColor }, "LIM");
       case 11 /* AT_g */:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: textColor }, "AT");
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", { fill: textColor }, "AT");
       case 12 /* AT_g_rv */:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: props.ovrdFontColor != null ? props.ovrdFontColor : textColor }, "AT");
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", { fill: props.ovrdFontColor != null ? props.ovrdFontColor : textColor }, "AT");
       case 13 /* AT_r_rv */:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: props.ovrdFontColor != null ? props.ovrdFontColor : textColor }, "AT");
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", { fill: props.ovrdFontColor != null ? props.ovrdFontColor : textColor }, "AT");
       case 14 /* OVRD_g */:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: textColor }, "OVRD");
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", { fill: textColor }, "OVRD");
       case 15 /* DD_g */:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", { fill: textColor }, "DD");
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", { fill: textColor }, "DD");
       default:
-        return /* @__PURE__ */ import_react13.default.createElement("tspan", null);
+        return /* @__PURE__ */ import_react14.default.createElement("tspan", null);
     }
   };
 
@@ -23996,8 +24147,8 @@ class InstrumentLogic extends BaseInstrument {
     const ArmedLateralMode = props.vars.vArmedLateralMode;
     const ArmedVerticalMode = props.vars.vArmedVerticalMode;
     const SelectionSource = props.vars.vSelectionSource;
-    const [sReverseVideo, setSReverseVideo] = (0, import_react14.useState)(true);
-    (0, import_react14.useEffect)(() => {
+    const [sReverseVideo, setSReverseVideo] = (0, import_react15.useState)(true);
+    (0, import_react15.useEffect)(() => {
       const intervalId = setInterval(() => {
         setSReverseVideo((prevValue) => !prevValue);
       }, 500);
@@ -24019,12 +24170,12 @@ class InstrumentLogic extends BaseInstrument {
       } else
         return { bg: getStyleForATMode(AtMode).backgroundColor, color: getStyleForATMode(AtMode).color };
     };
-    return /* @__PURE__ */ import_react14.default.createElement("div", { className: "fma-container", style: { left: props.x, top: props.y } }, /* @__PURE__ */ import_react14.default.createElement(
+    return /* @__PURE__ */ import_react15.default.createElement("div", { className: "fma-container", style: { left: props.x, top: props.y } }, /* @__PURE__ */ import_react15.default.createElement(
       FMAGrid,
       {
         AT_Mode_Box: {
           backgroundColor: GetAtModeBoxColor().bg,
-          element: /* @__PURE__ */ import_react14.default.createElement(
+          element: /* @__PURE__ */ import_react15.default.createElement(
             GetStringForATMode,
             {
               ovrdFontColor: GetAtModeBoxColor().color,
@@ -24035,45 +24186,45 @@ class InstrumentLogic extends BaseInstrument {
         },
         AP_Status_Box: {
           backgroundColor: getStyleForATMode(ApStatus).backgroundColor,
-          element: /* @__PURE__ */ import_react14.default.createElement(GetStringForATMode, { style: getStyleForATMode(ApStatus), mode: ApStatus })
+          element: /* @__PURE__ */ import_react15.default.createElement(GetStringForATMode, { style: getStyleForATMode(ApStatus), mode: ApStatus })
         },
         AP_AT_Source_box: {
           backgroundColor: getStyleForATMode(SelectionSource).backgroundColor,
-          element: /* @__PURE__ */ import_react14.default.createElement(GetStringForATMode, { style: getStyleForATMode(SelectionSource), mode: SelectionSource })
+          element: /* @__PURE__ */ import_react15.default.createElement(GetStringForATMode, { style: getStyleForATMode(SelectionSource), mode: SelectionSource })
         },
         Lateral_Mode_Box: {
           backgroundColor: getStyleForATMode(LateralMode).backgroundColor,
-          element: /* @__PURE__ */ import_react14.default.createElement(GetStringForATMode, { style: getStyleForATMode(LateralMode), mode: LateralMode })
+          element: /* @__PURE__ */ import_react15.default.createElement(GetStringForATMode, { style: getStyleForATMode(LateralMode), mode: LateralMode })
         },
         Vertical_Mode_Box: {
           backgroundColor: getStyleForATMode(VerticalMode).backgroundColor,
-          element: /* @__PURE__ */ import_react14.default.createElement(GetStringForATMode, { style: getStyleForATMode(VerticalMode), mode: VerticalMode })
+          element: /* @__PURE__ */ import_react15.default.createElement(GetStringForATMode, { style: getStyleForATMode(VerticalMode), mode: VerticalMode })
         },
         Armed_AT_Mode_Box: {
           backgroundColor: getStyleForATMode(ArmedAtMode).backgroundColor,
-          element: /* @__PURE__ */ import_react14.default.createElement(GetStringForATMode, { style: getStyleForATMode(ArmedAtMode), mode: ArmedAtMode })
+          element: /* @__PURE__ */ import_react15.default.createElement(GetStringForATMode, { style: getStyleForATMode(ArmedAtMode), mode: ArmedAtMode })
         },
         AT_Status_Box: {
           backgroundColor: getStyleForATMode(AtStatus).backgroundColor,
-          element: /* @__PURE__ */ import_react14.default.createElement(GetStringForATMode, { style: getStyleForATMode(AtStatus), mode: AtStatus })
+          element: /* @__PURE__ */ import_react15.default.createElement(GetStringForATMode, { style: getStyleForATMode(AtStatus), mode: AtStatus })
         },
         Armed_Lateral_Mode_Box: {
           backgroundColor: getStyleForATMode(ArmedLateralMode).backgroundColor,
-          element: /* @__PURE__ */ import_react14.default.createElement(GetStringForATMode, { style: getStyleForATMode(ArmedLateralMode), mode: ArmedLateralMode })
+          element: /* @__PURE__ */ import_react15.default.createElement(GetStringForATMode, { style: getStyleForATMode(ArmedLateralMode), mode: ArmedLateralMode })
         },
         Armed_Vertical_Mode_Box: {
           backgroundColor: getStyleForATMode(ArmedVerticalMode).backgroundColor,
-          element: /* @__PURE__ */ import_react14.default.createElement(GetStringForATMode, { style: getStyleForATMode(ArmedVerticalMode), mode: ArmedVerticalMode })
+          element: /* @__PURE__ */ import_react15.default.createElement(GetStringForATMode, { style: getStyleForATMode(ArmedVerticalMode), mode: ArmedVerticalMode })
         },
         SelectionSourceBox: {
           backgroundColor: getStyleForATMode(SelectionSource).backgroundColor,
-          element: /* @__PURE__ */ import_react14.default.createElement(GetStringForATMode, { style: getStyleForATMode(SelectionSource), mode: SelectionSource })
+          element: /* @__PURE__ */ import_react15.default.createElement(GetStringForATMode, { style: getStyleForATMode(SelectionSource), mode: SelectionSource })
         }
       }
     ));
   };
   var FMAGrid = (props) => {
-    return /* @__PURE__ */ import_react14.default.createElement("svg", { className: "fma-svg", viewBox: "0 0 374 56", xmlns: "http://www.w3.org/2000/svg" }, /* @__PURE__ */ import_react14.default.createElement(
+    return /* @__PURE__ */ import_react15.default.createElement("svg", { className: "fma-svg", viewBox: "0 0 374 56", xmlns: "http://www.w3.org/2000/svg" }, /* @__PURE__ */ import_react15.default.createElement(
       "rect",
       {
         x: "1.5",
@@ -24088,7 +24239,7 @@ class InstrumentLogic extends BaseInstrument {
         rx: 2,
         ry: 2
       }
-    ), /* @__PURE__ */ import_react14.default.createElement("rect", { id: "AT_Mode_Box", x: "3", y: "3", width: "100", height: "26", fill: props.AT_Mode_Box.backgroundColor }), /* @__PURE__ */ import_react14.default.createElement("text", { x: 50, y: 25, textAnchor: "middle", color: "red", fontSize: 25 }, props.AT_Mode_Box.element));
+    ), /* @__PURE__ */ import_react15.default.createElement("rect", { id: "AT_Mode_Box", x: "3", y: "3", width: "100", height: "26", fill: props.AT_Mode_Box.backgroundColor }), /* @__PURE__ */ import_react15.default.createElement("text", { x: 50, y: 25, textAnchor: "middle", color: "red", fontSize: 25 }, props.AT_Mode_Box.element));
   };
 
   // instruments/src/PrimaryFlightDisplay/components/FMA/FMA_Vars.tsx
@@ -24117,10 +24268,10 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeed.tsx
-  var import_react18 = __toESM(require_react());
+  var import_react19 = __toESM(require_react());
 
   // instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeedTape.tsx
-  var import_react17 = __toESM(require_react());
+  var import_react18 = __toESM(require_react());
 
   // instruments/common/util/createArray.ts
   var createArray = (length) => {
@@ -24132,26 +24283,26 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/PrimaryFlightDisplay/components/Airspeed/selectedAirspeedBox.tsx
-  var import_react15 = __toESM(require_react());
+  var import_react16 = __toESM(require_react());
   var SelectedAirspeedBox = (props) => {
     const invalidOutput = "---";
     const getString = () => {
       switch (props.mode) {
         case 0 /* FMS */:
           return {
-            element: /* @__PURE__ */ import_react15.default.createElement("tspan", null, props.selectedAirspeed, props.mach ? /* @__PURE__ */ import_react15.default.createElement("tspan", { fill: "white", fontSize: 14 }, "M") : ""),
+            element: /* @__PURE__ */ import_react16.default.createElement("tspan", null, props.selectedAirspeed, props.mach ? /* @__PURE__ */ import_react16.default.createElement("tspan", { fill: "white", fontSize: 14 }, "M") : ""),
             color: "magenta"
           };
         case 1 /* MAN */:
           return {
-            element: /* @__PURE__ */ import_react15.default.createElement("tspan", null, props.selectedAirspeed, props.mach ? /* @__PURE__ */ import_react15.default.createElement("tspan", { fill: "white", fontSize: 14 }, "M") : ""),
+            element: /* @__PURE__ */ import_react16.default.createElement("tspan", null, props.selectedAirspeed, props.mach ? /* @__PURE__ */ import_react16.default.createElement("tspan", { fill: "white", fontSize: 14 }, "M") : ""),
             color: "cyan"
           };
         case 2 /* INOP */:
-          return { element: /* @__PURE__ */ import_react15.default.createElement("tspan", null, invalidOutput), color: "yellow" };
+          return { element: /* @__PURE__ */ import_react16.default.createElement("tspan", null, invalidOutput), color: "yellow" };
       }
     };
-    return /* @__PURE__ */ import_react15.default.createElement("g", null, /* @__PURE__ */ import_react15.default.createElement("rect", { x: 1, y: 1, rx: 2, ry: 2, width: 80, height: 33, strokeWidth: 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ import_react15.default.createElement("text", { x: 41, y: 28, textAnchor: "middle", fill: getString().color, fontSize: "30" }, getString().element));
+    return /* @__PURE__ */ import_react16.default.createElement("g", null, /* @__PURE__ */ import_react16.default.createElement("rect", { x: 1, y: 1, rx: 2, ry: 2, width: 80, height: 33, strokeWidth: 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ import_react16.default.createElement("text", { x: 41, y: 28, textAnchor: "middle", fill: getString().color, fontSize: "30" }, getString().element));
   };
 
   // instruments/src/PrimaryFlightDisplay/util/clampValue.ts
@@ -24166,9 +24317,9 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/PrimaryFlightDisplay/util/pathWithBlackBackground.tsx
-  var import_react16 = __toESM(require_react());
+  var import_react17 = __toESM(require_react());
   var PathWithBlackBackground = (props) => {
-    return /* @__PURE__ */ import_react16.default.createElement("g", null, /* @__PURE__ */ import_react16.default.createElement(
+    return /* @__PURE__ */ import_react17.default.createElement("g", null, /* @__PURE__ */ import_react17.default.createElement(
       "path",
       {
         d: props.d,
@@ -24178,7 +24329,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeLinecap: props.forceEndCap !== null && props.forceEndCap === true ? "butt" : "round",
         strokeLinejoin: "round"
       }
-    ), /* @__PURE__ */ import_react16.default.createElement(
+    ), /* @__PURE__ */ import_react17.default.createElement(
       "path",
       {
         d: props.d,
@@ -24200,7 +24351,7 @@ class InstrumentLogic extends BaseInstrument {
     const airspeedTapeScaling = 3.95;
     const array = createArray(tapeLength);
     const drawTick2 = (small, y) => {
-      return /* @__PURE__ */ import_react17.default.createElement(
+      return /* @__PURE__ */ import_react18.default.createElement(
         PathWithBlackBackground,
         {
           d: `M 81 ${-y} L ${small ? 70 : 58} ${-y}`,
@@ -24217,7 +24368,7 @@ class InstrumentLogic extends BaseInstrument {
       }
       if (index < 200) {
         if (index % 10 === 0) {
-          return /* @__PURE__ */ import_react17.default.createElement("g", { key: index }, drawTick2(false, index * spacing), /* @__PURE__ */ import_react17.default.createElement(
+          return /* @__PURE__ */ import_react18.default.createElement("g", { key: index }, drawTick2(false, index * spacing), /* @__PURE__ */ import_react18.default.createElement(
             "text",
             {
               x: "53",
@@ -24235,7 +24386,7 @@ class InstrumentLogic extends BaseInstrument {
           return null;
       } else {
         if (index % 20 === 0) {
-          return /* @__PURE__ */ import_react17.default.createElement("g", { key: index }, drawTick2(false, index * spacing), /* @__PURE__ */ import_react17.default.createElement(
+          return /* @__PURE__ */ import_react18.default.createElement("g", { key: index }, drawTick2(false, index * spacing), /* @__PURE__ */ import_react18.default.createElement(
             "text",
             {
               x: "53",
@@ -24255,23 +24406,23 @@ class InstrumentLogic extends BaseInstrument {
           return null;
       }
     });
-    return /* @__PURE__ */ import_react17.default.createElement("div", { className: "airspeed-container" }, /* @__PURE__ */ import_react17.default.createElement("svg", { className: "airspeed-svg", viewBox: "0 0 82 396" }, /* @__PURE__ */ import_react17.default.createElement("rect", { x: 0, y: 0, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ import_react17.default.createElement("clipPath", { id: "tapeClip" }, /* @__PURE__ */ import_react17.default.createElement("rect", { x: 0, y: 34, width: 81, height: 330 })), /* @__PURE__ */ import_react17.default.createElement("g", { clipPath: "url(#tapeClip)" }, /* @__PURE__ */ import_react17.default.createElement("g", { transform: `translate(0,${ClampValue(airspeed, 30, 900) * airspeedTapeScaling + startOffset})` }, Tape)), /* @__PURE__ */ import_react17.default.createElement(PathWithBlackBackground, { d: "M 81 32 L 81 364", fill: "black", fillTop: "white", strokeWidthTop: 2, StrokeWidth: 3 }), /* @__PURE__ */ import_react17.default.createElement(SelectedAirspeedBox, { selectedAirspeed: 0.79, mach: true, mode: 0 })));
+    return /* @__PURE__ */ import_react18.default.createElement("div", { className: "airspeed-container" }, /* @__PURE__ */ import_react18.default.createElement("svg", { className: "airspeed-svg", viewBox: "0 0 82 396" }, /* @__PURE__ */ import_react18.default.createElement("rect", { x: 0, y: 0, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ import_react18.default.createElement("clipPath", { id: "tapeClip" }, /* @__PURE__ */ import_react18.default.createElement("rect", { x: 0, y: 34, width: 81, height: 330 })), /* @__PURE__ */ import_react18.default.createElement("g", { clipPath: "url(#tapeClip)" }, /* @__PURE__ */ import_react18.default.createElement("g", { transform: `translate(0,${ClampValue(airspeed, 30, 900) * airspeedTapeScaling + startOffset})` }, Tape)), /* @__PURE__ */ import_react18.default.createElement(PathWithBlackBackground, { d: "M 81 32 L 81 364", fill: "black", fillTop: "white", strokeWidthTop: 2, StrokeWidth: 3 }), /* @__PURE__ */ import_react18.default.createElement(SelectedAirspeedBox, { selectedAirspeed: 0.79, mach: true, mode: 0 })));
   };
 
   // instruments/src/PrimaryFlightDisplay/components/Airspeed/airspeed.tsx
   var Airspeed = () => {
-    return /* @__PURE__ */ import_react18.default.createElement("div", null, /* @__PURE__ */ import_react18.default.createElement(AirspeedTape, null));
+    return /* @__PURE__ */ import_react19.default.createElement("div", null, /* @__PURE__ */ import_react19.default.createElement(AirspeedTape, null));
   };
 
   // instruments/src/PrimaryFlightDisplay/components/Altitude/Altitude.tsx
-  var import_react22 = __toESM(require_react());
+  var import_react23 = __toESM(require_react());
 
   // instruments/src/PrimaryFlightDisplay/components/Altitude/AltitudeTape.tsx
-  var import_react19 = __toESM(require_react());
+  var import_react20 = __toESM(require_react());
   var drawChevron = (double, y) => {
     const offset = -y / 3.31;
     if (double) {
-      return /* @__PURE__ */ import_react19.default.createElement("g", null, /* @__PURE__ */ import_react19.default.createElement(
+      return /* @__PURE__ */ import_react20.default.createElement("g", null, /* @__PURE__ */ import_react20.default.createElement(
         PathWithBlackBackground,
         {
           d: `M 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181}`,
@@ -24283,7 +24434,7 @@ class InstrumentLogic extends BaseInstrument {
           forceTransparent: true,
           forceEndCap: true
         }
-      ), /* @__PURE__ */ import_react19.default.createElement(
+      ), /* @__PURE__ */ import_react20.default.createElement(
         PathWithBlackBackground,
         {
           d: `M 70 ${offset + 300} L 70 ${offset + 255} L38 ${offset + 223} L 70 ${offset + 190} L 70 ${offset + 148}`,
@@ -24297,7 +24448,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       ), drawNumber(y));
     } else {
-      return /* @__PURE__ */ import_react19.default.createElement("g", null, /* @__PURE__ */ import_react19.default.createElement(
+      return /* @__PURE__ */ import_react20.default.createElement("g", null, /* @__PURE__ */ import_react20.default.createElement(
         PathWithBlackBackground,
         {
           d: `M 70 ${offset + 300} L 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181} L 70 ${offset + 148}`,
@@ -24314,7 +24465,7 @@ class InstrumentLogic extends BaseInstrument {
   };
   var drawTick = (y) => {
     const offset = -y / 3.31;
-    return /* @__PURE__ */ import_react19.default.createElement(
+    return /* @__PURE__ */ import_react20.default.createElement(
       PathWithBlackBackground,
       {
         d: `M 30 ${offset + 222} L ${42} ${offset + 222}`,
@@ -24327,7 +24478,7 @@ class InstrumentLogic extends BaseInstrument {
   };
   var drawNumber = (y) => {
     const offset = -y / 3.31;
-    return /* @__PURE__ */ import_react19.default.createElement(
+    return /* @__PURE__ */ import_react20.default.createElement(
       "text",
       {
         x: "46",
@@ -24364,32 +24515,32 @@ class InstrumentLogic extends BaseInstrument {
       }
       return drawTick(tick * -100);
     });
-    return /* @__PURE__ */ import_react19.default.createElement("g", null, /* @__PURE__ */ import_react19.default.createElement("g", null, /* @__PURE__ */ import_react19.default.createElement("clipPath", { id: "AltitudetapeClip" }, /* @__PURE__ */ import_react19.default.createElement("rect", { x: 29, y: 60, width: 83, height: 333 }))), /* @__PURE__ */ import_react19.default.createElement("g", { clipPath: "url(#AltitudetapeClip)" }, /* @__PURE__ */ import_react19.default.createElement("g", { transform: `translate(0, ${props.altitude / 3.309})` }, negativeTape, tape)), /* @__PURE__ */ import_react19.default.createElement("path", { d: "M 29 58 L 29 391", stroke: "white", strokeWidth: "2", fill: "none" }));
+    return /* @__PURE__ */ import_react20.default.createElement("g", null, /* @__PURE__ */ import_react20.default.createElement("g", null, /* @__PURE__ */ import_react20.default.createElement("clipPath", { id: "AltitudetapeClip" }, /* @__PURE__ */ import_react20.default.createElement("rect", { x: 29, y: 60, width: 83, height: 333 }))), /* @__PURE__ */ import_react20.default.createElement("g", { clipPath: "url(#AltitudetapeClip)" }, /* @__PURE__ */ import_react20.default.createElement("g", { transform: `translate(0, ${props.altitude / 3.309})` }, negativeTape, tape)), /* @__PURE__ */ import_react20.default.createElement("path", { d: "M 29 58 L 29 391", stroke: "white", strokeWidth: "2", fill: "none" }));
   };
 
   // instruments/src/PrimaryFlightDisplay/components/Altitude/selectedAltitudeBox.tsx
-  var import_react20 = __toESM(require_react());
+  var import_react21 = __toESM(require_react());
   var SelectedAltitudeBox = (props) => {
-    return /* @__PURE__ */ import_react20.default.createElement("g", null, /* @__PURE__ */ import_react20.default.createElement("rect", { x: "31", y: "1", rx: 2, ry: 2, width: "81", height: "58", stroke: "white", strokeWidth: 2, fill: "transparent" }), /* @__PURE__ */ import_react20.default.createElement("path", { d: "M 31 27 L 112 27", stroke: "white", strokeWidth: "2", fill: "none" }));
+    return /* @__PURE__ */ import_react21.default.createElement("g", null, /* @__PURE__ */ import_react21.default.createElement("rect", { x: "31", y: "1", rx: 2, ry: 2, width: "81", height: "58", stroke: "white", strokeWidth: 2, fill: "transparent" }), /* @__PURE__ */ import_react21.default.createElement("path", { d: "M 31 27 L 112 27", stroke: "white", strokeWidth: "2", fill: "none" }));
   };
 
   // instruments/src/PrimaryFlightDisplay/components/Altitude/baroSettingBox.tsx
-  var import_react21 = __toESM(require_react());
+  var import_react22 = __toESM(require_react());
   var BaroSettingBox = (props) => {
-    return /* @__PURE__ */ import_react21.default.createElement("g", null, /* @__PURE__ */ import_react21.default.createElement("rect", { x: "29", y: "391", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", strokeWidth: 2, fill: "black" }));
+    return /* @__PURE__ */ import_react22.default.createElement("g", null, /* @__PURE__ */ import_react22.default.createElement("rect", { x: "29", y: "391", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", strokeWidth: 2, fill: "black" }));
   };
 
   // instruments/src/PrimaryFlightDisplay/components/Altitude/Altitude.tsx
   var Altitude = (props) => {
     const [altitude] = useSimVar("INDICATED ALTITUDE", "feet");
-    return /* @__PURE__ */ import_react22.default.createElement("div", { className: "altitude-continer" }, /* @__PURE__ */ import_react22.default.createElement("svg", { className: "altitude-svg", viewBox: "0 0 120 422" }, /* @__PURE__ */ import_react22.default.createElement("rect", { x: "29", y: "0", width: "83", height: "422", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ import_react22.default.createElement(AltitudeTape, { altitude }), /* @__PURE__ */ import_react22.default.createElement(SelectedAltitudeBox, null), /* @__PURE__ */ import_react22.default.createElement(BaroSettingBox, null)));
+    return /* @__PURE__ */ import_react23.default.createElement("div", { className: "altitude-continer" }, /* @__PURE__ */ import_react23.default.createElement("svg", { className: "altitude-svg", viewBox: "0 0 120 422" }, /* @__PURE__ */ import_react23.default.createElement("rect", { x: "29", y: "0", width: "83", height: "422", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ import_react23.default.createElement(AltitudeTape, { altitude }), /* @__PURE__ */ import_react23.default.createElement(SelectedAltitudeBox, null), /* @__PURE__ */ import_react23.default.createElement(BaroSettingBox, null)));
   };
 
   // instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/AttitudeDisplay.tsx
-  var import_react26 = __toESM(require_react());
+  var import_react27 = __toESM(require_react());
 
   // instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/attitudeBackground.tsx
-  var import_react23 = __toESM(require_react());
+  var import_react24 = __toESM(require_react());
   var AttitudeBackground = (props) => {
     const isHorizonMarkerActive = () => {
       if (Math.abs(props.pitch) <= 17) {
@@ -24406,11 +24557,11 @@ class InstrumentLogic extends BaseInstrument {
         return { negative: false, value: props.pitch };
       }
     };
-    return /* @__PURE__ */ import_react23.default.createElement("g", { transform: `rotate(${props.bank}, 275, 255)` }, /* @__PURE__ */ import_react23.default.createElement("linearGradient", { id: "SkyGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ import_react23.default.createElement("stop", { offset: "0%", stopColor: "#020383" }), /* @__PURE__ */ import_react23.default.createElement("stop", { offset: "88%", stopColor: "#020383" }), /* @__PURE__ */ import_react23.default.createElement("stop", { offset: "100%", stopColor: "#1717cf" })), /* @__PURE__ */ import_react23.default.createElement("linearGradient", { id: "GroundGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ import_react23.default.createElement("stop", { offset: "0%", stopColor: "#674200" }), /* @__PURE__ */ import_react23.default.createElement("stop", { offset: "25%", stopColor: "#352200" }), /* @__PURE__ */ import_react23.default.createElement("stop", { offset: "100%", stopColor: "#352201" })), /* @__PURE__ */ import_react23.default.createElement("g", { transform: `translate(0,${getTranslation().value * 8.6})` }, /* @__PURE__ */ import_react23.default.createElement("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", fill: "url(#SkyGradiant)" }), /* @__PURE__ */ import_react23.default.createElement("rect", { x: "-2000", y: "254", width: "4600", height: "2205", fill: "url(#GroundGradiant)" }), isHorizonMarkerActive() && /* @__PURE__ */ import_react23.default.createElement("rect", { x: "0", y: "252", width: "600", height: "4", fill: "white", stroke: "black", strokeWidth: 1 })));
+    return /* @__PURE__ */ import_react24.default.createElement("g", { transform: `rotate(${props.bank}, 275, 255)` }, /* @__PURE__ */ import_react24.default.createElement("linearGradient", { id: "SkyGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ import_react24.default.createElement("stop", { offset: "0%", stopColor: "#020383" }), /* @__PURE__ */ import_react24.default.createElement("stop", { offset: "88%", stopColor: "#020383" }), /* @__PURE__ */ import_react24.default.createElement("stop", { offset: "100%", stopColor: "#1717cf" })), /* @__PURE__ */ import_react24.default.createElement("linearGradient", { id: "GroundGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ import_react24.default.createElement("stop", { offset: "0%", stopColor: "#674200" }), /* @__PURE__ */ import_react24.default.createElement("stop", { offset: "25%", stopColor: "#352200" }), /* @__PURE__ */ import_react24.default.createElement("stop", { offset: "100%", stopColor: "#352201" })), /* @__PURE__ */ import_react24.default.createElement("g", { transform: `translate(0,${getTranslation().value * 8.6})` }, /* @__PURE__ */ import_react24.default.createElement("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", fill: "url(#SkyGradiant)" }), /* @__PURE__ */ import_react24.default.createElement("rect", { x: "-2000", y: "254", width: "4600", height: "2205", fill: "url(#GroundGradiant)" }), isHorizonMarkerActive() && /* @__PURE__ */ import_react24.default.createElement("rect", { x: "0", y: "252", width: "600", height: "4", fill: "white", stroke: "black", strokeWidth: 1 })));
   };
 
   // instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/attitudeForeground.tsx
-  var import_react24 = __toESM(require_react());
+  var import_react25 = __toESM(require_react());
   var AttitudeForeground = (props) => {
     const isHorizonMarkerActive = () => {
       if (Math.abs(props.pitch) <= 17) {
@@ -24442,7 +24593,7 @@ class InstrumentLogic extends BaseInstrument {
       const strokeWidthTop = 3;
       switch (type) {
         case 5 /* ONE */:
-          return /* @__PURE__ */ import_react24.default.createElement(
+          return /* @__PURE__ */ import_react25.default.createElement(
             PathWithBlackBackground,
             {
               d: `M ${center - 0.5 * OneTickWidth} ${correctedY - offset} L ${center - 0.5 * OneTickWidth + OneTickWidth} ${correctedY - offset}`,
@@ -24453,7 +24604,7 @@ class InstrumentLogic extends BaseInstrument {
             }
           );
         case 0 /* TWO_FIVE */:
-          return /* @__PURE__ */ import_react24.default.createElement(
+          return /* @__PURE__ */ import_react25.default.createElement(
             PathWithBlackBackground,
             {
               d: `M ${center - 0.5 * TwoFiveTickWidth} ${correctedY - offset} L ${center - 0.5 * TwoFiveTickWidth + TwoFiveTickWidth} ${correctedY - offset}`,
@@ -24464,7 +24615,7 @@ class InstrumentLogic extends BaseInstrument {
             }
           );
         case 1 /* FIVE */:
-          return /* @__PURE__ */ import_react24.default.createElement(
+          return /* @__PURE__ */ import_react25.default.createElement(
             PathWithBlackBackground,
             {
               d: `M ${center - 0.5 * FiveTickWidth} ${correctedY - offset} L ${center - 0.5 * FiveTickWidth + FiveTickWidth} ${correctedY - offset}`,
@@ -24475,7 +24626,7 @@ class InstrumentLogic extends BaseInstrument {
             }
           );
         case 2 /* SEVEN_FIVE */:
-          return /* @__PURE__ */ import_react24.default.createElement(
+          return /* @__PURE__ */ import_react25.default.createElement(
             PathWithBlackBackground,
             {
               d: `M ${center - 0.5 * SevenFiveTickWidth} ${correctedY - offset} L ${center - 0.5 * SevenFiveTickWidth + SevenFiveTickWidth} ${correctedY - offset}`,
@@ -24486,7 +24637,7 @@ class InstrumentLogic extends BaseInstrument {
             }
           );
         case 3 /* TEN */:
-          return /* @__PURE__ */ import_react24.default.createElement(import_react24.default.Fragment, null, /* @__PURE__ */ import_react24.default.createElement(
+          return /* @__PURE__ */ import_react25.default.createElement(import_react25.default.Fragment, null, /* @__PURE__ */ import_react25.default.createElement(
             "text",
             {
               x: center - 45,
@@ -24500,7 +24651,7 @@ class InstrumentLogic extends BaseInstrument {
               paintOrder: "stroke"
             },
             value
-          ), /* @__PURE__ */ import_react24.default.createElement(
+          ), /* @__PURE__ */ import_react25.default.createElement(
             PathWithBlackBackground,
             {
               d: `M ${center - 0.5 * TenTickWidth} ${correctedY - offset} L ${center - 0.5 * TenTickWidth + TenTickWidth} ${correctedY - offset}`,
@@ -24509,7 +24660,7 @@ class InstrumentLogic extends BaseInstrument {
               StrokeWidth: strokeWidth,
               strokeWidthTop
             }
-          ), /* @__PURE__ */ import_react24.default.createElement(
+          ), /* @__PURE__ */ import_react25.default.createElement(
             "text",
             {
               x: center + 45,
@@ -24525,7 +24676,7 @@ class InstrumentLogic extends BaseInstrument {
             value
           ));
         case 4 /* FOURTY_SIXTY_NINETY */:
-          return /* @__PURE__ */ import_react24.default.createElement(import_react24.default.Fragment, null, /* @__PURE__ */ import_react24.default.createElement(
+          return /* @__PURE__ */ import_react25.default.createElement(import_react25.default.Fragment, null, /* @__PURE__ */ import_react25.default.createElement(
             PathWithBlackBackground,
             {
               d: `M ${center - FourtyTickWidth + 35} ${correctedY - offset} L ${center + 35 + FourtyTickWidth} ${correctedY - offset}`,
@@ -24534,7 +24685,7 @@ class InstrumentLogic extends BaseInstrument {
               StrokeWidth: strokeWidth,
               strokeWidthTop
             }
-          ), /* @__PURE__ */ import_react24.default.createElement(
+          ), /* @__PURE__ */ import_react25.default.createElement(
             "text",
             {
               x: "260",
@@ -24548,7 +24699,7 @@ class InstrumentLogic extends BaseInstrument {
               paintOrder: "stroke"
             },
             value
-          ), /* @__PURE__ */ import_react24.default.createElement(
+          ), /* @__PURE__ */ import_react25.default.createElement(
             PathWithBlackBackground,
             {
               d: `M ${center - FourtyTickWidth - 35} ${correctedY - offset} L ${center - 35 + FourtyTickWidth} ${correctedY - offset}`,
@@ -24559,7 +24710,7 @@ class InstrumentLogic extends BaseInstrument {
             }
           ));
         default:
-          return /* @__PURE__ */ import_react24.default.createElement(import_react24.default.Fragment, null);
+          return /* @__PURE__ */ import_react25.default.createElement(import_react25.default.Fragment, null);
       }
     };
     const DrawChevron = (y, direction) => {
@@ -24570,7 +24721,7 @@ class InstrumentLogic extends BaseInstrument {
       const correctedY = -y * 8.6;
       const offset = -252;
       if (direction === 1) {
-        return /* @__PURE__ */ import_react24.default.createElement("g", null, /* @__PURE__ */ import_react24.default.createElement(
+        return /* @__PURE__ */ import_react25.default.createElement("g", null, /* @__PURE__ */ import_react25.default.createElement(
           PathWithBlackBackground,
           {
             d: `M ${center} ${correctedY - offset - 8} L ${center - 45} ${correctedY - offset - 80} L ${center - 30} ${correctedY - offset - 80} L ${center} ${correctedY - offset - 35} L ${center + 30} ${correctedY - offset - 80} L ${center + 45} ${correctedY - offset - 80} L ${center} ${correctedY - offset - 8}`,
@@ -24583,7 +24734,7 @@ class InstrumentLogic extends BaseInstrument {
           }
         ));
       } else {
-        return /* @__PURE__ */ import_react24.default.createElement("g", null, /* @__PURE__ */ import_react24.default.createElement(
+        return /* @__PURE__ */ import_react25.default.createElement("g", null, /* @__PURE__ */ import_react25.default.createElement(
           PathWithBlackBackground,
           {
             d: `M ${center} ${correctedY - offset + 8} L ${center - 45} ${correctedY - offset + 60} L ${center - 30} ${correctedY - offset + 60} L ${center} ${correctedY - offset + 25} L ${center + 30} ${correctedY - offset + 60} L ${center + 45} ${correctedY - offset + 60} L ${center} ${correctedY - offset + 8}`,
@@ -24662,7 +24813,7 @@ class InstrumentLogic extends BaseInstrument {
           case 89:
             return drawTick2(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected + 1, pitchCorrected + 1);
           default:
-            return /* @__PURE__ */ import_react24.default.createElement(import_react24.default.Fragment, null);
+            return /* @__PURE__ */ import_react25.default.createElement(import_react25.default.Fragment, null);
         }
       });
     };
@@ -24675,13 +24826,13 @@ class InstrumentLogic extends BaseInstrument {
         return { negative: false, value: props.pitch };
       }
     };
-    return /* @__PURE__ */ import_react24.default.createElement("g", null, /* @__PURE__ */ import_react24.default.createElement("clipPath", { id: "attitude-clip" }, /* @__PURE__ */ import_react24.default.createElement("path", { d: "m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" })), /* @__PURE__ */ import_react24.default.createElement("g", { clipPath: "url(#attitude-clip)" }, /* @__PURE__ */ import_react24.default.createElement("g", { transform: `rotate(${props.bank}, 275, 255)` }, /* @__PURE__ */ import_react24.default.createElement("g", { transform: `translate(0,${getTranslation().value * 8.6})` }, /* @__PURE__ */ import_react24.default.createElement("rect", { x: "-500", y: "-2000", width: "1600", height: "2255", className: "attitude-sky" }), /* @__PURE__ */ import_react24.default.createElement("rect", { x: "-0", y: "254", width: "1600", height: "2205", className: "attitude-ground-inner" }), isHorizonMarkerActive() && /* @__PURE__ */ import_react24.default.createElement("rect", { x: "0", y: "252", width: "600", height: "4", fill: "white", stroke: "black", strokeWidth: 1 })), /* @__PURE__ */ import_react24.default.createElement("g", { transform: `translate(0,${`${props.pitch * 8.6}`} )` }, createPitchMarkings()))));
+    return /* @__PURE__ */ import_react25.default.createElement("g", null, /* @__PURE__ */ import_react25.default.createElement("clipPath", { id: "attitude-clip" }, /* @__PURE__ */ import_react25.default.createElement("path", { d: "m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" })), /* @__PURE__ */ import_react25.default.createElement("g", { clipPath: "url(#attitude-clip)" }, /* @__PURE__ */ import_react25.default.createElement("g", { transform: `rotate(${props.bank}, 275, 255)` }, /* @__PURE__ */ import_react25.default.createElement("g", { transform: `translate(0,${getTranslation().value * 8.6})` }, /* @__PURE__ */ import_react25.default.createElement("rect", { x: "-500", y: "-2000", width: "1600", height: "2255", className: "attitude-sky" }), /* @__PURE__ */ import_react25.default.createElement("rect", { x: "-0", y: "254", width: "1600", height: "2205", className: "attitude-ground-inner" }), isHorizonMarkerActive() && /* @__PURE__ */ import_react25.default.createElement("rect", { x: "0", y: "252", width: "600", height: "4", fill: "white", stroke: "black", strokeWidth: 1 })), /* @__PURE__ */ import_react25.default.createElement("g", { transform: `translate(0,${`${props.pitch * 8.6}`} )` }, createPitchMarkings()))));
   };
 
   // instruments/src/PrimaryFlightDisplay/components/AttitudeDisplay/markers.tsx
-  var import_react25 = __toESM(require_react());
+  var import_react26 = __toESM(require_react());
   var AttitudeMarkers = () => {
-    return /* @__PURE__ */ import_react25.default.createElement("g", null, /* @__PURE__ */ import_react25.default.createElement(
+    return /* @__PURE__ */ import_react26.default.createElement("g", null, /* @__PURE__ */ import_react26.default.createElement(
       PathWithBlackBackground,
       {
         d: "M 166 249 L 217 249  L 217 268 L 209 268 L 209 258 L 166 258 L 166 249",
@@ -24691,7 +24842,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidthTop: 2,
         fillTop2: "black"
       }
-    ), /* @__PURE__ */ import_react25.default.createElement(
+    ), /* @__PURE__ */ import_react26.default.createElement(
       PathWithBlackBackground,
       {
         d: "M 384 249 L 333 249 L 333 268 L 341 268 L 341 258 L 384 258 L 384 249",
@@ -24701,7 +24852,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidthTop: 2,
         fillTop2: "black"
       }
-    ), /* @__PURE__ */ import_react25.default.createElement(
+    ), /* @__PURE__ */ import_react26.default.createElement(
       PathWithBlackBackground,
       {
         d: "M 280 249 L 270 249 L 270 258 L 280 258 L 280 258 L 280 249",
@@ -24718,37 +24869,37 @@ class InstrumentLogic extends BaseInstrument {
   var AttitudeDisplay = (props) => {
     const [bank] = useSimVar("PLANE BANK DEGREES", "degrees");
     const [pitch] = useSimVar("PLANE PITCH DEGREES", "degrees");
-    return /* @__PURE__ */ import_react26.default.createElement("div", { className: "attitude-continer" }, /* @__PURE__ */ import_react26.default.createElement("svg", { className: "attitude-svg", viewBox: "0 0 600 460", width: "100%", height: "100%" }, /* @__PURE__ */ import_react26.default.createElement(AttitudeBackground, { bank, pitch }), /* @__PURE__ */ import_react26.default.createElement(AttitudeForeground, { bank, pitch }), /* @__PURE__ */ import_react26.default.createElement(AttitudeMarkers, null)));
+    return /* @__PURE__ */ import_react27.default.createElement("div", { className: "attitude-continer" }, /* @__PURE__ */ import_react27.default.createElement("svg", { className: "attitude-svg", viewBox: "0 0 600 460", width: "100%", height: "100%" }, /* @__PURE__ */ import_react27.default.createElement(AttitudeBackground, { bank, pitch }), /* @__PURE__ */ import_react27.default.createElement(AttitudeForeground, { bank, pitch }), /* @__PURE__ */ import_react27.default.createElement(AttitudeMarkers, null)));
   };
 
   // instruments/src/PrimaryFlightDisplay/components/pfdProvider/pfdProvider.tsx
   var PFDProvider = () => {
-    return /* @__PURE__ */ import_react27.default.createElement("div", null, /* @__PURE__ */ import_react27.default.createElement("div", { className: "top-component" }, /* @__PURE__ */ import_react27.default.createElement(AttitudeDisplay, null), /* @__PURE__ */ import_react27.default.createElement(FMA, { x: 0, y: 0, vars: FmaVars() }), /* @__PURE__ */ import_react27.default.createElement(Airspeed, null), /* @__PURE__ */ import_react27.default.createElement(Altitude, null)), /* @__PURE__ */ import_react27.default.createElement("div", { className: "bottom-component" }, "bottom"));
+    return /* @__PURE__ */ import_react28.default.createElement("div", null, /* @__PURE__ */ import_react28.default.createElement("div", { className: "top-component" }, /* @__PURE__ */ import_react28.default.createElement(AttitudeDisplay, null), /* @__PURE__ */ import_react28.default.createElement(FMA, { x: 0, y: 0, vars: FmaVars() }), /* @__PURE__ */ import_react28.default.createElement(Airspeed, null), /* @__PURE__ */ import_react28.default.createElement(Altitude, null)), /* @__PURE__ */ import_react28.default.createElement("div", { className: "bottom-component" }, "bottom"));
   };
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/index.tsx
-  var import_react34 = __toESM(require_react());
+  var import_react35 = __toESM(require_react());
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/ComponentProvider/ComponentProvider.tsx
-  var import_react33 = __toESM(require_react());
+  var import_react34 = __toESM(require_react());
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/APU/APU.tsx
-  var import_react28 = __toESM(require_react());
+  var import_react29 = __toESM(require_react());
   var APU = (props) => {
-    return /* @__PURE__ */ import_react28.default.createElement("div", null, /* @__PURE__ */ import_react28.default.createElement("div", null, "fuck nigga"));
+    return /* @__PURE__ */ import_react29.default.createElement("div", null, /* @__PURE__ */ import_react29.default.createElement("div", null, "fuck nigga"));
   };
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Cabin/cabin.tsx
-  var import_react29 = __toESM(require_react());
+  var import_react30 = __toESM(require_react());
   var Cabin = () => {
-    return /* @__PURE__ */ import_react29.default.createElement("div", null, /* @__PURE__ */ import_react29.default.createElement("div", null, "cabin"));
+    return /* @__PURE__ */ import_react30.default.createElement("div", null, /* @__PURE__ */ import_react30.default.createElement("div", null, "cabin"));
   };
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engine.tsx
-  var import_react32 = __toESM(require_react());
+  var import_react33 = __toESM(require_react());
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/n1Gauge.tsx
-  var import_react30 = __toESM(require_react());
+  var import_react31 = __toESM(require_react());
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/hooks/getThrustRatingAnnunciatorString.ts
   var getThrustRatingAnnunciatorString = (thrustRating) => {
@@ -24806,11 +24957,11 @@ class InstrumentLogic extends BaseInstrument {
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/n1Gauge.tsx
   var N1Gauge = (props) => {
     let annunciator = getThrustRatingAnnunciatorString(props.thrustRatingAnnunciator);
-    return /* @__PURE__ */ import_react30.default.createElement("div", null, /* @__PURE__ */ import_react30.default.createElement("div", null, "n1 gauge ", annunciator));
+    return /* @__PURE__ */ import_react31.default.createElement("div", null, /* @__PURE__ */ import_react31.default.createElement("div", null, "n1 gauge ", annunciator));
   };
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGauge.tsx
-  var import_react31 = __toESM(require_react());
+  var import_react32 = __toESM(require_react());
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGaugeColors.ts
   var getIttGaugeColor = (redColor, yellowColor, limeColor, sFillColor, itt, redline, yellowline, forceRed) => {
@@ -24848,8 +24999,8 @@ class InstrumentLogic extends BaseInstrument {
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/components/ittGauge/ittGauge.tsx
   var IttGauge = (props) => {
-    const [forceRed, setForceRed] = (0, import_react31.useState)(false);
-    (0, import_react31.useEffect)(() => {
+    const [forceRed, setForceRed] = (0, import_react32.useState)(false);
+    (0, import_react32.useEffect)(() => {
       if (props.ittValue > props.yellowLineValue) {
         const timer = setTimeout(() => {
           setForceRed(true);
@@ -24859,7 +25010,7 @@ class InstrumentLogic extends BaseInstrument {
         setForceRed(false);
       }
     }, [props.ittValue]);
-    return /* @__PURE__ */ import_react31.default.createElement("div", { className: "itt-gauge-container-absolute", style: { left: `${props.left}px`, top: `${props.top}px` } }, /* @__PURE__ */ import_react31.default.createElement("svg", { viewBox: "0 0 100 100", xmlns: "http://www.w3.org/2000/svg" }, props.invalid ? null : /* @__PURE__ */ import_react31.default.createElement("g", { transform: `rotate(-135 50 50)` }, /* @__PURE__ */ import_react31.default.createElement(
+    return /* @__PURE__ */ import_react32.default.createElement("div", { className: "itt-gauge-container-absolute", style: { left: `${props.left}px`, top: `${props.top}px` } }, /* @__PURE__ */ import_react32.default.createElement("svg", { viewBox: "0 0 100 100", xmlns: "http://www.w3.org/2000/svg" }, props.invalid ? null : /* @__PURE__ */ import_react32.default.createElement("g", { transform: `rotate(-135 50 50)` }, /* @__PURE__ */ import_react32.default.createElement(
       "path",
       {
         id: "filler",
@@ -24875,7 +25026,7 @@ class InstrumentLogic extends BaseInstrument {
           forceRed
         ).fillColor
       }
-    )), /* @__PURE__ */ import_react31.default.createElement("circle", { cx: 50, cy: 50, r: 35, stroke: "white", "stroke-width": 2, fill: "transparent" }), props.invalid ? null : /* @__PURE__ */ import_react31.default.createElement("g", { transform: `rotate(-135 50 50)` }, /* @__PURE__ */ import_react31.default.createElement(
+    )), /* @__PURE__ */ import_react32.default.createElement("circle", { cx: 50, cy: 50, r: 35, stroke: "white", "stroke-width": 2, fill: "transparent" }), props.invalid ? null : /* @__PURE__ */ import_react32.default.createElement("g", { transform: `rotate(-135 50 50)` }, /* @__PURE__ */ import_react32.default.createElement(
       "path",
       {
         stroke: props.redColor,
@@ -24884,7 +25035,7 @@ class InstrumentLogic extends BaseInstrument {
         id: "redlineBug",
         d: `m ${findCoordsOnCircle(50, 50, 35, props.redlineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 35, props.redlineValue / props.scaling).y} L${findCoordsOnCircle(50, 50, 30, props.redlineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 30, props.redlineValue / props.scaling).y}`
       }
-    ), /* @__PURE__ */ import_react31.default.createElement(
+    ), /* @__PURE__ */ import_react32.default.createElement(
       "path",
       {
         stroke: props.yellowColor,
@@ -24893,7 +25044,7 @@ class InstrumentLogic extends BaseInstrument {
         id: "yellowlineBug",
         d: `m ${findCoordsOnCircle(50, 50, 35, props.yellowLineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 35, props.yellowLineValue / props.scaling).y} L${findCoordsOnCircle(50, 50, 30, props.yellowLineValue / props.scaling).x}  ${findCoordsOnCircle(50, 50, 30, props.yellowLineValue / props.scaling).y}`
       }
-    ), /* @__PURE__ */ import_react31.default.createElement("g", { transform: `rotate(${limiter(props.hardLimit, props.ittValue) / props.scaling} 50 50)` }, /* @__PURE__ */ import_react31.default.createElement(
+    ), /* @__PURE__ */ import_react32.default.createElement("g", { transform: `rotate(${limiter(props.hardLimit, props.ittValue) / props.scaling} 50 50)` }, /* @__PURE__ */ import_react32.default.createElement(
       "path",
       {
         d: `M 48.5 50 L 48.5 30 L50 17.5L 51.5 30 L 51.5 50 `,
@@ -24913,7 +25064,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeLinecap: "round",
         strokeLinejoin: "round"
       }
-    ))), /* @__PURE__ */ import_react31.default.createElement("circle", { cx: 50, cy: 50, r: 3, stroke: "white", strokeWidth: 1, fill: "black" }), props.fire ? /* @__PURE__ */ import_react31.default.createElement("g", null, /* @__PURE__ */ import_react31.default.createElement(
+    ))), /* @__PURE__ */ import_react32.default.createElement("circle", { cx: 50, cy: 50, r: 3, stroke: "white", strokeWidth: 1, fill: "black" }), props.fire ? /* @__PURE__ */ import_react32.default.createElement("g", null, /* @__PURE__ */ import_react32.default.createElement(
       "rect",
       {
         x: 30,
@@ -24925,7 +25076,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: 2,
         strokeLinejoin: "round"
       }
-    ), /* @__PURE__ */ import_react31.default.createElement("text", { x: 50, y: 50, textAnchor: "middle", fill: "white", fontSize: 15 }, "FIRE")) : null, /* @__PURE__ */ import_react31.default.createElement("rect", { x: 25, y: 75, width: 50, height: 20, fill: "black", stroke: "white", strokeWidth: 2, strokeLinejoin: "round" }), /* @__PURE__ */ import_react31.default.createElement("text", { x: 50, y: 90, textAnchor: "middle", fill: `${props.invalid ? props.amberColor : props.limeColor}`, fontSize: 10 }, props.invalid == false ? props.ittValue.toFixed(0) : "----")));
+    ), /* @__PURE__ */ import_react32.default.createElement("text", { x: 50, y: 50, textAnchor: "middle", fill: "white", fontSize: 15 }, "FIRE")) : null, /* @__PURE__ */ import_react32.default.createElement("rect", { x: 25, y: 75, width: 50, height: 20, fill: "black", stroke: "white", strokeWidth: 2, strokeLinejoin: "round" }), /* @__PURE__ */ import_react32.default.createElement("text", { x: 50, y: 90, textAnchor: "middle", fill: `${props.invalid ? props.amberColor : props.limeColor}`, fontSize: 10 }, props.invalid == false ? props.ittValue.toFixed(0) : "----")));
   };
   IttGauge.defaultProps = {
     ittValue: 0,
@@ -24986,7 +25137,7 @@ class InstrumentLogic extends BaseInstrument {
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/Engine/engine.tsx
   var Engine = (props) => {
     const vars = EngineVars();
-    return /* @__PURE__ */ import_react32.default.createElement("div", { className: "engine-wrapper" }, /* @__PURE__ */ import_react32.default.createElement("div", { className: "flex-row" }, /* @__PURE__ */ import_react32.default.createElement(
+    return /* @__PURE__ */ import_react33.default.createElement("div", { className: "engine-wrapper" }, /* @__PURE__ */ import_react33.default.createElement("div", { className: "flex-row" }, /* @__PURE__ */ import_react33.default.createElement(
       N1Gauge,
       {
         n1Value: 0,
@@ -24996,7 +25147,7 @@ class InstrumentLogic extends BaseInstrument {
         invalid: false,
         attcsState: 0
       }
-    ), /* @__PURE__ */ import_react32.default.createElement(N1Gauge, { n1Value: 0, redlineValue: 100, commandedN1: 0, thrustRatingAnnunciator: 1, invalid: false, attcsState: 0 })), /* @__PURE__ */ import_react32.default.createElement("div", { className: "flex-row" }, /* @__PURE__ */ import_react32.default.createElement(
+    ), /* @__PURE__ */ import_react33.default.createElement(N1Gauge, { n1Value: 0, redlineValue: 100, commandedN1: 0, thrustRatingAnnunciator: 1, invalid: false, attcsState: 0 })), /* @__PURE__ */ import_react33.default.createElement("div", { className: "flex-row" }, /* @__PURE__ */ import_react33.default.createElement(
       IttGauge,
       {
         ittValue: vars.ittValue1,
@@ -25015,7 +25166,7 @@ class InstrumentLogic extends BaseInstrument {
         fillerColor: EngineParameters.E170_ITT.fillerColor,
         forceRedInYellowTime: EngineParameters.E170_ITT.forceRedInYellowTime
       }
-    ), /* @__PURE__ */ import_react32.default.createElement(
+    ), /* @__PURE__ */ import_react33.default.createElement(
       IttGauge,
       {
         ittValue: vars.ittValue2,
@@ -25039,44 +25190,18 @@ class InstrumentLogic extends BaseInstrument {
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/Components/ComponentProvider/ComponentProvider.tsx
   var ComponentProvider = (props) => {
-    return /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-wrapper" }, /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-left" }, /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-engine" }, /* @__PURE__ */ import_react33.default.createElement(Engine, null)), /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-fuel" }, "Fuel"), /* @__PURE__ */ import_react33.default.createElement("div", { className: `component-provider-oil ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react33.default.createElement("div", null) : /* @__PURE__ */ import_react33.default.createElement("div", null, "oil")), /* @__PURE__ */ import_react33.default.createElement("div", { className: `component-provider-vib ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react33.default.createElement("div", null) : /* @__PURE__ */ import_react33.default.createElement("div", null, "vib")), /* @__PURE__ */ import_react33.default.createElement("div", { className: `component-provider-flaps ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react33.default.createElement("div", null) : /* @__PURE__ */ import_react33.default.createElement("div", null, "flaps"))), /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-right" }, /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-cas" }, "CAS MSG"), /* @__PURE__ */ import_react33.default.createElement("div", { className: `component-provider-lg ${props.declutter ? "declutter-hidden-right" : ""}` }, props.declutter ? /* @__PURE__ */ import_react33.default.createElement("div", null) : /* @__PURE__ */ import_react33.default.createElement("div", null, "lg")), /* @__PURE__ */ import_react33.default.createElement("div", { className: `component-provider-apu` }, props.declutter ? /* @__PURE__ */ import_react33.default.createElement("div", null) : /* @__PURE__ */ import_react33.default.createElement(APU, null)), /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-cabin" }, /* @__PURE__ */ import_react33.default.createElement(Cabin, null)), /* @__PURE__ */ import_react33.default.createElement("div", { className: "component-provider-trim" }, "Trim")));
+    return /* @__PURE__ */ import_react34.default.createElement("div", { className: "component-provider-wrapper" }, /* @__PURE__ */ import_react34.default.createElement("div", { className: "component-provider-left" }, /* @__PURE__ */ import_react34.default.createElement("div", { className: "component-provider-engine" }, /* @__PURE__ */ import_react34.default.createElement(Engine, null)), /* @__PURE__ */ import_react34.default.createElement("div", { className: "component-provider-fuel" }, "Fuel"), /* @__PURE__ */ import_react34.default.createElement("div", { className: `component-provider-oil ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react34.default.createElement("div", null) : /* @__PURE__ */ import_react34.default.createElement("div", null, "oil")), /* @__PURE__ */ import_react34.default.createElement("div", { className: `component-provider-vib ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react34.default.createElement("div", null) : /* @__PURE__ */ import_react34.default.createElement("div", null, "vib")), /* @__PURE__ */ import_react34.default.createElement("div", { className: `component-provider-flaps ${props.declutter ? "declutter-hidden-left" : ""}` }, props.declutter ? /* @__PURE__ */ import_react34.default.createElement("div", null) : /* @__PURE__ */ import_react34.default.createElement("div", null, "flaps"))), /* @__PURE__ */ import_react34.default.createElement("div", { className: "component-provider-right" }, /* @__PURE__ */ import_react34.default.createElement("div", { className: "component-provider-cas" }, "CAS MSG"), /* @__PURE__ */ import_react34.default.createElement("div", { className: `component-provider-lg ${props.declutter ? "declutter-hidden-right" : ""}` }, props.declutter ? /* @__PURE__ */ import_react34.default.createElement("div", null) : /* @__PURE__ */ import_react34.default.createElement("div", null, "lg")), /* @__PURE__ */ import_react34.default.createElement("div", { className: `component-provider-apu` }, props.declutter ? /* @__PURE__ */ import_react34.default.createElement("div", null) : /* @__PURE__ */ import_react34.default.createElement(APU, null)), /* @__PURE__ */ import_react34.default.createElement("div", { className: "component-provider-cabin" }, /* @__PURE__ */ import_react34.default.createElement(Cabin, null)), /* @__PURE__ */ import_react34.default.createElement("div", { className: "component-provider-trim" }, "Trim")));
   };
 
   // instruments/src/EngineIndicatingAndCrewAlertingSystem/index.tsx
   var EngineIndicatingAndCrewAlertingSystem = () => {
     const [declutter] = useObjLocalVar("EICAS_DECLUTTER", "bool");
-    return /* @__PURE__ */ import_react34.default.createElement("div", { id: "EICAS_ROOT" }, /* @__PURE__ */ import_react34.default.createElement(ComponentProvider, { declutter }));
+    return /* @__PURE__ */ import_react35.default.createElement("div", { id: "EICAS_ROOT" }, /* @__PURE__ */ import_react35.default.createElement(ComponentProvider, { declutter }));
   };
   var EicasState = getDisplayState("EICAS", cDisplayFaulureState);
   var EICAS = () => {
     const displayStates = AutoReversionary(cDisplayFaulureState);
     switch (displayStates[2]) {
-      case "PFD":
-        return /* @__PURE__ */ import_react34.default.createElement(PrimaryFlightDisplayContent, null);
-      case "PFD2":
-        return /* @__PURE__ */ import_react34.default.createElement("div", null, " PFD2 ");
-      case "MFD":
-        return /* @__PURE__ */ import_react34.default.createElement(MultifunctionDisplayContent, null);
-      case "MFD2":
-        return /* @__PURE__ */ import_react34.default.createElement("div", null, " MFD2 ");
-      case "EICAS":
-        return /* @__PURE__ */ import_react34.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
-      case "FAILED":
-        return /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null);
-      default:
-        return /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null);
-    }
-  };
-  render(EicasState ? /* @__PURE__ */ import_react34.default.createElement(import_react34.default.Fragment, null) : /* @__PURE__ */ import_react34.default.createElement(EICAS, null));
-
-  // instruments/src/PrimaryFlightDisplay/index.tsx
-  var PrimaryFlightDisplayContent = () => {
-    return /* @__PURE__ */ import_react35.default.createElement("div", { id: "PFD-ROOT" }, /* @__PURE__ */ import_react35.default.createElement(PFDProvider, null));
-  };
-  var PfdState = getDisplayState("PFD", cDisplayFaulureState);
-  var PFD = () => {
-    const displayStates = AutoReversionary(cDisplayFaulureState);
-    switch (displayStates[0]) {
       case "PFD":
         return /* @__PURE__ */ import_react35.default.createElement(PrimaryFlightDisplayContent, null);
       case "PFD2":
@@ -25093,14 +25218,40 @@ class InstrumentLogic extends BaseInstrument {
         return /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null);
     }
   };
-  render(PfdState ? /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null) : /* @__PURE__ */ import_react35.default.createElement(PFD, null));
+  render(EicasState ? /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null) : /* @__PURE__ */ import_react35.default.createElement(EICAS, null));
+
+  // instruments/src/PrimaryFlightDisplay/index.tsx
+  var PrimaryFlightDisplayContent = () => {
+    return /* @__PURE__ */ import_react36.default.createElement("div", { id: "PFD-ROOT" }, /* @__PURE__ */ import_react36.default.createElement(PFDProvider, null));
+  };
+  var PfdState = getDisplayState("PFD", cDisplayFaulureState);
+  var PFD = () => {
+    const displayStates = AutoReversionary(cDisplayFaulureState);
+    switch (displayStates[0]) {
+      case "PFD":
+        return /* @__PURE__ */ import_react36.default.createElement(PrimaryFlightDisplayContent, null);
+      case "PFD2":
+        return /* @__PURE__ */ import_react36.default.createElement("div", null, " PFD2 ");
+      case "MFD":
+        return /* @__PURE__ */ import_react36.default.createElement(MultifunctionDisplayContent, null);
+      case "MFD2":
+        return /* @__PURE__ */ import_react36.default.createElement("div", null, " MFD2 ");
+      case "EICAS":
+        return /* @__PURE__ */ import_react36.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
+      case "FAILED":
+        return /* @__PURE__ */ import_react36.default.createElement(import_react36.default.Fragment, null);
+      default:
+        return /* @__PURE__ */ import_react36.default.createElement(import_react36.default.Fragment, null);
+    }
+  };
+  render(PfdState ? /* @__PURE__ */ import_react36.default.createElement(import_react36.default.Fragment, null) : /* @__PURE__ */ import_react36.default.createElement(PFD, null));
 
   // instruments/src/MultifunctionDisplay/index.tsx
   var MultifunctionDisplayContent = () => {
-    const [isSystem, setIsSystem] = import_react36.default.useState(false);
-    const [systemMenu, setSystemMenu] = import_react36.default.useState(false);
-    const [showSystems, setShowSystems] = import_react36.default.useState(false);
-    return /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement(Mouse, null), /* @__PURE__ */ import_react36.default.createElement(
+    const [isSystem, setIsSystem] = import_react37.default.useState(false);
+    const [systemMenu, setSystemMenu] = import_react37.default.useState(false);
+    const [showSystems, setShowSystems] = import_react37.default.useState(false);
+    return /* @__PURE__ */ import_react37.default.createElement("div", null, /* @__PURE__ */ import_react37.default.createElement(Mouse, null), /* @__PURE__ */ import_react37.default.createElement(
       displayProvider_default,
       {
         systemMenu,
@@ -25119,22 +25270,22 @@ class InstrumentLogic extends BaseInstrument {
     const displayStates = AutoReversionary(cDisplayFaulureState);
     switch (displayStates[1]) {
       case "PFD":
-        return /* @__PURE__ */ import_react36.default.createElement(PrimaryFlightDisplayContent, null);
+        return /* @__PURE__ */ import_react37.default.createElement(PrimaryFlightDisplayContent, null);
       case "PFD2":
-        return /* @__PURE__ */ import_react36.default.createElement("div", null, " PFD2 ");
+        return /* @__PURE__ */ import_react37.default.createElement("div", null, " PFD2 ");
       case "MFD":
-        return /* @__PURE__ */ import_react36.default.createElement(MultifunctionDisplayContent, null);
+        return /* @__PURE__ */ import_react37.default.createElement(MultifunctionDisplayContent, null);
       case "MFD2":
-        return /* @__PURE__ */ import_react36.default.createElement("div", null, " MFD2 ");
+        return /* @__PURE__ */ import_react37.default.createElement("div", null, " MFD2 ");
       case "EICAS":
-        return /* @__PURE__ */ import_react36.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
+        return /* @__PURE__ */ import_react37.default.createElement(EngineIndicatingAndCrewAlertingSystem, null);
       case "FAILED":
-        return /* @__PURE__ */ import_react36.default.createElement(import_react36.default.Fragment, null);
+        return /* @__PURE__ */ import_react37.default.createElement(import_react37.default.Fragment, null);
       default:
-        return /* @__PURE__ */ import_react36.default.createElement(import_react36.default.Fragment, null);
+        return /* @__PURE__ */ import_react37.default.createElement(import_react37.default.Fragment, null);
     }
   };
-  render(MfdState ? /* @__PURE__ */ import_react36.default.createElement(import_react36.default.Fragment, null) : /* @__PURE__ */ import_react36.default.createElement(MFD, null));
+  render(MfdState ? /* @__PURE__ */ import_react37.default.createElement(import_react37.default.Fragment, null) : /* @__PURE__ */ import_react37.default.createElement(MFD, null));
 })();
 /**
  * @license React

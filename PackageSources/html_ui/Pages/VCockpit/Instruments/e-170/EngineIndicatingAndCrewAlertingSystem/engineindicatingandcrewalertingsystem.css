@@ -250,6 +250,24 @@ div {
   pointer-events: none;
 }
 
+/* temp_stylePlugin:instruments\src\MultifunctionDisplay\components\pages\Status\StatusDisplayProvider\StatusDisplayProvider.scss */
+.status-svg-container {
+  position: absolute;
+  width: 600px;
+  z-index: 4;
+  height: 455px;
+}
+.doors-status {
+  position: absolute;
+  left: 303px;
+  top: 56px;
+  display: flex;
+  flex-direction: column;
+  width: 290px;
+  justify-content: space-between;
+  height: 450px;
+}
+
 /* temp_stylePlugin:instruments\src\MultifunctionDisplay\components\displayProvider\displayProvider.scss */
 .MFD-container {
   display: flex;
@@ -259,7 +277,6 @@ div {
   justify-content: space-between;
 }
 .upper-content-container {
-  background-color: rgba(0, 0, 0, 0.3);
   height: 455px;
 }
 .lower-content-container {
@@ -343,6 +360,7 @@ div {
   top: 53px;
   right: 0px;
   width: 240px;
+  z-index: 999;
 }
 .system-button-current-page {
   margin-left: 10px;
