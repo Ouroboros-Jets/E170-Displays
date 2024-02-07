@@ -13,8 +13,6 @@ export const HomeButton = (): JSX.Element => {
       onClick={() => {
         UseNaigate(OSRouter, 0)
       }}
-    >
-      <div>HOME</div>
-    </div>
+    ></div>
   )
 }

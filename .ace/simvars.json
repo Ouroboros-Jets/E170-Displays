@@ -212,7 +212,7 @@
     "name": "PLANE PITCH DEGREES",
     "index": 0,
     "unit": "radians",
-    "value": -3.0,
+    "value": 3.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -225,7 +225,7 @@
     "name": "PLANE BANK DEGREES",
     "index": 0,
     "unit": "radians",
-    "value": -28.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

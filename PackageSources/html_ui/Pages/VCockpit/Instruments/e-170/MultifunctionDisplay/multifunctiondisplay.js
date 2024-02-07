@@ -25285,7 +25285,7 @@ class InstrumentLogic extends BaseInstrument {
         return /* @__PURE__ */ import_react37.default.createElement(import_react37.default.Fragment, null);
     }
   };
-  render(MfdState ? /* @__PURE__ */ import_react37.default.createElement(import_react37.default.Fragment, null) : /* @__PURE__ */ import_react37.default.createElement(MFD, null));
+  render(/* @__PURE__ */ import_react37.default.createElement(MFD, null));
 })();
 /**
  * @license React

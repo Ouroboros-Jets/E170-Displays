@@ -1,7 +1,6 @@
 import React from 'react'
 import './AirportsDisplay.scss'
 import { AirportInformationProvider } from './AptInformationProvider/AptInformationProvider'
-import { toast } from 'react-toastify'
 import { getSunrise, getSunset } from 'sunrise-sunset-js'
 // import tzLookup from 'tz-lookup'
 
@@ -64,7 +63,6 @@ export const AirportDisplay: React.FC<T_AirportDisplayProps> = (props: T_Airport
               props.removeFavorite(props.airport)
             } else {
               if (props.favorites.length >= 12) {
-                toast('You can only have 12 favorites')
                 return
               }
 

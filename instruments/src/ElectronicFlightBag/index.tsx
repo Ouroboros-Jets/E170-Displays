@@ -5,8 +5,6 @@ import { EFBRouter } from './hooks/OsRouter'
 import { DisplayProvider } from './components/OS/DisplayProvider/DisplayProvider'
 import { HomeButton } from './components/OS/HomeButton/HomeButton'
 import { AppRouter } from './components/apps/appRouter/appRouter'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import { NavigraphAuthProvider } from './hooks/useNavigraphAuth'
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -17,7 +15,7 @@ const ElectronicFlightBag = (): JSX.Element => {
         <EFBRouter>
           <div className="ipadContainer">
             <DisplayProvider />
-            <ToastContainer
+            {/* <ToastContainer
               position="top-left" // this can be top-center in the game, in the browser it will be top-left
               autoClose={3000}
               hideProgressBar={false}
@@ -27,7 +25,7 @@ const ElectronicFlightBag = (): JSX.Element => {
               draggable
               pauseOnHover
               theme="dark"
-            />
+            /> */}
             <HomeButton />
           </div>
         </EFBRouter>

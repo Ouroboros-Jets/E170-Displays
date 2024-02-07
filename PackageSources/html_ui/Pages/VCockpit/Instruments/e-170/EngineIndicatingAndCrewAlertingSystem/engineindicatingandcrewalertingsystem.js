@@ -25232,7 +25232,7 @@ class InstrumentLogic extends BaseInstrument {
         return /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null);
     }
   };
-  render(MfdState ? /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null) : /* @__PURE__ */ import_react35.default.createElement(MFD, null));
+  render(/* @__PURE__ */ import_react35.default.createElement(MFD, null));
 
   // instruments/src/PrimaryFlightDisplay/index.tsx
   var PrimaryFlightDisplayContent = () => {

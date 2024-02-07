@@ -39,30 +39,18 @@ class InstrumentLogic extends BaseInstrument {
   var __hasOwnProp = Object.prototype.hasOwnProperty;
   var __propIsEnum = Object.prototype.propertyIsEnumerable;
   var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-  var __spreadValues = (a2, b2) => {
-    for (var prop in b2 || (b2 = {}))
-      if (__hasOwnProp.call(b2, prop))
-        __defNormalProp(a2, prop, b2[prop]);
+  var __spreadValues = (a, b) => {
+    for (var prop in b || (b = {}))
+      if (__hasOwnProp.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
     if (__getOwnPropSymbols)
-      for (var prop of __getOwnPropSymbols(b2)) {
-        if (__propIsEnum.call(b2, prop))
-          __defNormalProp(a2, prop, b2[prop]);
+      for (var prop of __getOwnPropSymbols(b)) {
+        if (__propIsEnum.call(b, prop))
+          __defNormalProp(a, prop, b[prop]);
       }
-    return a2;
+    return a;
   };
-  var __spreadProps = (a2, b2) => __defProps(a2, __getOwnPropDescs(b2));
-  var __objRest = (source, exclude) => {
-    var target = {};
-    for (var prop in source)
-      if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
-        target[prop] = source[prop];
-    if (source != null && __getOwnPropSymbols)
-      for (var prop of __getOwnPropSymbols(source)) {
-        if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
-          target[prop] = source[prop];
-      }
-    return target;
-  };
+  var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
   var __commonJS = (cb, mod) => function __require() {
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
@@ -294,8 +282,8 @@ class InstrumentLogic extends BaseInstrument {
             return refObject;
           }
           var isArrayImpl = Array.isArray;
-          function isArray2(a2) {
-            return isArrayImpl(a2);
+          function isArray2(a) {
+            return isArrayImpl(a);
           }
           function typeName(value) {
             {
@@ -309,7 +297,7 @@ class InstrumentLogic extends BaseInstrument {
               try {
                 testStringCoercion(value);
                 return false;
-              } catch (e2) {
+              } catch (e) {
                 return true;
               }
             }
@@ -387,7 +375,7 @@ class InstrumentLogic extends BaseInstrument {
                   var init = lazyComponent._init;
                   try {
                     return getComponentNameFromType(init(payload));
-                  } catch (x2) {
+                  } catch (x) {
                     return null;
                   }
                 }
@@ -538,8 +526,8 @@ class InstrumentLogic extends BaseInstrument {
               props.children = children;
             } else if (childrenLength > 1) {
               var childArray = Array(childrenLength);
-              for (var i2 = 0; i2 < childrenLength; i2++) {
-                childArray[i2] = arguments[i2 + 2];
+              for (var i = 0; i < childrenLength; i++) {
+                childArray[i] = arguments[i + 2];
               }
               {
                 if (Object.freeze) {
@@ -614,8 +602,8 @@ class InstrumentLogic extends BaseInstrument {
               props.children = children;
             } else if (childrenLength > 1) {
               var childArray = Array(childrenLength);
-              for (var i2 = 0; i2 < childrenLength; i2++) {
-                childArray[i2] = arguments[i2 + 2];
+              for (var i = 0; i < childrenLength; i++) {
+                childArray[i] = arguments[i + 2];
               }
               props.children = childArray;
             }
@@ -706,9 +694,9 @@ class InstrumentLogic extends BaseInstrument {
             var subtreeCount = 0;
             var nextNamePrefix = nameSoFar === "" ? SEPARATOR : nameSoFar + SUBSEPARATOR;
             if (isArray2(children)) {
-              for (var i2 = 0; i2 < children.length; i2++) {
-                child = children[i2];
-                nextName = nextNamePrefix + getElementKey(child, i2);
+              for (var i = 0; i < children.length; i++) {
+                child = children[i];
+                nextName = nextNamePrefix + getElementKey(child, i);
                 subtreeCount += mapIntoArray(child, array, escapedPrefix, nextName, callback);
               }
             } else {
@@ -750,11 +738,11 @@ class InstrumentLogic extends BaseInstrument {
             return result;
           }
           function countChildren(children) {
-            var n2 = 0;
+            var n = 0;
             mapChildren(children, function() {
-              n2++;
+              n++;
             });
-            return n2;
+            return n;
           }
           function forEachChildren(children, forEachFunc, forEachContext) {
             mapChildren(children, function() {
@@ -1201,8 +1189,8 @@ class InstrumentLogic extends BaseInstrument {
               if (prefix === void 0) {
                 try {
                   throw Error();
-                } catch (x2) {
-                  var match = x2.stack.trim().match(/\n( *(at )?)/);
+                } catch (x) {
+                  var match = x.stack.trim().match(/\n( *(at )?)/);
                   prefix = match && match[1] || "";
                 }
               }
@@ -1248,23 +1236,23 @@ class InstrumentLogic extends BaseInstrument {
                 if (typeof Reflect === "object" && Reflect.construct) {
                   try {
                     Reflect.construct(Fake, []);
-                  } catch (x2) {
-                    control = x2;
+                  } catch (x) {
+                    control = x;
                   }
                   Reflect.construct(fn, [], Fake);
                 } else {
                   try {
                     Fake.call();
-                  } catch (x2) {
-                    control = x2;
+                  } catch (x) {
+                    control = x;
                   }
                   fn.call(Fake.prototype);
                 }
               } else {
                 try {
                   throw Error();
-                } catch (x2) {
-                  control = x2;
+                } catch (x) {
+                  control = x;
                 }
                 fn();
               }
@@ -1272,19 +1260,19 @@ class InstrumentLogic extends BaseInstrument {
               if (sample && control && typeof sample.stack === "string") {
                 var sampleLines = sample.stack.split("\n");
                 var controlLines = control.stack.split("\n");
-                var s2 = sampleLines.length - 1;
+                var s = sampleLines.length - 1;
                 var c = controlLines.length - 1;
-                while (s2 >= 1 && c >= 0 && sampleLines[s2] !== controlLines[c]) {
+                while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
                   c--;
                 }
-                for (; s2 >= 1 && c >= 0; s2--, c--) {
-                  if (sampleLines[s2] !== controlLines[c]) {
-                    if (s2 !== 1 || c !== 1) {
+                for (; s >= 1 && c >= 0; s--, c--) {
+                  if (sampleLines[s] !== controlLines[c]) {
+                    if (s !== 1 || c !== 1) {
                       do {
-                        s2--;
+                        s--;
                         c--;
-                        if (c < 0 || sampleLines[s2] !== controlLines[c]) {
-                          var _frame = "\n" + sampleLines[s2].replace(" at new ", " at ");
+                        if (c < 0 || sampleLines[s] !== controlLines[c]) {
+                          var _frame = "\n" + sampleLines[s].replace(" at new ", " at ");
                           if (fn.displayName && _frame.includes("<anonymous>")) {
                             _frame = _frame.replace("<anonymous>", fn.displayName);
                           }
@@ -1295,7 +1283,7 @@ class InstrumentLogic extends BaseInstrument {
                           }
                           return _frame;
                         }
-                      } while (s2 >= 1 && c >= 0);
+                      } while (s >= 1 && c >= 0);
                     }
                     break;
                   }
@@ -1357,7 +1345,7 @@ class InstrumentLogic extends BaseInstrument {
                   var init = lazyComponent._init;
                   try {
                     return describeUnknownElementTypeFrameInDEV(init(payload), source, ownerFn);
-                  } catch (x2) {
+                  } catch (x) {
                   }
                 }
               }
@@ -1482,8 +1470,8 @@ class InstrumentLogic extends BaseInstrument {
               return;
             }
             if (isArray2(node)) {
-              for (var i2 = 0; i2 < node.length; i2++) {
-                var child = node[i2];
+              for (var i = 0; i < node.length; i++) {
+                var child = node[i];
                 if (isValidElement2(child)) {
                   validateExplicitKey(child, parentType);
                 }
@@ -1537,8 +1525,8 @@ class InstrumentLogic extends BaseInstrument {
           function validateFragmentProps(fragment) {
             {
               var keys3 = Object.keys(fragment.props);
-              for (var i2 = 0; i2 < keys3.length; i2++) {
-                var key = keys3[i2];
+              for (var i = 0; i < keys3.length; i++) {
+                var key = keys3[i];
                 if (key !== "children" && key !== "key") {
                   setCurrentlyValidatingElement$1(fragment);
                   error("Invalid prop `%s` supplied to `React.Fragment`. React.Fragment can only have `key` and `children` props.", key);
@@ -1586,8 +1574,8 @@ class InstrumentLogic extends BaseInstrument {
               return element;
             }
             if (validType) {
-              for (var i2 = 2; i2 < arguments.length; i2++) {
-                validateChildKeys(arguments[i2], type);
+              for (var i = 2; i < arguments.length; i++) {
+                validateChildKeys(arguments[i], type);
               }
             }
             if (type === REACT_FRAGMENT_TYPE) {
@@ -1621,8 +1609,8 @@ class InstrumentLogic extends BaseInstrument {
           }
           function cloneElementWithValidation(element, props, children) {
             var newElement = cloneElement.apply(this, arguments);
-            for (var i2 = 2; i2 < arguments.length; i2++) {
-              validateChildKeys(arguments[i2], newElement.type);
+            for (var i = 2; i < arguments.length; i++) {
+              validateChildKeys(arguments[i], newElement.type);
             }
             validatePropTypes(newElement);
             return newElement;
@@ -1799,17 +1787,17 @@ class InstrumentLogic extends BaseInstrument {
             {
               if (!isFlushing) {
                 isFlushing = true;
-                var i2 = 0;
+                var i = 0;
                 try {
-                  for (; i2 < queue.length; i2++) {
-                    var callback = queue[i2];
+                  for (; i < queue.length; i++) {
+                    var callback = queue[i];
                     do {
                       callback = callback(true);
                     } while (callback !== null);
                   }
                   queue.length = 0;
                 } catch (error2) {
-                  queue = queue.slice(i2 + 1);
+                  queue = queue.slice(i + 1);
                   throw error2;
                 } finally {
                   isFlushing = false;
@@ -1915,8 +1903,8 @@ class InstrumentLogic extends BaseInstrument {
             }
             return first;
           }
-          function siftUp(heap, node, i2) {
-            var index = i2;
+          function siftUp(heap, node, i) {
+            var index = i;
             while (index > 0) {
               var parentIndex = index - 1 >>> 1;
               var parent = heap[parentIndex];
@@ -1929,8 +1917,8 @@ class InstrumentLogic extends BaseInstrument {
               }
             }
           }
-          function siftDown(heap, node, i2) {
-            var index = i2;
+          function siftDown(heap, node, i) {
+            var index = i;
             var length = heap.length;
             var halfLength = length >>> 1;
             while (index < halfLength) {
@@ -1957,9 +1945,9 @@ class InstrumentLogic extends BaseInstrument {
               }
             }
           }
-          function compare(a2, b2) {
-            var diff = a2.sortIndex - b2.sortIndex;
-            return diff !== 0 ? diff : a2.id - b2.id;
+          function compare(a, b) {
+            var diff = a.sortIndex - b.sortIndex;
+            return diff !== 0 ? diff : a.id - b.id;
           }
           var ImmediatePriority = 1;
           var UserBlockingPriority = 2;
@@ -2455,8 +2443,8 @@ class InstrumentLogic extends BaseInstrument {
                 possibleRegistrationNames.ondblclick = registrationName;
               }
             }
-            for (var i2 = 0; i2 < dependencies.length; i2++) {
-              allNativeEvents.add(dependencies[i2]);
+            for (var i = 0; i < dependencies.length; i++) {
+              allNativeEvents.add(dependencies[i]);
             }
           }
           var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined");
@@ -2473,7 +2461,7 @@ class InstrumentLogic extends BaseInstrument {
               try {
                 testStringCoercion(value);
                 return false;
-              } catch (e2) {
+              } catch (e) {
                 return true;
               }
             }
@@ -3185,8 +3173,8 @@ class InstrumentLogic extends BaseInstrument {
               if (prefix === void 0) {
                 try {
                   throw Error();
-                } catch (x2) {
-                  var match = x2.stack.trim().match(/\n( *(at )?)/);
+                } catch (x) {
+                  var match = x.stack.trim().match(/\n( *(at )?)/);
                   prefix = match && match[1] || "";
                 }
               }
@@ -3232,23 +3220,23 @@ class InstrumentLogic extends BaseInstrument {
                 if (typeof Reflect === "object" && Reflect.construct) {
                   try {
                     Reflect.construct(Fake, []);
-                  } catch (x2) {
-                    control = x2;
+                  } catch (x) {
+                    control = x;
                   }
                   Reflect.construct(fn, [], Fake);
                 } else {
                   try {
                     Fake.call();
-                  } catch (x2) {
-                    control = x2;
+                  } catch (x) {
+                    control = x;
                   }
                   fn.call(Fake.prototype);
                 }
               } else {
                 try {
                   throw Error();
-                } catch (x2) {
-                  control = x2;
+                } catch (x) {
+                  control = x;
                 }
                 fn();
               }
@@ -3256,19 +3244,19 @@ class InstrumentLogic extends BaseInstrument {
               if (sample && control && typeof sample.stack === "string") {
                 var sampleLines = sample.stack.split("\n");
                 var controlLines = control.stack.split("\n");
-                var s2 = sampleLines.length - 1;
+                var s = sampleLines.length - 1;
                 var c = controlLines.length - 1;
-                while (s2 >= 1 && c >= 0 && sampleLines[s2] !== controlLines[c]) {
+                while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
                   c--;
                 }
-                for (; s2 >= 1 && c >= 0; s2--, c--) {
-                  if (sampleLines[s2] !== controlLines[c]) {
-                    if (s2 !== 1 || c !== 1) {
+                for (; s >= 1 && c >= 0; s--, c--) {
+                  if (sampleLines[s] !== controlLines[c]) {
+                    if (s !== 1 || c !== 1) {
                       do {
-                        s2--;
+                        s--;
                         c--;
-                        if (c < 0 || sampleLines[s2] !== controlLines[c]) {
-                          var _frame = "\n" + sampleLines[s2].replace(" at new ", " at ");
+                        if (c < 0 || sampleLines[s] !== controlLines[c]) {
+                          var _frame = "\n" + sampleLines[s].replace(" at new ", " at ");
                           if (fn.displayName && _frame.includes("<anonymous>")) {
                             _frame = _frame.replace("<anonymous>", fn.displayName);
                           }
@@ -3279,7 +3267,7 @@ class InstrumentLogic extends BaseInstrument {
                           }
                           return _frame;
                         }
-                      } while (s2 >= 1 && c >= 0);
+                      } while (s >= 1 && c >= 0);
                     }
                     break;
                   }
@@ -3346,7 +3334,7 @@ class InstrumentLogic extends BaseInstrument {
                   var init = lazyComponent._init;
                   try {
                     return describeUnknownElementTypeFrameInDEV(init(payload), source, ownerFn);
-                  } catch (x2) {
+                  } catch (x) {
                   }
                 }
               }
@@ -3386,8 +3374,8 @@ class InstrumentLogic extends BaseInstrument {
                 node = node.return;
               } while (node);
               return info;
-            } catch (x2) {
-              return "\nError generating stack: " + x2.message + "\n" + x2.stack;
+            } catch (x) {
+              return "\nError generating stack: " + x.message + "\n" + x.stack;
             }
           }
           function getWrappedName(outerType, innerType, wrapperName) {
@@ -3452,7 +3440,7 @@ class InstrumentLogic extends BaseInstrument {
                   var init = lazyComponent._init;
                   try {
                     return getComponentNameFromType(init(payload));
-                  } catch (x2) {
+                  } catch (x) {
                     return null;
                   }
                 }
@@ -3708,7 +3696,7 @@ class InstrumentLogic extends BaseInstrument {
             }
             try {
               return doc.activeElement || doc.body;
-            } catch (e2) {
+            } catch (e) {
               return doc.body;
             }
           }
@@ -3847,8 +3835,8 @@ class InstrumentLogic extends BaseInstrument {
                 checkAttributeStringCoercion(name, "name");
               }
               var group = queryRoot.querySelectorAll("input[name=" + JSON.stringify("" + name) + '][type="radio"]');
-              for (var i2 = 0; i2 < group.length; i2++) {
-                var otherNode = group[i2];
+              for (var i = 0; i < group.length; i++) {
+                var otherNode = group[i];
                 if (otherNode === rootNode || otherNode.form !== rootNode.form) {
                   continue;
                 }
@@ -3908,8 +3896,8 @@ class InstrumentLogic extends BaseInstrument {
             }
           }
           var isArrayImpl = Array.isArray;
-          function isArray2(a2) {
-            return isArrayImpl(a2);
+          function isArray2(a) {
+            return isArrayImpl(a);
           }
           var didWarnValueDefaultValue$1;
           {
@@ -3926,8 +3914,8 @@ class InstrumentLogic extends BaseInstrument {
           function checkSelectPropTypes(props) {
             {
               checkControlledValueProps("select", props);
-              for (var i2 = 0; i2 < valuePropNames.length; i2++) {
-                var propName = valuePropNames[i2];
+              for (var i = 0; i < valuePropNames.length; i++) {
+                var propName = valuePropNames[i];
                 if (props[propName] == null) {
                   continue;
                 }
@@ -3945,8 +3933,8 @@ class InstrumentLogic extends BaseInstrument {
             if (multiple) {
               var selectedValues = propValue;
               var selectedValue = {};
-              for (var i2 = 0; i2 < selectedValues.length; i2++) {
-                selectedValue["$" + selectedValues[i2]] = true;
+              for (var i = 0; i < selectedValues.length; i++) {
+                selectedValue["$" + selectedValues[i]] = true;
               }
               for (var _i = 0; _i < options2.length; _i++) {
                 var selected = selectedValue.hasOwnProperty("$" + options2[_i].value);
@@ -4308,7 +4296,7 @@ class InstrumentLogic extends BaseInstrument {
             var warnedForNaNValue = false;
             var warnedForInfinityValue = false;
             var camelize = function(string) {
-              return string.replace(hyphenPattern, function(_3, character) {
+              return string.replace(hyphenPattern, function(_2, character) {
                 return character.toUpperCase();
               });
             };
@@ -4418,8 +4406,8 @@ class InstrumentLogic extends BaseInstrument {
             var expanded = {};
             for (var key in styles) {
               var longhands = shorthandToLonghand[key] || [key];
-              for (var i2 = 0; i2 < longhands.length; i2++) {
-                expanded[longhands[i2]] = key;
+              for (var i = 0; i < longhands.length; i++) {
+                expanded[longhands[i]] = key;
               }
             }
             return expanded;
@@ -5330,8 +5318,8 @@ class InstrumentLogic extends BaseInstrument {
             restoreQueue = null;
             restoreStateOfTarget(target);
             if (queuedTargets) {
-              for (var i2 = 0; i2 < queuedTargets.length; i2++) {
-                restoreStateOfTarget(queuedTargets[i2]);
+              for (var i = 0; i < queuedTargets.length; i++) {
+                restoreStateOfTarget(queuedTargets[i]);
               }
             }
           }
@@ -5348,13 +5336,13 @@ class InstrumentLogic extends BaseInstrument {
               restoreStateIfNeeded();
             }
           }
-          function batchedUpdates(fn, a2, b2) {
+          function batchedUpdates(fn, a, b) {
             if (isInsideEventHandler) {
-              return fn(a2, b2);
+              return fn(a, b);
             }
             isInsideEventHandler = true;
             try {
-              return batchedUpdatesImpl(fn, a2, b2);
+              return batchedUpdatesImpl(fn, a, b);
             } finally {
               isInsideEventHandler = false;
               finishEventHandler();
@@ -5414,11 +5402,11 @@ class InstrumentLogic extends BaseInstrument {
               });
               window.addEventListener("test", options, options);
               window.removeEventListener("test", options, options);
-            } catch (e2) {
+            } catch (e) {
               passiveBrowserEventsSupported = false;
             }
           }
-          function invokeGuardedCallbackProd(name, func, context2, a2, b2, c, d2, e2, f2) {
+          function invokeGuardedCallbackProd(name, func, context2, a, b, c, d, e, f) {
             var funcArgs = Array.prototype.slice.call(arguments, 3);
             try {
               func.apply(context2, funcArgs);
@@ -5430,7 +5418,7 @@ class InstrumentLogic extends BaseInstrument {
           {
             if (typeof window !== "undefined" && typeof window.dispatchEvent === "function" && typeof document !== "undefined" && typeof document.createEvent === "function") {
               var fakeNode = document.createElement("react");
-              invokeGuardedCallbackImpl = function invokeGuardedCallbackDev(name, func, context2, a2, b2, c, d2, e2, f2) {
+              invokeGuardedCallbackImpl = function invokeGuardedCallbackDev(name, func, context2, a, b, c, d, e, f) {
                 if (typeof document === "undefined" || document === null) {
                   throw new Error("The `document` global was defined when React was initialized, but is not defined anymore. This can happen in a test environment if a component schedules an update from an asynchronous callback, but the test has already finished running. To solve this, you can either unmount the component at the end of your test (and ensure that any asynchronous operations get canceled in `componentWillUnmount`), or you can change the test itself to be asynchronous.");
                 }
@@ -5505,12 +5493,12 @@ class InstrumentLogic extends BaseInstrument {
               caughtError = error2;
             }
           };
-          function invokeGuardedCallback(name, func, context2, a2, b2, c, d2, e2, f2) {
+          function invokeGuardedCallback(name, func, context2, a, b, c, d, e, f) {
             hasError = false;
             caughtError = null;
             invokeGuardedCallbackImpl$1.apply(reporter, arguments);
           }
-          function invokeGuardedCallbackAndCatchFirstError(name, func, context2, a2, b2, c, d2, e2, f2) {
+          function invokeGuardedCallbackAndCatchFirstError(name, func, context2, a, b, c, d, e, f) {
             invokeGuardedCallback.apply(this, arguments);
             if (hasError) {
               var error2 = clearCaughtError();
@@ -5660,10 +5648,10 @@ class InstrumentLogic extends BaseInstrument {
               }
               return fiber;
             }
-            var a2 = fiber;
-            var b2 = alternate;
+            var a = fiber;
+            var b = alternate;
             while (true) {
-              var parentA = a2.return;
+              var parentA = a.return;
               if (parentA === null) {
                 break;
               }
@@ -5671,7 +5659,7 @@ class InstrumentLogic extends BaseInstrument {
               if (parentB === null) {
                 var nextParent = parentA.return;
                 if (nextParent !== null) {
-                  a2 = b2 = nextParent;
+                  a = b = nextParent;
                   continue;
                 }
                 break;
@@ -5679,11 +5667,11 @@ class InstrumentLogic extends BaseInstrument {
               if (parentA.child === parentB.child) {
                 var child = parentA.child;
                 while (child) {
-                  if (child === a2) {
+                  if (child === a) {
                     assertIsMounted(parentA);
                     return fiber;
                   }
-                  if (child === b2) {
+                  if (child === b) {
                     assertIsMounted(parentA);
                     return alternate;
                   }
@@ -5691,23 +5679,23 @@ class InstrumentLogic extends BaseInstrument {
                 }
                 throw new Error("Unable to find node on an unmounted component.");
               }
-              if (a2.return !== b2.return) {
-                a2 = parentA;
-                b2 = parentB;
+              if (a.return !== b.return) {
+                a = parentA;
+                b = parentB;
               } else {
                 var didFindChild = false;
                 var _child = parentA.child;
                 while (_child) {
-                  if (_child === a2) {
+                  if (_child === a) {
                     didFindChild = true;
-                    a2 = parentA;
-                    b2 = parentB;
+                    a = parentA;
+                    b = parentB;
                     break;
                   }
-                  if (_child === b2) {
+                  if (_child === b) {
                     didFindChild = true;
-                    b2 = parentA;
-                    a2 = parentB;
+                    b = parentA;
+                    a = parentB;
                     break;
                   }
                   _child = _child.sibling;
@@ -5715,16 +5703,16 @@ class InstrumentLogic extends BaseInstrument {
                 if (!didFindChild) {
                   _child = parentB.child;
                   while (_child) {
-                    if (_child === a2) {
+                    if (_child === a) {
                       didFindChild = true;
-                      a2 = parentB;
-                      b2 = parentA;
+                      a = parentB;
+                      b = parentA;
                       break;
                     }
-                    if (_child === b2) {
+                    if (_child === b) {
                       didFindChild = true;
-                      b2 = parentB;
-                      a2 = parentA;
+                      b = parentB;
+                      a = parentA;
                       break;
                     }
                     _child = _child.sibling;
@@ -5734,14 +5722,14 @@ class InstrumentLogic extends BaseInstrument {
                   }
                 }
               }
-              if (a2.alternate !== b2) {
+              if (a.alternate !== b) {
                 throw new Error("Return fibers should always be each others' alternates. This error is likely caused by a bug in React. Please file an issue.");
               }
             }
-            if (a2.tag !== HostRoot) {
+            if (a.tag !== HostRoot) {
               throw new Error("Unable to find node on an unmounted component.");
             }
-            if (a2.stateNode.current === a2) {
+            if (a.stateNode.current === a) {
               return fiber;
             }
             return alternate;
@@ -6126,8 +6114,8 @@ class InstrumentLogic extends BaseInstrument {
           var clz32 = Math.clz32 ? Math.clz32 : clz32Fallback;
           var log = Math.log;
           var LN2 = Math.LN2;
-          function clz32Fallback(x2) {
-            var asUint = x2 >>> 0;
+          function clz32Fallback(x) {
+            var asUint = x >>> 0;
             if (asUint === 0) {
               return 32;
             }
@@ -6466,30 +6454,30 @@ class InstrumentLogic extends BaseInstrument {
           function laneToIndex(lane) {
             return pickArbitraryLaneIndex(lane);
           }
-          function includesSomeLane(a2, b2) {
-            return (a2 & b2) !== NoLanes;
+          function includesSomeLane(a, b) {
+            return (a & b) !== NoLanes;
           }
           function isSubsetOfLanes(set2, subset) {
             return (set2 & subset) === subset;
           }
-          function mergeLanes(a2, b2) {
-            return a2 | b2;
+          function mergeLanes(a, b) {
+            return a | b;
           }
           function removeLanes(set2, subset) {
             return set2 & ~subset;
           }
-          function intersectLanes(a2, b2) {
-            return a2 & b2;
+          function intersectLanes(a, b) {
+            return a & b;
           }
           function laneToLanes(lane) {
             return lane;
           }
-          function higherPriorityLane(a2, b2) {
-            return a2 !== NoLane && a2 < b2 ? a2 : b2;
+          function higherPriorityLane(a, b) {
+            return a !== NoLane && a < b ? a : b;
           }
           function createLaneMap(initial) {
             var laneMap = [];
-            for (var i2 = 0; i2 < TotalLanes; i2++) {
+            for (var i = 0; i < TotalLanes; i++) {
               laneMap.push(initial);
             }
             return laneMap;
@@ -6658,14 +6646,14 @@ class InstrumentLogic extends BaseInstrument {
               currentUpdatePriority = previousPriority;
             }
           }
-          function higherEventPriority(a2, b2) {
-            return a2 !== 0 && a2 < b2 ? a2 : b2;
+          function higherEventPriority(a, b) {
+            return a !== 0 && a < b ? a : b;
           }
-          function lowerEventPriority(a2, b2) {
-            return a2 === 0 || a2 > b2 ? a2 : b2;
+          function lowerEventPriority(a, b) {
+            return a === 0 || a > b ? a : b;
           }
-          function isHigherEventPriority(a2, b2) {
-            return a2 !== 0 && a2 < b2;
+          function isHigherEventPriority(a, b) {
+            return a !== 0 && a < b;
           }
           function lanesToEventPriority(lanes) {
             var lane = getHighestPriorityLane(lanes);
@@ -6868,14 +6856,14 @@ class InstrumentLogic extends BaseInstrument {
               target,
               priority: updatePriority
             };
-            var i2 = 0;
-            for (; i2 < queuedExplicitHydrationTargets.length; i2++) {
-              if (!isHigherEventPriority(updatePriority, queuedExplicitHydrationTargets[i2].priority)) {
+            var i = 0;
+            for (; i < queuedExplicitHydrationTargets.length; i++) {
+              if (!isHigherEventPriority(updatePriority, queuedExplicitHydrationTargets[i].priority)) {
                 break;
               }
             }
-            queuedExplicitHydrationTargets.splice(i2, 0, queuedTarget);
-            if (i2 === 0) {
+            queuedExplicitHydrationTargets.splice(i, 0, queuedTarget);
+            if (i === 0) {
               attemptExplicitHydrationTarget(queuedTarget);
             }
           }
@@ -6938,8 +6926,8 @@ class InstrumentLogic extends BaseInstrument {
           function retryIfBlockedOn(unblocked) {
             if (queuedDiscreteEvents.length > 0) {
               scheduleCallbackIfUnblocked(queuedDiscreteEvents[0], unblocked);
-              for (var i2 = 1; i2 < queuedDiscreteEvents.length; i2++) {
-                var queuedEvent = queuedDiscreteEvents[i2];
+              for (var i = 1; i < queuedDiscreteEvents.length; i++) {
+                var queuedEvent = queuedDiscreteEvents[i];
                 if (queuedEvent.blockedOn === unblocked) {
                   queuedEvent.blockedOn = null;
                 }
@@ -8011,8 +7999,8 @@ class InstrumentLogic extends BaseInstrument {
             }
             accumulateEnterLeaveTwoPhaseListeners(dispatchQueue, leave, enter, from, to);
           }
-          function is(x2, y2) {
-            return x2 === y2 && (x2 !== 0 || 1 / x2 === 1 / y2) || x2 !== x2 && y2 !== y2;
+          function is(x, y) {
+            return x === y && (x !== 0 || 1 / x === 1 / y) || x !== x && y !== y;
           }
           var objectIs = typeof Object.is === "function" ? Object.is : is;
           function shallowEqual(objA, objB) {
@@ -8027,8 +8015,8 @@ class InstrumentLogic extends BaseInstrument {
             if (keysA.length !== keysB.length) {
               return false;
             }
-            for (var i2 = 0; i2 < keysA.length; i2++) {
-              var currentKey = keysA[i2];
+            for (var i = 0; i < keysA.length; i++) {
+              var currentKey = keysA[i];
               if (!hasOwnProperty13.call(objB, currentKey) || !objectIs(objA[currentKey], objB[currentKey])) {
                 return false;
               }
@@ -8078,7 +8066,7 @@ class InstrumentLogic extends BaseInstrument {
             try {
               anchorNode.nodeType;
               focusNode.nodeType;
-            } catch (e2) {
+            } catch (e) {
               return null;
             }
             return getModernOffsetsFromPoints(outerNode, anchorNode, anchorOffset, focusNode, focusOffset);
@@ -8245,8 +8233,8 @@ class InstrumentLogic extends BaseInstrument {
               if (typeof priorFocusedElem.focus === "function") {
                 priorFocusedElem.focus();
               }
-              for (var i2 = 0; i2 < ancestors.length; i2++) {
-                var info = ancestors[i2];
+              for (var i = 0; i < ancestors.length; i++) {
+                var info = ancestors[i];
                 info.element.scrollLeft = info.left;
                 info.element.scrollTop = info.top;
               }
@@ -8411,8 +8399,8 @@ class InstrumentLogic extends BaseInstrument {
             registerTwoPhaseEvent(reactName, [domEventName]);
           }
           function registerSimpleEvents() {
-            for (var i2 = 0; i2 < simpleEventPluginEvents.length; i2++) {
-              var eventName = simpleEventPluginEvents[i2];
+            for (var i = 0; i < simpleEventPluginEvents.length; i++) {
+              var eventName = simpleEventPluginEvents[i];
               var domEventName = eventName.toLowerCase();
               var capitalizedEvent = eventName[0].toUpperCase() + eventName.slice(1);
               registerSimpleEvent(domEventName, "on" + capitalizedEvent);
@@ -8552,8 +8540,8 @@ class InstrumentLogic extends BaseInstrument {
           function processDispatchQueueItemsInOrder(event, dispatchListeners, inCapturePhase) {
             var previousInstance;
             if (inCapturePhase) {
-              for (var i2 = dispatchListeners.length - 1; i2 >= 0; i2--) {
-                var _dispatchListeners$i = dispatchListeners[i2], instance = _dispatchListeners$i.instance, currentTarget = _dispatchListeners$i.currentTarget, listener = _dispatchListeners$i.listener;
+              for (var i = dispatchListeners.length - 1; i >= 0; i--) {
+                var _dispatchListeners$i = dispatchListeners[i], instance = _dispatchListeners$i.instance, currentTarget = _dispatchListeners$i.currentTarget, listener = _dispatchListeners$i.listener;
                 if (instance !== previousInstance && event.isPropagationStopped()) {
                   return;
                 }
@@ -8573,8 +8561,8 @@ class InstrumentLogic extends BaseInstrument {
           }
           function processDispatchQueue(dispatchQueue, eventSystemFlags) {
             var inCapturePhase = (eventSystemFlags & IS_CAPTURE_PHASE) !== 0;
-            for (var i2 = 0; i2 < dispatchQueue.length; i2++) {
-              var _dispatchQueue$i = dispatchQueue[i2], event = _dispatchQueue$i.event, listeners = _dispatchQueue$i.listeners;
+            for (var i = 0; i < dispatchQueue.length; i++) {
+              var _dispatchQueue$i = dispatchQueue[i], event = _dispatchQueue$i.event, listeners = _dispatchQueue$i.listeners;
               processDispatchQueueItemsInOrder(event, listeners, inCapturePhase);
             }
             rethrowCaughtError();
@@ -8996,9 +8984,9 @@ class InstrumentLogic extends BaseInstrument {
             }
           }
           function updateDOMProperties(domElement, updatePayload, wasCustomComponentTag, isCustomComponentTag) {
-            for (var i2 = 0; i2 < updatePayload.length; i2 += 2) {
-              var propKey = updatePayload[i2];
-              var propValue = updatePayload[i2 + 1];
+            for (var i = 0; i < updatePayload.length; i += 2) {
+              var propKey = updatePayload[i];
+              var propValue = updatePayload[i + 1];
               if (propKey === STYLE) {
                 setValueForStyles(domElement, propValue);
               } else if (propKey === DANGEROUSLY_SET_INNER_HTML) {
@@ -9081,8 +9069,8 @@ class InstrumentLogic extends BaseInstrument {
                 break;
               case "video":
               case "audio":
-                for (var i2 = 0; i2 < mediaEventTypes.length; i2++) {
-                  listenToNonDelegatedEvent(mediaEventTypes[i2], domElement);
+                for (var i = 0; i < mediaEventTypes.length; i++) {
+                  listenToNonDelegatedEvent(mediaEventTypes[i], domElement);
                 }
                 props = rawProps;
                 break;
@@ -9333,8 +9321,8 @@ class InstrumentLogic extends BaseInstrument {
                 break;
               case "video":
               case "audio":
-                for (var i2 = 0; i2 < mediaEventTypes.length; i2++) {
-                  listenToNonDelegatedEvent(mediaEventTypes[i2], domElement);
+                for (var i = 0; i < mediaEventTypes.length; i++) {
+                  listenToNonDelegatedEvent(mediaEventTypes[i], domElement);
                 }
                 break;
               case "source":
@@ -10641,14 +10629,14 @@ class InstrumentLogic extends BaseInstrument {
           function flushSyncCallbacks() {
             if (!isFlushingSyncQueue && syncQueue !== null) {
               isFlushingSyncQueue = true;
-              var i2 = 0;
+              var i = 0;
               var previousUpdatePriority = getCurrentUpdatePriority();
               try {
                 var isSync = true;
                 var queue = syncQueue;
                 setCurrentUpdatePriority(DiscreteEventPriority);
-                for (; i2 < queue.length; i2++) {
-                  var callback = queue[i2];
+                for (; i < queue.length; i++) {
+                  var callback = queue[i];
                   do {
                     callback = callback(isSync);
                   } while (callback !== null);
@@ -10657,7 +10645,7 @@ class InstrumentLogic extends BaseInstrument {
                 includesLegacySyncCallbacks = false;
               } catch (error2) {
                 if (syncQueue !== null) {
-                  syncQueue = syncQueue.slice(i2 + 1);
+                  syncQueue = syncQueue.slice(i + 1);
                 }
                 scheduleCallback(ImmediatePriority, flushSyncCallbacks);
                 throw error2;
@@ -11589,8 +11577,8 @@ class InstrumentLogic extends BaseInstrument {
           }
           function finishQueueingConcurrentUpdates() {
             if (concurrentQueues !== null) {
-              for (var i2 = 0; i2 < concurrentQueues.length; i2++) {
-                var queue = concurrentQueues[i2];
+              for (var i = 0; i < concurrentQueues.length; i++) {
+                var queue = concurrentQueues[i];
                 var lastInterleavedUpdate = queue.interleaved;
                 if (lastInterleavedUpdate !== null) {
                   queue.interleaved = null;
@@ -12027,8 +12015,8 @@ class InstrumentLogic extends BaseInstrument {
             var effects = finishedQueue.effects;
             finishedQueue.effects = null;
             if (effects !== null) {
-              for (var i2 = 0; i2 < effects.length; i2++) {
-                var effect = effects[i2];
+              for (var i = 0; i < effects.length; i++) {
+                var effect = effects[i];
                 var callback = effect.callback;
                 if (callback !== null) {
                   effect.callback = null;
@@ -13010,8 +12998,8 @@ class InstrumentLogic extends BaseInstrument {
             function reconcileChildrenArray(returnFiber, currentFirstChild, newChildren, lanes) {
               {
                 var knownKeys = null;
-                for (var i2 = 0; i2 < newChildren.length; i2++) {
-                  var child = newChildren[i2];
+                for (var i = 0; i < newChildren.length; i++) {
+                  var child = newChildren[i];
                   knownKeys = warnOnInvalidKey(child, knownKeys, returnFiber);
                 }
               }
@@ -13502,8 +13490,8 @@ class InstrumentLogic extends BaseInstrument {
           var Passive$1 = 8;
           var workInProgressSources = [];
           function resetWorkInProgressVersions() {
-            for (var i2 = 0; i2 < workInProgressSources.length; i2++) {
-              var mutableSource = workInProgressSources[i2];
+            for (var i = 0; i < workInProgressSources.length; i++) {
+              var mutableSource = workInProgressSources[i];
               {
                 mutableSource._workInProgressVersionPrimary = null;
               }
@@ -13574,10 +13562,10 @@ class InstrumentLogic extends BaseInstrument {
                 if (hookTypesDev !== null) {
                   var table = "";
                   var secondColumnStart = 30;
-                  for (var i2 = 0; i2 <= hookTypesUpdateIndexDev; i2++) {
-                    var oldHookName = hookTypesDev[i2];
-                    var newHookName = i2 === hookTypesUpdateIndexDev ? currentHookName : oldHookName;
-                    var row = i2 + 1 + ". " + oldHookName;
+                  for (var i = 0; i <= hookTypesUpdateIndexDev; i++) {
+                    var oldHookName = hookTypesDev[i];
+                    var newHookName = i === hookTypesUpdateIndexDev ? currentHookName : oldHookName;
+                    var row = i + 1 + ". " + oldHookName;
                     while (row.length < secondColumnStart) {
                       row += " ";
                     }
@@ -13609,8 +13597,8 @@ class InstrumentLogic extends BaseInstrument {
                 error("The final argument passed to %s changed size between renders. The order and size of this array must remain constant.\n\nPrevious: %s\nIncoming: %s", currentHookNameInDev, "[" + prevDeps.join(", ") + "]", "[" + nextDeps.join(", ") + "]");
               }
             }
-            for (var i2 = 0; i2 < prevDeps.length && i2 < nextDeps.length; i2++) {
-              if (objectIs(nextDeps[i2], prevDeps[i2])) {
+            for (var i = 0; i < prevDeps.length && i < nextDeps.length; i++) {
+              if (objectIs(nextDeps[i], prevDeps[i])) {
                 continue;
               }
               return false;
@@ -15495,9 +15483,9 @@ class InstrumentLogic extends BaseInstrument {
               } else {
                 console["error"](error2);
               }
-            } catch (e2) {
+            } catch (e) {
               setTimeout(function() {
-                throw e2;
+                throw e;
               });
             }
           }
@@ -15879,7 +15867,7 @@ class InstrumentLogic extends BaseInstrument {
                   var init = lazyComponent._init;
                   try {
                     outerMemoType = init(payload);
-                  } catch (x2) {
+                  } catch (x) {
                     outerMemoType = null;
                   }
                   var outerPropTypes = outerMemoType && outerMemoType.propTypes;
@@ -16900,8 +16888,8 @@ class InstrumentLogic extends BaseInstrument {
             {
               if ((revealOrder === "forwards" || revealOrder === "backwards") && children !== void 0 && children !== null && children !== false) {
                 if (isArray2(children)) {
-                  for (var i2 = 0; i2 < children.length; i2++) {
-                    if (!validateSuspenseListNestedChild(children[i2], i2)) {
+                  for (var i = 0; i < children.length; i++) {
+                    if (!validateSuspenseListNestedChild(children[i], i)) {
                       return;
                     }
                   }
@@ -19072,8 +19060,8 @@ class InstrumentLogic extends BaseInstrument {
           function recursivelyTraverseMutationEffects(root3, parentFiber, lanes) {
             var deletions = parentFiber.deletions;
             if (deletions !== null) {
-              for (var i2 = 0; i2 < deletions.length; i2++) {
-                var childToDelete = deletions[i2];
+              for (var i = 0; i < deletions.length; i++) {
+                var childToDelete = deletions[i];
                 try {
                   commitDeletionEffects(root3, parentFiber, childToDelete);
                 } catch (error2) {
@@ -19575,8 +19563,8 @@ class InstrumentLogic extends BaseInstrument {
               if ((nextEffect.flags & ChildDeletion) !== NoFlags) {
                 var deletions = fiber.deletions;
                 if (deletions !== null) {
-                  for (var i2 = 0; i2 < deletions.length; i2++) {
-                    var fiberToDelete = deletions[i2];
+                  for (var i = 0; i < deletions.length; i++) {
+                    var fiberToDelete = deletions[i];
                     nextEffect = fiberToDelete;
                     commitPassiveUnmountEffectsInsideOfDeletedTree_begin(fiberToDelete, fiber);
                   }
@@ -20191,8 +20179,8 @@ class InstrumentLogic extends BaseInstrument {
                 if (updateQueue !== null) {
                   var checks = updateQueue.stores;
                   if (checks !== null) {
-                    for (var i2 = 0; i2 < checks.length; i2++) {
-                      var check = checks[i2];
+                    for (var i = 0; i < checks.length; i++) {
+                      var check = checks[i];
                       var getSnapshot = check.getSnapshot;
                       var renderedValue = check.value;
                       try {
@@ -20279,11 +20267,11 @@ class InstrumentLogic extends BaseInstrument {
               }
             }
           }
-          function batchedUpdates$1(fn, a2) {
+          function batchedUpdates$1(fn, a) {
             var prevExecutionContext = executionContext;
             executionContext |= BatchedContext;
             try {
-              return fn(a2);
+              return fn(a);
             } finally {
               executionContext = prevExecutionContext;
               if (executionContext === NoContext && !ReactCurrentActQueue$1.isBatchingLegacy) {
@@ -20292,13 +20280,13 @@ class InstrumentLogic extends BaseInstrument {
               }
             }
           }
-          function discreteUpdates(fn, a2, b2, c, d2) {
+          function discreteUpdates(fn, a, b, c, d) {
             var previousPriority = getCurrentUpdatePriority();
             var prevTransition = ReactCurrentBatchConfig$3.transition;
             try {
               ReactCurrentBatchConfig$3.transition = null;
               setCurrentUpdatePriority(DiscreteEventPriority);
-              return fn(a2, b2, c, d2);
+              return fn(a, b, c, d);
             } finally {
               setCurrentUpdatePriority(previousPriority);
               ReactCurrentBatchConfig$3.transition = prevTransition;
@@ -20768,8 +20756,8 @@ class InstrumentLogic extends BaseInstrument {
             ensureRootIsScheduled(root3, now2());
             if (recoverableErrors !== null) {
               var onRecoverableError = root3.onRecoverableError;
-              for (var i2 = 0; i2 < recoverableErrors.length; i2++) {
-                var recoverableError = recoverableErrors[i2];
+              for (var i = 0; i < recoverableErrors.length; i++) {
+                var recoverableError = recoverableErrors[i];
                 var componentStack = recoverableError.stack;
                 var digest = recoverableError.digest;
                 onRecoverableError(recoverableError.value, {
@@ -20863,8 +20851,8 @@ class InstrumentLogic extends BaseInstrument {
             {
               var profilerEffects = pendingPassiveProfilerEffects;
               pendingPassiveProfilerEffects = [];
-              for (var i2 = 0; i2 < profilerEffects.length; i2++) {
-                var _fiber = profilerEffects[i2];
+              for (var i = 0; i < profilerEffects.length; i++) {
+                var _fiber = profilerEffects[i];
                 commitPassiveEffectDurations(root3, _fiber);
               }
             }
@@ -21547,7 +21535,7 @@ class InstrumentLogic extends BaseInstrument {
               var nonExtensibleObject = Object.preventExtensions({});
               /* @__PURE__ */ new Map([[nonExtensibleObject, null]]);
               /* @__PURE__ */ new Set([nonExtensibleObject]);
-            } catch (e2) {
+            } catch (e) {
               hasBadMapPolyfill = true;
             }
           }
@@ -22293,8 +22281,8 @@ class InstrumentLogic extends BaseInstrument {
                 warn("copyWithRename() expects paths of the same length");
                 return;
               } else {
-                for (var i2 = 0; i2 < newPath.length - 1; i2++) {
-                  if (oldPath[i2] !== newPath[i2]) {
+                for (var i = 0; i < newPath.length - 1; i++) {
+                  if (oldPath[i] !== newPath[i]) {
                     warn("copyWithRename() expects paths to be the same except for the deepest key");
                     return;
                   }
@@ -22576,8 +22564,8 @@ class InstrumentLogic extends BaseInstrument {
             markContainerAsRoot(root3.current, container);
             listenToAllSupportedEvents(container);
             if (mutableSources) {
-              for (var i2 = 0; i2 < mutableSources.length; i2++) {
-                var mutableSource = mutableSources[i2];
+              for (var i = 0; i < mutableSources.length; i++) {
+                var mutableSource = mutableSources[i];
                 registerMutableSourceForHydration(root3, mutableSource);
               }
             }
@@ -22927,30 +22915,30 @@ class InstrumentLogic extends BaseInstrument {
   var require_client = __commonJS({
     "node_modules/react-dom/client.js"(exports2) {
       "use strict";
-      var m2 = require_react_dom();
+      var m = require_react_dom();
       if (false) {
-        exports2.createRoot = m2.createRoot;
-        exports2.hydrateRoot = m2.hydrateRoot;
+        exports2.createRoot = m.createRoot;
+        exports2.hydrateRoot = m.hydrateRoot;
       } else {
-        i2 = m2.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
-        exports2.createRoot = function(c, o2) {
-          i2.usingClientEntryPoint = true;
+        i = m.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        exports2.createRoot = function(c, o) {
+          i.usingClientEntryPoint = true;
           try {
-            return m2.createRoot(c, o2);
+            return m.createRoot(c, o);
           } finally {
-            i2.usingClientEntryPoint = false;
+            i.usingClientEntryPoint = false;
           }
         };
-        exports2.hydrateRoot = function(c, h2, o2) {
-          i2.usingClientEntryPoint = true;
+        exports2.hydrateRoot = function(c, h, o) {
+          i.usingClientEntryPoint = true;
           try {
-            return m2.hydrateRoot(c, h2, o2);
+            return m.hydrateRoot(c, h, o);
           } finally {
-            i2.usingClientEntryPoint = false;
+            i.usingClientEntryPoint = false;
           }
         };
       }
-      var i2;
+      var i;
     }
   });
 
@@ -22968,11 +22956,11 @@ class InstrumentLogic extends BaseInstrument {
       function sinDeg(deg) {
         return Math.sin(deg * 2 * Math.PI / 360);
       }
-      function acosDeg(x2) {
-        return Math.acos(x2) * 360 / (2 * Math.PI);
+      function acosDeg(x) {
+        return Math.acos(x) * 360 / (2 * Math.PI);
       }
-      function asinDeg(x2) {
-        return Math.asin(x2) * 360 / (2 * Math.PI);
+      function asinDeg(x) {
+        return Math.asin(x) * 360 / (2 * Math.PI);
       }
       function tanDeg(deg) {
         return Math.tan(deg * 2 * Math.PI / 360);
@@ -22980,9 +22968,9 @@ class InstrumentLogic extends BaseInstrument {
       function cosDeg(deg) {
         return Math.cos(deg * 2 * Math.PI / 360);
       }
-      function mod(a2, b2) {
-        const result = a2 % b2;
-        return result < 0 ? result + b2 : result;
+      function mod(a, b) {
+        const result = a % b;
+        return result < 0 ? result + b : result;
       }
       function calculate(latitude, longitude, isSunrise, zenith, date) {
         const dayOfYear = getDayOfYear(date);
@@ -23022,859 +23010,859 @@ class InstrumentLogic extends BaseInstrument {
   // node_modules/react-toggle-button/lib/index.js
   var require_lib = __commonJS({
     "node_modules/react-toggle-button/lib/index.js"(exports2, module2) {
-      !function(e2, t2) {
-        "object" == typeof exports2 && "object" == typeof module2 ? module2.exports = t2(require_react()) : "function" == typeof define && define.amd ? define(["react"], t2) : "object" == typeof exports2 ? exports2["react-toggle-button"] = t2(require_react()) : e2["react-toggle-button"] = t2(e2.React);
-      }(exports2, function(e2) {
-        return function(e3) {
-          function t2(r3) {
-            if (n2[r3])
-              return n2[r3].exports;
-            var a2 = n2[r3] = { exports: {}, id: r3, loaded: false };
-            return e3[r3].call(a2.exports, a2, a2.exports, t2), a2.loaded = true, a2.exports;
+      !function(e, t) {
+        "object" == typeof exports2 && "object" == typeof module2 ? module2.exports = t(require_react()) : "function" == typeof define && define.amd ? define(["react"], t) : "object" == typeof exports2 ? exports2["react-toggle-button"] = t(require_react()) : e["react-toggle-button"] = t(e.React);
+      }(exports2, function(e) {
+        return function(e2) {
+          function t(r) {
+            if (n[r])
+              return n[r].exports;
+            var a = n[r] = { exports: {}, id: r, loaded: false };
+            return e2[r].call(a.exports, a, a.exports, t), a.loaded = true, a.exports;
           }
-          var n2 = {};
-          return t2.m = e3, t2.c = n2, t2.p = "", t2(0);
-        }([function(e3, t2, n2) {
-          e3.exports = n2(12);
-        }, function(e3, t2, n2) {
-          e3.exports = n2(17)();
-        }, function(e3, t2) {
+          var n = {};
+          return t.m = e2, t.c = n, t.p = "", t(0);
+        }([function(e2, t, n) {
+          e2.exports = n(12);
+        }, function(e2, t, n) {
+          e2.exports = n(17)();
+        }, function(e2, t) {
           "use strict";
-          function n2(e4) {
-            var t3 = {};
-            for (var n3 in e4)
-              Object.prototype.hasOwnProperty.call(e4, n3) && (t3[n3] = "number" == typeof e4[n3] ? e4[n3] : e4[n3].val);
-            return t3;
+          function n(e3) {
+            var t2 = {};
+            for (var n2 in e3)
+              Object.prototype.hasOwnProperty.call(e3, n2) && (t2[n2] = "number" == typeof e3[n2] ? e3[n2] : e3[n2].val);
+            return t2;
           }
-          t2.__esModule = true, t2.default = n2, e3.exports = t2.default;
-        }, function(t2, n2) {
-          t2.exports = e2;
-        }, function(e3, t2, n2) {
-          (function(t3) {
+          t.__esModule = true, t.default = n, e2.exports = t.default;
+        }, function(t, n) {
+          t.exports = e;
+        }, function(e2, t, n) {
+          (function(t2) {
             (function() {
-              var n3, r3, a2;
-              "undefined" != typeof performance && null !== performance && performance.now ? e3.exports = function() {
+              var n2, r, a;
+              "undefined" != typeof performance && null !== performance && performance.now ? e2.exports = function() {
                 return performance.now();
-              } : "undefined" != typeof t3 && null !== t3 && t3.hrtime ? (e3.exports = function() {
-                return (n3() - a2) / 1e6;
-              }, r3 = t3.hrtime, n3 = function() {
-                var e4;
-                return e4 = r3(), 1e9 * e4[0] + e4[1];
-              }, a2 = n3()) : Date.now ? (e3.exports = function() {
-                return Date.now() - a2;
-              }, a2 = Date.now()) : (e3.exports = function() {
-                return new Date().getTime() - a2;
-              }, a2 = new Date().getTime());
+              } : "undefined" != typeof t2 && null !== t2 && t2.hrtime ? (e2.exports = function() {
+                return (n2() - a) / 1e6;
+              }, r = t2.hrtime, n2 = function() {
+                var e3;
+                return e3 = r(), 1e9 * e3[0] + e3[1];
+              }, a = n2()) : Date.now ? (e2.exports = function() {
+                return Date.now() - a;
+              }, a = Date.now()) : (e2.exports = function() {
+                return new Date().getTime() - a;
+              }, a = new Date().getTime());
             }).call(this);
-          }).call(t2, n2(9));
-        }, function(e3, t2, n2) {
-          (function(t3) {
-            for (var r3 = n2(19), a2 = "undefined" == typeof window ? t3 : window, o2 = ["moz", "webkit"], i2 = "AnimationFrame", l2 = a2["request" + i2], u2 = a2["cancel" + i2] || a2["cancelRequest" + i2], s2 = 0; !l2 && s2 < o2.length; s2++)
-              l2 = a2[o2[s2] + "Request" + i2], u2 = a2[o2[s2] + "Cancel" + i2] || a2[o2[s2] + "CancelRequest" + i2];
-            if (!l2 || !u2) {
-              var c = 0, f2 = 0, p2 = [], d2 = 1e3 / 60;
-              l2 = function(e4) {
-                if (0 === p2.length) {
-                  var t4 = r3(), n3 = Math.max(0, d2 - (t4 - c));
-                  c = n3 + t4, setTimeout(function() {
-                    var e5 = p2.slice(0);
-                    p2.length = 0;
-                    for (var t5 = 0; t5 < e5.length; t5++)
-                      if (!e5[t5].cancelled)
+          }).call(t, n(9));
+        }, function(e2, t, n) {
+          (function(t2) {
+            for (var r = n(19), a = "undefined" == typeof window ? t2 : window, o = ["moz", "webkit"], i = "AnimationFrame", l = a["request" + i], u = a["cancel" + i] || a["cancelRequest" + i], s = 0; !l && s < o.length; s++)
+              l = a[o[s] + "Request" + i], u = a[o[s] + "Cancel" + i] || a[o[s] + "CancelRequest" + i];
+            if (!l || !u) {
+              var c = 0, f = 0, p = [], d = 1e3 / 60;
+              l = function(e3) {
+                if (0 === p.length) {
+                  var t3 = r(), n2 = Math.max(0, d - (t3 - c));
+                  c = n2 + t3, setTimeout(function() {
+                    var e4 = p.slice(0);
+                    p.length = 0;
+                    for (var t4 = 0; t4 < e4.length; t4++)
+                      if (!e4[t4].cancelled)
                         try {
-                          e5[t5].callback(c);
-                        } catch (e6) {
+                          e4[t4].callback(c);
+                        } catch (e5) {
                           setTimeout(function() {
-                            throw e6;
+                            throw e5;
                           }, 0);
                         }
-                  }, Math.round(n3));
+                  }, Math.round(n2));
                 }
-                return p2.push({ handle: ++f2, callback: e4, cancelled: false }), f2;
-              }, u2 = function(e4) {
-                for (var t4 = 0; t4 < p2.length; t4++)
-                  p2[t4].handle === e4 && (p2[t4].cancelled = true);
+                return p.push({ handle: ++f, callback: e3, cancelled: false }), f;
+              }, u = function(e3) {
+                for (var t3 = 0; t3 < p.length; t3++)
+                  p[t3].handle === e3 && (p[t3].cancelled = true);
               };
             }
-            e3.exports = function(e4) {
-              return l2.call(a2, e4);
-            }, e3.exports.cancel = function() {
-              u2.apply(a2, arguments);
-            }, e3.exports.polyfill = function(e4) {
-              e4 || (e4 = a2), e4.requestAnimationFrame = l2, e4.cancelAnimationFrame = u2;
+            e2.exports = function(e3) {
+              return l.call(a, e3);
+            }, e2.exports.cancel = function() {
+              u.apply(a, arguments);
+            }, e2.exports.polyfill = function(e3) {
+              e3 || (e3 = a), e3.requestAnimationFrame = l, e3.cancelAnimationFrame = u;
             };
-          }).call(t2, function() {
+          }).call(t, function() {
             return this;
           }());
-        }, function(e3, t2) {
+        }, function(e2, t) {
           "use strict";
-          function n2(e4) {
-            var t3 = {};
-            for (var n3 in e4)
-              Object.prototype.hasOwnProperty.call(e4, n3) && (t3[n3] = 0);
-            return t3;
+          function n(e3) {
+            var t2 = {};
+            for (var n2 in e3)
+              Object.prototype.hasOwnProperty.call(e3, n2) && (t2[n2] = 0);
+            return t2;
           }
-          t2.__esModule = true, t2.default = n2, e3.exports = t2.default;
-        }, function(e3, t2) {
+          t.__esModule = true, t.default = n, e2.exports = t.default;
+        }, function(e2, t) {
           "use strict";
-          function n2(e4, t3, n3) {
-            for (var r3 in t3)
-              if (Object.prototype.hasOwnProperty.call(t3, r3)) {
-                if (0 !== n3[r3])
+          function n(e3, t2, n2) {
+            for (var r in t2)
+              if (Object.prototype.hasOwnProperty.call(t2, r)) {
+                if (0 !== n2[r])
                   return false;
-                var a2 = "number" == typeof t3[r3] ? t3[r3] : t3[r3].val;
-                if (e4[r3] !== a2)
+                var a = "number" == typeof t2[r] ? t2[r] : t2[r].val;
+                if (e3[r] !== a)
                   return false;
               }
             return true;
           }
-          t2.__esModule = true, t2.default = n2, e3.exports = t2.default;
-        }, function(e3, t2) {
+          t.__esModule = true, t.default = n, e2.exports = t.default;
+        }, function(e2, t) {
           "use strict";
-          function n2(e4, t3, n3, a2, o2, i2, l2) {
-            var u2 = -o2 * (t3 - a2), s2 = -i2 * n3, c = u2 + s2, f2 = n3 + c * e4, p2 = t3 + f2 * e4;
-            return Math.abs(f2) < l2 && Math.abs(p2 - a2) < l2 ? (r3[0] = a2, r3[1] = 0, r3) : (r3[0] = p2, r3[1] = f2, r3);
+          function n(e3, t2, n2, a, o, i, l) {
+            var u = -o * (t2 - a), s = -i * n2, c = u + s, f = n2 + c * e3, p = t2 + f * e3;
+            return Math.abs(f) < l && Math.abs(p - a) < l ? (r[0] = a, r[1] = 0, r) : (r[0] = p, r[1] = f, r);
           }
-          t2.__esModule = true, t2.default = n2;
-          var r3 = [0, 0];
-          e3.exports = t2.default;
-        }, function(e3, t2) {
-          function n2() {
+          t.__esModule = true, t.default = n;
+          var r = [0, 0];
+          e2.exports = t.default;
+        }, function(e2, t) {
+          function n() {
             throw new Error("setTimeout has not been defined");
           }
-          function r3() {
+          function r() {
             throw new Error("clearTimeout has not been defined");
           }
-          function a2(e4) {
+          function a(e3) {
             if (c === setTimeout)
-              return setTimeout(e4, 0);
-            if ((c === n2 || !c) && setTimeout)
-              return c = setTimeout, setTimeout(e4, 0);
+              return setTimeout(e3, 0);
+            if ((c === n || !c) && setTimeout)
+              return c = setTimeout, setTimeout(e3, 0);
             try {
-              return c(e4, 0);
-            } catch (t3) {
+              return c(e3, 0);
+            } catch (t2) {
               try {
-                return c.call(null, e4, 0);
-              } catch (t4) {
-                return c.call(this, e4, 0);
+                return c.call(null, e3, 0);
+              } catch (t3) {
+                return c.call(this, e3, 0);
               }
             }
           }
-          function o2(e4) {
-            if (f2 === clearTimeout)
-              return clearTimeout(e4);
-            if ((f2 === r3 || !f2) && clearTimeout)
-              return f2 = clearTimeout, clearTimeout(e4);
+          function o(e3) {
+            if (f === clearTimeout)
+              return clearTimeout(e3);
+            if ((f === r || !f) && clearTimeout)
+              return f = clearTimeout, clearTimeout(e3);
             try {
-              return f2(e4);
-            } catch (t3) {
+              return f(e3);
+            } catch (t2) {
               try {
-                return f2.call(null, e4);
-              } catch (t4) {
-                return f2.call(this, e4);
+                return f.call(null, e3);
+              } catch (t3) {
+                return f.call(this, e3);
               }
             }
           }
-          function i2() {
-            h2 && d2 && (h2 = false, d2.length ? y2 = d2.concat(y2) : m2 = -1, y2.length && l2());
+          function i() {
+            h && d && (h = false, d.length ? y = d.concat(y) : m = -1, y.length && l());
           }
-          function l2() {
-            if (!h2) {
-              var e4 = a2(i2);
-              h2 = true;
-              for (var t3 = y2.length; t3; ) {
-                for (d2 = y2, y2 = []; ++m2 < t3; )
-                  d2 && d2[m2].run();
-                m2 = -1, t3 = y2.length;
+          function l() {
+            if (!h) {
+              var e3 = a(i);
+              h = true;
+              for (var t2 = y.length; t2; ) {
+                for (d = y, y = []; ++m < t2; )
+                  d && d[m].run();
+                m = -1, t2 = y.length;
               }
-              d2 = null, h2 = false, o2(e4);
+              d = null, h = false, o(e3);
             }
           }
-          function u2(e4, t3) {
-            this.fun = e4, this.array = t3;
+          function u(e3, t2) {
+            this.fun = e3, this.array = t2;
           }
-          function s2() {
+          function s() {
           }
-          var c, f2, p2 = e3.exports = {};
+          var c, f, p = e2.exports = {};
           !function() {
             try {
-              c = "function" == typeof setTimeout ? setTimeout : n2;
-            } catch (e4) {
-              c = n2;
+              c = "function" == typeof setTimeout ? setTimeout : n;
+            } catch (e3) {
+              c = n;
             }
             try {
-              f2 = "function" == typeof clearTimeout ? clearTimeout : r3;
-            } catch (e4) {
-              f2 = r3;
+              f = "function" == typeof clearTimeout ? clearTimeout : r;
+            } catch (e3) {
+              f = r;
             }
           }();
-          var d2, y2 = [], h2 = false, m2 = -1;
-          p2.nextTick = function(e4) {
-            var t3 = new Array(arguments.length - 1);
+          var d, y = [], h = false, m = -1;
+          p.nextTick = function(e3) {
+            var t2 = new Array(arguments.length - 1);
             if (arguments.length > 1)
-              for (var n3 = 1; n3 < arguments.length; n3++)
-                t3[n3 - 1] = arguments[n3];
-            y2.push(new u2(e4, t3)), 1 !== y2.length || h2 || a2(l2);
-          }, u2.prototype.run = function() {
+              for (var n2 = 1; n2 < arguments.length; n2++)
+                t2[n2 - 1] = arguments[n2];
+            y.push(new u(e3, t2)), 1 !== y.length || h || a(l);
+          }, u.prototype.run = function() {
             this.fun.apply(null, this.array);
-          }, p2.title = "browser", p2.browser = true, p2.env = {}, p2.argv = [], p2.version = "", p2.versions = {}, p2.on = s2, p2.addListener = s2, p2.once = s2, p2.off = s2, p2.removeListener = s2, p2.removeAllListeners = s2, p2.emit = s2, p2.prependListener = s2, p2.prependOnceListener = s2, p2.listeners = function(e4) {
+          }, p.title = "browser", p.browser = true, p.env = {}, p.argv = [], p.version = "", p.versions = {}, p.on = s, p.addListener = s, p.once = s, p.off = s, p.removeListener = s, p.removeAllListeners = s, p.emit = s, p.prependListener = s, p.prependOnceListener = s, p.listeners = function(e3) {
             return [];
-          }, p2.binding = function(e4) {
+          }, p.binding = function(e3) {
             throw new Error("process.binding is not supported");
-          }, p2.cwd = function() {
+          }, p.cwd = function() {
             return "/";
-          }, p2.chdir = function(e4) {
+          }, p.chdir = function(e3) {
             throw new Error("process.chdir is not supported");
-          }, p2.umask = function() {
+          }, p.umask = function() {
             return 0;
           };
-        }, function(e3, t2) {
+        }, function(e2, t) {
           "use strict";
-          t2.__esModule = true, t2.default = { noWobble: { stiffness: 170, damping: 26 }, gentle: { stiffness: 120, damping: 14 }, wobbly: { stiffness: 180, damping: 12 }, stiff: { stiffness: 210, damping: 20 } }, e3.exports = t2.default;
-        }, function(e3, t2) {
+          t.__esModule = true, t.default = { noWobble: { stiffness: 170, damping: 26 }, gentle: { stiffness: 120, damping: 14 }, wobbly: { stiffness: 180, damping: 12 }, stiff: { stiffness: 210, damping: 20 } }, e2.exports = t.default;
+        }, function(e2, t) {
           "use strict";
-          function n2(e4) {
-            var t3 = e4;
-            if (l2[t3])
-              return l2[t3];
-            t3 = t3.replace("#", ""), 3 === t3.length && (t3 = t3[0] + t3[0] + t3[1] + t3[1] + t3[2] + t3[2]);
-            var n3 = t3.match(/.{2}/g), r4 = { r: parseInt(n3[0], 16), g: parseInt(n3[1], 16), b: parseInt(n3[2], 16) };
-            return l2[t3] = r4, r4;
+          function n(e3) {
+            var t2 = e3;
+            if (l[t2])
+              return l[t2];
+            t2 = t2.replace("#", ""), 3 === t2.length && (t2 = t2[0] + t2[0] + t2[1] + t2[1] + t2[2] + t2[2]);
+            var n2 = t2.match(/.{2}/g), r2 = { r: parseInt(n2[0], 16), g: parseInt(n2[1], 16), b: parseInt(n2[2], 16) };
+            return l[t2] = r2, r2;
           }
-          function r3(e4) {
-            var t3 = e4.indexOf("rgb") != -1, n3 = e4.indexOf("rgba") != -1, r4 = e4.match(/\d+/g);
-            if (t3 && !n3)
-              return { r: parseInt(r4[0]), g: parseInt(r4[1]), b: parseInt(r4[2]) };
-            if (t3 && n3) {
-              var a3 = "0" == r4[3] ? "0." + r4[4] : r4[3];
-              return { r: parseInt(r4[0]), g: parseInt(r4[1]), b: parseInt(r4[2]), a: parseFloat(a3) };
+          function r(e3) {
+            var t2 = e3.indexOf("rgb") != -1, n2 = e3.indexOf("rgba") != -1, r2 = e3.match(/\d+/g);
+            if (t2 && !n2)
+              return { r: parseInt(r2[0]), g: parseInt(r2[1]), b: parseInt(r2[2]) };
+            if (t2 && n2) {
+              var a2 = "0" == r2[3] ? "0." + r2[4] : r2[3];
+              return { r: parseInt(r2[0]), g: parseInt(r2[1]), b: parseInt(r2[2]), a: parseFloat(a2) };
             }
             return null;
           }
-          function a2(e4, t3, n3) {
-            var r4 = e4.toString(16), a3 = t3.toString(16), o3 = n3.toString(16);
-            return r4 = r4.length < 2 ? "0" + r4 : r4, a3 = a3.length < 2 ? "0" + a3 : a3, o3 = o3.length < 2 ? "0" + o3 : o3, "#" + r4 + a3 + o3;
+          function a(e3, t2, n2) {
+            var r2 = e3.toString(16), a2 = t2.toString(16), o2 = n2.toString(16);
+            return r2 = r2.length < 2 ? "0" + r2 : r2, a2 = a2.length < 2 ? "0" + a2 : a2, o2 = o2.length < 2 ? "0" + o2 : o2, "#" + r2 + a2 + o2;
           }
-          function o2(e4, t3, n3, r4, a3) {
-            var o3 = n3 - t3, i3 = a3 - r4, l3 = (e4 - t3) / o3;
-            return r4 + l3 * i3;
+          function o(e3, t2, n2, r2, a2) {
+            var o2 = n2 - t2, i2 = a2 - r2, l2 = (e3 - t2) / o2;
+            return r2 + l2 * i2;
           }
-          function i2(e4, t3, n3, a3, i3, l3) {
-            var u2 = void 0 === a3 ? 0 : a3, s2 = void 0 === i3 ? 1 : i3, c = r3(t3), f2 = r3(n3), p2 = Math.floor(o2(e4, u2, s2, c.r, f2.r)), d2 = Math.floor(o2(e4, u2, s2, c.g, f2.g)), y2 = Math.floor(o2(e4, u2, s2, c.b, f2.b)), h2 = false, m2 = null;
-            return c.a && f2.a && (h2 = true, m2 = o2(e4, u2, s2, c.a, f2.a)), m2 ? "rgb(" + p2 + "," + d2 + "," + y2 + "," + m2 + ")" : "rgb(" + p2 + "," + d2 + "," + y2 + ")";
+          function i(e3, t2, n2, a2, i2, l2) {
+            var u = void 0 === a2 ? 0 : a2, s = void 0 === i2 ? 1 : i2, c = r(t2), f = r(n2), p = Math.floor(o(e3, u, s, c.r, f.r)), d = Math.floor(o(e3, u, s, c.g, f.g)), y = Math.floor(o(e3, u, s, c.b, f.b)), h = false, m = null;
+            return c.a && f.a && (h = true, m = o(e3, u, s, c.a, f.a)), m ? "rgb(" + p + "," + d + "," + y + "," + m + ")" : "rgb(" + p + "," + d + "," + y + ")";
           }
-          Object.defineProperty(t2, "__esModule", { value: true }), t2.hexToRGB = n2, t2.rgbToObj = r3, t2.rgbToHex = a2, t2.mapValueInRange = o2, t2.interpolateColor = i2;
-          var l2 = {};
-        }, function(e3, t2, n2) {
+          Object.defineProperty(t, "__esModule", { value: true }), t.hexToRGB = n, t.rgbToObj = r, t.rgbToHex = a, t.mapValueInRange = o, t.interpolateColor = i;
+          var l = {};
+        }, function(e2, t, n) {
           "use strict";
-          function r3(e4) {
-            return e4 && e4.__esModule ? e4 : { default: e4 };
+          function r(e3) {
+            return e3 && e3.__esModule ? e3 : { default: e3 };
           }
-          var a2 = n2(13), o2 = r3(a2);
-          e3.exports = o2.default;
-        }, function(e3, t2, n2) {
+          var a = n(13), o = r(a);
+          e2.exports = o.default;
+        }, function(e2, t, n) {
           "use strict";
-          function r3(e4) {
-            return e4 && e4.__esModule ? e4 : { default: e4 };
+          function r(e3) {
+            return e3 && e3.__esModule ? e3 : { default: e3 };
           }
-          function a2(e4, t3) {
-            if (!(e4 instanceof t3))
+          function a(e3, t2) {
+            if (!(e3 instanceof t2))
               throw new TypeError("Cannot call a class as a function");
           }
-          function o2(e4, t3) {
-            if (!e4)
+          function o(e3, t2) {
+            if (!e3)
               throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-            return !t3 || "object" != typeof t3 && "function" != typeof t3 ? e4 : t3;
+            return !t2 || "object" != typeof t2 && "function" != typeof t2 ? e3 : t2;
           }
-          function i2(e4, t3) {
-            if ("function" != typeof t3 && null !== t3)
-              throw new TypeError("Super expression must either be null or a function, not " + typeof t3);
-            e4.prototype = Object.create(t3 && t3.prototype, { constructor: { value: e4, enumerable: false, writable: true, configurable: true } }), t3 && (Object.setPrototypeOf ? Object.setPrototypeOf(e4, t3) : e4.__proto__ = t3);
+          function i(e3, t2) {
+            if ("function" != typeof t2 && null !== t2)
+              throw new TypeError("Super expression must either be null or a function, not " + typeof t2);
+            e3.prototype = Object.create(t2 && t2.prototype, { constructor: { value: e3, enumerable: false, writable: true, configurable: true } }), t2 && (Object.setPrototypeOf ? Object.setPrototypeOf(e3, t2) : e3.__proto__ = t2);
           }
-          Object.defineProperty(t2, "__esModule", { value: true });
-          var l2 = Object.assign || function(e4) {
-            for (var t3 = 1; t3 < arguments.length; t3++) {
-              var n3 = arguments[t3];
-              for (var r4 in n3)
-                Object.prototype.hasOwnProperty.call(n3, r4) && (e4[r4] = n3[r4]);
+          Object.defineProperty(t, "__esModule", { value: true });
+          var l = Object.assign || function(e3) {
+            for (var t2 = 1; t2 < arguments.length; t2++) {
+              var n2 = arguments[t2];
+              for (var r2 in n2)
+                Object.prototype.hasOwnProperty.call(n2, r2) && (e3[r2] = n2[r2]);
             }
-            return e4;
-          }, u2 = function() {
-            function e4(e5, t3) {
-              for (var n3 = 0; n3 < t3.length; n3++) {
-                var r4 = t3[n3];
-                r4.enumerable = r4.enumerable || false, r4.configurable = true, "value" in r4 && (r4.writable = true), Object.defineProperty(e5, r4.key, r4);
+            return e3;
+          }, u = function() {
+            function e3(e4, t2) {
+              for (var n2 = 0; n2 < t2.length; n2++) {
+                var r2 = t2[n2];
+                r2.enumerable = r2.enumerable || false, r2.configurable = true, "value" in r2 && (r2.writable = true), Object.defineProperty(e4, r2.key, r2);
               }
             }
-            return function(t3, n3, r4) {
-              return n3 && e4(t3.prototype, n3), r4 && e4(t3, r4), t3;
+            return function(t2, n2, r2) {
+              return n2 && e3(t2.prototype, n2), r2 && e3(t2, r2), t2;
             };
-          }(), s2 = n2(3), c = r3(s2), f2 = n2(24), p2 = n2(1), d2 = r3(p2), y2 = n2(14), h2 = n2(11), m2 = { active: { base: "rgb(1,124,66)", hover: "rgb(1,124,66)" }, inactive: { base: "rgb(65,66,68)", hover: "rgb(65,66,68)" }, activeThumb: { base: "rgb(250,250,250)", hover: "rgb(250,250,250)" }, inactiveThumb: { base: "rgb(250,250,250)", hover: "rgb(250,250,250)" } }, v2 = {}, b2 = function(e4) {
-            function t3(e5) {
-              a2(this, t3);
-              var n3 = o2(this, (t3.__proto__ || Object.getPrototypeOf(t3)).call(this, e5));
-              return n3.state = { isHover: false }, n3;
+          }(), s = n(3), c = r(s), f = n(24), p = n(1), d = r(p), y = n(14), h = n(11), m = { active: { base: "rgb(1,124,66)", hover: "rgb(1,124,66)" }, inactive: { base: "rgb(65,66,68)", hover: "rgb(65,66,68)" }, activeThumb: { base: "rgb(250,250,250)", hover: "rgb(250,250,250)" }, inactiveThumb: { base: "rgb(250,250,250)", hover: "rgb(250,250,250)" } }, v = {}, b = function(e3) {
+            function t2(e4) {
+              a(this, t2);
+              var n2 = o(this, (t2.__proto__ || Object.getPrototypeOf(t2)).call(this, e4));
+              return n2.state = { isHover: false }, n2;
             }
-            return i2(t3, e4), u2(t3, [{ key: "onMouseOver", value: function() {
+            return i(t2, e3), u(t2, [{ key: "onMouseOver", value: function() {
               this.setState({ isHover: true });
             } }, { key: "onMouseOut", value: function() {
               this.setState({ isHover: false });
-            } }, { key: "_convertToRgb", value: function(e5, t4) {
-              if (e5.indexOf("#") != -1) {
-                var n3 = (0, h2.hexToRGB)(e5);
-                return "rgb(" + n3.r + ", " + n3.g + ", " + n3.b + ")";
+            } }, { key: "_convertToRgb", value: function(e4, t3) {
+              if (e4.indexOf("#") != -1) {
+                var n2 = (0, h.hexToRGB)(e4);
+                return "rgb(" + n2.r + ", " + n2.g + ", " + n2.b + ")";
               }
-              return e5.indexOf("rgb") == -1 ? t4 : e5;
-            } }, { key: "checkAllColors", value: function(e5) {
-              var t4 = this;
-              return Object.keys(e5).forEach(function(n3) {
-                t4.checkColors(e5, n3);
-              }), e5;
-            } }, { key: "checkColors", value: function(e5, t4) {
-              e5[t4] ? e5[t4].hover ? (e5[t4].base = this._convertToRgb(e5[t4].base, m2[t4].base), e5[t4].hover = this._convertToRgb(e5[t4].hover, m2[t4].hover)) : e5[t4].base ? (e5[t4].base = this._convertToRgb(e5[t4].base, m2[t4].base), e5[t4].hover = e5[t4].base) : (console.warn('Color prop should have a "base" style and a "hover" style!'), e5[t4] = m2[t4]) : e5[t4] = m2[t4];
-            } }, { key: "interpolateColorWithHover", value: function(e5, t4, n3) {
-              var r4 = this.props.colors;
-              return this.checkColors(r4, t4), this.checkColors(r4, n3), this.state.isHover ? { backgroundColor: (0, h2.interpolateColor)(e5, r4[t4].hover, r4[n3].hover, 0, 400) } : { backgroundColor: (0, h2.interpolateColor)(e5, r4[t4].base, r4[n3].base, 0, 400) };
-            } }, { key: "makeStyle", value: function(e5, t4) {
-              return this.state.isHover ? l2({}, e5, t4) : e5;
-            } }, { key: "handleClick", value: function(e5) {
-              e5.target !== this._input && (e5.preventDefault(), this._input.focus(), this._input.click());
+              return e4.indexOf("rgb") == -1 ? t3 : e4;
+            } }, { key: "checkAllColors", value: function(e4) {
+              var t3 = this;
+              return Object.keys(e4).forEach(function(n2) {
+                t3.checkColors(e4, n2);
+              }), e4;
+            } }, { key: "checkColors", value: function(e4, t3) {
+              e4[t3] ? e4[t3].hover ? (e4[t3].base = this._convertToRgb(e4[t3].base, m[t3].base), e4[t3].hover = this._convertToRgb(e4[t3].hover, m[t3].hover)) : e4[t3].base ? (e4[t3].base = this._convertToRgb(e4[t3].base, m[t3].base), e4[t3].hover = e4[t3].base) : (console.warn('Color prop should have a "base" style and a "hover" style!'), e4[t3] = m[t3]) : e4[t3] = m[t3];
+            } }, { key: "interpolateColorWithHover", value: function(e4, t3, n2) {
+              var r2 = this.props.colors;
+              return this.checkColors(r2, t3), this.checkColors(r2, n2), this.state.isHover ? { backgroundColor: (0, h.interpolateColor)(e4, r2[t3].hover, r2[n2].hover, 0, 400) } : { backgroundColor: (0, h.interpolateColor)(e4, r2[t3].base, r2[n2].base, 0, 400) };
+            } }, { key: "makeStyle", value: function(e4, t3) {
+              return this.state.isHover ? l({}, e4, t3) : e4;
+            } }, { key: "handleClick", value: function(e4) {
+              e4.target !== this._input && (e4.preventDefault(), this._input.focus(), this._input.click());
             } }, { key: "render", value: function() {
-              var e5 = this, t4 = this.props, n3 = t4.internalSpringSetting, r4 = t4.internalHoverSpringSetting, a3 = t4.value, o3 = t4.thumbAnimateRange, i3 = (t4.isHover, t4.containerStyle), u3 = t4.trackStyle, s3 = t4.animateTrackStyleToggle, p3 = t4.animateTrackStyleHover, d3 = t4.thumbStyleHover, h3 = t4.trackStyleHover, m3 = t4.activeLabelStyle, v3 = t4.activeLabelStyleHover, b3 = t4.activeLabel, g2 = t4.inactiveLabelStyle, S2 = t4.inactiveLabelStyleHover, T2 = t4.inactiveLabel, O2 = t4.thumbStyle, k2 = t4.animateThumbStyleHover, w2 = t4.animateThumbStyleToggle, I2 = t4.thumbIcon, P2 = t4.onClick, j = t4.onToggle, _3 = t4.passThroughInputProps, x2 = n3, M2 = r4;
-              return c.default.createElement(f2.Motion, { style: { opacity: (0, f2.spring)(a3 ? 1 : 0, x2), left: (0, f2.spring)(a3 ? 10 * o3[1] : 10 * o3[0], x2), colorNumber: (0, f2.spring)(a3 ? 0 : 400, x2), toggleNumber: (0, f2.spring)(a3 ? 400 : 0, x2), hoverNumber: (0, f2.spring)(this.state.isHover ? 400 : 0, M2) } }, function(t5) {
-                var n4 = t5.opacity, r5 = t5.left, o4 = t5.colorNumber, f3 = t5.hoverNumber, x3 = t5.toggleNumber;
-                return c.default.createElement("div", { style: l2({}, e5.makeStyle(l2({}, y2.reactToggle, i3))), onMouseOver: e5.onMouseOver.bind(e5), onMouseOut: e5.onMouseOut.bind(e5), onClick: e5.handleClick.bind(e5) }, c.default.createElement("div", { style: l2({}, e5.makeStyle(l2({}, y2.reactToggleTrack, u3, e5.interpolateColorWithHover(o4, "active", "inactive"), s3(x3 / 400)), l2({}, h3, p3(f3 / 400)))) }, c.default.createElement("div", { style: l2({}, e5.makeStyle(l2({}, y2.reactToggleOn, m3), v3), { opacity: n4 }) }, b3), c.default.createElement("div", { style: l2({}, e5.makeStyle(l2({}, y2.reactToggleOff, g2), S2), { opacity: 1 - n4 }) }, T2)), c.default.createElement("div", { style: y2.reactThumbCenteringContainer }, c.default.createElement("div", { style: l2({}, e5.makeStyle(l2({}, y2.reactToggleThumb, O2, e5.interpolateColorWithHover(o4, "activeThumb", "inactiveThumb"), w2(x3 / 400)), l2({}, d3, k2(f3 / 400))), { position: "relative", left: Math.round(r5 / 10) }) }, I2)), c.default.createElement("input", l2({ ref: function(t6) {
-                  e5._input = t6;
-                }, type: "checkbox", style: y2.reactToggleScreenReaderOnly, onClick: function(e6) {
-                  P2 && P2(e6), j(a3);
-                }, value: a3 }, _3)));
+              var e4 = this, t3 = this.props, n2 = t3.internalSpringSetting, r2 = t3.internalHoverSpringSetting, a2 = t3.value, o2 = t3.thumbAnimateRange, i2 = (t3.isHover, t3.containerStyle), u2 = t3.trackStyle, s2 = t3.animateTrackStyleToggle, p2 = t3.animateTrackStyleHover, d2 = t3.thumbStyleHover, h2 = t3.trackStyleHover, m2 = t3.activeLabelStyle, v2 = t3.activeLabelStyleHover, b2 = t3.activeLabel, g = t3.inactiveLabelStyle, S = t3.inactiveLabelStyleHover, T = t3.inactiveLabel, O = t3.thumbStyle, k = t3.animateThumbStyleHover, w = t3.animateThumbStyleToggle, I = t3.thumbIcon, P = t3.onClick, j = t3.onToggle, _2 = t3.passThroughInputProps, x = n2, M = r2;
+              return c.default.createElement(f.Motion, { style: { opacity: (0, f.spring)(a2 ? 1 : 0, x), left: (0, f.spring)(a2 ? 10 * o2[1] : 10 * o2[0], x), colorNumber: (0, f.spring)(a2 ? 0 : 400, x), toggleNumber: (0, f.spring)(a2 ? 400 : 0, x), hoverNumber: (0, f.spring)(this.state.isHover ? 400 : 0, M) } }, function(t4) {
+                var n3 = t4.opacity, r3 = t4.left, o3 = t4.colorNumber, f2 = t4.hoverNumber, x2 = t4.toggleNumber;
+                return c.default.createElement("div", { style: l({}, e4.makeStyle(l({}, y.reactToggle, i2))), onMouseOver: e4.onMouseOver.bind(e4), onMouseOut: e4.onMouseOut.bind(e4), onClick: e4.handleClick.bind(e4) }, c.default.createElement("div", { style: l({}, e4.makeStyle(l({}, y.reactToggleTrack, u2, e4.interpolateColorWithHover(o3, "active", "inactive"), s2(x2 / 400)), l({}, h2, p2(f2 / 400)))) }, c.default.createElement("div", { style: l({}, e4.makeStyle(l({}, y.reactToggleOn, m2), v2), { opacity: n3 }) }, b2), c.default.createElement("div", { style: l({}, e4.makeStyle(l({}, y.reactToggleOff, g), S), { opacity: 1 - n3 }) }, T)), c.default.createElement("div", { style: y.reactThumbCenteringContainer }, c.default.createElement("div", { style: l({}, e4.makeStyle(l({}, y.reactToggleThumb, O, e4.interpolateColorWithHover(o3, "activeThumb", "inactiveThumb"), w(x2 / 400)), l({}, d2, k(f2 / 400))), { position: "relative", left: Math.round(r3 / 10) }) }, I)), c.default.createElement("input", l({ ref: function(t5) {
+                  e4._input = t5;
+                }, type: "checkbox", style: y.reactToggleScreenReaderOnly, onClick: function(e5) {
+                  P && P(e5), j(a2);
+                }, value: a2 }, _2)));
               });
-            } }]), t3;
-          }(s2.Component);
-          b2.defaultProps = { value: false, onToggle: function() {
-          }, colors: m2, passThroughInputProps: {}, activeLabel: "ON", containerStyle: v2, activeLabelStyle: v2, activeLabelStyleHover: v2, inactiveLabel: "OFF", inactiveLabelStyle: v2, inactiveLabelStyleHover: v2, thumbStyle: v2, thumbStyleHover: v2, animateThumbStyleHover: function() {
+            } }]), t2;
+          }(s.Component);
+          b.defaultProps = { value: false, onToggle: function() {
+          }, colors: m, passThroughInputProps: {}, activeLabel: "ON", containerStyle: v, activeLabelStyle: v, activeLabelStyleHover: v, inactiveLabel: "OFF", inactiveLabelStyle: v, inactiveLabelStyleHover: v, thumbStyle: v, thumbStyleHover: v, animateThumbStyleHover: function() {
             return {};
           }, animateThumbStyleToggle: function() {
             return {};
-          }, trackStyle: v2, trackStyleHover: v2, animateTrackStyleHover: function() {
+          }, trackStyle: v, trackStyleHover: v, animateTrackStyleHover: function() {
             return {};
           }, animateTrackStyleToggle: function() {
             return {};
-          }, thumbAnimateRange: [1, 33], internalSpringSetting: { stiffness: 180, damping: 22 }, internalHoverSpringSetting: { stiffness: 180, damping: 20 } }, b2.displayName = "Toggle", t2.default = b2, b2.propTypes = { value: d2.default.bool.isRequired, onToggle: d2.default.func.isRequired, passThroughInputProps: d2.default.object, onClick: d2.default.func, colors: d2.default.object, activeLabel: d2.default.oneOfType([d2.default.string, d2.default.object]), containerStyle: d2.default.object, activeLabelStyle: d2.default.object, activeLabelStyleHover: d2.default.object, activeThumbStyle: d2.default.object, activeThumbStyleHover: d2.default.object, inactiveLabel: d2.default.oneOfType([d2.default.string, d2.default.object]), inactiveLabelStyle: d2.default.object, inactiveLabelStyleHover: d2.default.object, thumbStyle: d2.default.object, thumbStyleHover: d2.default.object, trackStyle: d2.default.object, trackStyleHover: d2.default.object, animateThumbStyleHover: d2.default.func, animateTrackStyleHover: d2.default.func, animateTrackStyleToggle: d2.default.func, animateThumbStyleToggle: d2.default.func, internalSpringSetting: d2.default.object, internalHoverSpringSetting: d2.default.object, thumbIcon: d2.default.oneOfType([d2.default.string, d2.default.object]), thumbAnimateRange: d2.default.array };
-        }, function(e3, t2) {
+          }, thumbAnimateRange: [1, 33], internalSpringSetting: { stiffness: 180, damping: 22 }, internalHoverSpringSetting: { stiffness: 180, damping: 20 } }, b.displayName = "Toggle", t.default = b, b.propTypes = { value: d.default.bool.isRequired, onToggle: d.default.func.isRequired, passThroughInputProps: d.default.object, onClick: d.default.func, colors: d.default.object, activeLabel: d.default.oneOfType([d.default.string, d.default.object]), containerStyle: d.default.object, activeLabelStyle: d.default.object, activeLabelStyleHover: d.default.object, activeThumbStyle: d.default.object, activeThumbStyleHover: d.default.object, inactiveLabel: d.default.oneOfType([d.default.string, d.default.object]), inactiveLabelStyle: d.default.object, inactiveLabelStyleHover: d.default.object, thumbStyle: d.default.object, thumbStyleHover: d.default.object, trackStyle: d.default.object, trackStyleHover: d.default.object, animateThumbStyleHover: d.default.func, animateTrackStyleHover: d.default.func, animateTrackStyleToggle: d.default.func, animateThumbStyleToggle: d.default.func, internalSpringSetting: d.default.object, internalHoverSpringSetting: d.default.object, thumbIcon: d.default.oneOfType([d.default.string, d.default.object]), thumbAnimateRange: d.default.array };
+        }, function(e2, t) {
           "use strict";
-          function n2(e4, t3, n3) {
-            return t3 in e4 ? Object.defineProperty(e4, t3, { value: n3, enumerable: true, configurable: true, writable: true }) : e4[t3] = n3, e4;
+          function n(e3, t2, n2) {
+            return t2 in e3 ? Object.defineProperty(e3, t2, { value: n2, enumerable: true, configurable: true, writable: true }) : e3[t2] = n2, e3;
           }
-          Object.defineProperty(t2, "__esModule", { value: true });
-          var r3 = Object.assign || function(e4) {
-            for (var t3 = 1; t3 < arguments.length; t3++) {
-              var n3 = arguments[t3];
-              for (var r4 in n3)
-                Object.prototype.hasOwnProperty.call(n3, r4) && (e4[r4] = n3[r4]);
+          Object.defineProperty(t, "__esModule", { value: true });
+          var r = Object.assign || function(e3) {
+            for (var t2 = 1; t2 < arguments.length; t2++) {
+              var n2 = arguments[t2];
+              for (var r2 in n2)
+                Object.prototype.hasOwnProperty.call(n2, r2) && (e3[r2] = n2[r2]);
             }
-            return e4;
-          }, a2 = (t2.reactToggle = n2({ display: "flex", width: 52, alignItems: "center", justifyContent: "flex-start", position: "relative", cursor: "pointer", backgroundColor: "transparent", border: 0, padding: 0, WebkitTouchCallout: "none", WebkitUserSelect: "none", KhtmlUserSelect: "none", MozUserSelect: "none", msUserSelect: "none", userSelect: "none", WebkitTapHighlightColor: "rgba(0,0,0,0)" }, "WebkitTapHighlightColor", "transparent"), { fontSize: 11, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Helvetica Neue', Helvetica, sans-serif" });
-          t2.reactToggleScreenReaderOnly = { border: 0, clip: "rect(0 0 0 0)", height: 1, margin: -1, overflow: "hidden", padding: 0, position: "absolute", width: 1 }, t2.reactToggleTrack = { width: "52px", height: "20px", padding: 0, borderRadius: "26px", display: "flex", alignItems: "center", justifyContent: "center" }, t2.reactToggleOn = r3({}, a2, { position: "relative", color: "#FAFAFA", marginTop: "auto", marginBottom: "auto", lineHeight: 0, opacity: 0, width: 26, height: 20, left: 4 }), t2.reactToggleOff = r3({}, a2, { position: "relative", color: "rgba(255,255,255,0.6)", bottom: "0px", marginTop: "auto", marginBottom: "auto", paddingRight: 5, lineHeight: 0, width: 26, height: 20 }), t2.reactToggleThumb = { width: "18px", height: "18px", display: "flex", alignSelf: "center", boxShadow: "0 0 0 1px rgba(0,0,0,0.3)", borderRadius: "50%", WebkitBoxSizing: "border-box", MozBoxSizing: "border-box", boxSizing: "border-box" }, t2.reactThumbCenteringContainer = { position: "absolute", height: "100%", top: 0, left: 0, display: "flex", flex: 1, alignSelf: "stretch", alignItems: "center", justifyContent: "flex-start" };
-        }, function(e3, t2) {
+            return e3;
+          }, a = (t.reactToggle = n({ display: "flex", width: 52, alignItems: "center", justifyContent: "flex-start", position: "relative", cursor: "pointer", backgroundColor: "transparent", border: 0, padding: 0, WebkitTouchCallout: "none", WebkitUserSelect: "none", KhtmlUserSelect: "none", MozUserSelect: "none", msUserSelect: "none", userSelect: "none", WebkitTapHighlightColor: "rgba(0,0,0,0)" }, "WebkitTapHighlightColor", "transparent"), { fontSize: 11, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Helvetica Neue', Helvetica, sans-serif" });
+          t.reactToggleScreenReaderOnly = { border: 0, clip: "rect(0 0 0 0)", height: 1, margin: -1, overflow: "hidden", padding: 0, position: "absolute", width: 1 }, t.reactToggleTrack = { width: "52px", height: "20px", padding: 0, borderRadius: "26px", display: "flex", alignItems: "center", justifyContent: "center" }, t.reactToggleOn = r({}, a, { position: "relative", color: "#FAFAFA", marginTop: "auto", marginBottom: "auto", lineHeight: 0, opacity: 0, width: 26, height: 20, left: 4 }), t.reactToggleOff = r({}, a, { position: "relative", color: "rgba(255,255,255,0.6)", bottom: "0px", marginTop: "auto", marginBottom: "auto", paddingRight: 5, lineHeight: 0, width: 26, height: 20 }), t.reactToggleThumb = { width: "18px", height: "18px", display: "flex", alignSelf: "center", boxShadow: "0 0 0 1px rgba(0,0,0,0.3)", borderRadius: "50%", WebkitBoxSizing: "border-box", MozBoxSizing: "border-box", boxSizing: "border-box" }, t.reactThumbCenteringContainer = { position: "absolute", height: "100%", top: 0, left: 0, display: "flex", flex: 1, alignSelf: "stretch", alignItems: "center", justifyContent: "flex-start" };
+        }, function(e2, t) {
           "use strict";
-          function n2(e4) {
+          function n(e3) {
             return function() {
-              return e4;
+              return e3;
             };
           }
-          var r3 = function() {
+          var r = function() {
           };
-          r3.thatReturns = n2, r3.thatReturnsFalse = n2(false), r3.thatReturnsTrue = n2(true), r3.thatReturnsNull = n2(null), r3.thatReturnsThis = function() {
+          r.thatReturns = n, r.thatReturnsFalse = n(false), r.thatReturnsTrue = n(true), r.thatReturnsNull = n(null), r.thatReturnsThis = function() {
             return this;
-          }, r3.thatReturnsArgument = function(e4) {
-            return e4;
-          }, e3.exports = r3;
-        }, function(e3, t2, n2) {
+          }, r.thatReturnsArgument = function(e3) {
+            return e3;
+          }, e2.exports = r;
+        }, function(e2, t, n) {
           "use strict";
-          function r3(e4, t3, n3, r4, o2, i2, l2, u2) {
-            if (a2(t3), !e4) {
-              var s2;
-              if (void 0 === t3)
-                s2 = new Error("Minified exception occurred; use the non-minified dev environment for the full error message and additional helpful warnings.");
+          function r(e3, t2, n2, r2, o, i, l, u) {
+            if (a(t2), !e3) {
+              var s;
+              if (void 0 === t2)
+                s = new Error("Minified exception occurred; use the non-minified dev environment for the full error message and additional helpful warnings.");
               else {
-                var c = [n3, r4, o2, i2, l2, u2], f2 = 0;
-                s2 = new Error(t3.replace(/%s/g, function() {
-                  return c[f2++];
-                })), s2.name = "Invariant Violation";
+                var c = [n2, r2, o, i, l, u], f = 0;
+                s = new Error(t2.replace(/%s/g, function() {
+                  return c[f++];
+                })), s.name = "Invariant Violation";
               }
-              throw s2.framesToPop = 1, s2;
+              throw s.framesToPop = 1, s;
             }
           }
-          var a2 = function(e4) {
+          var a = function(e3) {
           };
-          e3.exports = r3;
-        }, function(e3, t2, n2) {
+          e2.exports = r;
+        }, function(e2, t, n) {
           "use strict";
-          var r3 = n2(15), a2 = n2(16), o2 = n2(18);
-          e3.exports = function() {
-            function e4(e5, t4, n4, r4, i2, l2) {
-              l2 !== o2 && a2(false, "Calling PropTypes validators directly is not supported by the `prop-types` package. Use PropTypes.checkPropTypes() to call them. Read more at http://fb.me/use-check-prop-types");
+          var r = n(15), a = n(16), o = n(18);
+          e2.exports = function() {
+            function e3(e4, t3, n3, r2, i, l) {
+              l !== o && a(false, "Calling PropTypes validators directly is not supported by the `prop-types` package. Use PropTypes.checkPropTypes() to call them. Read more at http://fb.me/use-check-prop-types");
             }
-            function t3() {
-              return e4;
+            function t2() {
+              return e3;
             }
-            e4.isRequired = e4;
-            var n3 = { array: e4, bool: e4, func: e4, number: e4, object: e4, string: e4, symbol: e4, any: e4, arrayOf: t3, element: e4, instanceOf: t3, node: e4, objectOf: t3, oneOf: t3, oneOfType: t3, shape: t3, exact: t3 };
-            return n3.checkPropTypes = r3, n3.PropTypes = n3, n3;
+            e3.isRequired = e3;
+            var n2 = { array: e3, bool: e3, func: e3, number: e3, object: e3, string: e3, symbol: e3, any: e3, arrayOf: t2, element: e3, instanceOf: t2, node: e3, objectOf: t2, oneOf: t2, oneOfType: t2, shape: t2, exact: t2 };
+            return n2.checkPropTypes = r, n2.PropTypes = n2, n2;
           };
-        }, function(e3, t2) {
+        }, function(e2, t) {
           "use strict";
-          var n2 = "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED";
-          e3.exports = n2;
-        }, function(e3, t2, n2) {
-          (function(t3) {
+          var n = "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED";
+          e2.exports = n;
+        }, function(e2, t, n) {
+          (function(t2) {
             (function() {
-              var n3, r3, a2, o2, i2, l2;
-              "undefined" != typeof performance && null !== performance && performance.now ? e3.exports = function() {
+              var n2, r, a, o, i, l;
+              "undefined" != typeof performance && null !== performance && performance.now ? e2.exports = function() {
                 return performance.now();
-              } : "undefined" != typeof t3 && null !== t3 && t3.hrtime ? (e3.exports = function() {
-                return (n3() - i2) / 1e6;
-              }, r3 = t3.hrtime, n3 = function() {
-                var e4;
-                return e4 = r3(), 1e9 * e4[0] + e4[1];
-              }, o2 = n3(), l2 = 1e9 * t3.uptime(), i2 = o2 - l2) : Date.now ? (e3.exports = function() {
-                return Date.now() - a2;
-              }, a2 = Date.now()) : (e3.exports = function() {
-                return new Date().getTime() - a2;
-              }, a2 = new Date().getTime());
+              } : "undefined" != typeof t2 && null !== t2 && t2.hrtime ? (e2.exports = function() {
+                return (n2() - i) / 1e6;
+              }, r = t2.hrtime, n2 = function() {
+                var e3;
+                return e3 = r(), 1e9 * e3[0] + e3[1];
+              }, o = n2(), l = 1e9 * t2.uptime(), i = o - l) : Date.now ? (e2.exports = function() {
+                return Date.now() - a;
+              }, a = Date.now()) : (e2.exports = function() {
+                return new Date().getTime() - a;
+              }, a = new Date().getTime());
             }).call(this);
-          }).call(t2, n2(9));
-        }, function(e3, t2, n2) {
+          }).call(t, n(9));
+        }, function(e2, t, n) {
           "use strict";
-          function r3(e4) {
-            return e4 && e4.__esModule ? e4 : { default: e4 };
+          function r(e3) {
+            return e3 && e3.__esModule ? e3 : { default: e3 };
           }
-          function a2(e4, t3) {
-            if (!(e4 instanceof t3))
+          function a(e3, t2) {
+            if (!(e3 instanceof t2))
               throw new TypeError("Cannot call a class as a function");
           }
-          function o2(e4, t3) {
-            if ("function" != typeof t3 && null !== t3)
-              throw new TypeError("Super expression must either be null or a function, not " + typeof t3);
-            e4.prototype = Object.create(t3 && t3.prototype, { constructor: { value: e4, enumerable: false, writable: true, configurable: true } }), t3 && (Object.setPrototypeOf ? Object.setPrototypeOf(e4, t3) : e4.__proto__ = t3);
+          function o(e3, t2) {
+            if ("function" != typeof t2 && null !== t2)
+              throw new TypeError("Super expression must either be null or a function, not " + typeof t2);
+            e3.prototype = Object.create(t2 && t2.prototype, { constructor: { value: e3, enumerable: false, writable: true, configurable: true } }), t2 && (Object.setPrototypeOf ? Object.setPrototypeOf(e3, t2) : e3.__proto__ = t2);
           }
-          t2.__esModule = true;
-          var i2 = Object.assign || function(e4) {
-            for (var t3 = 1; t3 < arguments.length; t3++) {
-              var n3 = arguments[t3];
-              for (var r4 in n3)
-                Object.prototype.hasOwnProperty.call(n3, r4) && (e4[r4] = n3[r4]);
+          t.__esModule = true;
+          var i = Object.assign || function(e3) {
+            for (var t2 = 1; t2 < arguments.length; t2++) {
+              var n2 = arguments[t2];
+              for (var r2 in n2)
+                Object.prototype.hasOwnProperty.call(n2, r2) && (e3[r2] = n2[r2]);
             }
-            return e4;
-          }, l2 = function() {
-            function e4(e5, t3) {
-              for (var n3 = 0; n3 < t3.length; n3++) {
-                var r4 = t3[n3];
-                r4.enumerable = r4.enumerable || false, r4.configurable = true, "value" in r4 && (r4.writable = true), Object.defineProperty(e5, r4.key, r4);
+            return e3;
+          }, l = function() {
+            function e3(e4, t2) {
+              for (var n2 = 0; n2 < t2.length; n2++) {
+                var r2 = t2[n2];
+                r2.enumerable = r2.enumerable || false, r2.configurable = true, "value" in r2 && (r2.writable = true), Object.defineProperty(e4, r2.key, r2);
               }
             }
-            return function(t3, n3, r4) {
-              return n3 && e4(t3.prototype, n3), r4 && e4(t3, r4), t3;
+            return function(t2, n2, r2) {
+              return n2 && e3(t2.prototype, n2), r2 && e3(t2, r2), t2;
             };
-          }(), u2 = n2(6), s2 = r3(u2), c = n2(2), f2 = r3(c), p2 = n2(8), d2 = r3(p2), y2 = n2(4), h2 = r3(y2), m2 = n2(5), v2 = r3(m2), b2 = n2(7), g2 = r3(b2), S2 = n2(3), T2 = r3(S2), O2 = n2(1), k2 = r3(O2), w2 = 1e3 / 60, I2 = function(e4) {
-            function t3(n3) {
-              var r4 = this;
-              a2(this, t3), e4.call(this, n3), this.wasAnimating = false, this.animationID = null, this.prevTime = 0, this.accumulatedTime = 0, this.unreadPropStyle = null, this.clearUnreadPropStyle = function(e5) {
-                var t4 = false, n4 = r4.state, a3 = n4.currentStyle, o3 = n4.currentVelocity, l3 = n4.lastIdealStyle, u3 = n4.lastIdealVelocity;
-                for (var s3 in e5)
-                  if (Object.prototype.hasOwnProperty.call(e5, s3)) {
-                    var c2 = e5[s3];
-                    "number" == typeof c2 && (t4 || (t4 = true, a3 = i2({}, a3), o3 = i2({}, o3), l3 = i2({}, l3), u3 = i2({}, u3)), a3[s3] = c2, o3[s3] = 0, l3[s3] = c2, u3[s3] = 0);
+          }(), u = n(6), s = r(u), c = n(2), f = r(c), p = n(8), d = r(p), y = n(4), h = r(y), m = n(5), v = r(m), b = n(7), g = r(b), S = n(3), T = r(S), O = n(1), k = r(O), w = 1e3 / 60, I = function(e3) {
+            function t2(n2) {
+              var r2 = this;
+              a(this, t2), e3.call(this, n2), this.wasAnimating = false, this.animationID = null, this.prevTime = 0, this.accumulatedTime = 0, this.unreadPropStyle = null, this.clearUnreadPropStyle = function(e4) {
+                var t3 = false, n3 = r2.state, a2 = n3.currentStyle, o2 = n3.currentVelocity, l2 = n3.lastIdealStyle, u2 = n3.lastIdealVelocity;
+                for (var s2 in e4)
+                  if (Object.prototype.hasOwnProperty.call(e4, s2)) {
+                    var c2 = e4[s2];
+                    "number" == typeof c2 && (t3 || (t3 = true, a2 = i({}, a2), o2 = i({}, o2), l2 = i({}, l2), u2 = i({}, u2)), a2[s2] = c2, o2[s2] = 0, l2[s2] = c2, u2[s2] = 0);
                   }
-                t4 && r4.setState({ currentStyle: a3, currentVelocity: o3, lastIdealStyle: l3, lastIdealVelocity: u3 });
+                t3 && r2.setState({ currentStyle: a2, currentVelocity: o2, lastIdealStyle: l2, lastIdealVelocity: u2 });
               }, this.startAnimationIfNecessary = function() {
-                r4.animationID = v2.default(function(e5) {
-                  var t4 = r4.props.style;
-                  if (g2.default(r4.state.currentStyle, t4, r4.state.currentVelocity))
-                    return r4.wasAnimating && r4.props.onRest && r4.props.onRest(), r4.animationID = null, r4.wasAnimating = false, void (r4.accumulatedTime = 0);
-                  r4.wasAnimating = true;
-                  var n4 = e5 || h2.default(), a3 = n4 - r4.prevTime;
-                  if (r4.prevTime = n4, r4.accumulatedTime = r4.accumulatedTime + a3, r4.accumulatedTime > 10 * w2 && (r4.accumulatedTime = 0), 0 === r4.accumulatedTime)
-                    return r4.animationID = null, void r4.startAnimationIfNecessary();
-                  var o3 = (r4.accumulatedTime - Math.floor(r4.accumulatedTime / w2) * w2) / w2, i3 = Math.floor(r4.accumulatedTime / w2), l3 = {}, u3 = {}, s3 = {}, c2 = {};
-                  for (var f3 in t4)
-                    if (Object.prototype.hasOwnProperty.call(t4, f3)) {
-                      var p3 = t4[f3];
-                      if ("number" == typeof p3)
-                        s3[f3] = p3, c2[f3] = 0, l3[f3] = p3, u3[f3] = 0;
+                r2.animationID = v.default(function(e4) {
+                  var t3 = r2.props.style;
+                  if (g.default(r2.state.currentStyle, t3, r2.state.currentVelocity))
+                    return r2.wasAnimating && r2.props.onRest && r2.props.onRest(), r2.animationID = null, r2.wasAnimating = false, void (r2.accumulatedTime = 0);
+                  r2.wasAnimating = true;
+                  var n3 = e4 || h.default(), a2 = n3 - r2.prevTime;
+                  if (r2.prevTime = n3, r2.accumulatedTime = r2.accumulatedTime + a2, r2.accumulatedTime > 10 * w && (r2.accumulatedTime = 0), 0 === r2.accumulatedTime)
+                    return r2.animationID = null, void r2.startAnimationIfNecessary();
+                  var o2 = (r2.accumulatedTime - Math.floor(r2.accumulatedTime / w) * w) / w, i2 = Math.floor(r2.accumulatedTime / w), l2 = {}, u2 = {}, s2 = {}, c2 = {};
+                  for (var f2 in t3)
+                    if (Object.prototype.hasOwnProperty.call(t3, f2)) {
+                      var p2 = t3[f2];
+                      if ("number" == typeof p2)
+                        s2[f2] = p2, c2[f2] = 0, l2[f2] = p2, u2[f2] = 0;
                       else {
-                        for (var y3 = r4.state.lastIdealStyle[f3], m3 = r4.state.lastIdealVelocity[f3], v3 = 0; v3 < i3; v3++) {
-                          var b3 = d2.default(w2 / 1e3, y3, m3, p3.val, p3.stiffness, p3.damping, p3.precision);
-                          y3 = b3[0], m3 = b3[1];
+                        for (var y2 = r2.state.lastIdealStyle[f2], m2 = r2.state.lastIdealVelocity[f2], v2 = 0; v2 < i2; v2++) {
+                          var b2 = d.default(w / 1e3, y2, m2, p2.val, p2.stiffness, p2.damping, p2.precision);
+                          y2 = b2[0], m2 = b2[1];
                         }
-                        var S3 = d2.default(w2 / 1e3, y3, m3, p3.val, p3.stiffness, p3.damping, p3.precision), T3 = S3[0], O3 = S3[1];
-                        s3[f3] = y3 + (T3 - y3) * o3, c2[f3] = m3 + (O3 - m3) * o3, l3[f3] = y3, u3[f3] = m3;
+                        var S2 = d.default(w / 1e3, y2, m2, p2.val, p2.stiffness, p2.damping, p2.precision), T2 = S2[0], O2 = S2[1];
+                        s2[f2] = y2 + (T2 - y2) * o2, c2[f2] = m2 + (O2 - m2) * o2, l2[f2] = y2, u2[f2] = m2;
                       }
                     }
-                  r4.animationID = null, r4.accumulatedTime -= i3 * w2, r4.setState({ currentStyle: s3, currentVelocity: c2, lastIdealStyle: l3, lastIdealVelocity: u3 }), r4.unreadPropStyle = null, r4.startAnimationIfNecessary();
+                  r2.animationID = null, r2.accumulatedTime -= i2 * w, r2.setState({ currentStyle: s2, currentVelocity: c2, lastIdealStyle: l2, lastIdealVelocity: u2 }), r2.unreadPropStyle = null, r2.startAnimationIfNecessary();
                 });
               }, this.state = this.defaultState();
             }
-            return o2(t3, e4), l2(t3, null, [{ key: "propTypes", value: { defaultStyle: k2.default.objectOf(k2.default.number), style: k2.default.objectOf(k2.default.oneOfType([k2.default.number, k2.default.object])).isRequired, children: k2.default.func.isRequired, onRest: k2.default.func }, enumerable: true }]), t3.prototype.defaultState = function() {
-              var e5 = this.props, t4 = e5.defaultStyle, n3 = e5.style, r4 = t4 || f2.default(n3), a3 = s2.default(r4);
-              return { currentStyle: r4, currentVelocity: a3, lastIdealStyle: r4, lastIdealVelocity: a3 };
-            }, t3.prototype.componentDidMount = function() {
-              this.prevTime = h2.default(), this.startAnimationIfNecessary();
-            }, t3.prototype.componentWillReceiveProps = function(e5) {
-              null != this.unreadPropStyle && this.clearUnreadPropStyle(this.unreadPropStyle), this.unreadPropStyle = e5.style, null == this.animationID && (this.prevTime = h2.default(), this.startAnimationIfNecessary());
-            }, t3.prototype.componentWillUnmount = function() {
-              null != this.animationID && (v2.default.cancel(this.animationID), this.animationID = null);
-            }, t3.prototype.render = function() {
-              var e5 = this.props.children(this.state.currentStyle);
-              return e5 && T2.default.Children.only(e5);
-            }, t3;
-          }(T2.default.Component);
-          t2.default = I2, e3.exports = t2.default;
-        }, function(e3, t2, n2) {
+            return o(t2, e3), l(t2, null, [{ key: "propTypes", value: { defaultStyle: k.default.objectOf(k.default.number), style: k.default.objectOf(k.default.oneOfType([k.default.number, k.default.object])).isRequired, children: k.default.func.isRequired, onRest: k.default.func }, enumerable: true }]), t2.prototype.defaultState = function() {
+              var e4 = this.props, t3 = e4.defaultStyle, n2 = e4.style, r2 = t3 || f.default(n2), a2 = s.default(r2);
+              return { currentStyle: r2, currentVelocity: a2, lastIdealStyle: r2, lastIdealVelocity: a2 };
+            }, t2.prototype.componentDidMount = function() {
+              this.prevTime = h.default(), this.startAnimationIfNecessary();
+            }, t2.prototype.componentWillReceiveProps = function(e4) {
+              null != this.unreadPropStyle && this.clearUnreadPropStyle(this.unreadPropStyle), this.unreadPropStyle = e4.style, null == this.animationID && (this.prevTime = h.default(), this.startAnimationIfNecessary());
+            }, t2.prototype.componentWillUnmount = function() {
+              null != this.animationID && (v.default.cancel(this.animationID), this.animationID = null);
+            }, t2.prototype.render = function() {
+              var e4 = this.props.children(this.state.currentStyle);
+              return e4 && T.default.Children.only(e4);
+            }, t2;
+          }(T.default.Component);
+          t.default = I, e2.exports = t.default;
+        }, function(e2, t, n) {
           "use strict";
-          function r3(e4) {
-            return e4 && e4.__esModule ? e4 : { default: e4 };
+          function r(e3) {
+            return e3 && e3.__esModule ? e3 : { default: e3 };
           }
-          function a2(e4, t3) {
-            if (!(e4 instanceof t3))
+          function a(e3, t2) {
+            if (!(e3 instanceof t2))
               throw new TypeError("Cannot call a class as a function");
           }
-          function o2(e4, t3) {
-            if ("function" != typeof t3 && null !== t3)
-              throw new TypeError("Super expression must either be null or a function, not " + typeof t3);
-            e4.prototype = Object.create(t3 && t3.prototype, { constructor: { value: e4, enumerable: false, writable: true, configurable: true } }), t3 && (Object.setPrototypeOf ? Object.setPrototypeOf(e4, t3) : e4.__proto__ = t3);
+          function o(e3, t2) {
+            if ("function" != typeof t2 && null !== t2)
+              throw new TypeError("Super expression must either be null or a function, not " + typeof t2);
+            e3.prototype = Object.create(t2 && t2.prototype, { constructor: { value: e3, enumerable: false, writable: true, configurable: true } }), t2 && (Object.setPrototypeOf ? Object.setPrototypeOf(e3, t2) : e3.__proto__ = t2);
           }
-          function i2(e4, t3, n3) {
-            for (var r4 = 0; r4 < e4.length; r4++)
-              if (!S2.default(e4[r4], t3[r4], n3[r4]))
+          function i(e3, t2, n2) {
+            for (var r2 = 0; r2 < e3.length; r2++)
+              if (!S.default(e3[r2], t2[r2], n2[r2]))
                 return false;
             return true;
           }
-          t2.__esModule = true;
-          var l2 = Object.assign || function(e4) {
-            for (var t3 = 1; t3 < arguments.length; t3++) {
-              var n3 = arguments[t3];
-              for (var r4 in n3)
-                Object.prototype.hasOwnProperty.call(n3, r4) && (e4[r4] = n3[r4]);
+          t.__esModule = true;
+          var l = Object.assign || function(e3) {
+            for (var t2 = 1; t2 < arguments.length; t2++) {
+              var n2 = arguments[t2];
+              for (var r2 in n2)
+                Object.prototype.hasOwnProperty.call(n2, r2) && (e3[r2] = n2[r2]);
             }
-            return e4;
-          }, u2 = function() {
-            function e4(e5, t3) {
-              for (var n3 = 0; n3 < t3.length; n3++) {
-                var r4 = t3[n3];
-                r4.enumerable = r4.enumerable || false, r4.configurable = true, "value" in r4 && (r4.writable = true), Object.defineProperty(e5, r4.key, r4);
+            return e3;
+          }, u = function() {
+            function e3(e4, t2) {
+              for (var n2 = 0; n2 < t2.length; n2++) {
+                var r2 = t2[n2];
+                r2.enumerable = r2.enumerable || false, r2.configurable = true, "value" in r2 && (r2.writable = true), Object.defineProperty(e4, r2.key, r2);
               }
             }
-            return function(t3, n3, r4) {
-              return n3 && e4(t3.prototype, n3), r4 && e4(t3, r4), t3;
+            return function(t2, n2, r2) {
+              return n2 && e3(t2.prototype, n2), r2 && e3(t2, r2), t2;
             };
-          }(), s2 = n2(6), c = r3(s2), f2 = n2(2), p2 = r3(f2), d2 = n2(8), y2 = r3(d2), h2 = n2(4), m2 = r3(h2), v2 = n2(5), b2 = r3(v2), g2 = n2(7), S2 = r3(g2), T2 = n2(3), O2 = r3(T2), k2 = n2(1), w2 = r3(k2), I2 = 1e3 / 60, P2 = function(e4) {
-            function t3(n3) {
-              var r4 = this;
-              a2(this, t3), e4.call(this, n3), this.animationID = null, this.prevTime = 0, this.accumulatedTime = 0, this.unreadPropStyles = null, this.clearUnreadPropStyle = function(e5) {
-                for (var t4 = r4.state, n4 = t4.currentStyles, a3 = t4.currentVelocities, o3 = t4.lastIdealStyles, i3 = t4.lastIdealVelocities, u3 = false, s3 = 0; s3 < e5.length; s3++) {
-                  var c2 = e5[s3], f3 = false;
-                  for (var p3 in c2)
-                    if (Object.prototype.hasOwnProperty.call(c2, p3)) {
-                      var d3 = c2[p3];
-                      "number" == typeof d3 && (f3 || (f3 = true, u3 = true, n4[s3] = l2({}, n4[s3]), a3[s3] = l2({}, a3[s3]), o3[s3] = l2({}, o3[s3]), i3[s3] = l2({}, i3[s3])), n4[s3][p3] = d3, a3[s3][p3] = 0, o3[s3][p3] = d3, i3[s3][p3] = 0);
+          }(), s = n(6), c = r(s), f = n(2), p = r(f), d = n(8), y = r(d), h = n(4), m = r(h), v = n(5), b = r(v), g = n(7), S = r(g), T = n(3), O = r(T), k = n(1), w = r(k), I = 1e3 / 60, P = function(e3) {
+            function t2(n2) {
+              var r2 = this;
+              a(this, t2), e3.call(this, n2), this.animationID = null, this.prevTime = 0, this.accumulatedTime = 0, this.unreadPropStyles = null, this.clearUnreadPropStyle = function(e4) {
+                for (var t3 = r2.state, n3 = t3.currentStyles, a2 = t3.currentVelocities, o2 = t3.lastIdealStyles, i2 = t3.lastIdealVelocities, u2 = false, s2 = 0; s2 < e4.length; s2++) {
+                  var c2 = e4[s2], f2 = false;
+                  for (var p2 in c2)
+                    if (Object.prototype.hasOwnProperty.call(c2, p2)) {
+                      var d2 = c2[p2];
+                      "number" == typeof d2 && (f2 || (f2 = true, u2 = true, n3[s2] = l({}, n3[s2]), a2[s2] = l({}, a2[s2]), o2[s2] = l({}, o2[s2]), i2[s2] = l({}, i2[s2])), n3[s2][p2] = d2, a2[s2][p2] = 0, o2[s2][p2] = d2, i2[s2][p2] = 0);
                     }
                 }
-                u3 && r4.setState({ currentStyles: n4, currentVelocities: a3, lastIdealStyles: o3, lastIdealVelocities: i3 });
+                u2 && r2.setState({ currentStyles: n3, currentVelocities: a2, lastIdealStyles: o2, lastIdealVelocities: i2 });
               }, this.startAnimationIfNecessary = function() {
-                r4.animationID = b2.default(function(e5) {
-                  var t4 = r4.props.styles(r4.state.lastIdealStyles);
-                  if (i2(r4.state.currentStyles, t4, r4.state.currentVelocities))
-                    return r4.animationID = null, void (r4.accumulatedTime = 0);
-                  var n4 = e5 || m2.default(), a3 = n4 - r4.prevTime;
-                  if (r4.prevTime = n4, r4.accumulatedTime = r4.accumulatedTime + a3, r4.accumulatedTime > 10 * I2 && (r4.accumulatedTime = 0), 0 === r4.accumulatedTime)
-                    return r4.animationID = null, void r4.startAnimationIfNecessary();
-                  for (var o3 = (r4.accumulatedTime - Math.floor(r4.accumulatedTime / I2) * I2) / I2, l3 = Math.floor(r4.accumulatedTime / I2), u3 = [], s3 = [], c2 = [], f3 = [], p3 = 0; p3 < t4.length; p3++) {
-                    var d3 = t4[p3], h3 = {}, v3 = {}, b3 = {}, g3 = {};
-                    for (var S3 in d3)
-                      if (Object.prototype.hasOwnProperty.call(d3, S3)) {
-                        var T3 = d3[S3];
-                        if ("number" == typeof T3)
-                          h3[S3] = T3, v3[S3] = 0, b3[S3] = T3, g3[S3] = 0;
+                r2.animationID = b.default(function(e4) {
+                  var t3 = r2.props.styles(r2.state.lastIdealStyles);
+                  if (i(r2.state.currentStyles, t3, r2.state.currentVelocities))
+                    return r2.animationID = null, void (r2.accumulatedTime = 0);
+                  var n3 = e4 || m.default(), a2 = n3 - r2.prevTime;
+                  if (r2.prevTime = n3, r2.accumulatedTime = r2.accumulatedTime + a2, r2.accumulatedTime > 10 * I && (r2.accumulatedTime = 0), 0 === r2.accumulatedTime)
+                    return r2.animationID = null, void r2.startAnimationIfNecessary();
+                  for (var o2 = (r2.accumulatedTime - Math.floor(r2.accumulatedTime / I) * I) / I, l2 = Math.floor(r2.accumulatedTime / I), u2 = [], s2 = [], c2 = [], f2 = [], p2 = 0; p2 < t3.length; p2++) {
+                    var d2 = t3[p2], h2 = {}, v2 = {}, b2 = {}, g2 = {};
+                    for (var S2 in d2)
+                      if (Object.prototype.hasOwnProperty.call(d2, S2)) {
+                        var T2 = d2[S2];
+                        if ("number" == typeof T2)
+                          h2[S2] = T2, v2[S2] = 0, b2[S2] = T2, g2[S2] = 0;
                         else {
-                          for (var O3 = r4.state.lastIdealStyles[p3][S3], k3 = r4.state.lastIdealVelocities[p3][S3], w3 = 0; w3 < l3; w3++) {
-                            var P3 = y2.default(I2 / 1e3, O3, k3, T3.val, T3.stiffness, T3.damping, T3.precision);
-                            O3 = P3[0], k3 = P3[1];
+                          for (var O2 = r2.state.lastIdealStyles[p2][S2], k2 = r2.state.lastIdealVelocities[p2][S2], w2 = 0; w2 < l2; w2++) {
+                            var P2 = y.default(I / 1e3, O2, k2, T2.val, T2.stiffness, T2.damping, T2.precision);
+                            O2 = P2[0], k2 = P2[1];
                           }
-                          var j = y2.default(I2 / 1e3, O3, k3, T3.val, T3.stiffness, T3.damping, T3.precision), _3 = j[0], x2 = j[1];
-                          h3[S3] = O3 + (_3 - O3) * o3, v3[S3] = k3 + (x2 - k3) * o3, b3[S3] = O3, g3[S3] = k3;
+                          var j = y.default(I / 1e3, O2, k2, T2.val, T2.stiffness, T2.damping, T2.precision), _2 = j[0], x = j[1];
+                          h2[S2] = O2 + (_2 - O2) * o2, v2[S2] = k2 + (x - k2) * o2, b2[S2] = O2, g2[S2] = k2;
                         }
                       }
-                    c2[p3] = h3, f3[p3] = v3, u3[p3] = b3, s3[p3] = g3;
+                    c2[p2] = h2, f2[p2] = v2, u2[p2] = b2, s2[p2] = g2;
                   }
-                  r4.animationID = null, r4.accumulatedTime -= l3 * I2, r4.setState({ currentStyles: c2, currentVelocities: f3, lastIdealStyles: u3, lastIdealVelocities: s3 }), r4.unreadPropStyles = null, r4.startAnimationIfNecessary();
+                  r2.animationID = null, r2.accumulatedTime -= l2 * I, r2.setState({ currentStyles: c2, currentVelocities: f2, lastIdealStyles: u2, lastIdealVelocities: s2 }), r2.unreadPropStyles = null, r2.startAnimationIfNecessary();
                 });
               }, this.state = this.defaultState();
             }
-            return o2(t3, e4), u2(t3, null, [{ key: "propTypes", value: { defaultStyles: w2.default.arrayOf(w2.default.objectOf(w2.default.number)), styles: w2.default.func.isRequired, children: w2.default.func.isRequired }, enumerable: true }]), t3.prototype.defaultState = function() {
-              var e5 = this.props, t4 = e5.defaultStyles, n3 = e5.styles, r4 = t4 || n3().map(p2.default), a3 = r4.map(function(e6) {
-                return c.default(e6);
+            return o(t2, e3), u(t2, null, [{ key: "propTypes", value: { defaultStyles: w.default.arrayOf(w.default.objectOf(w.default.number)), styles: w.default.func.isRequired, children: w.default.func.isRequired }, enumerable: true }]), t2.prototype.defaultState = function() {
+              var e4 = this.props, t3 = e4.defaultStyles, n2 = e4.styles, r2 = t3 || n2().map(p.default), a2 = r2.map(function(e5) {
+                return c.default(e5);
               });
-              return { currentStyles: r4, currentVelocities: a3, lastIdealStyles: r4, lastIdealVelocities: a3 };
-            }, t3.prototype.componentDidMount = function() {
-              this.prevTime = m2.default(), this.startAnimationIfNecessary();
-            }, t3.prototype.componentWillReceiveProps = function(e5) {
-              null != this.unreadPropStyles && this.clearUnreadPropStyle(this.unreadPropStyles), this.unreadPropStyles = e5.styles(this.state.lastIdealStyles), null == this.animationID && (this.prevTime = m2.default(), this.startAnimationIfNecessary());
-            }, t3.prototype.componentWillUnmount = function() {
-              null != this.animationID && (b2.default.cancel(this.animationID), this.animationID = null);
-            }, t3.prototype.render = function() {
-              var e5 = this.props.children(this.state.currentStyles);
-              return e5 && O2.default.Children.only(e5);
-            }, t3;
-          }(O2.default.Component);
-          t2.default = P2, e3.exports = t2.default;
-        }, function(e3, t2, n2) {
+              return { currentStyles: r2, currentVelocities: a2, lastIdealStyles: r2, lastIdealVelocities: a2 };
+            }, t2.prototype.componentDidMount = function() {
+              this.prevTime = m.default(), this.startAnimationIfNecessary();
+            }, t2.prototype.componentWillReceiveProps = function(e4) {
+              null != this.unreadPropStyles && this.clearUnreadPropStyle(this.unreadPropStyles), this.unreadPropStyles = e4.styles(this.state.lastIdealStyles), null == this.animationID && (this.prevTime = m.default(), this.startAnimationIfNecessary());
+            }, t2.prototype.componentWillUnmount = function() {
+              null != this.animationID && (b.default.cancel(this.animationID), this.animationID = null);
+            }, t2.prototype.render = function() {
+              var e4 = this.props.children(this.state.currentStyles);
+              return e4 && O.default.Children.only(e4);
+            }, t2;
+          }(O.default.Component);
+          t.default = P, e2.exports = t.default;
+        }, function(e2, t, n) {
           "use strict";
-          function r3(e4) {
-            return e4 && e4.__esModule ? e4 : { default: e4 };
+          function r(e3) {
+            return e3 && e3.__esModule ? e3 : { default: e3 };
           }
-          function a2(e4, t3) {
-            if (!(e4 instanceof t3))
+          function a(e3, t2) {
+            if (!(e3 instanceof t2))
               throw new TypeError("Cannot call a class as a function");
           }
-          function o2(e4, t3) {
-            if ("function" != typeof t3 && null !== t3)
-              throw new TypeError("Super expression must either be null or a function, not " + typeof t3);
-            e4.prototype = Object.create(t3 && t3.prototype, { constructor: { value: e4, enumerable: false, writable: true, configurable: true } }), t3 && (Object.setPrototypeOf ? Object.setPrototypeOf(e4, t3) : e4.__proto__ = t3);
+          function o(e3, t2) {
+            if ("function" != typeof t2 && null !== t2)
+              throw new TypeError("Super expression must either be null or a function, not " + typeof t2);
+            e3.prototype = Object.create(t2 && t2.prototype, { constructor: { value: e3, enumerable: false, writable: true, configurable: true } }), t2 && (Object.setPrototypeOf ? Object.setPrototypeOf(e3, t2) : e3.__proto__ = t2);
           }
-          function i2(e4, t3, n3) {
-            var r4 = t3;
-            return null == r4 ? e4.map(function(e5, t4) {
-              return { key: e5.key, data: e5.data, style: n3[t4] };
-            }) : e4.map(function(e5, t4) {
-              for (var a3 = 0; a3 < r4.length; a3++)
-                if (r4[a3].key === e5.key)
-                  return { key: r4[a3].key, data: r4[a3].data, style: n3[t4] };
-              return { key: e5.key, data: e5.data, style: n3[t4] };
+          function i(e3, t2, n2) {
+            var r2 = t2;
+            return null == r2 ? e3.map(function(e4, t3) {
+              return { key: e4.key, data: e4.data, style: n2[t3] };
+            }) : e3.map(function(e4, t3) {
+              for (var a2 = 0; a2 < r2.length; a2++)
+                if (r2[a2].key === e4.key)
+                  return { key: r2[a2].key, data: r2[a2].data, style: n2[t3] };
+              return { key: e4.key, data: e4.data, style: n2[t3] };
             });
           }
-          function l2(e4, t3, n3, r4) {
-            if (r4.length !== t3.length)
+          function l(e3, t2, n2, r2) {
+            if (r2.length !== t2.length)
               return false;
-            for (var a3 = 0; a3 < r4.length; a3++)
-              if (r4[a3].key !== t3[a3].key)
+            for (var a2 = 0; a2 < r2.length; a2++)
+              if (r2[a2].key !== t2[a2].key)
                 return false;
-            for (var a3 = 0; a3 < r4.length; a3++)
-              if (!w2.default(e4[a3], t3[a3].style, n3[a3]))
+            for (var a2 = 0; a2 < r2.length; a2++)
+              if (!w.default(e3[a2], t2[a2].style, n2[a2]))
                 return false;
             return true;
           }
-          function u2(e4, t3, n3, r4, a3, o3, i3, l3, u3) {
-            for (var s3 = b2.default(r4, a3, function(e5, r5) {
-              var a4 = t3(r5);
-              return null == a4 ? (n3({ key: r5.key, data: r5.data }), null) : w2.default(o3[e5], a4, i3[e5]) ? (n3({ key: r5.key, data: r5.data }), null) : { key: r5.key, data: r5.data, style: a4 };
-            }), c2 = [], f3 = [], d3 = [], y3 = [], h3 = 0; h3 < s3.length; h3++) {
-              for (var m3 = s3[h3], v3 = null, g3 = 0; g3 < r4.length; g3++)
-                if (r4[g3].key === m3.key) {
-                  v3 = g3;
+          function u(e3, t2, n2, r2, a2, o2, i2, l2, u2) {
+            for (var s2 = b.default(r2, a2, function(e4, r3) {
+              var a3 = t2(r3);
+              return null == a3 ? (n2({ key: r3.key, data: r3.data }), null) : w.default(o2[e4], a3, i2[e4]) ? (n2({ key: r3.key, data: r3.data }), null) : { key: r3.key, data: r3.data, style: a3 };
+            }), c2 = [], f2 = [], d2 = [], y2 = [], h2 = 0; h2 < s2.length; h2++) {
+              for (var m2 = s2[h2], v2 = null, g2 = 0; g2 < r2.length; g2++)
+                if (r2[g2].key === m2.key) {
+                  v2 = g2;
                   break;
                 }
-              if (null == v3) {
-                var S3 = e4(m3);
-                c2[h3] = S3, d3[h3] = S3;
-                var T3 = p2.default(m3.style);
-                f3[h3] = T3, y3[h3] = T3;
+              if (null == v2) {
+                var S2 = e3(m2);
+                c2[h2] = S2, d2[h2] = S2;
+                var T2 = p.default(m2.style);
+                f2[h2] = T2, y2[h2] = T2;
               } else
-                c2[h3] = o3[v3], d3[h3] = l3[v3], f3[h3] = i3[v3], y3[h3] = u3[v3];
+                c2[h2] = o2[v2], d2[h2] = l2[v2], f2[h2] = i2[v2], y2[h2] = u2[v2];
             }
-            return [s3, c2, f3, d3, y3];
+            return [s2, c2, f2, d2, y2];
           }
-          t2.__esModule = true;
-          var s2 = Object.assign || function(e4) {
-            for (var t3 = 1; t3 < arguments.length; t3++) {
-              var n3 = arguments[t3];
-              for (var r4 in n3)
-                Object.prototype.hasOwnProperty.call(n3, r4) && (e4[r4] = n3[r4]);
+          t.__esModule = true;
+          var s = Object.assign || function(e3) {
+            for (var t2 = 1; t2 < arguments.length; t2++) {
+              var n2 = arguments[t2];
+              for (var r2 in n2)
+                Object.prototype.hasOwnProperty.call(n2, r2) && (e3[r2] = n2[r2]);
             }
-            return e4;
+            return e3;
           }, c = function() {
-            function e4(e5, t3) {
-              for (var n3 = 0; n3 < t3.length; n3++) {
-                var r4 = t3[n3];
-                r4.enumerable = r4.enumerable || false, r4.configurable = true, "value" in r4 && (r4.writable = true), Object.defineProperty(e5, r4.key, r4);
+            function e3(e4, t2) {
+              for (var n2 = 0; n2 < t2.length; n2++) {
+                var r2 = t2[n2];
+                r2.enumerable = r2.enumerable || false, r2.configurable = true, "value" in r2 && (r2.writable = true), Object.defineProperty(e4, r2.key, r2);
               }
             }
-            return function(t3, n3, r4) {
-              return n3 && e4(t3.prototype, n3), r4 && e4(t3, r4), t3;
+            return function(t2, n2, r2) {
+              return n2 && e3(t2.prototype, n2), r2 && e3(t2, r2), t2;
             };
-          }(), f2 = n2(6), p2 = r3(f2), d2 = n2(2), y2 = r3(d2), h2 = n2(8), m2 = r3(h2), v2 = n2(23), b2 = r3(v2), g2 = n2(4), S2 = r3(g2), T2 = n2(5), O2 = r3(T2), k2 = n2(7), w2 = r3(k2), I2 = n2(3), P2 = r3(I2), j = n2(1), _3 = r3(j), x2 = 1e3 / 60, M2 = function(e4) {
-            function t3(n3) {
-              var r4 = this;
-              a2(this, t3), e4.call(this, n3), this.unmounting = false, this.animationID = null, this.prevTime = 0, this.accumulatedTime = 0, this.unreadPropStyles = null, this.clearUnreadPropStyle = function(e5) {
-                for (var t4 = u2(r4.props.willEnter, r4.props.willLeave, r4.props.didLeave, r4.state.mergedPropsStyles, e5, r4.state.currentStyles, r4.state.currentVelocities, r4.state.lastIdealStyles, r4.state.lastIdealVelocities), n4 = t4[0], a3 = t4[1], o3 = t4[2], i3 = t4[3], l3 = t4[4], c2 = 0; c2 < e5.length; c2++) {
-                  var f3 = e5[c2].style, p3 = false;
-                  for (var d3 in f3)
-                    if (Object.prototype.hasOwnProperty.call(f3, d3)) {
-                      var y3 = f3[d3];
-                      "number" == typeof y3 && (p3 || (p3 = true, a3[c2] = s2({}, a3[c2]), o3[c2] = s2({}, o3[c2]), i3[c2] = s2({}, i3[c2]), l3[c2] = s2({}, l3[c2]), n4[c2] = { key: n4[c2].key, data: n4[c2].data, style: s2({}, n4[c2].style) }), a3[c2][d3] = y3, o3[c2][d3] = 0, i3[c2][d3] = y3, l3[c2][d3] = 0, n4[c2].style[d3] = y3);
+          }(), f = n(6), p = r(f), d = n(2), y = r(d), h = n(8), m = r(h), v = n(23), b = r(v), g = n(4), S = r(g), T = n(5), O = r(T), k = n(7), w = r(k), I = n(3), P = r(I), j = n(1), _2 = r(j), x = 1e3 / 60, M = function(e3) {
+            function t2(n2) {
+              var r2 = this;
+              a(this, t2), e3.call(this, n2), this.unmounting = false, this.animationID = null, this.prevTime = 0, this.accumulatedTime = 0, this.unreadPropStyles = null, this.clearUnreadPropStyle = function(e4) {
+                for (var t3 = u(r2.props.willEnter, r2.props.willLeave, r2.props.didLeave, r2.state.mergedPropsStyles, e4, r2.state.currentStyles, r2.state.currentVelocities, r2.state.lastIdealStyles, r2.state.lastIdealVelocities), n3 = t3[0], a2 = t3[1], o2 = t3[2], i2 = t3[3], l2 = t3[4], c2 = 0; c2 < e4.length; c2++) {
+                  var f2 = e4[c2].style, p2 = false;
+                  for (var d2 in f2)
+                    if (Object.prototype.hasOwnProperty.call(f2, d2)) {
+                      var y2 = f2[d2];
+                      "number" == typeof y2 && (p2 || (p2 = true, a2[c2] = s({}, a2[c2]), o2[c2] = s({}, o2[c2]), i2[c2] = s({}, i2[c2]), l2[c2] = s({}, l2[c2]), n3[c2] = { key: n3[c2].key, data: n3[c2].data, style: s({}, n3[c2].style) }), a2[c2][d2] = y2, o2[c2][d2] = 0, i2[c2][d2] = y2, l2[c2][d2] = 0, n3[c2].style[d2] = y2);
                     }
                 }
-                r4.setState({ currentStyles: a3, currentVelocities: o3, mergedPropsStyles: n4, lastIdealStyles: i3, lastIdealVelocities: l3 });
+                r2.setState({ currentStyles: a2, currentVelocities: o2, mergedPropsStyles: n3, lastIdealStyles: i2, lastIdealVelocities: l2 });
               }, this.startAnimationIfNecessary = function() {
-                r4.unmounting || (r4.animationID = O2.default(function(e5) {
-                  if (!r4.unmounting) {
-                    var t4 = r4.props.styles, n4 = "function" == typeof t4 ? t4(i2(r4.state.mergedPropsStyles, r4.unreadPropStyles, r4.state.lastIdealStyles)) : t4;
-                    if (l2(r4.state.currentStyles, n4, r4.state.currentVelocities, r4.state.mergedPropsStyles))
-                      return r4.animationID = null, void (r4.accumulatedTime = 0);
-                    var a3 = e5 || S2.default(), o3 = a3 - r4.prevTime;
-                    if (r4.prevTime = a3, r4.accumulatedTime = r4.accumulatedTime + o3, r4.accumulatedTime > 10 * x2 && (r4.accumulatedTime = 0), 0 === r4.accumulatedTime)
-                      return r4.animationID = null, void r4.startAnimationIfNecessary();
-                    for (var s3 = (r4.accumulatedTime - Math.floor(r4.accumulatedTime / x2) * x2) / x2, c2 = Math.floor(r4.accumulatedTime / x2), f3 = u2(r4.props.willEnter, r4.props.willLeave, r4.props.didLeave, r4.state.mergedPropsStyles, n4, r4.state.currentStyles, r4.state.currentVelocities, r4.state.lastIdealStyles, r4.state.lastIdealVelocities), p3 = f3[0], d3 = f3[1], y3 = f3[2], h3 = f3[3], v3 = f3[4], b3 = 0; b3 < p3.length; b3++) {
-                      var g3 = p3[b3].style, T3 = {}, O3 = {}, k3 = {}, w3 = {};
-                      for (var I3 in g3)
-                        if (Object.prototype.hasOwnProperty.call(g3, I3)) {
-                          var P3 = g3[I3];
-                          if ("number" == typeof P3)
-                            T3[I3] = P3, O3[I3] = 0, k3[I3] = P3, w3[I3] = 0;
+                r2.unmounting || (r2.animationID = O.default(function(e4) {
+                  if (!r2.unmounting) {
+                    var t3 = r2.props.styles, n3 = "function" == typeof t3 ? t3(i(r2.state.mergedPropsStyles, r2.unreadPropStyles, r2.state.lastIdealStyles)) : t3;
+                    if (l(r2.state.currentStyles, n3, r2.state.currentVelocities, r2.state.mergedPropsStyles))
+                      return r2.animationID = null, void (r2.accumulatedTime = 0);
+                    var a2 = e4 || S.default(), o2 = a2 - r2.prevTime;
+                    if (r2.prevTime = a2, r2.accumulatedTime = r2.accumulatedTime + o2, r2.accumulatedTime > 10 * x && (r2.accumulatedTime = 0), 0 === r2.accumulatedTime)
+                      return r2.animationID = null, void r2.startAnimationIfNecessary();
+                    for (var s2 = (r2.accumulatedTime - Math.floor(r2.accumulatedTime / x) * x) / x, c2 = Math.floor(r2.accumulatedTime / x), f2 = u(r2.props.willEnter, r2.props.willLeave, r2.props.didLeave, r2.state.mergedPropsStyles, n3, r2.state.currentStyles, r2.state.currentVelocities, r2.state.lastIdealStyles, r2.state.lastIdealVelocities), p2 = f2[0], d2 = f2[1], y2 = f2[2], h2 = f2[3], v2 = f2[4], b2 = 0; b2 < p2.length; b2++) {
+                      var g2 = p2[b2].style, T2 = {}, O2 = {}, k2 = {}, w2 = {};
+                      for (var I2 in g2)
+                        if (Object.prototype.hasOwnProperty.call(g2, I2)) {
+                          var P2 = g2[I2];
+                          if ("number" == typeof P2)
+                            T2[I2] = P2, O2[I2] = 0, k2[I2] = P2, w2[I2] = 0;
                           else {
-                            for (var j2 = h3[b3][I3], _4 = v3[b3][I3], M3 = 0; M3 < c2; M3++) {
-                              var R2 = m2.default(x2 / 1e3, j2, _4, P3.val, P3.stiffness, P3.damping, P3.precision);
-                              j2 = R2[0], _4 = R2[1];
+                            for (var j2 = h2[b2][I2], _3 = v2[b2][I2], M2 = 0; M2 < c2; M2++) {
+                              var R = m.default(x / 1e3, j2, _3, P2.val, P2.stiffness, P2.damping, P2.precision);
+                              j2 = R[0], _3 = R[1];
                             }
-                            var C2 = m2.default(x2 / 1e3, j2, _4, P3.val, P3.stiffness, P3.damping, P3.precision), D2 = C2[0], H2 = C2[1];
-                            T3[I3] = j2 + (D2 - j2) * s3, O3[I3] = _4 + (H2 - _4) * s3, k3[I3] = j2, w3[I3] = _4;
+                            var C = m.default(x / 1e3, j2, _3, P2.val, P2.stiffness, P2.damping, P2.precision), D = C[0], H = C[1];
+                            T2[I2] = j2 + (D - j2) * s2, O2[I2] = _3 + (H - _3) * s2, k2[I2] = j2, w2[I2] = _3;
                           }
                         }
-                      h3[b3] = k3, v3[b3] = w3, d3[b3] = T3, y3[b3] = O3;
+                      h2[b2] = k2, v2[b2] = w2, d2[b2] = T2, y2[b2] = O2;
                     }
-                    r4.animationID = null, r4.accumulatedTime -= c2 * x2, r4.setState({ currentStyles: d3, currentVelocities: y3, lastIdealStyles: h3, lastIdealVelocities: v3, mergedPropsStyles: p3 }), r4.unreadPropStyles = null, r4.startAnimationIfNecessary();
+                    r2.animationID = null, r2.accumulatedTime -= c2 * x, r2.setState({ currentStyles: d2, currentVelocities: y2, lastIdealStyles: h2, lastIdealVelocities: v2, mergedPropsStyles: p2 }), r2.unreadPropStyles = null, r2.startAnimationIfNecessary();
                   }
                 }));
               }, this.state = this.defaultState();
             }
-            return o2(t3, e4), c(t3, null, [{ key: "propTypes", value: { defaultStyles: _3.default.arrayOf(_3.default.shape({ key: _3.default.string.isRequired, data: _3.default.any, style: _3.default.objectOf(_3.default.number).isRequired })), styles: _3.default.oneOfType([_3.default.func, _3.default.arrayOf(_3.default.shape({ key: _3.default.string.isRequired, data: _3.default.any, style: _3.default.objectOf(_3.default.oneOfType([_3.default.number, _3.default.object])).isRequired }))]).isRequired, children: _3.default.func.isRequired, willEnter: _3.default.func, willLeave: _3.default.func, didLeave: _3.default.func }, enumerable: true }, { key: "defaultProps", value: { willEnter: function(e5) {
-              return y2.default(e5.style);
+            return o(t2, e3), c(t2, null, [{ key: "propTypes", value: { defaultStyles: _2.default.arrayOf(_2.default.shape({ key: _2.default.string.isRequired, data: _2.default.any, style: _2.default.objectOf(_2.default.number).isRequired })), styles: _2.default.oneOfType([_2.default.func, _2.default.arrayOf(_2.default.shape({ key: _2.default.string.isRequired, data: _2.default.any, style: _2.default.objectOf(_2.default.oneOfType([_2.default.number, _2.default.object])).isRequired }))]).isRequired, children: _2.default.func.isRequired, willEnter: _2.default.func, willLeave: _2.default.func, didLeave: _2.default.func }, enumerable: true }, { key: "defaultProps", value: { willEnter: function(e4) {
+              return y.default(e4.style);
             }, willLeave: function() {
               return null;
             }, didLeave: function() {
-            } }, enumerable: true }]), t3.prototype.defaultState = function() {
-              var e5 = this.props, t4 = e5.defaultStyles, n3 = e5.styles, r4 = e5.willEnter, a3 = e5.willLeave, o3 = e5.didLeave, i3 = "function" == typeof n3 ? n3(t4) : n3, l3 = void 0;
-              l3 = null == t4 ? i3 : t4.map(function(e6) {
-                for (var t5 = 0; t5 < i3.length; t5++)
-                  if (i3[t5].key === e6.key)
-                    return i3[t5];
-                return e6;
+            } }, enumerable: true }]), t2.prototype.defaultState = function() {
+              var e4 = this.props, t3 = e4.defaultStyles, n2 = e4.styles, r2 = e4.willEnter, a2 = e4.willLeave, o2 = e4.didLeave, i2 = "function" == typeof n2 ? n2(t3) : n2, l2 = void 0;
+              l2 = null == t3 ? i2 : t3.map(function(e5) {
+                for (var t4 = 0; t4 < i2.length; t4++)
+                  if (i2[t4].key === e5.key)
+                    return i2[t4];
+                return e5;
               });
-              var s3 = null == t4 ? i3.map(function(e6) {
-                return y2.default(e6.style);
-              }) : t4.map(function(e6) {
-                return y2.default(e6.style);
-              }), c2 = null == t4 ? i3.map(function(e6) {
-                return p2.default(e6.style);
-              }) : t4.map(function(e6) {
-                return p2.default(e6.style);
-              }), f3 = u2(r4, a3, o3, l3, i3, s3, c2, s3, c2), d3 = f3[0], h3 = f3[1], m3 = f3[2], v3 = f3[3], b3 = f3[4];
-              return { currentStyles: h3, currentVelocities: m3, lastIdealStyles: v3, lastIdealVelocities: b3, mergedPropsStyles: d3 };
-            }, t3.prototype.componentDidMount = function() {
-              this.prevTime = S2.default(), this.startAnimationIfNecessary();
-            }, t3.prototype.componentWillReceiveProps = function(e5) {
+              var s2 = null == t3 ? i2.map(function(e5) {
+                return y.default(e5.style);
+              }) : t3.map(function(e5) {
+                return y.default(e5.style);
+              }), c2 = null == t3 ? i2.map(function(e5) {
+                return p.default(e5.style);
+              }) : t3.map(function(e5) {
+                return p.default(e5.style);
+              }), f2 = u(r2, a2, o2, l2, i2, s2, c2, s2, c2), d2 = f2[0], h2 = f2[1], m2 = f2[2], v2 = f2[3], b2 = f2[4];
+              return { currentStyles: h2, currentVelocities: m2, lastIdealStyles: v2, lastIdealVelocities: b2, mergedPropsStyles: d2 };
+            }, t2.prototype.componentDidMount = function() {
+              this.prevTime = S.default(), this.startAnimationIfNecessary();
+            }, t2.prototype.componentWillReceiveProps = function(e4) {
               this.unreadPropStyles && this.clearUnreadPropStyle(this.unreadPropStyles);
-              var t4 = e5.styles;
-              "function" == typeof t4 ? this.unreadPropStyles = t4(i2(this.state.mergedPropsStyles, this.unreadPropStyles, this.state.lastIdealStyles)) : this.unreadPropStyles = t4, null == this.animationID && (this.prevTime = S2.default(), this.startAnimationIfNecessary());
-            }, t3.prototype.componentWillUnmount = function() {
-              this.unmounting = true, null != this.animationID && (O2.default.cancel(this.animationID), this.animationID = null);
-            }, t3.prototype.render = function() {
-              var e5 = i2(this.state.mergedPropsStyles, this.unreadPropStyles, this.state.currentStyles), t4 = this.props.children(e5);
-              return t4 && P2.default.Children.only(t4);
-            }, t3;
-          }(P2.default.Component);
-          t2.default = M2, e3.exports = t2.default;
-        }, function(e3, t2) {
+              var t3 = e4.styles;
+              "function" == typeof t3 ? this.unreadPropStyles = t3(i(this.state.mergedPropsStyles, this.unreadPropStyles, this.state.lastIdealStyles)) : this.unreadPropStyles = t3, null == this.animationID && (this.prevTime = S.default(), this.startAnimationIfNecessary());
+            }, t2.prototype.componentWillUnmount = function() {
+              this.unmounting = true, null != this.animationID && (O.default.cancel(this.animationID), this.animationID = null);
+            }, t2.prototype.render = function() {
+              var e4 = i(this.state.mergedPropsStyles, this.unreadPropStyles, this.state.currentStyles), t3 = this.props.children(e4);
+              return t3 && P.default.Children.only(t3);
+            }, t2;
+          }(P.default.Component);
+          t.default = M, e2.exports = t.default;
+        }, function(e2, t) {
           "use strict";
-          function n2(e4, t3, n3) {
-            for (var r3 = {}, a2 = 0; a2 < e4.length; a2++)
-              r3[e4[a2].key] = a2;
-            for (var o2 = {}, a2 = 0; a2 < t3.length; a2++)
-              o2[t3[a2].key] = a2;
-            for (var i2 = [], a2 = 0; a2 < t3.length; a2++)
-              i2[a2] = t3[a2];
-            for (var a2 = 0; a2 < e4.length; a2++)
-              if (!Object.prototype.hasOwnProperty.call(o2, e4[a2].key)) {
-                var l2 = n3(a2, e4[a2]);
-                null != l2 && i2.push(l2);
+          function n(e3, t2, n2) {
+            for (var r = {}, a = 0; a < e3.length; a++)
+              r[e3[a].key] = a;
+            for (var o = {}, a = 0; a < t2.length; a++)
+              o[t2[a].key] = a;
+            for (var i = [], a = 0; a < t2.length; a++)
+              i[a] = t2[a];
+            for (var a = 0; a < e3.length; a++)
+              if (!Object.prototype.hasOwnProperty.call(o, e3[a].key)) {
+                var l = n2(a, e3[a]);
+                null != l && i.push(l);
               }
-            return i2.sort(function(e5, n4) {
-              var a3 = o2[e5.key], i3 = o2[n4.key], l3 = r3[e5.key], u2 = r3[n4.key];
-              if (null != a3 && null != i3)
-                return o2[e5.key] - o2[n4.key];
-              if (null != l3 && null != u2)
-                return r3[e5.key] - r3[n4.key];
-              if (null != a3) {
-                for (var s2 = 0; s2 < t3.length; s2++) {
-                  var c = t3[s2].key;
-                  if (Object.prototype.hasOwnProperty.call(r3, c)) {
-                    if (a3 < o2[c] && u2 > r3[c])
+            return i.sort(function(e4, n3) {
+              var a2 = o[e4.key], i2 = o[n3.key], l2 = r[e4.key], u = r[n3.key];
+              if (null != a2 && null != i2)
+                return o[e4.key] - o[n3.key];
+              if (null != l2 && null != u)
+                return r[e4.key] - r[n3.key];
+              if (null != a2) {
+                for (var s = 0; s < t2.length; s++) {
+                  var c = t2[s].key;
+                  if (Object.prototype.hasOwnProperty.call(r, c)) {
+                    if (a2 < o[c] && u > r[c])
                       return -1;
-                    if (a3 > o2[c] && u2 < r3[c])
+                    if (a2 > o[c] && u < r[c])
                       return 1;
                   }
                 }
                 return 1;
               }
-              for (var s2 = 0; s2 < t3.length; s2++) {
-                var c = t3[s2].key;
-                if (Object.prototype.hasOwnProperty.call(r3, c)) {
-                  if (i3 < o2[c] && l3 > r3[c])
+              for (var s = 0; s < t2.length; s++) {
+                var c = t2[s].key;
+                if (Object.prototype.hasOwnProperty.call(r, c)) {
+                  if (i2 < o[c] && l2 > r[c])
                     return 1;
-                  if (i3 > o2[c] && l3 < r3[c])
+                  if (i2 > o[c] && l2 < r[c])
                     return -1;
                 }
               }
               return -1;
             });
           }
-          t2.__esModule = true, t2.default = n2, e3.exports = t2.default;
-        }, function(e3, t2, n2) {
+          t.__esModule = true, t.default = n, e2.exports = t.default;
+        }, function(e2, t, n) {
           "use strict";
-          function r3(e4) {
-            return e4 && e4.__esModule ? e4.default : e4;
+          function r(e3) {
+            return e3 && e3.__esModule ? e3.default : e3;
           }
-          t2.__esModule = true;
-          var a2 = n2(20);
-          t2.Motion = r3(a2);
-          var o2 = n2(21);
-          t2.StaggeredMotion = r3(o2);
-          var i2 = n2(22);
-          t2.TransitionMotion = r3(i2);
-          var l2 = n2(26);
-          t2.spring = r3(l2);
-          var u2 = n2(10);
-          t2.presets = r3(u2);
-          var s2 = n2(2);
-          t2.stripStyle = r3(s2);
-          var c = n2(25);
-          t2.reorderKeys = r3(c);
-        }, function(e3, t2, n2) {
+          t.__esModule = true;
+          var a = n(20);
+          t.Motion = r(a);
+          var o = n(21);
+          t.StaggeredMotion = r(o);
+          var i = n(22);
+          t.TransitionMotion = r(i);
+          var l = n(26);
+          t.spring = r(l);
+          var u = n(10);
+          t.presets = r(u);
+          var s = n(2);
+          t.stripStyle = r(s);
+          var c = n(25);
+          t.reorderKeys = r(c);
+        }, function(e2, t, n) {
           "use strict";
-          function r3() {
+          function r() {
           }
-          t2.__esModule = true, t2.default = r3, e3.exports = t2.default;
-        }, function(e3, t2, n2) {
+          t.__esModule = true, t.default = r, e2.exports = t.default;
+        }, function(e2, t, n) {
           "use strict";
-          function r3(e4) {
-            return e4 && e4.__esModule ? e4 : { default: e4 };
+          function r(e3) {
+            return e3 && e3.__esModule ? e3 : { default: e3 };
           }
-          function a2(e4, t3) {
-            return o2({}, u2, t3, { val: e4 });
+          function a(e3, t2) {
+            return o({}, u, t2, { val: e3 });
           }
-          t2.__esModule = true;
-          var o2 = Object.assign || function(e4) {
-            for (var t3 = 1; t3 < arguments.length; t3++) {
-              var n3 = arguments[t3];
-              for (var r4 in n3)
-                Object.prototype.hasOwnProperty.call(n3, r4) && (e4[r4] = n3[r4]);
+          t.__esModule = true;
+          var o = Object.assign || function(e3) {
+            for (var t2 = 1; t2 < arguments.length; t2++) {
+              var n2 = arguments[t2];
+              for (var r2 in n2)
+                Object.prototype.hasOwnProperty.call(n2, r2) && (e3[r2] = n2[r2]);
             }
-            return e4;
+            return e3;
           };
-          t2.default = a2;
-          var i2 = n2(10), l2 = r3(i2), u2 = o2({}, l2.default.noWobble, { precision: 0.01 });
-          e3.exports = t2.default;
+          t.default = a;
+          var i = n(10), l = r(i), u = o({}, l.default.noWobble, { precision: 0.01 });
+          e2.exports = t.default;
         }]);
       });
     }
@@ -23904,13 +23892,13 @@ class InstrumentLogic extends BaseInstrument {
           construct
         } = typeof Reflect !== "undefined" && Reflect;
         if (!freeze) {
-          freeze = function freeze2(x2) {
-            return x2;
+          freeze = function freeze2(x) {
+            return x;
           };
         }
         if (!seal) {
-          seal = function seal2(x2) {
-            return x2;
+          seal = function seal2(x) {
+            return x;
           };
         }
         if (!apply2) {
@@ -23955,14 +23943,14 @@ class InstrumentLogic extends BaseInstrument {
           if (setPrototypeOf) {
             setPrototypeOf(set, null);
           }
-          let l2 = array.length;
-          while (l2--) {
-            let element = array[l2];
+          let l = array.length;
+          while (l--) {
+            let element = array[l];
             if (typeof element === "string") {
               const lcElement = transformCaseFunc(element);
               if (lcElement !== element) {
                 if (!isFrozen(array)) {
-                  array[l2] = lcElement;
+                  array[l] = lcElement;
                 }
                 element = lcElement;
               }
@@ -24071,7 +24059,7 @@ class InstrumentLogic extends BaseInstrument {
                 return scriptUrl;
               }
             });
-          } catch (_3) {
+          } catch (_2) {
             console.warn("TrustedTypes policy " + policyName + " could not be created.");
             return null;
           }
@@ -24394,7 +24382,7 @@ class InstrumentLogic extends BaseInstrument {
             });
             try {
               node.parentNode.removeChild(node);
-            } catch (_3) {
+            } catch (_2) {
               node.remove();
             }
           };
@@ -24404,7 +24392,7 @@ class InstrumentLogic extends BaseInstrument {
                 attribute: node.getAttributeNode(name),
                 from: node
               });
-            } catch (_3) {
+            } catch (_2) {
               arrayPush2(DOMPurify2.removed, {
                 attribute: null,
                 from: node
@@ -24415,12 +24403,12 @@ class InstrumentLogic extends BaseInstrument {
               if (RETURN_DOM || RETURN_DOM_FRAGMENT) {
                 try {
                   _forceRemove(node);
-                } catch (_3) {
+                } catch (_2) {
                 }
               } else {
                 try {
                   node.setAttribute(name, "");
-                } catch (_3) {
+                } catch (_2) {
                 }
               }
             }
@@ -24441,14 +24429,14 @@ class InstrumentLogic extends BaseInstrument {
             if (NAMESPACE === HTML_NAMESPACE) {
               try {
                 doc = new DOMParser().parseFromString(dirtyPayload, PARSER_MEDIA_TYPE);
-              } catch (_3) {
+              } catch (_2) {
               }
             }
             if (!doc || !doc.documentElement) {
               doc = implementation.createDocument(NAMESPACE, "template", null);
               try {
                 doc.documentElement.innerHTML = IS_EMPTY_INPUT ? emptyHTML : dirtyPayload;
-              } catch (_3) {
+              } catch (_2) {
               }
             }
             const body = doc.body || doc.documentElement;
@@ -24512,8 +24500,8 @@ class InstrumentLogic extends BaseInstrument {
                 const childNodes = getChildNodes(currentNode) || currentNode.childNodes;
                 if (childNodes && parentNode) {
                   const childCount = childNodes.length;
-                  for (let i2 = childCount - 1; i2 >= 0; --i2) {
-                    parentNode.insertBefore(cloneNode(childNodes[i2], true), getNextSibling(currentNode));
+                  for (let i = childCount - 1; i >= 0; --i) {
+                    parentNode.insertBefore(cloneNode(childNodes[i], true), getNextSibling(currentNode));
                   }
                 }
               }
@@ -24588,9 +24576,9 @@ class InstrumentLogic extends BaseInstrument {
               keepAttr: true,
               allowedAttributes: ALLOWED_ATTR
             };
-            let l2 = attributes.length;
-            while (l2--) {
-              const attr = attributes[l2];
+            let l = attributes.length;
+            while (l--) {
+              const attr = attributes[l];
               const {
                 name,
                 namespaceURI,
@@ -24651,7 +24639,7 @@ class InstrumentLogic extends BaseInstrument {
                   currentNode.setAttribute(name, value);
                 }
                 arrayPop(DOMPurify2.removed);
-              } catch (_3) {
+              } catch (_2) {
               }
             }
             _executeHook("afterSanitizeAttributes", currentNode, null);
@@ -24854,7 +24842,7 @@ class InstrumentLogic extends BaseInstrument {
         try {
           value[symToStringTag3] = void 0;
           var unmasked = true;
-        } catch (e2) {
+        } catch (e) {
         }
         var result = nativeObjectToString3.call(value);
         if (unmasked) {
@@ -24964,9 +24952,9 @@ class InstrumentLogic extends BaseInstrument {
   // node_modules/lodash/_baseTimes.js
   var require_baseTimes = __commonJS({
     "node_modules/lodash/_baseTimes.js"(exports2, module2) {
-      function baseTimes2(n2, iteratee) {
-        var index = -1, result = Array(n2);
-        while (++index < n2) {
+      function baseTimes2(n, iteratee) {
+        var index = -1, result = Array(n);
+        while (++index < n) {
           result[index] = iteratee(index);
         }
         return result;
@@ -25122,7 +25110,7 @@ class InstrumentLogic extends BaseInstrument {
             return types;
           }
           return freeProcess2 && freeProcess2.binding && freeProcess2.binding("util");
-        } catch (e2) {
+        } catch (e) {
         }
       }();
       module2.exports = nodeUtil2;
@@ -25577,11 +25565,11 @@ class InstrumentLogic extends BaseInstrument {
         if (func != null) {
           try {
             return funcToString4.call(func);
-          } catch (e2) {
+          } catch (e) {
           }
           try {
             return func + "";
-          } catch (e2) {
+          } catch (e) {
           }
         }
         return "";
@@ -27024,7 +27012,7 @@ class InstrumentLogic extends BaseInstrument {
           var func = getNative2(Object, "defineProperty");
           func({}, "", {});
           return func;
-        } catch (e2) {
+        } catch (e) {
         }
       }();
       module2.exports = defineProperty2;
@@ -27644,8 +27632,8 @@ class InstrumentLogic extends BaseInstrument {
       var _cloneDeep2 = require_cloneDeep();
       var _cloneDeep3 = _interopRequireDefault(_cloneDeep2);
       var _extends11 = Object.assign || function(target) {
-        for (var i2 = 1; i2 < arguments.length; i2++) {
-          var source = arguments[i2];
+        for (var i = 1; i < arguments.length; i++) {
+          var source = arguments[i];
           for (var key in source) {
             if (Object.prototype.hasOwnProperty.call(source, key)) {
               target[key] = source[key];
@@ -27689,8 +27677,8 @@ class InstrumentLogic extends BaseInstrument {
       var _forOwn2 = require_forOwn();
       var _forOwn3 = _interopRequireDefault(_forOwn2);
       var _extends11 = Object.assign || function(target) {
-        for (var i2 = 1; i2 < arguments.length; i2++) {
-          var source = arguments[i2];
+        for (var i = 1; i < arguments.length; i++) {
+          var source = arguments[i];
           for (var key in source) {
             if (Object.prototype.hasOwnProperty.call(source, key)) {
               target[key] = source[key];
@@ -27819,8 +27807,8 @@ class InstrumentLogic extends BaseInstrument {
       });
       exports2.hover = void 0;
       var _extends11 = Object.assign || function(target) {
-        for (var i2 = 1; i2 < arguments.length; i2++) {
-          var source = arguments[i2];
+        for (var i = 1; i < arguments.length; i++) {
+          var source = arguments[i];
           for (var key in source) {
             if (Object.prototype.hasOwnProperty.call(source, key)) {
               target[key] = source[key];
@@ -27892,8 +27880,8 @@ class InstrumentLogic extends BaseInstrument {
       });
       exports2.active = void 0;
       var _extends11 = Object.assign || function(target) {
-        for (var i2 = 1; i2 < arguments.length; i2++) {
-          var source = arguments[i2];
+        for (var i = 1; i < arguments.length; i++) {
+          var source = arguments[i];
           for (var key in source) {
             if (Object.prototype.hasOwnProperty.call(source, key)) {
               target[key] = source[key];
@@ -27963,17 +27951,17 @@ class InstrumentLogic extends BaseInstrument {
       Object.defineProperty(exports2, "__esModule", {
         value: true
       });
-      var loopable = function loopable2(i2, length) {
+      var loopable = function loopable2(i, length) {
         var props = {};
         var setProp = function setProp2(name) {
           var value = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : true;
           props[name] = value;
         };
-        i2 === 0 && setProp("first-child");
-        i2 === length - 1 && setProp("last-child");
-        (i2 === 0 || i2 % 2 === 0) && setProp("even");
-        Math.abs(i2 % 2) === 1 && setProp("odd");
-        setProp("nth-child", i2);
+        i === 0 && setProp("first-child");
+        i === length - 1 && setProp("last-child");
+        (i === 0 || i % 2 === 0) && setProp("even");
+        Math.abs(i % 2) === 1 && setProp("odd");
+        setProp("nth-child", i);
         return props;
       };
       exports2.default = loopable;
@@ -28209,11 +28197,11 @@ class InstrumentLogic extends BaseInstrument {
             return false;
           }
           var test2 = {};
-          for (var i2 = 0; i2 < 10; i2++) {
-            test2["_" + String.fromCharCode(i2)] = i2;
+          for (var i = 0; i < 10; i++) {
+            test2["_" + String.fromCharCode(i)] = i;
           }
-          var order2 = Object.getOwnPropertyNames(test2).map(function(n2) {
-            return test2[n2];
+          var order2 = Object.getOwnPropertyNames(test2).map(function(n) {
+            return test2[n];
           });
           if (order2.join("") !== "0123456789") {
             return false;
@@ -28234,8 +28222,8 @@ class InstrumentLogic extends BaseInstrument {
         var from;
         var to = toObject(target);
         var symbols;
-        for (var s2 = 1; s2 < arguments.length; s2++) {
-          from = Object(arguments[s2]);
+        for (var s = 1; s < arguments.length; s++) {
+          from = Object(arguments[s]);
           for (var key in from) {
             if (hasOwnProperty13.call(from, key)) {
               to[key] = from[key];
@@ -28243,9 +28231,9 @@ class InstrumentLogic extends BaseInstrument {
           }
           if (getOwnPropertySymbols) {
             symbols = getOwnPropertySymbols(from);
-            for (var i2 = 0; i2 < symbols.length; i2++) {
-              if (propIsEnumerable.call(from, symbols[i2])) {
-                to[symbols[i2]] = from[symbols[i2]];
+            for (var i = 0; i < symbols.length; i++) {
+              if (propIsEnumerable.call(from, symbols[i])) {
+                to[symbols[i]] = from[symbols[i]];
               }
             }
           }
@@ -28288,7 +28276,7 @@ class InstrumentLogic extends BaseInstrument {
           }
           try {
             throw new Error(message);
-          } catch (x2) {
+          } catch (x) {
           }
         };
       }
@@ -28356,7 +28344,7 @@ class InstrumentLogic extends BaseInstrument {
           }
           try {
             throw new Error(message);
-          } catch (x2) {
+          } catch (x) {
           }
         };
       }
@@ -28394,11 +28382,11 @@ class InstrumentLogic extends BaseInstrument {
           shape: createShapeTypeChecker,
           exact: createStrictShapeTypeChecker
         };
-        function is(x2, y2) {
-          if (x2 === y2) {
-            return x2 !== 0 || 1 / x2 === 1 / y2;
+        function is(x, y) {
+          if (x === y) {
+            return x !== 0 || 1 / x === 1 / y;
           } else {
-            return x2 !== x2 && y2 !== y2;
+            return x !== x && y !== y;
           }
         }
         function PropTypeError(message, data) {
@@ -28477,8 +28465,8 @@ class InstrumentLogic extends BaseInstrument {
               var propType = getPropType(propValue);
               return new PropTypeError("Invalid " + location + " `" + propFullName + "` of type " + ("`" + propType + "` supplied to `" + componentName + "`, expected an array."));
             }
-            for (var i2 = 0; i2 < propValue.length; i2++) {
-              var error = typeChecker(propValue, i2, componentName, location, propFullName + "[" + i2 + "]", ReactPropTypesSecret);
+            for (var i = 0; i < propValue.length; i++) {
+              var error = typeChecker(propValue, i, componentName, location, propFullName + "[" + i + "]", ReactPropTypesSecret);
               if (error instanceof Error) {
                 return error;
               }
@@ -28535,8 +28523,8 @@ class InstrumentLogic extends BaseInstrument {
           }
           function validate(props, propName, componentName, location, propFullName) {
             var propValue = props[propName];
-            for (var i2 = 0; i2 < expectedValues.length; i2++) {
-              if (is(propValue, expectedValues[i2])) {
+            for (var i = 0; i < expectedValues.length; i++) {
+              if (is(propValue, expectedValues[i])) {
                 return null;
               }
             }
@@ -28578,19 +28566,19 @@ class InstrumentLogic extends BaseInstrument {
             true ? printWarning("Invalid argument supplied to oneOfType, expected an instance of array.") : void 0;
             return emptyFunctionThatReturnsNull;
           }
-          for (var i2 = 0; i2 < arrayOfTypeCheckers.length; i2++) {
-            var checker = arrayOfTypeCheckers[i2];
+          for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+            var checker = arrayOfTypeCheckers[i];
             if (typeof checker !== "function") {
               printWarning(
-                "Invalid argument supplied to oneOfType. Expected an array of check functions, but received " + getPostfixForTypeWarning(checker) + " at index " + i2 + "."
+                "Invalid argument supplied to oneOfType. Expected an array of check functions, but received " + getPostfixForTypeWarning(checker) + " at index " + i + "."
               );
               return emptyFunctionThatReturnsNull;
             }
           }
           function validate(props, propName, componentName, location, propFullName) {
             var expectedTypes = [];
-            for (var i3 = 0; i3 < arrayOfTypeCheckers.length; i3++) {
-              var checker2 = arrayOfTypeCheckers[i3];
+            for (var i2 = 0; i2 < arrayOfTypeCheckers.length; i2++) {
+              var checker2 = arrayOfTypeCheckers[i2];
               var checkerResult = checker2(props, propName, componentName, location, propFullName, ReactPropTypesSecret);
               if (checkerResult == null) {
                 return null;
@@ -28802,8 +28790,8 @@ class InstrumentLogic extends BaseInstrument {
         value: true
       });
       var _extends11 = Object.assign || function(target) {
-        for (var i2 = 1; i2 < arguments.length; i2++) {
-          var source = arguments[i2];
+        for (var i = 1; i < arguments.length; i++) {
+          var source = arguments[i];
           for (var key in source) {
             if (Object.prototype.hasOwnProperty.call(source, key)) {
               target[key] = source[key];
@@ -28819,12 +28807,12 @@ class InstrumentLogic extends BaseInstrument {
       }
       function _objectWithoutProperties(obj, keys3) {
         var target = {};
-        for (var i2 in obj) {
-          if (keys3.indexOf(i2) >= 0)
+        for (var i in obj) {
+          if (keys3.indexOf(i) >= 0)
             continue;
-          if (!Object.prototype.hasOwnProperty.call(obj, i2))
+          if (!Object.prototype.hasOwnProperty.call(obj, i))
             continue;
-          target[i2] = obj[i2];
+          target[i] = obj[i];
         }
         return target;
       }
@@ -28851,8 +28839,8 @@ class InstrumentLogic extends BaseInstrument {
         value: true
       });
       var _extends11 = Object.assign || function(target) {
-        for (var i2 = 1; i2 < arguments.length; i2++) {
-          var source = arguments[i2];
+        for (var i = 1; i < arguments.length; i++) {
+          var source = arguments[i];
           for (var key in source) {
             if (Object.prototype.hasOwnProperty.call(source, key)) {
               target[key] = source[key];
@@ -28868,12 +28856,12 @@ class InstrumentLogic extends BaseInstrument {
       }
       function _objectWithoutProperties(obj, keys3) {
         var target = {};
-        for (var i2 in obj) {
-          if (keys3.indexOf(i2) >= 0)
+        for (var i in obj) {
+          if (keys3.indexOf(i) >= 0)
             continue;
-          if (!Object.prototype.hasOwnProperty.call(obj, i2))
+          if (!Object.prototype.hasOwnProperty.call(obj, i))
             continue;
-          target[i2] = obj[i2];
+          target[i] = obj[i];
         }
         return target;
       }
@@ -28901,21 +28889,21 @@ class InstrumentLogic extends BaseInstrument {
         "use strict";
         var version = "1.9.4";
         function extend(dest) {
-          var i2, j, len, src;
+          var i, j, len, src;
           for (j = 1, len = arguments.length; j < len; j++) {
             src = arguments[j];
-            for (i2 in src) {
-              dest[i2] = src[i2];
+            for (i in src) {
+              dest[i] = src[i];
             }
           }
           return dest;
         }
         var create$2 = Object.create || function() {
-          function F2() {
+          function F() {
           }
           return function(proto) {
-            F2.prototype = proto;
-            return new F2();
+            F.prototype = proto;
+            return new F();
           };
         }();
         function bind(fn, obj) {
@@ -28955,9 +28943,9 @@ class InstrumentLogic extends BaseInstrument {
           };
           return wrapperFn;
         }
-        function wrapNum(x2, range, includeMax) {
-          var max = range[1], min = range[0], d2 = max - min;
-          return x2 === max && includeMax ? x2 : ((x2 - min) % d2 + d2) % d2 + min;
+        function wrapNum(x, range, includeMax) {
+          var max = range[1], min = range[0], d = max - min;
+          return x === max && includeMax ? x : ((x - min) % d + d) % d + min;
         }
         function falseFn() {
           return false;
@@ -28979,15 +28967,15 @@ class InstrumentLogic extends BaseInstrument {
           if (!Object.prototype.hasOwnProperty.call(obj, "options")) {
             obj.options = obj.options ? create$2(obj.options) : {};
           }
-          for (var i2 in options) {
-            obj.options[i2] = options[i2];
+          for (var i in options) {
+            obj.options[i] = options[i];
           }
           return obj.options;
         }
         function getParamString(obj, existingUrl, uppercase) {
           var params = [];
-          for (var i2 in obj) {
-            params.push(encodeURIComponent(uppercase ? i2.toUpperCase() : i2) + "=" + encodeURIComponent(obj[i2]));
+          for (var i in obj) {
+            params.push(encodeURIComponent(uppercase ? i.toUpperCase() : i) + "=" + encodeURIComponent(obj[i]));
           }
           return (!existingUrl || existingUrl.indexOf("?") === -1 ? "?" : "&") + params.join("&");
         }
@@ -29007,9 +28995,9 @@ class InstrumentLogic extends BaseInstrument {
           return Object.prototype.toString.call(obj) === "[object Array]";
         };
         function indexOf(array, el) {
-          for (var i2 = 0; i2 < array.length; i2++) {
-            if (array[i2] === el) {
-              return i2;
+          for (var i = 0; i < array.length; i++) {
+            if (array[i] === el) {
+              return i;
             }
           }
           return -1;
@@ -29080,9 +29068,9 @@ class InstrumentLogic extends BaseInstrument {
           var proto = create$2(parentProto);
           proto.constructor = NewClass;
           NewClass.prototype = proto;
-          for (var i2 in this) {
-            if (Object.prototype.hasOwnProperty.call(this, i2) && i2 !== "prototype" && i2 !== "__super__") {
-              NewClass[i2] = this[i2];
+          for (var i in this) {
+            if (Object.prototype.hasOwnProperty.call(this, i) && i !== "prototype" && i !== "__super__") {
+              NewClass[i] = this[i];
             }
           }
           if (props.statics) {
@@ -29108,8 +29096,8 @@ class InstrumentLogic extends BaseInstrument {
               parentProto.callInitHooks.call(this);
             }
             this._initHooksCalled = true;
-            for (var i3 = 0, len = proto._initHooks.length; i3 < len; i3++) {
-              proto._initHooks[i3].call(this);
+            for (var i2 = 0, len = proto._initHooks.length; i2 < len; i2++) {
+              proto._initHooks[i2].call(this);
             }
           };
           return NewClass;
@@ -29141,8 +29129,8 @@ class InstrumentLogic extends BaseInstrument {
             return;
           }
           includes = isArray2(includes) ? includes : [includes];
-          for (var i2 = 0; i2 < includes.length; i2++) {
-            if (includes[i2] === L.Mixin.Events) {
+          for (var i = 0; i < includes.length; i++) {
+            if (includes[i] === L.Mixin.Events) {
               console.warn("Deprecated include of L.Mixin.Events: this property will be removed in future releases, please inherit from L.Evented instead.", new Error().stack);
             }
           }
@@ -29155,8 +29143,8 @@ class InstrumentLogic extends BaseInstrument {
               }
             } else {
               types = splitWords(types);
-              for (var i2 = 0, len = types.length; i2 < len; i2++) {
-                this._on(types[i2], fn, context2);
+              for (var i = 0, len = types.length; i < len; i++) {
+                this._on(types[i], fn, context2);
               }
             }
             return this;
@@ -29171,11 +29159,11 @@ class InstrumentLogic extends BaseInstrument {
             } else {
               types = splitWords(types);
               var removeAll = arguments.length === 1;
-              for (var i2 = 0, len = types.length; i2 < len; i2++) {
+              for (var i = 0, len = types.length; i < len; i++) {
                 if (removeAll) {
-                  this._off(types[i2]);
+                  this._off(types[i]);
                 } else {
-                  this._off(types[i2], fn, context2);
+                  this._off(types[i], fn, context2);
                 }
               }
             }
@@ -29201,7 +29189,7 @@ class InstrumentLogic extends BaseInstrument {
             this._events[type].push(newListener);
           },
           _off: function(type, fn, context2) {
-            var listeners, i2, len;
+            var listeners, i, len;
             if (!this._events) {
               return;
             }
@@ -29211,8 +29199,8 @@ class InstrumentLogic extends BaseInstrument {
             }
             if (arguments.length === 1) {
               if (this._firingCount) {
-                for (i2 = 0, len = listeners.length; i2 < len; i2++) {
-                  listeners[i2].fn = falseFn;
+                for (i = 0, len = listeners.length; i < len; i++) {
+                  listeners[i].fn = falseFn;
                 }
               }
               delete this._events[type];
@@ -29245,13 +29233,13 @@ class InstrumentLogic extends BaseInstrument {
               var listeners = this._events[type];
               if (listeners) {
                 this._firingCount = this._firingCount + 1 || 1;
-                for (var i2 = 0, len = listeners.length; i2 < len; i2++) {
-                  var l2 = listeners[i2];
-                  var fn = l2.fn;
-                  if (l2.once) {
-                    this.off(type, fn, l2.ctx);
+                for (var i = 0, len = listeners.length; i < len; i++) {
+                  var l = listeners[i];
+                  var fn = l.fn;
+                  if (l.once) {
+                    this.off(type, fn, l.ctx);
                   }
-                  fn.call(l2.ctx || this, event);
+                  fn.call(l.ctx || this, event);
                 }
                 this._firingCount--;
               }
@@ -29297,9 +29285,9 @@ class InstrumentLogic extends BaseInstrument {
             if (context2 === this) {
               context2 = void 0;
             }
-            for (var i2 = 0, len = listeners.length; i2 < len; i2++) {
-              if (listeners[i2].fn === fn && listeners[i2].ctx === context2) {
-                return i2;
+            for (var i = 0, len = listeners.length; i < len; i++) {
+              if (listeners[i].fn === fn && listeners[i].ctx === context2) {
+                return i;
               }
             }
             return false;
@@ -29311,8 +29299,8 @@ class InstrumentLogic extends BaseInstrument {
               }
             } else {
               types = splitWords(types);
-              for (var i2 = 0, len = types.length; i2 < len; i2++) {
-                this._on(types[i2], fn, context2, true);
+              for (var i = 0, len = types.length; i < len; i++) {
+                this._on(types[i], fn, context2, true);
               }
             }
             return this;
@@ -29328,12 +29316,12 @@ class InstrumentLogic extends BaseInstrument {
             }
             return this;
           },
-          _propagateEvent: function(e2) {
+          _propagateEvent: function(e) {
             for (var id in this._eventParents) {
-              this._eventParents[id].fire(e2.type, extend({
-                layer: e2.target,
-                propagatedFrom: e2.target
-              }, e2), true);
+              this._eventParents[id].fire(e.type, extend({
+                layer: e.target,
+                propagatedFrom: e.target
+              }, e), true);
             }
           }
         };
@@ -29343,12 +29331,12 @@ class InstrumentLogic extends BaseInstrument {
         Events.fireEvent = Events.fire;
         Events.hasEventListeners = Events.listens;
         var Evented = Class.extend(Events);
-        function Point(x2, y2, round) {
-          this.x = round ? Math.round(x2) : x2;
-          this.y = round ? Math.round(y2) : y2;
+        function Point(x, y, round) {
+          this.x = round ? Math.round(x) : x;
+          this.y = round ? Math.round(y) : y;
         }
-        var trunc = Math.trunc || function(v2) {
-          return v2 > 0 ? Math.floor(v2) : Math.ceil(v2);
+        var trunc = Math.trunc || function(v) {
+          return v > 0 ? Math.floor(v) : Math.ceil(v);
         };
         Point.prototype = {
           clone: function() {
@@ -29426,8 +29414,8 @@ class InstrumentLogic extends BaseInstrument {
           },
           distanceTo: function(point) {
             point = toPoint(point);
-            var x2 = point.x - this.x, y2 = point.y - this.y;
-            return Math.sqrt(x2 * x2 + y2 * y2);
+            var x = point.x - this.x, y = point.y - this.y;
+            return Math.sqrt(x * x + y * y);
           },
           equals: function(point) {
             point = toPoint(point);
@@ -29441,28 +29429,28 @@ class InstrumentLogic extends BaseInstrument {
             return "Point(" + formatNum(this.x) + ", " + formatNum(this.y) + ")";
           }
         };
-        function toPoint(x2, y2, round) {
-          if (x2 instanceof Point) {
-            return x2;
+        function toPoint(x, y, round) {
+          if (x instanceof Point) {
+            return x;
           }
-          if (isArray2(x2)) {
-            return new Point(x2[0], x2[1]);
+          if (isArray2(x)) {
+            return new Point(x[0], x[1]);
           }
-          if (x2 === void 0 || x2 === null) {
-            return x2;
+          if (x === void 0 || x === null) {
+            return x;
           }
-          if (typeof x2 === "object" && "x" in x2 && "y" in x2) {
-            return new Point(x2.x, x2.y);
+          if (typeof x === "object" && "x" in x && "y" in x) {
+            return new Point(x.x, x.y);
           }
-          return new Point(x2, y2, round);
+          return new Point(x, y, round);
         }
-        function Bounds(a2, b2) {
-          if (!a2) {
+        function Bounds(a, b) {
+          if (!a) {
             return;
           }
-          var points = b2 ? [a2, b2] : a2;
-          for (var i2 = 0, len = points.length; i2 < len; i2++) {
-            this.extend(points[i2]);
+          var points = b ? [a, b] : a;
+          for (var i = 0, len = points.length; i < len; i++) {
+            this.extend(points[i]);
           }
         }
         Bounds.prototype = {
@@ -29557,19 +29545,19 @@ class InstrumentLogic extends BaseInstrument {
             return this.min.equals(bounds.getTopLeft()) && this.max.equals(bounds.getBottomRight());
           }
         };
-        function toBounds(a2, b2) {
-          if (!a2 || a2 instanceof Bounds) {
-            return a2;
+        function toBounds(a, b) {
+          if (!a || a instanceof Bounds) {
+            return a;
           }
-          return new Bounds(a2, b2);
+          return new Bounds(a, b);
         }
         function LatLngBounds(corner1, corner2) {
           if (!corner1) {
             return;
           }
           var latlngs = corner2 ? [corner1, corner2] : corner1;
-          for (var i2 = 0, len = latlngs.length; i2 < len; i2++) {
-            this.extend(latlngs[i2]);
+          for (var i = 0, len = latlngs.length; i < len; i++) {
+            this.extend(latlngs[i]);
           }
         }
         LatLngBounds.prototype = {
@@ -29674,11 +29662,11 @@ class InstrumentLogic extends BaseInstrument {
             return !!(this._southWest && this._northEast);
           }
         };
-        function toLatLngBounds(a2, b2) {
-          if (a2 instanceof LatLngBounds) {
-            return a2;
+        function toLatLngBounds(a, b) {
+          if (a instanceof LatLngBounds) {
+            return a;
           }
-          return new LatLngBounds(a2, b2);
+          return new LatLngBounds(a, b);
         }
         function LatLng(lat, lng, alt) {
           if (isNaN(lat) || isNaN(lng)) {
@@ -29722,29 +29710,29 @@ class InstrumentLogic extends BaseInstrument {
             return new LatLng(this.lat, this.lng, this.alt);
           }
         };
-        function toLatLng(a2, b2, c) {
-          if (a2 instanceof LatLng) {
-            return a2;
+        function toLatLng(a, b, c) {
+          if (a instanceof LatLng) {
+            return a;
           }
-          if (isArray2(a2) && typeof a2[0] !== "object") {
-            if (a2.length === 3) {
-              return new LatLng(a2[0], a2[1], a2[2]);
+          if (isArray2(a) && typeof a[0] !== "object") {
+            if (a.length === 3) {
+              return new LatLng(a[0], a[1], a[2]);
             }
-            if (a2.length === 2) {
-              return new LatLng(a2[0], a2[1]);
+            if (a.length === 2) {
+              return new LatLng(a[0], a[1]);
             }
             return null;
           }
-          if (a2 === void 0 || a2 === null) {
-            return a2;
+          if (a === void 0 || a === null) {
+            return a;
           }
-          if (typeof a2 === "object" && "lat" in a2) {
-            return new LatLng(a2.lat, "lng" in a2 ? a2.lng : a2.lon, a2.alt);
+          if (typeof a === "object" && "lat" in a) {
+            return new LatLng(a.lat, "lng" in a ? a.lng : a.lon, a.alt);
           }
-          if (b2 === void 0) {
+          if (b === void 0) {
             return null;
           }
-          return new LatLng(a2, b2, c);
+          return new LatLng(a, b, c);
         }
         var CRS = {
           latLngToPoint: function(latlng, zoom2) {
@@ -29771,7 +29759,7 @@ class InstrumentLogic extends BaseInstrument {
             if (this.infinite) {
               return null;
             }
-            var b2 = this.projection.bounds, s2 = this.scale(zoom2), min = this.transformation.transform(b2.min, s2), max = this.transformation.transform(b2.max, s2);
+            var b = this.projection.bounds, s = this.scale(zoom2), min = this.transformation.transform(b.min, s), max = this.transformation.transform(b.max, s);
             return new Bounds(min, max);
           },
           infinite: false,
@@ -29792,7 +29780,7 @@ class InstrumentLogic extends BaseInstrument {
           wrapLng: [-180, 180],
           R: 6371e3,
           distance: function(latlng1, latlng2) {
-            var rad = Math.PI / 180, lat1 = latlng1.lat * rad, lat2 = latlng2.lat * rad, sinDLat = Math.sin((latlng2.lat - latlng1.lat) * rad / 2), sinDLon = Math.sin((latlng2.lng - latlng1.lng) * rad / 2), a2 = sinDLat * sinDLat + Math.cos(lat1) * Math.cos(lat2) * sinDLon * sinDLon, c = 2 * Math.atan2(Math.sqrt(a2), Math.sqrt(1 - a2));
+            var rad = Math.PI / 180, lat1 = latlng1.lat * rad, lat2 = latlng2.lat * rad, sinDLat = Math.sin((latlng2.lat - latlng1.lat) * rad / 2), sinDLon = Math.sin((latlng2.lng - latlng1.lng) * rad / 2), a = sinDLat * sinDLat + Math.cos(lat1) * Math.cos(lat2) * sinDLon * sinDLon, c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return this.R * c;
           }
         });
@@ -29801,36 +29789,36 @@ class InstrumentLogic extends BaseInstrument {
           R: earthRadius,
           MAX_LATITUDE: 85.0511287798,
           project: function(latlng) {
-            var d2 = Math.PI / 180, max = this.MAX_LATITUDE, lat = Math.max(Math.min(max, latlng.lat), -max), sin = Math.sin(lat * d2);
+            var d = Math.PI / 180, max = this.MAX_LATITUDE, lat = Math.max(Math.min(max, latlng.lat), -max), sin = Math.sin(lat * d);
             return new Point(
-              this.R * latlng.lng * d2,
+              this.R * latlng.lng * d,
               this.R * Math.log((1 + sin) / (1 - sin)) / 2
             );
           },
           unproject: function(point) {
-            var d2 = 180 / Math.PI;
+            var d = 180 / Math.PI;
             return new LatLng(
-              (2 * Math.atan(Math.exp(point.y / this.R)) - Math.PI / 2) * d2,
-              point.x * d2 / this.R
+              (2 * Math.atan(Math.exp(point.y / this.R)) - Math.PI / 2) * d,
+              point.x * d / this.R
             );
           },
           bounds: function() {
-            var d2 = earthRadius * Math.PI;
-            return new Bounds([-d2, -d2], [d2, d2]);
+            var d = earthRadius * Math.PI;
+            return new Bounds([-d, -d], [d, d]);
           }()
         };
-        function Transformation(a2, b2, c, d2) {
-          if (isArray2(a2)) {
-            this._a = a2[0];
-            this._b = a2[1];
-            this._c = a2[2];
-            this._d = a2[3];
+        function Transformation(a, b, c, d) {
+          if (isArray2(a)) {
+            this._a = a[0];
+            this._b = a[1];
+            this._c = a[2];
+            this._d = a[3];
             return;
           }
-          this._a = a2;
-          this._b = b2;
+          this._a = a;
+          this._b = b;
           this._c = c;
-          this._d = d2;
+          this._d = d;
         }
         Transformation.prototype = {
           transform: function(point, scale2) {
@@ -29850,8 +29838,8 @@ class InstrumentLogic extends BaseInstrument {
             );
           }
         };
-        function toTransformation(a2, b2, c, d2) {
-          return new Transformation(a2, b2, c, d2);
+        function toTransformation(a, b, c, d) {
+          return new Transformation(a, b, c, d);
         }
         var EPSG3857 = extend({}, Earth, {
           code: "EPSG:3857",
@@ -29868,12 +29856,12 @@ class InstrumentLogic extends BaseInstrument {
           return document.createElementNS("http://www.w3.org/2000/svg", name);
         }
         function pointsToPath(rings, closed) {
-          var str = "", i2, j, len, len2, points, p2;
-          for (i2 = 0, len = rings.length; i2 < len; i2++) {
-            points = rings[i2];
+          var str = "", i, j, len, len2, points, p;
+          for (i = 0, len = rings.length; i < len; i++) {
+            points = rings[i];
             for (j = 0, len2 = points.length; j < len2; j++) {
-              p2 = points[j];
-              str += (j ? "L" : "M") + p2.x + " " + p2.y;
+              p = points[j];
+              str += (j ? "L" : "M") + p.x + " " + p.y;
             }
             str += closed ? Browser.svg ? "z" : "x" : "";
           }
@@ -29919,7 +29907,7 @@ class InstrumentLogic extends BaseInstrument {
             });
             window.addEventListener("testPassiveEventSupport", falseFn, opts);
             window.removeEventListener("testPassiveEventSupport", falseFn, opts);
-          } catch (e2) {
+          } catch (e) {
           }
           return supportsPassiveOption;
         }();
@@ -29939,7 +29927,7 @@ class InstrumentLogic extends BaseInstrument {
             var shape = div.firstChild;
             shape.style.behavior = "url(#default#VML)";
             return shape && typeof shape.adj === "object";
-          } catch (e2) {
+          } catch (e) {
             return false;
           }
         }();
@@ -30022,16 +30010,16 @@ class InstrumentLogic extends BaseInstrument {
           }
           obj.removeEventListener(pEvent[type], handler, false);
         }
-        function _globalPointerDown(e2) {
-          _pointers[e2.pointerId] = e2;
+        function _globalPointerDown(e) {
+          _pointers[e.pointerId] = e;
         }
-        function _globalPointerMove(e2) {
-          if (_pointers[e2.pointerId]) {
-            _pointers[e2.pointerId] = e2;
+        function _globalPointerMove(e) {
+          if (_pointers[e.pointerId]) {
+            _pointers[e.pointerId] = e;
           }
         }
-        function _globalPointerUp(e2) {
-          delete _pointers[e2.pointerId];
+        function _globalPointerUp(e) {
+          delete _pointers[e.pointerId];
         }
         function _addPointerDocListener() {
           if (!_pointerDocListener) {
@@ -30042,28 +30030,28 @@ class InstrumentLogic extends BaseInstrument {
             _pointerDocListener = true;
           }
         }
-        function _handlePointer(handler, e2) {
-          if (e2.pointerType === (e2.MSPOINTER_TYPE_MOUSE || "mouse")) {
+        function _handlePointer(handler, e) {
+          if (e.pointerType === (e.MSPOINTER_TYPE_MOUSE || "mouse")) {
             return;
           }
-          e2.touches = [];
-          for (var i2 in _pointers) {
-            e2.touches.push(_pointers[i2]);
+          e.touches = [];
+          for (var i in _pointers) {
+            e.touches.push(_pointers[i]);
           }
-          e2.changedTouches = [e2];
-          handler(e2);
+          e.changedTouches = [e];
+          handler(e);
         }
-        function _onPointerStart(handler, e2) {
-          if (e2.MSPOINTER_TYPE_TOUCH && e2.pointerType === e2.MSPOINTER_TYPE_TOUCH) {
-            preventDefault(e2);
+        function _onPointerStart(handler, e) {
+          if (e.MSPOINTER_TYPE_TOUCH && e.pointerType === e.MSPOINTER_TYPE_TOUCH) {
+            preventDefault(e);
           }
-          _handlePointer(handler, e2);
+          _handlePointer(handler, e);
         }
         function makeDblclick(event) {
-          var newEvent = {}, prop, i2;
-          for (i2 in event) {
-            prop = event[i2];
-            newEvent[i2] = prop && prop.bind ? prop.bind(event) : prop;
+          var newEvent = {}, prop, i;
+          for (i in event) {
+            prop = event[i];
+            newEvent[i] = prop && prop.bind ? prop.bind(event) : prop;
           }
           event = newEvent;
           newEvent.type = "dblclick";
@@ -30076,15 +30064,15 @@ class InstrumentLogic extends BaseInstrument {
         function addDoubleTapListener(obj, handler) {
           obj.addEventListener("dblclick", handler);
           var last = 0, detail;
-          function simDblclick(e2) {
-            if (e2.detail !== 1) {
-              detail = e2.detail;
+          function simDblclick(e) {
+            if (e.detail !== 1) {
+              detail = e.detail;
               return;
             }
-            if (e2.pointerType === "mouse" || e2.sourceCapabilities && !e2.sourceCapabilities.firesTouchEvents) {
+            if (e.pointerType === "mouse" || e.sourceCapabilities && !e.sourceCapabilities.firesTouchEvents) {
               return;
             }
-            var path = getPropagationPath(e2);
+            var path = getPropagationPath(e);
             if (path.some(function(el) {
               return el instanceof HTMLLabelElement && el.attributes.for;
             }) && !path.some(function(el) {
@@ -30096,7 +30084,7 @@ class InstrumentLogic extends BaseInstrument {
             if (now2 - last <= delay) {
               detail++;
               if (detail === 2) {
-                handler(makeDblclick(e2));
+                handler(makeDblclick(e));
               }
             } else {
               detail = 1;
@@ -30172,8 +30160,8 @@ class InstrumentLogic extends BaseInstrument {
         function addClass(el, name) {
           if (el.classList !== void 0) {
             var classes = splitWords(name);
-            for (var i2 = 0, len = classes.length; i2 < len; i2++) {
-              el.classList.add(classes[i2]);
+            for (var i = 0, len = classes.length; i < len; i++) {
+              el.classList.add(classes[i]);
             }
           } else if (!hasClass(el, name)) {
             var className = getClass(el);
@@ -30211,7 +30199,7 @@ class InstrumentLogic extends BaseInstrument {
           var filter = false, filterName = "DXImageTransform.Microsoft.Alpha";
           try {
             filter = el.filters.item(filterName);
-          } catch (e2) {
+          } catch (e) {
             if (value === 1) {
               return;
             }
@@ -30226,9 +30214,9 @@ class InstrumentLogic extends BaseInstrument {
         }
         function testProp(props) {
           var style2 = document.documentElement.style;
-          for (var i2 = 0; i2 < props.length; i2++) {
-            if (props[i2] in style2) {
-              return props[i2];
+          for (var i = 0; i < props.length; i++) {
+            if (props[i] in style2) {
+              return props[i];
             }
           }
           return false;
@@ -30362,8 +30350,8 @@ class InstrumentLogic extends BaseInstrument {
             }
           } else {
             types = splitWords(types);
-            for (var i2 = 0, len = types.length; i2 < len; i2++) {
-              addOne(obj, types[i2], fn, context2);
+            for (var i = 0, len = types.length; i < len; i++) {
+              addOne(obj, types[i], fn, context2);
             }
           }
           return this;
@@ -30384,8 +30372,8 @@ class InstrumentLogic extends BaseInstrument {
                 return indexOf(types, type2) !== -1;
               });
             } else {
-              for (var i2 = 0, len = types.length; i2 < len; i2++) {
-                removeOne(obj, types[i2], fn, context2);
+              for (var i = 0, len = types.length; i < len; i++) {
+                removeOne(obj, types[i], fn, context2);
               }
             }
           }
@@ -30409,8 +30397,8 @@ class InstrumentLogic extends BaseInstrument {
           if (obj[eventsKey] && obj[eventsKey][id]) {
             return this;
           }
-          var handler = function(e2) {
-            return fn.call(context2 || obj, e2 || window.event);
+          var handler = function(e) {
+            return fn.call(context2 || obj, e || window.event);
           };
           var originalHandler = handler;
           if (!Browser.touchNative && Browser.pointer && type.indexOf("touch") === 0) {
@@ -30421,10 +30409,10 @@ class InstrumentLogic extends BaseInstrument {
             if (type === "touchstart" || type === "touchmove" || type === "wheel" || type === "mousewheel") {
               obj.addEventListener(mouseSubst[type] || type, handler, Browser.passiveEvents ? { passive: false } : false);
             } else if (type === "mouseenter" || type === "mouseleave") {
-              handler = function(e2) {
-                e2 = e2 || window.event;
-                if (isExternalTarget(obj, e2)) {
-                  originalHandler(e2);
+              handler = function(e) {
+                e = e || window.event;
+                if (isExternalTarget(obj, e)) {
+                  originalHandler(e);
                 }
               };
               obj.addEventListener(mouseSubst[type], handler, false);
@@ -30454,13 +30442,13 @@ class InstrumentLogic extends BaseInstrument {
           }
           obj[eventsKey][id] = null;
         }
-        function stopPropagation(e2) {
-          if (e2.stopPropagation) {
-            e2.stopPropagation();
-          } else if (e2.originalEvent) {
-            e2.originalEvent._stopped = true;
+        function stopPropagation(e) {
+          if (e.stopPropagation) {
+            e.stopPropagation();
+          } else if (e.originalEvent) {
+            e.originalEvent._stopped = true;
           } else {
-            e2.cancelBubble = true;
+            e.cancelBubble = true;
           }
           return this;
         }
@@ -30473,17 +30461,17 @@ class InstrumentLogic extends BaseInstrument {
           el["_leaflet_disable_click"] = true;
           return this;
         }
-        function preventDefault(e2) {
-          if (e2.preventDefault) {
-            e2.preventDefault();
+        function preventDefault(e) {
+          if (e.preventDefault) {
+            e.preventDefault();
           } else {
-            e2.returnValue = false;
+            e.returnValue = false;
           }
           return this;
         }
-        function stop(e2) {
-          preventDefault(e2);
-          stopPropagation(e2);
+        function stop(e) {
+          preventDefault(e);
+          stopPropagation(e);
           return this;
         }
         function getPropagationPath(ev) {
@@ -30498,22 +30486,22 @@ class InstrumentLogic extends BaseInstrument {
           }
           return path;
         }
-        function getMousePosition(e2, container) {
+        function getMousePosition(e, container) {
           if (!container) {
-            return new Point(e2.clientX, e2.clientY);
+            return new Point(e.clientX, e.clientY);
           }
           var scale2 = getScale(container), offset = scale2.boundingClientRect;
           return new Point(
-            (e2.clientX - offset.left) / scale2.x - container.clientLeft,
-            (e2.clientY - offset.top) / scale2.y - container.clientTop
+            (e.clientX - offset.left) / scale2.x - container.clientLeft,
+            (e.clientY - offset.top) / scale2.y - container.clientTop
           );
         }
         var wheelPxFactor = Browser.linux && Browser.chrome ? window.devicePixelRatio : Browser.mac ? window.devicePixelRatio * 3 : window.devicePixelRatio > 0 ? 2 * window.devicePixelRatio : 1;
-        function getWheelDelta(e2) {
-          return Browser.edge ? e2.wheelDeltaY / 2 : e2.deltaY && e2.deltaMode === 0 ? -e2.deltaY / wheelPxFactor : e2.deltaY && e2.deltaMode === 1 ? -e2.deltaY * 20 : e2.deltaY && e2.deltaMode === 2 ? -e2.deltaY * 60 : e2.deltaX || e2.deltaZ ? 0 : e2.wheelDelta ? (e2.wheelDeltaY || e2.wheelDelta) / 2 : e2.detail && Math.abs(e2.detail) < 32765 ? -e2.detail * 20 : e2.detail ? e2.detail / -32765 * 60 : 0;
+        function getWheelDelta(e) {
+          return Browser.edge ? e.wheelDeltaY / 2 : e.deltaY && e.deltaMode === 0 ? -e.deltaY / wheelPxFactor : e.deltaY && e.deltaMode === 1 ? -e.deltaY * 20 : e.deltaY && e.deltaMode === 2 ? -e.deltaY * 60 : e.deltaX || e.deltaZ ? 0 : e.wheelDelta ? (e.wheelDeltaY || e.wheelDelta) / 2 : e.detail && Math.abs(e.detail) < 32765 ? -e.detail * 20 : e.detail ? e.detail / -32765 * 60 : 0;
         }
-        function isExternalTarget(el, e2) {
-          var related = e2.relatedTarget;
+        function isExternalTarget(el, e) {
+          var related = e.relatedTarget;
           if (!related) {
             return true;
           }
@@ -30588,8 +30576,8 @@ class InstrumentLogic extends BaseInstrument {
             this._inProgress = false;
             this.fire("end");
           },
-          _easeOut: function(t2) {
-            return 1 - Math.pow(1 - t2, this._easeOutPower);
+          _easeOut: function(t) {
+            return 1 - Math.pow(1 - t, this._easeOutPower);
           }
         });
         var Map4 = Evented.extend({
@@ -30747,38 +30735,38 @@ class InstrumentLogic extends BaseInstrument {
             targetCenter = toLatLng(targetCenter);
             targetZoom = targetZoom === void 0 ? startZoom : targetZoom;
             var w0 = Math.max(size.x, size.y), w1 = w0 * this.getZoomScale(startZoom, targetZoom), u1 = to.distanceTo(from) || 1, rho = 1.42, rho2 = rho * rho;
-            function r3(i2) {
-              var s1 = i2 ? -1 : 1, s2 = i2 ? w1 : w0, t1 = w1 * w1 - w0 * w0 + s1 * rho2 * rho2 * u1 * u1, b1 = 2 * s2 * rho2 * u1, b2 = t1 / b1, sq = Math.sqrt(b2 * b2 + 1) - b2;
+            function r(i) {
+              var s1 = i ? -1 : 1, s2 = i ? w1 : w0, t1 = w1 * w1 - w0 * w0 + s1 * rho2 * rho2 * u1 * u1, b1 = 2 * s2 * rho2 * u1, b = t1 / b1, sq = Math.sqrt(b * b + 1) - b;
               var log = sq < 1e-9 ? -18 : Math.log(sq);
               return log;
             }
-            function sinh(n2) {
-              return (Math.exp(n2) - Math.exp(-n2)) / 2;
+            function sinh(n) {
+              return (Math.exp(n) - Math.exp(-n)) / 2;
             }
-            function cosh(n2) {
-              return (Math.exp(n2) + Math.exp(-n2)) / 2;
+            function cosh(n) {
+              return (Math.exp(n) + Math.exp(-n)) / 2;
             }
-            function tanh(n2) {
-              return sinh(n2) / cosh(n2);
+            function tanh(n) {
+              return sinh(n) / cosh(n);
             }
-            var r0 = r3(0);
-            function w2(s2) {
-              return w0 * (cosh(r0) / cosh(r0 + rho * s2));
+            var r0 = r(0);
+            function w(s) {
+              return w0 * (cosh(r0) / cosh(r0 + rho * s));
             }
-            function u2(s2) {
-              return w0 * (cosh(r0) * tanh(r0 + rho * s2) - sinh(r0)) / rho2;
+            function u(s) {
+              return w0 * (cosh(r0) * tanh(r0 + rho * s) - sinh(r0)) / rho2;
             }
-            function easeOut(t2) {
-              return 1 - Math.pow(1 - t2, 1.5);
+            function easeOut(t) {
+              return 1 - Math.pow(1 - t, 1.5);
             }
-            var start = Date.now(), S2 = (r3(1) - r0) / rho, duration = options.duration ? 1e3 * options.duration : 1e3 * S2 * 0.8;
+            var start = Date.now(), S = (r(1) - r0) / rho, duration = options.duration ? 1e3 * options.duration : 1e3 * S * 0.8;
             function frame() {
-              var t2 = (Date.now() - start) / duration, s2 = easeOut(t2) * S2;
-              if (t2 <= 1) {
+              var t = (Date.now() - start) / duration, s = easeOut(t) * S;
+              if (t <= 1) {
                 this._flyToFrame = requestAnimFrame(frame, this);
                 this._move(
-                  this.unproject(from.add(to.subtract(from).multiplyBy(u2(s2) / u1)), startZoom),
-                  this.getScaleZoom(w0 / w2(s2), startZoom),
+                  this.unproject(from.add(to.subtract(from).multiplyBy(u(s) / u1)), startZoom),
+                  this.getScaleZoom(w0 / w(s), startZoom),
                   { flyTo: true }
                 );
               } else {
@@ -30950,9 +30938,9 @@ class InstrumentLogic extends BaseInstrument {
               bounds,
               timestamp: pos.timestamp
             };
-            for (var i2 in pos.coords) {
-              if (typeof pos.coords[i2] === "number") {
-                data[i2] = pos.coords[i2];
+            for (var i in pos.coords) {
+              if (typeof pos.coords[i] === "number") {
+                data[i] = pos.coords[i];
               }
             }
             this.fire("locationfound", data);
@@ -30979,7 +30967,7 @@ class InstrumentLogic extends BaseInstrument {
             try {
               delete this._container._leaflet_id;
               delete this._containerId;
-            } catch (e2) {
+            } catch (e) {
               this._container._leaflet_id = void 0;
               this._containerId = void 0;
             }
@@ -30999,12 +30987,12 @@ class InstrumentLogic extends BaseInstrument {
             if (this._loaded) {
               this.fire("unload");
             }
-            var i2;
-            for (i2 in this._layers) {
-              this._layers[i2].remove();
+            var i;
+            for (i in this._layers) {
+              this._layers[i].remove();
             }
-            for (i2 in this._panes) {
-              remove(this._panes[i2]);
+            for (i in this._panes) {
+              remove(this._panes[i]);
             }
             this._layers = [];
             this._panes = [];
@@ -31129,14 +31117,14 @@ class InstrumentLogic extends BaseInstrument {
           latLngToContainerPoint: function(latlng) {
             return this.layerPointToContainerPoint(this.latLngToLayerPoint(toLatLng(latlng)));
           },
-          mouseEventToContainerPoint: function(e2) {
-            return getMousePosition(e2, this._container);
+          mouseEventToContainerPoint: function(e) {
+            return getMousePosition(e, this._container);
           },
-          mouseEventToLayerPoint: function(e2) {
-            return this.containerPointToLayerPoint(this.mouseEventToContainerPoint(e2));
+          mouseEventToLayerPoint: function(e) {
+            return this.containerPointToLayerPoint(this.mouseEventToContainerPoint(e));
           },
-          mouseEventToLatLng: function(e2) {
-            return this.layerPointToLatLng(this.mouseEventToLayerPoint(e2));
+          mouseEventToLatLng: function(e) {
+            return this.layerPointToLatLng(this.mouseEventToLayerPoint(e));
           },
           _initContainer: function(id) {
             var container = this._container = get4(id);
@@ -31277,8 +31265,8 @@ class InstrumentLogic extends BaseInstrument {
               this._resetView(this.getCenter(), this.getZoom());
             }
           },
-          _findEventTargets: function(e2, type) {
-            var targets = [], target, isHover = type === "mouseout" || type === "mouseover", src = e2.target || e2.srcElement, dragging = false;
+          _findEventTargets: function(e, type) {
+            var targets = [], target, isHover = type === "mouseout" || type === "mouseover", src = e.target || e.srcElement, dragging = false;
             while (src) {
               target = this._targets[stamp(src)];
               if (target && (type === "click" || type === "preclick") && this._draggableMoved(target)) {
@@ -31286,7 +31274,7 @@ class InstrumentLogic extends BaseInstrument {
                 break;
               }
               if (target && target.listens(type, true)) {
-                if (isHover && !isExternalTarget(src, e2)) {
+                if (isHover && !isExternalTarget(src, e)) {
                   break;
                 }
                 targets.push(target);
@@ -31312,30 +31300,30 @@ class InstrumentLogic extends BaseInstrument {
               el = el.parentNode;
             }
           },
-          _handleDOMEvent: function(e2) {
-            var el = e2.target || e2.srcElement;
-            if (!this._loaded || el["_leaflet_disable_events"] || e2.type === "click" && this._isClickDisabled(el)) {
+          _handleDOMEvent: function(e) {
+            var el = e.target || e.srcElement;
+            if (!this._loaded || el["_leaflet_disable_events"] || e.type === "click" && this._isClickDisabled(el)) {
               return;
             }
-            var type = e2.type;
+            var type = e.type;
             if (type === "mousedown") {
               preventOutline(el);
             }
-            this._fireDOMEvent(e2, type);
+            this._fireDOMEvent(e, type);
           },
           _mouseEvents: ["click", "dblclick", "mouseover", "mouseout", "contextmenu"],
-          _fireDOMEvent: function(e2, type, canvasTargets) {
-            if (e2.type === "click") {
-              var synth = extend({}, e2);
+          _fireDOMEvent: function(e, type, canvasTargets) {
+            if (e.type === "click") {
+              var synth = extend({}, e);
               synth.type = "preclick";
               this._fireDOMEvent(synth, synth.type, canvasTargets);
             }
-            var targets = this._findEventTargets(e2, type);
+            var targets = this._findEventTargets(e, type);
             if (canvasTargets) {
               var filtered = [];
-              for (var i2 = 0; i2 < canvasTargets.length; i2++) {
-                if (canvasTargets[i2].listens(type, true)) {
-                  filtered.push(canvasTargets[i2]);
+              for (var i = 0; i < canvasTargets.length; i++) {
+                if (canvasTargets[i].listens(type, true)) {
+                  filtered.push(canvasTargets[i]);
                 }
               }
               targets = filtered.concat(targets);
@@ -31344,21 +31332,21 @@ class InstrumentLogic extends BaseInstrument {
               return;
             }
             if (type === "contextmenu") {
-              preventDefault(e2);
+              preventDefault(e);
             }
             var target = targets[0];
             var data = {
-              originalEvent: e2
+              originalEvent: e
             };
-            if (e2.type !== "keypress" && e2.type !== "keydown" && e2.type !== "keyup") {
+            if (e.type !== "keypress" && e.type !== "keydown" && e.type !== "keyup") {
               var isMarker = target.getLatLng && (!target._radius || target._radius <= 10);
-              data.containerPoint = isMarker ? this.latLngToContainerPoint(target.getLatLng()) : this.mouseEventToContainerPoint(e2);
+              data.containerPoint = isMarker ? this.latLngToContainerPoint(target.getLatLng()) : this.mouseEventToContainerPoint(e);
               data.layerPoint = this.containerPointToLayerPoint(data.containerPoint);
               data.latlng = isMarker ? target.getLatLng() : this.layerPointToLatLng(data.layerPoint);
             }
-            for (i2 = 0; i2 < targets.length; i2++) {
-              targets[i2].fire(type, data, true);
-              if (data.originalEvent._stopped || targets[i2].options.bubblingMouseEvents === false && indexOf(this._mouseEvents, type) !== -1) {
+            for (i = 0; i < targets.length; i++) {
+              targets[i].fire(type, data, true);
+              if (data.originalEvent._stopped || targets[i].options.bubblingMouseEvents === false && indexOf(this._mouseEvents, type) !== -1) {
                 return;
               }
             }
@@ -31368,8 +31356,8 @@ class InstrumentLogic extends BaseInstrument {
             return obj.dragging && obj.dragging.moved() || this.boxZoom && this.boxZoom.moved();
           },
           _clearHandlers: function() {
-            for (var i2 = 0, len = this._handlers.length; i2 < len; i2++) {
-              this._handlers[i2].disable();
+            for (var i = 0, len = this._handlers.length; i < len; i++) {
+              this._handlers[i].disable();
             }
           },
           whenReady: function(callback, context2) {
@@ -31466,9 +31454,9 @@ class InstrumentLogic extends BaseInstrument {
           _createAnimProxy: function() {
             var proxy = this._proxy = create$1("div", "leaflet-proxy leaflet-zoom-animated");
             this._panes.mapPane.appendChild(proxy);
-            this.on("zoomanim", function(e2) {
+            this.on("zoomanim", function(e) {
               var prop = TRANSFORM, transform = this._proxy.style[prop];
-              setTransform(this._proxy, this.project(e2.center, e2.zoom), this.getZoomScale(e2.zoom, 1));
+              setTransform(this._proxy, this.project(e.center, e.zoom), this.getZoomScale(e.zoom, 1));
               if (transform === this._proxy.style[prop] && this._animatingZoom) {
                 this._onZoomTransitionEnd();
               }
@@ -31482,11 +31470,11 @@ class InstrumentLogic extends BaseInstrument {
             delete this._proxy;
           },
           _animMoveEnd: function() {
-            var c = this.getCenter(), z2 = this.getZoom();
-            setTransform(this._proxy, this.project(c, z2), this.getZoomScale(z2, 1));
+            var c = this.getCenter(), z = this.getZoom();
+            setTransform(this._proxy, this.project(c, z), this.getZoomScale(z, 1));
           },
-          _catchTransitionEnd: function(e2) {
-            if (this._animatingZoom && e2.propertyName.indexOf("transform") >= 0) {
+          _catchTransitionEnd: function(e) {
+            if (this._animatingZoom && e.propertyName.indexOf("transform") >= 0) {
               this._onZoomTransitionEnd();
             }
           },
@@ -31600,8 +31588,8 @@ class InstrumentLogic extends BaseInstrument {
             this._map = null;
             return this;
           },
-          _refocusOnMap: function(e2) {
-            if (this._map && e2 && e2.screenX > 0 && e2.screenY > 0) {
+          _refocusOnMap: function(e) {
+            if (this._map && e && e.screenX > 0 && e.screenY > 0) {
               this._map.getContainer().focus();
             }
           }
@@ -31619,9 +31607,9 @@ class InstrumentLogic extends BaseInstrument {
             return this;
           },
           _initControlPos: function() {
-            var corners = this._controlCorners = {}, l2 = "leaflet-", container = this._controlContainer = create$1("div", l2 + "control-container", this._container);
+            var corners = this._controlCorners = {}, l = "leaflet-", container = this._controlContainer = create$1("div", l + "control-container", this._container);
             function createCorner(vSide, hSide) {
-              var className = l2 + vSide + " " + l2 + hSide;
+              var className = l + vSide + " " + l + hSide;
               corners[vSide + hSide] = create$1("div", className, container);
             }
             createCorner("top", "left");
@@ -31630,8 +31618,8 @@ class InstrumentLogic extends BaseInstrument {
             createCorner("bottom", "right");
           },
           _clearControlPos: function() {
-            for (var i2 in this._controlCorners) {
-              remove(this._controlCorners[i2]);
+            for (var i in this._controlCorners) {
+              remove(this._controlCorners[i]);
             }
             remove(this._controlContainer);
             delete this._controlCorners;
@@ -31656,11 +31644,11 @@ class InstrumentLogic extends BaseInstrument {
             this._lastZIndex = 0;
             this._handlingClick = false;
             this._preventClick = false;
-            for (var i2 in baseLayers) {
-              this._addLayer(baseLayers[i2], i2);
+            for (var i in baseLayers) {
+              this._addLayer(baseLayers[i], i);
             }
-            for (i2 in overlays) {
-              this._addLayer(overlays[i2], i2, true);
+            for (i in overlays) {
+              this._addLayer(overlays[i], i, true);
             }
           },
           onAdd: function(map2) {
@@ -31668,8 +31656,8 @@ class InstrumentLogic extends BaseInstrument {
             this._update();
             this._map = map2;
             map2.on("zoomend", this._checkDisabledLayers, this);
-            for (var i2 = 0; i2 < this._layers.length; i2++) {
-              this._layers[i2].layer.on("add remove", this._onLayerChange, this);
+            for (var i = 0; i < this._layers.length; i++) {
+              this._layers[i].layer.on("add remove", this._onLayerChange, this);
             }
             return this._container;
           },
@@ -31679,8 +31667,8 @@ class InstrumentLogic extends BaseInstrument {
           },
           onRemove: function() {
             this._map.off("zoomend", this._checkDisabledLayers, this);
-            for (var i2 = 0; i2 < this._layers.length; i2++) {
-              this._layers[i2].layer.off("add remove", this._onLayerChange, this);
+            for (var i = 0; i < this._layers.length; i++) {
+              this._layers[i].layer.off("add remove", this._onLayerChange, this);
             }
           },
           addBaseLayer: function(layer, name) {
@@ -31734,13 +31722,13 @@ class InstrumentLogic extends BaseInstrument {
             link.title = "Layers";
             link.setAttribute("role", "button");
             on(link, {
-              keydown: function(e2) {
-                if (e2.keyCode === 13) {
+              keydown: function(e) {
+                if (e.keyCode === 13) {
                   this._expandSafely();
                 }
               },
-              click: function(e2) {
-                preventDefault(e2);
+              click: function(e) {
+                preventDefault(e);
                 this._expandSafely();
               }
             }, this);
@@ -31753,9 +31741,9 @@ class InstrumentLogic extends BaseInstrument {
             container.appendChild(section);
           },
           _getLayer: function(id) {
-            for (var i2 = 0; i2 < this._layers.length; i2++) {
-              if (this._layers[i2] && stamp(this._layers[i2].layer) === id) {
-                return this._layers[i2];
+            for (var i = 0; i < this._layers.length; i++) {
+              if (this._layers[i] && stamp(this._layers[i].layer) === id) {
+                return this._layers[i];
               }
             }
           },
@@ -31769,8 +31757,8 @@ class InstrumentLogic extends BaseInstrument {
               overlay
             });
             if (this.options.sortLayers) {
-              this._layers.sort(bind(function(a2, b2) {
-                return this.options.sortFunction(a2.layer, b2.layer, a2.name, b2.name);
+              this._layers.sort(bind(function(a, b) {
+                return this.options.sortFunction(a.layer, b.layer, a.name, b.name);
               }, this));
             }
             if (this.options.autoZIndex && layer.setZIndex) {
@@ -31786,9 +31774,9 @@ class InstrumentLogic extends BaseInstrument {
             empty(this._baseLayersList);
             empty(this._overlaysList);
             this._layerControlInputs = [];
-            var baseLayersPresent, overlaysPresent, i2, obj, baseLayersCount = 0;
-            for (i2 = 0; i2 < this._layers.length; i2++) {
-              obj = this._layers[i2];
+            var baseLayersPresent, overlaysPresent, i, obj, baseLayersCount = 0;
+            for (i = 0; i < this._layers.length; i++) {
+              obj = this._layers[i];
               this._addItem(obj);
               overlaysPresent = overlaysPresent || obj.overlay;
               baseLayersPresent = baseLayersPresent || !obj.overlay;
@@ -31801,12 +31789,12 @@ class InstrumentLogic extends BaseInstrument {
             this._separator.style.display = overlaysPresent && baseLayersPresent ? "" : "none";
             return this;
           },
-          _onLayerChange: function(e2) {
+          _onLayerChange: function(e) {
             if (!this._handlingClick) {
               this._update();
             }
-            var obj = this._getLayer(stamp(e2.target));
-            var type = obj.overlay ? e2.type === "add" ? "overlayadd" : "overlayremove" : e2.type === "add" ? "baselayerchange" : null;
+            var obj = this._getLayer(stamp(e.target));
+            var type = obj.overlay ? e.type === "add" ? "overlayadd" : "overlayremove" : e.type === "add" ? "baselayerchange" : null;
             if (type) {
               this._map.fire(type, obj);
             }
@@ -31848,8 +31836,8 @@ class InstrumentLogic extends BaseInstrument {
             var inputs = this._layerControlInputs, input, layer;
             var addedLayers = [], removedLayers = [];
             this._handlingClick = true;
-            for (var i2 = inputs.length - 1; i2 >= 0; i2--) {
-              input = inputs[i2];
+            for (var i = inputs.length - 1; i >= 0; i--) {
+              input = inputs[i];
               layer = this._getLayer(input.layerId).layer;
               if (input.checked) {
                 addedLayers.push(layer);
@@ -31857,14 +31845,14 @@ class InstrumentLogic extends BaseInstrument {
                 removedLayers.push(layer);
               }
             }
-            for (i2 = 0; i2 < removedLayers.length; i2++) {
-              if (this._map.hasLayer(removedLayers[i2])) {
-                this._map.removeLayer(removedLayers[i2]);
+            for (i = 0; i < removedLayers.length; i++) {
+              if (this._map.hasLayer(removedLayers[i])) {
+                this._map.removeLayer(removedLayers[i]);
               }
             }
-            for (i2 = 0; i2 < addedLayers.length; i2++) {
-              if (!this._map.hasLayer(addedLayers[i2])) {
-                this._map.addLayer(addedLayers[i2]);
+            for (i = 0; i < addedLayers.length; i++) {
+              if (!this._map.hasLayer(addedLayers[i])) {
+                this._map.addLayer(addedLayers[i]);
               }
             }
             this._handlingClick = false;
@@ -31872,8 +31860,8 @@ class InstrumentLogic extends BaseInstrument {
           },
           _checkDisabledLayers: function() {
             var inputs = this._layerControlInputs, input, layer, zoom2 = this._map.getZoom();
-            for (var i2 = inputs.length - 1; i2 >= 0; i2--) {
-              input = inputs[i2];
+            for (var i = inputs.length - 1; i >= 0; i--) {
+              input = inputs[i];
               layer = this._getLayer(input.layerId).layer;
               input.disabled = layer.options.minZoom !== void 0 && zoom2 < layer.options.minZoom || layer.options.maxZoom !== void 0 && zoom2 > layer.options.maxZoom;
             }
@@ -31940,14 +31928,14 @@ class InstrumentLogic extends BaseInstrument {
             this._updateDisabled();
             return this;
           },
-          _zoomIn: function(e2) {
+          _zoomIn: function(e) {
             if (!this._disabled && this._map._zoom < this._map.getMaxZoom()) {
-              this._map.zoomIn(this._map.options.zoomDelta * (e2.shiftKey ? 3 : 1));
+              this._map.zoomIn(this._map.options.zoomDelta * (e.shiftKey ? 3 : 1));
             }
           },
-          _zoomOut: function(e2) {
+          _zoomOut: function(e) {
             if (!this._disabled && this._map._zoom > this._map.getMinZoom()) {
-              this._map.zoomOut(this._map.options.zoomDelta * (e2.shiftKey ? 3 : 1));
+              this._map.zoomOut(this._map.options.zoomDelta * (e.shiftKey ? 3 : 1));
             }
           },
           _createButton: function(html, title, className, container, fn) {
@@ -32017,10 +32005,10 @@ class InstrumentLogic extends BaseInstrument {
             }
           },
           _update: function() {
-            var map2 = this._map, y2 = map2.getSize().y / 2;
+            var map2 = this._map, y = map2.getSize().y / 2;
             var maxMeters = map2.distance(
-              map2.containerPointToLatLng([0, y2]),
-              map2.containerPointToLatLng([this.options.maxWidth, y2])
+              map2.containerPointToLatLng([0, y]),
+              map2.containerPointToLatLng([this.options.maxWidth, y])
             );
             this._updateScales(maxMeters);
           },
@@ -32052,9 +32040,9 @@ class InstrumentLogic extends BaseInstrument {
             scale2.innerHTML = text;
           },
           _getRoundNum: function(num) {
-            var pow10 = Math.pow(10, (Math.floor(num) + "").length - 1), d2 = num / pow10;
-            d2 = d2 >= 10 ? 10 : d2 >= 5 ? 5 : d2 >= 3 ? 3 : d2 >= 2 ? 2 : 1;
-            return pow10 * d2;
+            var pow10 = Math.pow(10, (Math.floor(num) + "").length - 1), d = num / pow10;
+            d = d >= 10 ? 10 : d >= 5 ? 5 : d >= 3 ? 3 : d >= 2 ? 2 : 1;
+            return pow10 * d;
           }
         });
         var scale = function(options) {
@@ -32074,9 +32062,9 @@ class InstrumentLogic extends BaseInstrument {
             map2.attributionControl = this;
             this._container = create$1("div", "leaflet-control-attribution");
             disableClickPropagation(this._container);
-            for (var i2 in map2._layers) {
-              if (map2._layers[i2].getAttribution) {
-                this.addAttribution(map2._layers[i2].getAttribution());
+            for (var i in map2._layers) {
+              if (map2._layers[i].getAttribution) {
+                this.addAttribution(map2._layers[i].getAttribution());
               }
             }
             this._update();
@@ -32125,9 +32113,9 @@ class InstrumentLogic extends BaseInstrument {
               return;
             }
             var attribs = [];
-            for (var i2 in this._attributions) {
-              if (this._attributions[i2]) {
-                attribs.push(i2);
+            for (var i in this._attributions) {
+              if (this._attributions[i]) {
+                attribs.push(i);
               }
             }
             var prefixAndAttribs = [];
@@ -32217,7 +32205,7 @@ class InstrumentLogic extends BaseInstrument {
             this._enabled = false;
             this._moved = false;
           },
-          _onDown: function(e2) {
+          _onDown: function(e) {
             if (!this._enabled) {
               return;
             }
@@ -32225,13 +32213,13 @@ class InstrumentLogic extends BaseInstrument {
             if (hasClass(this._element, "leaflet-zoom-anim")) {
               return;
             }
-            if (e2.touches && e2.touches.length !== 1) {
+            if (e.touches && e.touches.length !== 1) {
               if (Draggable._dragging === this) {
                 this.finishDrag();
               }
               return;
             }
-            if (Draggable._dragging || e2.shiftKey || e2.which !== 1 && e2.button !== 1 && !e2.touches) {
+            if (Draggable._dragging || e.shiftKey || e.which !== 1 && e.button !== 1 && !e.touches) {
               return;
             }
             Draggable._dragging = this;
@@ -32244,23 +32232,23 @@ class InstrumentLogic extends BaseInstrument {
               return;
             }
             this.fire("down");
-            var first = e2.touches ? e2.touches[0] : e2, sizedParent = getSizedParentNode(this._element);
+            var first = e.touches ? e.touches[0] : e, sizedParent = getSizedParentNode(this._element);
             this._startPoint = new Point(first.clientX, first.clientY);
             this._startPos = getPosition(this._element);
             this._parentScale = getScale(sizedParent);
-            var mouseevent = e2.type === "mousedown";
+            var mouseevent = e.type === "mousedown";
             on(document, mouseevent ? "mousemove" : "touchmove", this._onMove, this);
             on(document, mouseevent ? "mouseup" : "touchend touchcancel", this._onUp, this);
           },
-          _onMove: function(e2) {
+          _onMove: function(e) {
             if (!this._enabled) {
               return;
             }
-            if (e2.touches && e2.touches.length > 1) {
+            if (e.touches && e.touches.length > 1) {
               this._moved = true;
               return;
             }
-            var first = e2.touches && e2.touches.length === 1 ? e2.touches[0] : e2, offset = new Point(first.clientX, first.clientY)._subtract(this._startPoint);
+            var first = e.touches && e.touches.length === 1 ? e.touches[0] : e, offset = new Point(first.clientX, first.clientY)._subtract(this._startPoint);
             if (!offset.x && !offset.y) {
               return;
             }
@@ -32269,12 +32257,12 @@ class InstrumentLogic extends BaseInstrument {
             }
             offset.x /= this._parentScale.x;
             offset.y /= this._parentScale.y;
-            preventDefault(e2);
+            preventDefault(e);
             if (!this._moved) {
               this.fire("dragstart");
               this._moved = true;
               addClass(document.body, "leaflet-dragging");
-              this._lastTarget = e2.target || e2.srcElement;
+              this._lastTarget = e.target || e.srcElement;
               if (window.SVGElementInstance && this._lastTarget instanceof window.SVGElementInstance) {
                 this._lastTarget = this._lastTarget.correspondingUseElement;
               }
@@ -32282,14 +32270,14 @@ class InstrumentLogic extends BaseInstrument {
             }
             this._newPos = this._startPos.add(offset);
             this._moving = true;
-            this._lastEvent = e2;
+            this._lastEvent = e;
             this._updatePosition();
           },
           _updatePosition: function() {
-            var e2 = { originalEvent: this._lastEvent };
-            this.fire("predrag", e2);
+            var e = { originalEvent: this._lastEvent };
+            this.fire("predrag", e);
             setPosition(this._element, this._newPos);
-            this.fire("drag", e2);
+            this.fire("drag", e);
           },
           _onUp: function() {
             if (!this._enabled) {
@@ -32319,27 +32307,27 @@ class InstrumentLogic extends BaseInstrument {
           }
         });
         function clipPolygon(points, bounds, round) {
-          var clippedPoints, edges = [1, 4, 2, 8], i2, j, k2, a2, b2, len, edge2, p2;
-          for (i2 = 0, len = points.length; i2 < len; i2++) {
-            points[i2]._code = _getBitCode(points[i2], bounds);
+          var clippedPoints, edges = [1, 4, 2, 8], i, j, k, a, b, len, edge2, p;
+          for (i = 0, len = points.length; i < len; i++) {
+            points[i]._code = _getBitCode(points[i], bounds);
           }
-          for (k2 = 0; k2 < 4; k2++) {
-            edge2 = edges[k2];
+          for (k = 0; k < 4; k++) {
+            edge2 = edges[k];
             clippedPoints = [];
-            for (i2 = 0, len = points.length, j = len - 1; i2 < len; j = i2++) {
-              a2 = points[i2];
-              b2 = points[j];
-              if (!(a2._code & edge2)) {
-                if (b2._code & edge2) {
-                  p2 = _getEdgeIntersection(b2, a2, edge2, bounds, round);
-                  p2._code = _getBitCode(p2, bounds);
-                  clippedPoints.push(p2);
+            for (i = 0, len = points.length, j = len - 1; i < len; j = i++) {
+              a = points[i];
+              b = points[j];
+              if (!(a._code & edge2)) {
+                if (b._code & edge2) {
+                  p = _getEdgeIntersection(b, a, edge2, bounds, round);
+                  p._code = _getBitCode(p, bounds);
+                  clippedPoints.push(p);
                 }
-                clippedPoints.push(a2);
-              } else if (!(b2._code & edge2)) {
-                p2 = _getEdgeIntersection(b2, a2, edge2, bounds, round);
-                p2._code = _getBitCode(p2, bounds);
-                clippedPoints.push(p2);
+                clippedPoints.push(a);
+              } else if (!(b._code & edge2)) {
+                p = _getEdgeIntersection(b, a, edge2, bounds, round);
+                p._code = _getBitCode(p, bounds);
+                clippedPoints.push(p);
               }
             }
             points = clippedPoints;
@@ -32347,7 +32335,7 @@ class InstrumentLogic extends BaseInstrument {
           return points;
         }
         function polygonCenter(latlngs, crs) {
-          var i2, j, p1, p2, f2, area, x2, y2, center;
+          var i, j, p1, p2, f, area, x, y, center;
           if (!latlngs || latlngs.length === 0) {
             throw new Error("latlngs not passed");
           }
@@ -32363,23 +32351,23 @@ class InstrumentLogic extends BaseInstrument {
           }
           var len = latlngs.length;
           var points = [];
-          for (i2 = 0; i2 < len; i2++) {
-            var latlng = toLatLng(latlngs[i2]);
+          for (i = 0; i < len; i++) {
+            var latlng = toLatLng(latlngs[i]);
             points.push(crs.project(toLatLng([latlng.lat - centroidLatLng.lat, latlng.lng - centroidLatLng.lng])));
           }
-          area = x2 = y2 = 0;
-          for (i2 = 0, j = len - 1; i2 < len; j = i2++) {
-            p1 = points[i2];
+          area = x = y = 0;
+          for (i = 0, j = len - 1; i < len; j = i++) {
+            p1 = points[i];
             p2 = points[j];
-            f2 = p1.y * p2.x - p2.y * p1.x;
-            x2 += (p1.x + p2.x) * f2;
-            y2 += (p1.y + p2.y) * f2;
-            area += f2 * 3;
+            f = p1.y * p2.x - p2.y * p1.x;
+            x += (p1.x + p2.x) * f;
+            y += (p1.y + p2.y) * f;
+            area += f * 3;
           }
           if (area === 0) {
             center = points[0];
           } else {
-            center = [x2 / area, y2 / area];
+            center = [x / area, y / area];
           }
           var latlngCenter = crs.unproject(toPoint(center));
           return toLatLng([latlngCenter.lat + centroidLatLng.lat, latlngCenter.lng + centroidLatLng.lng]);
@@ -32388,8 +32376,8 @@ class InstrumentLogic extends BaseInstrument {
           var latSum = 0;
           var lngSum = 0;
           var len = 0;
-          for (var i2 = 0; i2 < coords.length; i2++) {
-            var latlng = toLatLng(coords[i2]);
+          for (var i = 0; i < coords.length; i++) {
+            var latlng = toLatLng(coords[i]);
             latSum += latlng.lat;
             lngSum += latlng.lng;
             len++;
@@ -32411,30 +32399,30 @@ class InstrumentLogic extends BaseInstrument {
           points = _simplifyDP(points, sqTolerance);
           return points;
         }
-        function pointToSegmentDistance(p2, p1, p22) {
-          return Math.sqrt(_sqClosestPointOnSegment(p2, p1, p22, true));
+        function pointToSegmentDistance(p, p1, p2) {
+          return Math.sqrt(_sqClosestPointOnSegment(p, p1, p2, true));
         }
-        function closestPointOnSegment(p2, p1, p22) {
-          return _sqClosestPointOnSegment(p2, p1, p22);
+        function closestPointOnSegment(p, p1, p2) {
+          return _sqClosestPointOnSegment(p, p1, p2);
         }
         function _simplifyDP(points, sqTolerance) {
           var len = points.length, ArrayConstructor = typeof Uint8Array !== void 0 + "" ? Uint8Array : Array, markers = new ArrayConstructor(len);
           markers[0] = markers[len - 1] = 1;
           _simplifyDPStep(points, markers, sqTolerance, 0, len - 1);
-          var i2, newPoints = [];
-          for (i2 = 0; i2 < len; i2++) {
-            if (markers[i2]) {
-              newPoints.push(points[i2]);
+          var i, newPoints = [];
+          for (i = 0; i < len; i++) {
+            if (markers[i]) {
+              newPoints.push(points[i]);
             }
           }
           return newPoints;
         }
         function _simplifyDPStep(points, markers, sqTolerance, first, last) {
-          var maxSqDist = 0, index2, i2, sqDist;
-          for (i2 = first + 1; i2 <= last - 1; i2++) {
-            sqDist = _sqClosestPointOnSegment(points[i2], points[first], points[last], true);
+          var maxSqDist = 0, index2, i, sqDist;
+          for (i = first + 1; i <= last - 1; i++) {
+            sqDist = _sqClosestPointOnSegment(points[i], points[first], points[last], true);
             if (sqDist > maxSqDist) {
-              index2 = i2;
+              index2 = i;
               maxSqDist = sqDist;
             }
           }
@@ -32446,10 +32434,10 @@ class InstrumentLogic extends BaseInstrument {
         }
         function _reducePoints(points, sqTolerance) {
           var reducedPoints = [points[0]];
-          for (var i2 = 1, prev = 0, len = points.length; i2 < len; i2++) {
-            if (_sqDist(points[i2], points[prev]) > sqTolerance) {
-              reducedPoints.push(points[i2]);
-              prev = i2;
+          for (var i = 1, prev = 0, len = points.length; i < len; i++) {
+            if (_sqDist(points[i], points[prev]) > sqTolerance) {
+              reducedPoints.push(points[i]);
+              prev = i;
             }
           }
           if (prev < len - 1) {
@@ -32458,55 +32446,55 @@ class InstrumentLogic extends BaseInstrument {
           return reducedPoints;
         }
         var _lastCode;
-        function clipSegment(a2, b2, bounds, useLastCode, round) {
-          var codeA = useLastCode ? _lastCode : _getBitCode(a2, bounds), codeB = _getBitCode(b2, bounds), codeOut, p2, newCode;
+        function clipSegment(a, b, bounds, useLastCode, round) {
+          var codeA = useLastCode ? _lastCode : _getBitCode(a, bounds), codeB = _getBitCode(b, bounds), codeOut, p, newCode;
           _lastCode = codeB;
           while (true) {
             if (!(codeA | codeB)) {
-              return [a2, b2];
+              return [a, b];
             }
             if (codeA & codeB) {
               return false;
             }
             codeOut = codeA || codeB;
-            p2 = _getEdgeIntersection(a2, b2, codeOut, bounds, round);
-            newCode = _getBitCode(p2, bounds);
+            p = _getEdgeIntersection(a, b, codeOut, bounds, round);
+            newCode = _getBitCode(p, bounds);
             if (codeOut === codeA) {
-              a2 = p2;
+              a = p;
               codeA = newCode;
             } else {
-              b2 = p2;
+              b = p;
               codeB = newCode;
             }
           }
         }
-        function _getEdgeIntersection(a2, b2, code, bounds, round) {
-          var dx = b2.x - a2.x, dy = b2.y - a2.y, min = bounds.min, max = bounds.max, x2, y2;
+        function _getEdgeIntersection(a, b, code, bounds, round) {
+          var dx = b.x - a.x, dy = b.y - a.y, min = bounds.min, max = bounds.max, x, y;
           if (code & 8) {
-            x2 = a2.x + dx * (max.y - a2.y) / dy;
-            y2 = max.y;
+            x = a.x + dx * (max.y - a.y) / dy;
+            y = max.y;
           } else if (code & 4) {
-            x2 = a2.x + dx * (min.y - a2.y) / dy;
-            y2 = min.y;
+            x = a.x + dx * (min.y - a.y) / dy;
+            y = min.y;
           } else if (code & 2) {
-            x2 = max.x;
-            y2 = a2.y + dy * (max.x - a2.x) / dx;
+            x = max.x;
+            y = a.y + dy * (max.x - a.x) / dx;
           } else if (code & 1) {
-            x2 = min.x;
-            y2 = a2.y + dy * (min.x - a2.x) / dx;
+            x = min.x;
+            y = a.y + dy * (min.x - a.x) / dx;
           }
-          return new Point(x2, y2, round);
+          return new Point(x, y, round);
         }
-        function _getBitCode(p2, bounds) {
+        function _getBitCode(p, bounds) {
           var code = 0;
-          if (p2.x < bounds.min.x) {
+          if (p.x < bounds.min.x) {
             code |= 1;
-          } else if (p2.x > bounds.max.x) {
+          } else if (p.x > bounds.max.x) {
             code |= 2;
           }
-          if (p2.y < bounds.min.y) {
+          if (p.y < bounds.min.y) {
             code |= 4;
-          } else if (p2.y > bounds.max.y) {
+          } else if (p.y > bounds.max.y) {
             code |= 8;
           }
           return code;
@@ -32515,21 +32503,21 @@ class InstrumentLogic extends BaseInstrument {
           var dx = p2.x - p1.x, dy = p2.y - p1.y;
           return dx * dx + dy * dy;
         }
-        function _sqClosestPointOnSegment(p2, p1, p22, sqDist) {
-          var x2 = p1.x, y2 = p1.y, dx = p22.x - x2, dy = p22.y - y2, dot = dx * dx + dy * dy, t2;
+        function _sqClosestPointOnSegment(p, p1, p2, sqDist) {
+          var x = p1.x, y = p1.y, dx = p2.x - x, dy = p2.y - y, dot = dx * dx + dy * dy, t;
           if (dot > 0) {
-            t2 = ((p2.x - x2) * dx + (p2.y - y2) * dy) / dot;
-            if (t2 > 1) {
-              x2 = p22.x;
-              y2 = p22.y;
-            } else if (t2 > 0) {
-              x2 += dx * t2;
-              y2 += dy * t2;
+            t = ((p.x - x) * dx + (p.y - y) * dy) / dot;
+            if (t > 1) {
+              x = p2.x;
+              y = p2.y;
+            } else if (t > 0) {
+              x += dx * t;
+              y += dy * t;
             }
           }
-          dx = p2.x - x2;
-          dy = p2.y - y2;
-          return sqDist ? dx * dx + dy * dy : new Point(x2, y2);
+          dx = p.x - x;
+          dy = p.y - y;
+          return sqDist ? dx * dx + dy * dy : new Point(x, y);
         }
         function isFlat(latlngs) {
           return !isArray2(latlngs[0]) || typeof latlngs[0][0] !== "object" && typeof latlngs[0][0] !== "undefined";
@@ -32539,7 +32527,7 @@ class InstrumentLogic extends BaseInstrument {
           return isFlat(latlngs);
         }
         function polylineCenter(latlngs, crs) {
-          var i2, halfDist, segDist, dist, p1, p2, ratio, center;
+          var i, halfDist, segDist, dist, p1, p2, ratio, center;
           if (!latlngs || latlngs.length === 0) {
             throw new Error("latlngs not passed");
           }
@@ -32555,19 +32543,19 @@ class InstrumentLogic extends BaseInstrument {
           }
           var len = latlngs.length;
           var points = [];
-          for (i2 = 0; i2 < len; i2++) {
-            var latlng = toLatLng(latlngs[i2]);
+          for (i = 0; i < len; i++) {
+            var latlng = toLatLng(latlngs[i]);
             points.push(crs.project(toLatLng([latlng.lat - centroidLatLng.lat, latlng.lng - centroidLatLng.lng])));
           }
-          for (i2 = 0, halfDist = 0; i2 < len - 1; i2++) {
-            halfDist += points[i2].distanceTo(points[i2 + 1]) / 2;
+          for (i = 0, halfDist = 0; i < len - 1; i++) {
+            halfDist += points[i].distanceTo(points[i + 1]) / 2;
           }
           if (halfDist === 0) {
             center = points[0];
           } else {
-            for (i2 = 0, dist = 0; i2 < len - 1; i2++) {
-              p1 = points[i2];
-              p2 = points[i2 + 1];
+            for (i = 0, dist = 0; i < len - 1; i++) {
+              p1 = points[i];
+              p2 = points[i + 1];
               segDist = p1.distanceTo(p2);
               dist += segDist;
               if (dist > halfDist) {
@@ -32610,20 +32598,20 @@ class InstrumentLogic extends BaseInstrument {
           R_MINOR: 6356752314245179e-9,
           bounds: new Bounds([-2003750834279e-5, -1549657073972e-5], [2003750834279e-5, 1876465623138e-5]),
           project: function(latlng) {
-            var d2 = Math.PI / 180, r3 = this.R, y2 = latlng.lat * d2, tmp = this.R_MINOR / r3, e2 = Math.sqrt(1 - tmp * tmp), con = e2 * Math.sin(y2);
-            var ts = Math.tan(Math.PI / 4 - y2 / 2) / Math.pow((1 - con) / (1 + con), e2 / 2);
-            y2 = -r3 * Math.log(Math.max(ts, 1e-10));
-            return new Point(latlng.lng * d2 * r3, y2);
+            var d = Math.PI / 180, r = this.R, y = latlng.lat * d, tmp = this.R_MINOR / r, e = Math.sqrt(1 - tmp * tmp), con = e * Math.sin(y);
+            var ts = Math.tan(Math.PI / 4 - y / 2) / Math.pow((1 - con) / (1 + con), e / 2);
+            y = -r * Math.log(Math.max(ts, 1e-10));
+            return new Point(latlng.lng * d * r, y);
           },
           unproject: function(point) {
-            var d2 = 180 / Math.PI, r3 = this.R, tmp = this.R_MINOR / r3, e2 = Math.sqrt(1 - tmp * tmp), ts = Math.exp(-point.y / r3), phi = Math.PI / 2 - 2 * Math.atan(ts);
-            for (var i2 = 0, dphi = 0.1, con; i2 < 15 && Math.abs(dphi) > 1e-7; i2++) {
-              con = e2 * Math.sin(phi);
-              con = Math.pow((1 - con) / (1 + con), e2 / 2);
+            var d = 180 / Math.PI, r = this.R, tmp = this.R_MINOR / r, e = Math.sqrt(1 - tmp * tmp), ts = Math.exp(-point.y / r), phi = Math.PI / 2 - 2 * Math.atan(ts);
+            for (var i = 0, dphi = 0.1, con; i < 15 && Math.abs(dphi) > 1e-7; i++) {
+              con = e * Math.sin(phi);
+              con = Math.pow((1 - con) / (1 + con), e / 2);
               dphi = Math.PI / 2 - 2 * Math.atan(ts * con) - phi;
               phi += dphi;
             }
-            return new LatLng(phi * d2, point.x * d2 / r3);
+            return new LatLng(phi * d, point.x * d / r);
           }
         };
         var index = {
@@ -32699,8 +32687,8 @@ class InstrumentLogic extends BaseInstrument {
           getAttribution: function() {
             return this.options.attribution;
           },
-          _layerAdd: function(e2) {
-            var map2 = e2.target;
+          _layerAdd: function(e) {
+            var map2 = e.target;
             if (!map2.hasLayer(this)) {
               return;
             }
@@ -32755,15 +32743,15 @@ class InstrumentLogic extends BaseInstrument {
             return stamp(layer) in this._layers;
           },
           eachLayer: function(method, context2) {
-            for (var i2 in this._layers) {
-              method.call(context2, this._layers[i2]);
+            for (var i in this._layers) {
+              method.call(context2, this._layers[i]);
             }
             return this;
           },
           _addLayers: function(layers2) {
             layers2 = layers2 ? isArray2(layers2) ? layers2 : [layers2] : [];
-            for (var i2 = 0, len = layers2.length; i2 < len; i2++) {
-              this.addLayer(layers2[i2]);
+            for (var i = 0, len = layers2.length; i < len; i++) {
+              this.addLayer(layers2[i]);
             }
           },
           _addZoomLimit: function(layer) {
@@ -32781,8 +32769,8 @@ class InstrumentLogic extends BaseInstrument {
           },
           _updateZoomLevels: function() {
             var minZoom = Infinity, maxZoom = -Infinity, oldZoomSpan = this._getZoomSpan();
-            for (var i2 in this._zoomBoundLayers) {
-              var options = this._zoomBoundLayers[i2].options;
+            for (var i in this._zoomBoundLayers) {
+              var options = this._zoomBoundLayers[i].options;
               minZoom = options.minZoom === void 0 ? minZoom : Math.min(minZoom, options.minZoom);
               maxZoom = options.maxZoom === void 0 ? maxZoom : Math.max(maxZoom, options.maxZoom);
             }
@@ -32803,10 +32791,10 @@ class InstrumentLogic extends BaseInstrument {
           initialize: function(layers2, options) {
             setOptions(this, options);
             this._layers = {};
-            var i2, len;
+            var i, len;
             if (layers2) {
-              for (i2 = 0, len = layers2.length; i2 < len; i2++) {
-                this.addLayer(layers2[i2]);
+              for (i = 0, len = layers2.length; i < len; i++) {
+                this.addLayer(layers2[i]);
               }
             }
           },
@@ -32834,9 +32822,9 @@ class InstrumentLogic extends BaseInstrument {
             return this.eachLayer(this.removeLayer, this);
           },
           invoke: function(methodName) {
-            var args = Array.prototype.slice.call(arguments, 1), i2, layer;
-            for (i2 in this._layers) {
-              layer = this._layers[i2];
+            var args = Array.prototype.slice.call(arguments, 1), i, layer;
+            for (i in this._layers) {
+              layer = this._layers[i];
               if (layer[methodName]) {
                 layer[methodName].apply(layer, args);
               }
@@ -32850,8 +32838,8 @@ class InstrumentLogic extends BaseInstrument {
             this.eachLayer(map2.removeLayer, map2);
           },
           eachLayer: function(method, context2) {
-            for (var i2 in this._layers) {
-              method.call(context2, this._layers[i2]);
+            for (var i in this._layers) {
+              method.call(context2, this._layers[i]);
             }
             return this;
           },
@@ -33044,7 +33032,7 @@ class InstrumentLogic extends BaseInstrument {
           moved: function() {
             return this._draggable && this._draggable._moved;
           },
-          _adjustPan: function(e2) {
+          _adjustPan: function(e) {
             var marker2 = this._marker, map2 = marker2._map, speed = this._marker.options.autoPanSpeed, padding = this._marker.options.autoPanPadding, iconPos = getPosition(marker2._icon), bounds = map2.getPixelBounds(), origin = map2.getPixelOrigin();
             var panBounds = toBounds(
               bounds.min._subtract(origin).add(padding),
@@ -33059,8 +33047,8 @@ class InstrumentLogic extends BaseInstrument {
               this._draggable._newPos._add(movement);
               this._draggable._startPos._add(movement);
               setPosition(marker2._icon, this._draggable._newPos);
-              this._onDrag(e2);
-              this._panRequest = requestAnimFrame(this._adjustPan.bind(this, e2));
+              this._onDrag(e);
+              this._panRequest = requestAnimFrame(this._adjustPan.bind(this, e));
             }
           },
           _onDragStart: function() {
@@ -33068,26 +33056,26 @@ class InstrumentLogic extends BaseInstrument {
             this._marker.closePopup && this._marker.closePopup();
             this._marker.fire("movestart").fire("dragstart");
           },
-          _onPreDrag: function(e2) {
+          _onPreDrag: function(e) {
             if (this._marker.options.autoPan) {
               cancelAnimFrame(this._panRequest);
-              this._panRequest = requestAnimFrame(this._adjustPan.bind(this, e2));
+              this._panRequest = requestAnimFrame(this._adjustPan.bind(this, e));
             }
           },
-          _onDrag: function(e2) {
+          _onDrag: function(e) {
             var marker2 = this._marker, shadow = marker2._shadow, iconPos = getPosition(marker2._icon), latlng = marker2._map.layerPointToLatLng(iconPos);
             if (shadow) {
               setPosition(shadow, iconPos);
             }
             marker2._latlng = latlng;
-            e2.latlng = latlng;
-            e2.oldLatLng = this._oldLatLng;
-            marker2.fire("move", e2).fire("drag", e2);
+            e.latlng = latlng;
+            e.oldLatLng = this._oldLatLng;
+            marker2.fire("move", e).fire("drag", e);
           },
-          _onDragEnd: function(e2) {
+          _onDragEnd: function(e) {
             cancelAnimFrame(this._panRequest);
             delete this._oldLatLng;
-            this._marker.fire("moveend").fire("dragend", e2);
+            this._marker.fire("moveend").fire("dragend", e);
           }
         });
         var Marker = Layer.extend({
@@ -33434,8 +33422,8 @@ class InstrumentLogic extends BaseInstrument {
             this._updateBounds();
           },
           _updateBounds: function() {
-            var r3 = this._radius, r22 = this._radiusY || r3, w2 = this._clickTolerance(), p2 = [r3 + w2, r22 + w2];
-            this._pxBounds = new Bounds(this._point.subtract(p2), this._point.add(p2));
+            var r = this._radius, r2 = this._radiusY || r, w = this._clickTolerance(), p = [r + w, r2 + w];
+            this._pxBounds = new Bounds(this._point.subtract(p), this._point.add(p));
           },
           _update: function() {
             if (this._map) {
@@ -33448,8 +33436,8 @@ class InstrumentLogic extends BaseInstrument {
           _empty: function() {
             return this._radius && !this._renderer._bounds.intersects(this._pxBounds);
           },
-          _containsPoint: function(p2) {
-            return p2.distanceTo(this._point) <= this._radius + this._clickTolerance();
+          _containsPoint: function(p) {
+            return p.distanceTo(this._point) <= this._radius + this._clickTolerance();
           }
         });
         function circleMarker(latlng, options) {
@@ -33485,13 +33473,13 @@ class InstrumentLogic extends BaseInstrument {
           _project: function() {
             var lng = this._latlng.lng, lat = this._latlng.lat, map2 = this._map, crs = map2.options.crs;
             if (crs.distance === Earth.distance) {
-              var d2 = Math.PI / 180, latR = this._mRadius / Earth.R / d2, top = map2.project([lat + latR, lng]), bottom = map2.project([lat - latR, lng]), p2 = top.add(bottom).divideBy(2), lat2 = map2.unproject(p2).lat, lngR = Math.acos((Math.cos(latR * d2) - Math.sin(lat * d2) * Math.sin(lat2 * d2)) / (Math.cos(lat * d2) * Math.cos(lat2 * d2))) / d2;
+              var d = Math.PI / 180, latR = this._mRadius / Earth.R / d, top = map2.project([lat + latR, lng]), bottom = map2.project([lat - latR, lng]), p = top.add(bottom).divideBy(2), lat2 = map2.unproject(p).lat, lngR = Math.acos((Math.cos(latR * d) - Math.sin(lat * d) * Math.sin(lat2 * d)) / (Math.cos(lat * d) * Math.cos(lat2 * d))) / d;
               if (isNaN(lngR) || lngR === 0) {
                 lngR = latR / Math.cos(Math.PI / 180 * lat);
               }
-              this._point = p2.subtract(map2.getPixelOrigin());
-              this._radius = isNaN(lngR) ? 0 : p2.x - map2.project([lat2, lng - lngR]).x;
-              this._radiusY = p2.y - top.y;
+              this._point = p.subtract(map2.getPixelOrigin());
+              this._radius = isNaN(lngR) ? 0 : p.x - map2.project([lat2, lng - lngR]).x;
+              this._radiusY = p.y - top.y;
             } else {
               var latlng2 = crs.unproject(crs.project(this._latlng).subtract([this._mRadius, 0]));
               this._point = map2.latLngToLayerPoint(this._latlng);
@@ -33522,17 +33510,17 @@ class InstrumentLogic extends BaseInstrument {
           isEmpty: function() {
             return !this._latlngs.length;
           },
-          closestLayerPoint: function(p2) {
-            var minDistance = Infinity, minPoint = null, closest = _sqClosestPointOnSegment, p1, p22;
+          closestLayerPoint: function(p) {
+            var minDistance = Infinity, minPoint = null, closest = _sqClosestPointOnSegment, p1, p2;
             for (var j = 0, jLen = this._parts.length; j < jLen; j++) {
               var points = this._parts[j];
-              for (var i2 = 1, len = points.length; i2 < len; i2++) {
-                p1 = points[i2 - 1];
-                p22 = points[i2];
-                var sqDist = closest(p2, p1, p22, true);
+              for (var i = 1, len = points.length; i < len; i++) {
+                p1 = points[i - 1];
+                p2 = points[i];
+                var sqDist = closest(p, p1, p2, true);
                 if (sqDist < minDistance) {
                   minDistance = sqDist;
-                  minPoint = closest(p2, p1, p22);
+                  minPoint = closest(p, p1, p2);
                 }
               }
             }
@@ -33566,12 +33554,12 @@ class InstrumentLogic extends BaseInstrument {
           },
           _convertLatLngs: function(latlngs) {
             var result = [], flat = isFlat(latlngs);
-            for (var i2 = 0, len = latlngs.length; i2 < len; i2++) {
+            for (var i = 0, len = latlngs.length; i < len; i++) {
               if (flat) {
-                result[i2] = toLatLng(latlngs[i2]);
-                this._bounds.extend(result[i2]);
+                result[i] = toLatLng(latlngs[i]);
+                this._bounds.extend(result[i]);
               } else {
-                result[i2] = this._convertLatLngs(latlngs[i2]);
+                result[i] = this._convertLatLngs(latlngs[i]);
               }
             }
             return result;
@@ -33586,27 +33574,27 @@ class InstrumentLogic extends BaseInstrument {
             }
           },
           _updateBounds: function() {
-            var w2 = this._clickTolerance(), p2 = new Point(w2, w2);
+            var w = this._clickTolerance(), p = new Point(w, w);
             if (!this._rawPxBounds) {
               return;
             }
             this._pxBounds = new Bounds([
-              this._rawPxBounds.min.subtract(p2),
-              this._rawPxBounds.max.add(p2)
+              this._rawPxBounds.min.subtract(p),
+              this._rawPxBounds.max.add(p)
             ]);
           },
           _projectLatlngs: function(latlngs, result, projectedBounds) {
-            var flat = latlngs[0] instanceof LatLng, len = latlngs.length, i2, ring;
+            var flat = latlngs[0] instanceof LatLng, len = latlngs.length, i, ring;
             if (flat) {
               ring = [];
-              for (i2 = 0; i2 < len; i2++) {
-                ring[i2] = this._map.latLngToLayerPoint(latlngs[i2]);
-                projectedBounds.extend(ring[i2]);
+              for (i = 0; i < len; i++) {
+                ring[i] = this._map.latLngToLayerPoint(latlngs[i]);
+                projectedBounds.extend(ring[i]);
               }
               result.push(ring);
             } else {
-              for (i2 = 0; i2 < len; i2++) {
-                this._projectLatlngs(latlngs[i2], result, projectedBounds);
+              for (i = 0; i < len; i++) {
+                this._projectLatlngs(latlngs[i], result, projectedBounds);
               }
             }
           },
@@ -33620,27 +33608,27 @@ class InstrumentLogic extends BaseInstrument {
               this._parts = this._rings;
               return;
             }
-            var parts = this._parts, i2, j, k2, len, len2, segment, points;
-            for (i2 = 0, k2 = 0, len = this._rings.length; i2 < len; i2++) {
-              points = this._rings[i2];
+            var parts = this._parts, i, j, k, len, len2, segment, points;
+            for (i = 0, k = 0, len = this._rings.length; i < len; i++) {
+              points = this._rings[i];
               for (j = 0, len2 = points.length; j < len2 - 1; j++) {
                 segment = clipSegment(points[j], points[j + 1], bounds, j, true);
                 if (!segment) {
                   continue;
                 }
-                parts[k2] = parts[k2] || [];
-                parts[k2].push(segment[0]);
+                parts[k] = parts[k] || [];
+                parts[k].push(segment[0]);
                 if (segment[1] !== points[j + 1] || j === len2 - 2) {
-                  parts[k2].push(segment[1]);
-                  k2++;
+                  parts[k].push(segment[1]);
+                  k++;
                 }
               }
             }
           },
           _simplifyPoints: function() {
             var parts = this._parts, tolerance = this.options.smoothFactor;
-            for (var i2 = 0, len = parts.length; i2 < len; i2++) {
-              parts[i2] = simplify(parts[i2], tolerance);
+            for (var i = 0, len = parts.length; i < len; i++) {
+              parts[i] = simplify(parts[i], tolerance);
             }
           },
           _update: function() {
@@ -33654,18 +33642,18 @@ class InstrumentLogic extends BaseInstrument {
           _updatePath: function() {
             this._renderer._updatePoly(this);
           },
-          _containsPoint: function(p2, closed) {
-            var i2, j, k2, len, len2, part, w2 = this._clickTolerance();
-            if (!this._pxBounds || !this._pxBounds.contains(p2)) {
+          _containsPoint: function(p, closed) {
+            var i, j, k, len, len2, part, w = this._clickTolerance();
+            if (!this._pxBounds || !this._pxBounds.contains(p)) {
               return false;
             }
-            for (i2 = 0, len = this._parts.length; i2 < len; i2++) {
-              part = this._parts[i2];
-              for (j = 0, len2 = part.length, k2 = len2 - 1; j < len2; k2 = j++) {
+            for (i = 0, len = this._parts.length; i < len; i++) {
+              part = this._parts[i];
+              for (j = 0, len2 = part.length, k = len2 - 1; j < len2; k = j++) {
                 if (!closed && j === 0) {
                   continue;
                 }
-                if (pointToSegmentDistance(p2, part[k2], part[j]) <= w2) {
+                if (pointToSegmentDistance(p, part[k], part[j]) <= w) {
                   return true;
                 }
               }
@@ -33707,8 +33695,8 @@ class InstrumentLogic extends BaseInstrument {
             return isFlat(this._latlngs[0]) ? this._latlngs[0] : this._latlngs[0][0];
           },
           _clipPoints: function() {
-            var bounds = this._renderer._bounds, w2 = this.options.weight, p2 = new Point(w2, w2);
-            bounds = new Bounds(bounds.min.subtract(p2), bounds.max.add(p2));
+            var bounds = this._renderer._bounds, w = this.options.weight, p = new Point(w, w);
+            bounds = new Bounds(bounds.min.subtract(p), bounds.max.add(p));
             this._parts = [];
             if (!this._pxBounds || !this._pxBounds.intersects(bounds)) {
               return;
@@ -33717,8 +33705,8 @@ class InstrumentLogic extends BaseInstrument {
               this._parts = this._rings;
               return;
             }
-            for (var i2 = 0, len = this._rings.length, clipped; i2 < len; i2++) {
-              clipped = clipPolygon(this._rings[i2], bounds, true);
+            for (var i = 0, len = this._rings.length, clipped; i < len; i++) {
+              clipped = clipPolygon(this._rings[i], bounds, true);
               if (clipped.length) {
                 this._parts.push(clipped);
               }
@@ -33727,22 +33715,22 @@ class InstrumentLogic extends BaseInstrument {
           _updatePath: function() {
             this._renderer._updatePoly(this, true);
           },
-          _containsPoint: function(p2) {
-            var inside = false, part, p1, p22, i2, j, k2, len, len2;
-            if (!this._pxBounds || !this._pxBounds.contains(p2)) {
+          _containsPoint: function(p) {
+            var inside = false, part, p1, p2, i, j, k, len, len2;
+            if (!this._pxBounds || !this._pxBounds.contains(p)) {
               return false;
             }
-            for (i2 = 0, len = this._parts.length; i2 < len; i2++) {
-              part = this._parts[i2];
-              for (j = 0, len2 = part.length, k2 = len2 - 1; j < len2; k2 = j++) {
+            for (i = 0, len = this._parts.length; i < len; i++) {
+              part = this._parts[i];
+              for (j = 0, len2 = part.length, k = len2 - 1; j < len2; k = j++) {
                 p1 = part[j];
-                p22 = part[k2];
-                if (p1.y > p2.y !== p22.y > p2.y && p2.x < (p22.x - p1.x) * (p2.y - p1.y) / (p22.y - p1.y) + p1.x) {
+                p2 = part[k];
+                if (p1.y > p.y !== p2.y > p.y && p.x < (p2.x - p1.x) * (p.y - p1.y) / (p2.y - p1.y) + p1.x) {
                   inside = !inside;
                 }
               }
             }
-            return inside || Polyline.prototype._containsPoint.call(this, p2, true);
+            return inside || Polyline.prototype._containsPoint.call(this, p, true);
           }
         });
         function polygon(latlngs, options) {
@@ -33757,10 +33745,10 @@ class InstrumentLogic extends BaseInstrument {
             }
           },
           addData: function(geojson) {
-            var features = isArray2(geojson) ? geojson : geojson.features, i2, len, feature;
+            var features = isArray2(geojson) ? geojson : geojson.features, i, len, feature;
             if (features) {
-              for (i2 = 0, len = features.length; i2 < len; i2++) {
-                feature = features[i2];
+              for (i = 0, len = features.length; i < len; i++) {
+                feature = features[i];
                 if (feature.geometries || feature.geometry || feature.features || feature.coordinates) {
                   this.addData(feature);
                 }
@@ -33806,7 +33794,7 @@ class InstrumentLogic extends BaseInstrument {
           }
         });
         function geometryToLayer(geojson, options) {
-          var geometry = geojson.type === "Feature" ? geojson.geometry : geojson, coords = geometry ? geometry.coordinates : null, layers2 = [], pointToLayer = options && options.pointToLayer, _coordsToLatLng = options && options.coordsToLatLng || coordsToLatLng, latlng, latlngs, i2, len;
+          var geometry = geojson.type === "Feature" ? geojson.geometry : geojson, coords = geometry ? geometry.coordinates : null, layers2 = [], pointToLayer = options && options.pointToLayer, _coordsToLatLng = options && options.coordsToLatLng || coordsToLatLng, latlng, latlngs, i, len;
           if (!coords && !geometry) {
             return null;
           }
@@ -33815,8 +33803,8 @@ class InstrumentLogic extends BaseInstrument {
               latlng = _coordsToLatLng(coords);
               return _pointToLayer(pointToLayer, geojson, latlng, options);
             case "MultiPoint":
-              for (i2 = 0, len = coords.length; i2 < len; i2++) {
-                latlng = _coordsToLatLng(coords[i2]);
+              for (i = 0, len = coords.length; i < len; i++) {
+                latlng = _coordsToLatLng(coords[i]);
                 layers2.push(_pointToLayer(pointToLayer, geojson, latlng, options));
               }
               return new FeatureGroup(layers2);
@@ -33829,9 +33817,9 @@ class InstrumentLogic extends BaseInstrument {
               latlngs = coordsToLatLngs(coords, geometry.type === "Polygon" ? 1 : 2, _coordsToLatLng);
               return new Polygon(latlngs, options);
             case "GeometryCollection":
-              for (i2 = 0, len = geometry.geometries.length; i2 < len; i2++) {
+              for (i = 0, len = geometry.geometries.length; i < len; i++) {
                 var geoLayer = geometryToLayer({
-                  geometry: geometry.geometries[i2],
+                  geometry: geometry.geometries[i],
                   type: "Feature",
                   properties: geojson.properties
                 }, options);
@@ -33841,8 +33829,8 @@ class InstrumentLogic extends BaseInstrument {
               }
               return new FeatureGroup(layers2);
             case "FeatureCollection":
-              for (i2 = 0, len = geometry.features.length; i2 < len; i2++) {
-                var featureLayer = geometryToLayer(geometry.features[i2], options);
+              for (i = 0, len = geometry.features.length; i < len; i++) {
+                var featureLayer = geometryToLayer(geometry.features[i], options);
                 if (featureLayer) {
                   layers2.push(featureLayer);
                 }
@@ -33860,8 +33848,8 @@ class InstrumentLogic extends BaseInstrument {
         }
         function coordsToLatLngs(coords, levelsDeep, _coordsToLatLng) {
           var latlngs = [];
-          for (var i2 = 0, len = coords.length, latlng; i2 < len; i2++) {
-            latlng = levelsDeep ? coordsToLatLngs(coords[i2], levelsDeep - 1, _coordsToLatLng) : (_coordsToLatLng || coordsToLatLng)(coords[i2]);
+          for (var i = 0, len = coords.length, latlng; i < len; i++) {
+            latlng = levelsDeep ? coordsToLatLngs(coords[i], levelsDeep - 1, _coordsToLatLng) : (_coordsToLatLng || coordsToLatLng)(coords[i]);
             latlngs.push(latlng);
           }
           return latlngs;
@@ -33872,8 +33860,8 @@ class InstrumentLogic extends BaseInstrument {
         }
         function latLngsToCoords(latlngs, levelsDeep, closed, precision) {
           var coords = [];
-          for (var i2 = 0, len = latlngs.length; i2 < len; i2++) {
-            coords.push(levelsDeep ? latLngsToCoords(latlngs[i2], isFlat(latlngs[i2]) ? 0 : levelsDeep - 1, closed, precision) : latLngToCoords(latlngs[i2], precision));
+          for (var i = 0, len = latlngs.length; i < len; i++) {
+            coords.push(levelsDeep ? latLngsToCoords(latlngs[i], isFlat(latlngs[i]) ? 0 : levelsDeep - 1, closed, precision) : latLngToCoords(latlngs[i], precision));
           }
           if (!levelsDeep && closed && coords.length > 0) {
             coords.push(coords[0].slice());
@@ -34097,8 +34085,8 @@ class InstrumentLogic extends BaseInstrument {
             img.src = this._url;
             img.alt = this.options.alt;
           },
-          _animateZoom: function(e2) {
-            var scale2 = this._map.getZoomScale(e2.zoom), offset = this._map._latLngBoundsToNewLayerBounds(this._bounds, e2.zoom, e2.center).min;
+          _animateZoom: function(e) {
+            var scale2 = this._map.getZoomScale(e.zoom), offset = this._map._latLngBoundsToNewLayerBounds(this._bounds, e.zoom, e.center).min;
             setTransform(this._image, offset, scale2);
           },
           _reset: function() {
@@ -34173,9 +34161,9 @@ class InstrumentLogic extends BaseInstrument {
             vid.loop = !!this.options.loop;
             vid.muted = !!this.options.muted;
             vid.playsInline = !!this.options.playsInline;
-            for (var i2 = 0; i2 < this._url.length; i2++) {
+            for (var i = 0; i < this._url.length; i++) {
               var source = create$1("source");
-              source.src = this._url[i2];
+              source.src = this._url[i];
               vid.appendChild(source);
             }
           }
@@ -34530,8 +34518,8 @@ class InstrumentLogic extends BaseInstrument {
             }
             this._containerWidth = this._container.offsetWidth;
           },
-          _animateZoom: function(e2) {
-            var pos = this._map._latLngToNewLayerPoint(this._latlng, e2.zoom, e2.center), anchor = this._getAnchor();
+          _animateZoom: function(e) {
+            var pos = this._map._latLngToNewLayerPoint(this._latlng, e.zoom, e.center), anchor = this._getAnchor();
             setPosition(this._container, pos.add(anchor));
           },
           _adjustPan: function() {
@@ -34652,29 +34640,29 @@ class InstrumentLogic extends BaseInstrument {
           getPopup: function() {
             return this._popup;
           },
-          _openPopup: function(e2) {
+          _openPopup: function(e) {
             if (!this._popup || !this._map) {
               return;
             }
-            stop(e2);
-            var target = e2.layer || e2.target;
+            stop(e);
+            var target = e.layer || e.target;
             if (this._popup._source === target && !(target instanceof Path)) {
               if (this._map.hasLayer(this._popup)) {
                 this.closePopup();
               } else {
-                this.openPopup(e2.latlng);
+                this.openPopup(e.latlng);
               }
               return;
             }
             this._popup._source = target;
-            this.openPopup(e2.latlng);
+            this.openPopup(e.latlng);
           },
-          _movePopup: function(e2) {
-            this._popup.setLatLng(e2.latlng);
+          _movePopup: function(e) {
+            this._popup.setLatLng(e.latlng);
           },
-          _onKeyPress: function(e2) {
-            if (e2.originalEvent.keyCode === 13) {
-              this._openPopup(e2);
+          _onKeyPress: function(e) {
+            if (e.originalEvent.keyCode === 13) {
+              this._openPopup(e);
             }
           }
         });
@@ -34765,8 +34753,8 @@ class InstrumentLogic extends BaseInstrument {
               setOpacity(this._container, opacity);
             }
           },
-          _animateZoom: function(e2) {
-            var pos = this._map._latLngToNewLayerPoint(this._latlng, e2.zoom, e2.center);
+          _animateZoom: function(e) {
+            var pos = this._map._latLngToNewLayerPoint(this._latlng, e.zoom, e.center);
             this._setPosition(pos);
           },
           _getAnchor: function() {
@@ -34894,7 +34882,7 @@ class InstrumentLogic extends BaseInstrument {
               el.setAttribute("aria-describedby", this._tooltip._container.id);
             }
           },
-          _openTooltip: function(e2) {
+          _openTooltip: function(e) {
             if (!this._tooltip || !this._map) {
               return;
             }
@@ -34903,17 +34891,17 @@ class InstrumentLogic extends BaseInstrument {
               var that = this;
               this._map.once("moveend", function() {
                 that._openOnceFlag = false;
-                that._openTooltip(e2);
+                that._openTooltip(e);
               });
               return;
             }
-            this._tooltip._source = e2.layer || e2.target;
-            this.openTooltip(this._tooltip.options.sticky ? e2.latlng : void 0);
+            this._tooltip._source = e.layer || e.target;
+            this.openTooltip(this._tooltip.options.sticky ? e.latlng : void 0);
           },
-          _moveTooltip: function(e2) {
-            var latlng = e2.latlng, containerPoint, layerPoint;
-            if (this._tooltip.options.sticky && e2.originalEvent) {
-              containerPoint = this._map.mouseEventToContainerPoint(e2.originalEvent);
+          _moveTooltip: function(e) {
+            var latlng = e.latlng, containerPoint, layerPoint;
+            if (this._tooltip.options.sticky && e.originalEvent) {
+              containerPoint = this._map.mouseEventToContainerPoint(e.originalEvent);
               layerPoint = this._map.containerPointToLayerPoint(containerPoint);
               latlng = this._map.layerPointToLatLng(layerPoint);
             }
@@ -35051,8 +35039,8 @@ class InstrumentLogic extends BaseInstrument {
             return document.createElement("div");
           },
           getTileSize: function() {
-            var s2 = this.options.tileSize;
-            return s2 instanceof Point ? s2 : new Point(s2, s2);
+            var s = this.options.tileSize;
+            return s instanceof Point ? s : new Point(s, s);
           },
           _updateZIndex: function() {
             if (this._container && this.options.zIndex !== void 0 && this.options.zIndex !== null) {
@@ -35061,9 +35049,9 @@ class InstrumentLogic extends BaseInstrument {
           },
           _setAutoZIndex: function(compare) {
             var layers2 = this.getPane().children, edgeZIndex = -compare(-Infinity, Infinity);
-            for (var i2 = 0, len = layers2.length, zIndex; i2 < len; i2++) {
-              zIndex = layers2[i2].style.zIndex;
-              if (layers2[i2] !== this._container && zIndex) {
+            for (var i = 0, len = layers2.length, zIndex; i < len; i++) {
+              zIndex = layers2[i].style.zIndex;
+              if (layers2[i] !== this._container && zIndex) {
                 edgeZIndex = compare(edgeZIndex, +zIndex);
               }
             }
@@ -35124,16 +35112,16 @@ class InstrumentLogic extends BaseInstrument {
             if (zoom2 === void 0) {
               return void 0;
             }
-            for (var z2 in this._levels) {
-              z2 = Number(z2);
-              if (this._levels[z2].el.children.length || z2 === zoom2) {
-                this._levels[z2].el.style.zIndex = maxZoom - Math.abs(zoom2 - z2);
-                this._onUpdateLevel(z2);
+            for (var z in this._levels) {
+              z = Number(z);
+              if (this._levels[z].el.children.length || z === zoom2) {
+                this._levels[z].el.style.zIndex = maxZoom - Math.abs(zoom2 - z);
+                this._onUpdateLevel(z);
               } else {
-                remove(this._levels[z2].el);
-                this._removeTilesAtZoom(z2);
-                this._onRemoveLevel(z2);
-                delete this._levels[z2];
+                remove(this._levels[z].el);
+                this._removeTilesAtZoom(z);
+                this._onRemoveLevel(z);
+                delete this._levels[z];
               }
             }
             var level = this._levels[zoom2], map2 = this._map;
@@ -35196,17 +35184,17 @@ class InstrumentLogic extends BaseInstrument {
             }
           },
           _invalidateAll: function() {
-            for (var z2 in this._levels) {
-              remove(this._levels[z2].el);
-              this._onRemoveLevel(Number(z2));
-              delete this._levels[z2];
+            for (var z in this._levels) {
+              remove(this._levels[z].el);
+              this._onRemoveLevel(Number(z));
+              delete this._levels[z];
             }
             this._removeAllTiles();
             this._tileZoom = void 0;
           },
-          _retainParent: function(x2, y2, z2, minZoom) {
-            var x22 = Math.floor(x2 / 2), y22 = Math.floor(y2 / 2), z22 = z2 - 1, coords2 = new Point(+x22, +y22);
-            coords2.z = +z22;
+          _retainParent: function(x, y, z, minZoom) {
+            var x2 = Math.floor(x / 2), y2 = Math.floor(y / 2), z2 = z - 1, coords2 = new Point(+x2, +y2);
+            coords2.z = +z2;
             var key = this._tileCoordsToKey(coords2), tile = this._tiles[key];
             if (tile && tile.active) {
               tile.retain = true;
@@ -35214,16 +35202,16 @@ class InstrumentLogic extends BaseInstrument {
             } else if (tile && tile.loaded) {
               tile.retain = true;
             }
-            if (z22 > minZoom) {
-              return this._retainParent(x22, y22, z22, minZoom);
+            if (z2 > minZoom) {
+              return this._retainParent(x2, y2, z2, minZoom);
             }
             return false;
           },
-          _retainChildren: function(x2, y2, z2, maxZoom) {
-            for (var i2 = 2 * x2; i2 < 2 * x2 + 2; i2++) {
-              for (var j = 2 * y2; j < 2 * y2 + 2; j++) {
-                var coords = new Point(i2, j);
-                coords.z = z2 + 1;
+          _retainChildren: function(x, y, z, maxZoom) {
+            for (var i = 2 * x; i < 2 * x + 2; i++) {
+              for (var j = 2 * y; j < 2 * y + 2; j++) {
+                var coords = new Point(i, j);
+                coords.z = z + 1;
                 var key = this._tileCoordsToKey(coords), tile = this._tiles[key];
                 if (tile && tile.active) {
                   tile.retain = true;
@@ -35231,18 +35219,18 @@ class InstrumentLogic extends BaseInstrument {
                 } else if (tile && tile.loaded) {
                   tile.retain = true;
                 }
-                if (z2 + 1 < maxZoom) {
-                  this._retainChildren(i2, j, z2 + 1, maxZoom);
+                if (z + 1 < maxZoom) {
+                  this._retainChildren(i, j, z + 1, maxZoom);
                 }
               }
             }
           },
-          _resetView: function(e2) {
-            var animating = e2 && (e2.pinch || e2.flyTo);
+          _resetView: function(e) {
+            var animating = e && (e.pinch || e.flyTo);
             this._setView(this._map.getCenter(), this._map.getZoom(), animating, animating);
           },
-          _animateZoom: function(e2) {
-            this._setView(e2.center, e2.zoom, true, e2.noUpdate);
+          _animateZoom: function(e) {
+            this._setView(e.center, e.zoom, true, e.noUpdate);
           },
           _clampZoom: function(zoom2) {
             var options = this.options;
@@ -35280,8 +35268,8 @@ class InstrumentLogic extends BaseInstrument {
             this._setZoomTransforms(center, zoom2);
           },
           _setZoomTransforms: function(center, zoom2) {
-            for (var i2 in this._levels) {
-              this._setZoomTransform(this._levels[i2], center, zoom2);
+            for (var i in this._levels) {
+              this._setZoomTransform(this._levels[i], center, zoom2);
             }
           },
           _setZoomTransform: function(level, center, zoom2) {
@@ -35347,8 +35335,8 @@ class InstrumentLogic extends BaseInstrument {
               return;
             }
             for (var j = tileRange.min.y; j <= tileRange.max.y; j++) {
-              for (var i2 = tileRange.min.x; i2 <= tileRange.max.x; i2++) {
-                var coords = new Point(i2, j);
+              for (var i = tileRange.min.x; i <= tileRange.max.x; i++) {
+                var coords = new Point(i, j);
                 coords.z = this._tileZoom;
                 if (!this._isValidTile(coords)) {
                   continue;
@@ -35361,8 +35349,8 @@ class InstrumentLogic extends BaseInstrument {
                 }
               }
             }
-            queue.sort(function(a2, b2) {
-              return a2.distanceTo(tileCenter) - b2.distanceTo(tileCenter);
+            queue.sort(function(a, b) {
+              return a.distanceTo(tileCenter) - b.distanceTo(tileCenter);
             });
             if (queue.length !== 0) {
               if (!this._loading) {
@@ -35370,8 +35358,8 @@ class InstrumentLogic extends BaseInstrument {
                 this.fire("loading");
               }
               var fragment = document.createDocumentFragment();
-              for (i2 = 0; i2 < queue.length; i2++) {
-                this._addTile(queue[i2], fragment);
+              for (i = 0; i < queue.length; i++) {
+                this._addTile(queue[i], fragment);
               }
               this._level.el.appendChild(fragment);
             }
@@ -35408,8 +35396,8 @@ class InstrumentLogic extends BaseInstrument {
             return coords.x + ":" + coords.y + ":" + coords.z;
           },
           _keyToTileCoords: function(key) {
-            var k2 = key.split(":"), coords = new Point(+k2[0], +k2[1]);
-            coords.z = +k2[2];
+            var k = key.split(":"), coords = new Point(+k[0], +k[1]);
+            coords.z = +k[2];
             return coords;
           },
           _removeTile: function(key) {
@@ -35607,15 +35595,15 @@ class InstrumentLogic extends BaseInstrument {
               done(null, tile);
             }
           },
-          _tileOnError: function(done, tile, e2) {
+          _tileOnError: function(done, tile, e) {
             var errorUrl = this.options.errorTileUrl;
             if (errorUrl && tile.getAttribute("src") !== errorUrl) {
               tile.src = errorUrl;
             }
-            done(e2, tile);
+            done(e, tile);
           },
-          _onTileRemove: function(e2) {
-            e2.tile.onload = null;
+          _onTileRemove: function(e) {
+            e.tile.onload = null;
           },
           _getZoomForUrl: function() {
             var zoom2 = this._tileZoom, maxZoom = this.options.maxZoom, zoomReverse = this.options.zoomReverse, zoomOffset = this.options.zoomOffset;
@@ -35629,17 +35617,17 @@ class InstrumentLogic extends BaseInstrument {
             return this.options.subdomains[index2];
           },
           _abortLoading: function() {
-            var i2, tile;
-            for (i2 in this._tiles) {
-              if (this._tiles[i2].coords.z !== this._tileZoom) {
-                tile = this._tiles[i2].el;
+            var i, tile;
+            for (i in this._tiles) {
+              if (this._tiles[i].coords.z !== this._tileZoom) {
+                tile = this._tiles[i].el;
                 tile.onload = falseFn;
                 tile.onerror = falseFn;
                 if (!tile.complete) {
                   tile.src = emptyImageUrl;
-                  var coords = this._tiles[i2].coords;
+                  var coords = this._tiles[i].coords;
                   remove(tile);
-                  delete this._tiles[i2];
+                  delete this._tiles[i];
                   this.fire("tileabort", {
                     tile,
                     coords
@@ -35683,9 +35671,9 @@ class InstrumentLogic extends BaseInstrument {
           initialize: function(url, options) {
             this._url = url;
             var wmsParams = extend({}, this.defaultWmsParams);
-            for (var i2 in options) {
-              if (!(i2 in this.options)) {
-                wmsParams[i2] = options[i2];
+            for (var i in options) {
+              if (!(i in this.options)) {
+                wmsParams[i] = options[i];
               }
             }
             options = setOptions(this, options);
@@ -35785,8 +35773,8 @@ class InstrumentLogic extends BaseInstrument {
             }
           },
           _update: function() {
-            var p2 = this.options.padding, size = this._map.getSize(), min = this._map.containerPointToLayerPoint(size.multiplyBy(-p2)).round();
-            this._bounds = new Bounds(min, min.add(size.multiplyBy(1 + p2 * 2)).round());
+            var p = this.options.padding, size = this._map.getSize(), min = this._map.containerPointToLayerPoint(size.multiplyBy(-p)).round();
+            this._bounds = new Bounds(min, min.add(size.multiplyBy(1 + p * 2)).round());
             this._center = this._map.getCenter();
             this._zoom = this._map.getZoom();
           }
@@ -35839,16 +35827,16 @@ class InstrumentLogic extends BaseInstrument {
               return;
             }
             Renderer.prototype._update.call(this);
-            var b2 = this._bounds, container = this._container, size = b2.getSize(), m2 = Browser.retina ? 2 : 1;
-            setPosition(container, b2.min);
-            container.width = m2 * size.x;
-            container.height = m2 * size.y;
+            var b = this._bounds, container = this._container, size = b.getSize(), m = Browser.retina ? 2 : 1;
+            setPosition(container, b.min);
+            container.width = m * size.x;
+            container.height = m * size.y;
             container.style.width = size.x + "px";
             container.style.height = size.y + "px";
             if (Browser.retina) {
               this._ctx.scale(2, 2);
             }
-            this._ctx.translate(-b2.min.x, -b2.min.y);
+            this._ctx.translate(-b.min.x, -b.min.y);
             this.fire("update");
           },
           _reset: function() {
@@ -35905,9 +35893,9 @@ class InstrumentLogic extends BaseInstrument {
           },
           _updateDashArray: function(layer) {
             if (typeof layer.options.dashArray === "string") {
-              var parts = layer.options.dashArray.split(/[, ]+/), dashArray = [], dashValue, i2;
-              for (i2 = 0; i2 < parts.length; i2++) {
-                dashValue = Number(parts[i2]);
+              var parts = layer.options.dashArray.split(/[, ]+/), dashArray = [], dashValue, i;
+              for (i = 0; i < parts.length; i++) {
+                dashValue = Number(parts[i]);
                 if (isNaN(dashValue)) {
                   return;
                 }
@@ -35978,15 +35966,15 @@ class InstrumentLogic extends BaseInstrument {
             if (!this._drawing) {
               return;
             }
-            var i2, j, len2, p2, parts = layer._parts, len = parts.length, ctx = this._ctx;
+            var i, j, len2, p, parts = layer._parts, len = parts.length, ctx = this._ctx;
             if (!len) {
               return;
             }
             ctx.beginPath();
-            for (i2 = 0; i2 < len; i2++) {
-              for (j = 0, len2 = parts[i2].length; j < len2; j++) {
-                p2 = parts[i2][j];
-                ctx[j ? "lineTo" : "moveTo"](p2.x, p2.y);
+            for (i = 0; i < len; i++) {
+              for (j = 0, len2 = parts[i].length; j < len2; j++) {
+                p = parts[i][j];
+                ctx[j ? "lineTo" : "moveTo"](p.x, p.y);
               }
               if (closed) {
                 ctx.closePath();
@@ -35998,14 +35986,14 @@ class InstrumentLogic extends BaseInstrument {
             if (!this._drawing || layer._empty()) {
               return;
             }
-            var p2 = layer._point, ctx = this._ctx, r3 = Math.max(Math.round(layer._radius), 1), s2 = (Math.max(Math.round(layer._radiusY), 1) || r3) / r3;
-            if (s2 !== 1) {
+            var p = layer._point, ctx = this._ctx, r = Math.max(Math.round(layer._radius), 1), s = (Math.max(Math.round(layer._radiusY), 1) || r) / r;
+            if (s !== 1) {
               ctx.save();
-              ctx.scale(1, s2);
+              ctx.scale(1, s);
             }
             ctx.beginPath();
-            ctx.arc(p2.x, p2.y / s2, r3, 0, Math.PI * 2, false);
-            if (s2 !== 1) {
+            ctx.arc(p.x, p.y / s, r, 0, Math.PI * 2, false);
+            if (s !== 1) {
               ctx.restore();
             }
             this._fillStroke(ctx, layer);
@@ -36029,35 +36017,35 @@ class InstrumentLogic extends BaseInstrument {
               ctx.stroke();
             }
           },
-          _onClick: function(e2) {
-            var point = this._map.mouseEventToLayerPoint(e2), layer, clickedLayer;
+          _onClick: function(e) {
+            var point = this._map.mouseEventToLayerPoint(e), layer, clickedLayer;
             for (var order = this._drawFirst; order; order = order.next) {
               layer = order.layer;
               if (layer.options.interactive && layer._containsPoint(point)) {
-                if (!(e2.type === "click" || e2.type === "preclick") || !this._map._draggableMoved(layer)) {
+                if (!(e.type === "click" || e.type === "preclick") || !this._map._draggableMoved(layer)) {
                   clickedLayer = layer;
                 }
               }
             }
-            this._fireEvent(clickedLayer ? [clickedLayer] : false, e2);
+            this._fireEvent(clickedLayer ? [clickedLayer] : false, e);
           },
-          _onMouseMove: function(e2) {
+          _onMouseMove: function(e) {
             if (!this._map || this._map.dragging.moving() || this._map._animatingZoom) {
               return;
             }
-            var point = this._map.mouseEventToLayerPoint(e2);
-            this._handleMouseHover(e2, point);
+            var point = this._map.mouseEventToLayerPoint(e);
+            this._handleMouseHover(e, point);
           },
-          _handleMouseOut: function(e2) {
+          _handleMouseOut: function(e) {
             var layer = this._hoveredLayer;
             if (layer) {
               removeClass(this._container, "leaflet-interactive");
-              this._fireEvent([layer], e2, "mouseout");
+              this._fireEvent([layer], e, "mouseout");
               this._hoveredLayer = null;
               this._mouseHoverThrottled = false;
             }
           },
-          _handleMouseHover: function(e2, point) {
+          _handleMouseHover: function(e, point) {
             if (this._mouseHoverThrottled) {
               return;
             }
@@ -36069,21 +36057,21 @@ class InstrumentLogic extends BaseInstrument {
               }
             }
             if (candidateHoveredLayer !== this._hoveredLayer) {
-              this._handleMouseOut(e2);
+              this._handleMouseOut(e);
               if (candidateHoveredLayer) {
                 addClass(this._container, "leaflet-interactive");
-                this._fireEvent([candidateHoveredLayer], e2, "mouseover");
+                this._fireEvent([candidateHoveredLayer], e, "mouseover");
                 this._hoveredLayer = candidateHoveredLayer;
               }
             }
-            this._fireEvent(this._hoveredLayer ? [this._hoveredLayer] : false, e2);
+            this._fireEvent(this._hoveredLayer ? [this._hoveredLayer] : false, e);
             this._mouseHoverThrottled = true;
             setTimeout(bind(function() {
               this._mouseHoverThrottled = false;
             }, this), 32);
           },
-          _fireEvent: function(layers2, e2, type) {
-            this._map._fireDOMEvent(e2, type || e2.type, layers2);
+          _fireEvent: function(layers2, e, type) {
+            this._map._fireDOMEvent(e, type || e.type, layers2);
           },
           _bringToFront: function(layer) {
             var order = layer._order;
@@ -36141,7 +36129,7 @@ class InstrumentLogic extends BaseInstrument {
             return function(name) {
               return document.createElement("<lvml:" + name + ' class="lvml">');
             };
-          } catch (e2) {
+          } catch (e) {
           }
           return function(name) {
             return document.createElement("<" + name + ' xmlns="urn:schemas-microsoft.com:vml" class="lvml">');
@@ -36216,8 +36204,8 @@ class InstrumentLogic extends BaseInstrument {
             }
           },
           _updateCircle: function(layer) {
-            var p2 = layer._point.round(), r3 = Math.round(layer._radius), r22 = Math.round(layer._radiusY || r3);
-            this._setPath(layer, layer._empty() ? "M0 0" : "AL " + p2.x + "," + p2.y + " " + r3 + "," + r22 + " 0," + 65535 * 360);
+            var p = layer._point.round(), r = Math.round(layer._radius), r2 = Math.round(layer._radiusY || r);
+            this._setPath(layer, layer._empty() ? "M0 0" : "AL " + p.x + "," + p.y + " " + r + "," + r2 + " 0," + 65535 * 360);
           },
           _setPath: function(layer, path) {
             layer._path.v = path;
@@ -36249,14 +36237,14 @@ class InstrumentLogic extends BaseInstrument {
               return;
             }
             Renderer.prototype._update.call(this);
-            var b2 = this._bounds, size = b2.getSize(), container = this._container;
+            var b = this._bounds, size = b.getSize(), container = this._container;
             if (!this._svgSize || !this._svgSize.equals(size)) {
               this._svgSize = size;
               container.setAttribute("width", size.x);
               container.setAttribute("height", size.y);
             }
-            setPosition(container, b2.min);
-            container.setAttribute("viewBox", [b2.min.x, b2.min.y, size.x, size.y].join(" "));
+            setPosition(container, b.min);
+            container.setAttribute("viewBox", [b.min.x, b.min.y, size.x, size.y].join(" "));
             this.fire("update");
           },
           _initPath: function(layer) {
@@ -36322,9 +36310,9 @@ class InstrumentLogic extends BaseInstrument {
             this._setPath(layer, pointsToPath(layer._parts, closed));
           },
           _updateCircle: function(layer) {
-            var p2 = layer._point, r3 = Math.max(Math.round(layer._radius), 1), r22 = Math.max(Math.round(layer._radiusY), 1) || r3, arc = "a" + r3 + "," + r22 + " 0 1,0 ";
-            var d2 = layer._empty() ? "M0 0" : "M" + (p2.x - r3) + "," + p2.y + arc + r3 * 2 + ",0 " + arc + -r3 * 2 + ",0 ";
-            this._setPath(layer, d2);
+            var p = layer._point, r = Math.max(Math.round(layer._radius), 1), r2 = Math.max(Math.round(layer._radiusY), 1) || r, arc = "a" + r + "," + r2 + " 0 1,0 ";
+            var d = layer._empty() ? "M0 0" : "M" + (p.x - r) + "," + p.y + arc + r * 2 + ",0 " + arc + -r * 2 + ",0 ";
+            this._setPath(layer, d);
           },
           _setPath: function(layer, path) {
             layer._path.setAttribute("d", path);
@@ -36431,15 +36419,15 @@ class InstrumentLogic extends BaseInstrument {
               this._resetStateTimeout = 0;
             }
           },
-          _onMouseDown: function(e2) {
-            if (!e2.shiftKey || e2.which !== 1 && e2.button !== 1) {
+          _onMouseDown: function(e) {
+            if (!e.shiftKey || e.which !== 1 && e.button !== 1) {
               return false;
             }
             this._clearDeferredResetState();
             this._resetState();
             disableTextSelection();
             disableImageDrag();
-            this._startPoint = this._map.mouseEventToContainerPoint(e2);
+            this._startPoint = this._map.mouseEventToContainerPoint(e);
             on(document, {
               contextmenu: stop,
               mousemove: this._onMouseMove,
@@ -36447,14 +36435,14 @@ class InstrumentLogic extends BaseInstrument {
               keydown: this._onKeyDown
             }, this);
           },
-          _onMouseMove: function(e2) {
+          _onMouseMove: function(e) {
             if (!this._moved) {
               this._moved = true;
               this._box = create$1("div", "leaflet-zoom-box", this._container);
               addClass(this._container, "leaflet-crosshair");
               this._map.fire("boxzoomstart");
             }
-            this._point = this._map.mouseEventToContainerPoint(e2);
+            this._point = this._map.mouseEventToContainerPoint(e);
             var bounds = new Bounds(this._point, this._startPoint), size = bounds.getSize();
             setPosition(this._box, bounds.min);
             this._box.style.width = size.x + "px";
@@ -36474,8 +36462,8 @@ class InstrumentLogic extends BaseInstrument {
               keydown: this._onKeyDown
             }, this);
           },
-          _onMouseUp: function(e2) {
-            if (e2.which !== 1 && e2.button !== 1) {
+          _onMouseUp: function(e) {
+            if (e.which !== 1 && e.button !== 1) {
               return;
             }
             this._finish();
@@ -36490,8 +36478,8 @@ class InstrumentLogic extends BaseInstrument {
             );
             this._map.fitBounds(bounds).fire("boxzoomend", { boxZoomBounds: bounds });
           },
-          _onKeyDown: function(e2) {
-            if (e2.keyCode === 27) {
+          _onKeyDown: function(e) {
+            if (e.keyCode === 27) {
               this._finish();
               this._clearDeferredResetState();
               this._resetState();
@@ -36509,12 +36497,12 @@ class InstrumentLogic extends BaseInstrument {
           removeHooks: function() {
             this._map.off("dblclick", this._onDoubleClick, this);
           },
-          _onDoubleClick: function(e2) {
-            var map2 = this._map, oldZoom = map2.getZoom(), delta = map2.options.zoomDelta, zoom2 = e2.originalEvent.shiftKey ? oldZoom - delta : oldZoom + delta;
+          _onDoubleClick: function(e) {
+            var map2 = this._map, oldZoom = map2.getZoom(), delta = map2.options.zoomDelta, zoom2 = e.originalEvent.shiftKey ? oldZoom - delta : oldZoom + delta;
             if (map2.options.doubleClickZoom === "center") {
               map2.setZoom(zoom2);
             } else {
-              map2.setZoomAround(e2.containerPoint, zoom2);
+              map2.setZoomAround(e.containerPoint, zoom2);
             }
           }
         });
@@ -36580,14 +36568,14 @@ class InstrumentLogic extends BaseInstrument {
               this._times = [];
             }
           },
-          _onDrag: function(e2) {
+          _onDrag: function(e) {
             if (this._map.options.inertia) {
               var time = this._lastTime = +new Date(), pos = this._lastPos = this._draggable._absPos || this._draggable._newPos;
               this._positions.push(pos);
               this._times.push(time);
               this._prunePositions(time);
             }
-            this._map.fire("move", e2).fire("drag", e2);
+            this._map.fire("move", e).fire("drag", e);
           },
           _prunePositions: function(time) {
             while (this._positions.length > 1 && time - this._times[0] > 50) {
@@ -36624,13 +36612,13 @@ class InstrumentLogic extends BaseInstrument {
             this._draggable._newPos = this._draggable._startPos.add(offset);
           },
           _onPreDragWrap: function() {
-            var worldWidth = this._worldWidth, halfWidth = Math.round(worldWidth / 2), dx = this._initialWorldOffset, x2 = this._draggable._newPos.x, newX1 = (x2 - halfWidth + dx) % worldWidth + halfWidth - dx, newX2 = (x2 + halfWidth + dx) % worldWidth - halfWidth - dx, newX = Math.abs(newX1 + dx) < Math.abs(newX2 + dx) ? newX1 : newX2;
+            var worldWidth = this._worldWidth, halfWidth = Math.round(worldWidth / 2), dx = this._initialWorldOffset, x = this._draggable._newPos.x, newX1 = (x - halfWidth + dx) % worldWidth + halfWidth - dx, newX2 = (x + halfWidth + dx) % worldWidth - halfWidth - dx, newX = Math.abs(newX1 + dx) < Math.abs(newX2 + dx) ? newX1 : newX2;
             this._draggable._absPos = this._draggable._newPos.clone();
             this._draggable._newPos.x = newX;
           },
-          _onDragEnd: function(e2) {
-            var map2 = this._map, options = map2.options, noInertia = !options.inertia || e2.noInertia || this._times.length < 2;
-            map2.fire("dragend", e2);
+          _onDragEnd: function(e) {
+            var map2 = this._map, options = map2.options, noInertia = !options.inertia || e.noInertia || this._times.length < 2;
+            map2.fire("dragend", e);
             if (noInertia) {
               map2.fire("moveend");
             } else {
@@ -36715,27 +36703,27 @@ class InstrumentLogic extends BaseInstrument {
             this._map.fire("blur");
           },
           _setPanDelta: function(panDelta) {
-            var keys3 = this._panKeys = {}, codes = this.keyCodes, i2, len;
-            for (i2 = 0, len = codes.left.length; i2 < len; i2++) {
-              keys3[codes.left[i2]] = [-1 * panDelta, 0];
+            var keys3 = this._panKeys = {}, codes = this.keyCodes, i, len;
+            for (i = 0, len = codes.left.length; i < len; i++) {
+              keys3[codes.left[i]] = [-1 * panDelta, 0];
             }
-            for (i2 = 0, len = codes.right.length; i2 < len; i2++) {
-              keys3[codes.right[i2]] = [panDelta, 0];
+            for (i = 0, len = codes.right.length; i < len; i++) {
+              keys3[codes.right[i]] = [panDelta, 0];
             }
-            for (i2 = 0, len = codes.down.length; i2 < len; i2++) {
-              keys3[codes.down[i2]] = [0, panDelta];
+            for (i = 0, len = codes.down.length; i < len; i++) {
+              keys3[codes.down[i]] = [0, panDelta];
             }
-            for (i2 = 0, len = codes.up.length; i2 < len; i2++) {
-              keys3[codes.up[i2]] = [0, -1 * panDelta];
+            for (i = 0, len = codes.up.length; i < len; i++) {
+              keys3[codes.up[i]] = [0, -1 * panDelta];
             }
           },
           _setZoomDelta: function(zoomDelta) {
-            var keys3 = this._zoomKeys = {}, codes = this.keyCodes, i2, len;
-            for (i2 = 0, len = codes.zoomIn.length; i2 < len; i2++) {
-              keys3[codes.zoomIn[i2]] = zoomDelta;
+            var keys3 = this._zoomKeys = {}, codes = this.keyCodes, i, len;
+            for (i = 0, len = codes.zoomIn.length; i < len; i++) {
+              keys3[codes.zoomIn[i]] = zoomDelta;
             }
-            for (i2 = 0, len = codes.zoomOut.length; i2 < len; i2++) {
-              keys3[codes.zoomOut[i2]] = -zoomDelta;
+            for (i = 0, len = codes.zoomOut.length; i < len; i++) {
+              keys3[codes.zoomOut[i]] = -zoomDelta;
             }
           },
           _addHooks: function() {
@@ -36744,15 +36732,15 @@ class InstrumentLogic extends BaseInstrument {
           _removeHooks: function() {
             off(document, "keydown", this._onKeyDown, this);
           },
-          _onKeyDown: function(e2) {
-            if (e2.altKey || e2.ctrlKey || e2.metaKey) {
+          _onKeyDown: function(e) {
+            if (e.altKey || e.ctrlKey || e.metaKey) {
               return;
             }
-            var key = e2.keyCode, map2 = this._map, offset;
+            var key = e.keyCode, map2 = this._map, offset;
             if (key in this._panKeys) {
               if (!map2._panAnim || !map2._panAnim._inProgress) {
                 offset = this._panKeys[key];
-                if (e2.shiftKey) {
+                if (e.shiftKey) {
                   offset = toPoint(offset).multiplyBy(3);
                 }
                 if (map2.options.maxBounds) {
@@ -36766,13 +36754,13 @@ class InstrumentLogic extends BaseInstrument {
                 }
               }
             } else if (key in this._zoomKeys) {
-              map2.setZoom(map2.getZoom() + (e2.shiftKey ? 3 : 1) * this._zoomKeys[key]);
+              map2.setZoom(map2.getZoom() + (e.shiftKey ? 3 : 1) * this._zoomKeys[key]);
             } else if (key === 27 && map2._popup && map2._popup.options.closeOnEscapeKey) {
               map2.closePopup();
             } else {
               return;
             }
-            stop(e2);
+            stop(e);
           }
         });
         Map4.addInitHook("addHandler", "keyboard", Keyboard);
@@ -36789,18 +36777,18 @@ class InstrumentLogic extends BaseInstrument {
           removeHooks: function() {
             off(this._map._container, "wheel", this._onWheelScroll, this);
           },
-          _onWheelScroll: function(e2) {
-            var delta = getWheelDelta(e2);
+          _onWheelScroll: function(e) {
+            var delta = getWheelDelta(e);
             var debounce2 = this._map.options.wheelDebounceTime;
             this._delta += delta;
-            this._lastMousePos = this._map.mouseEventToContainerPoint(e2);
+            this._lastMousePos = this._map.mouseEventToContainerPoint(e);
             if (!this._startTime) {
               this._startTime = +new Date();
             }
             var left = Math.max(debounce2 - (+new Date() - this._startTime), 0);
             clearTimeout(this._timer);
             this._timer = setTimeout(bind(this._performZoom, this), left);
-            stop(e2);
+            stop(e);
           },
           _performZoom: function() {
             var map2 = this._map, zoom2 = map2.getZoom(), snap = this._map.options.zoomSnap || 0;
@@ -36831,12 +36819,12 @@ class InstrumentLogic extends BaseInstrument {
           removeHooks: function() {
             off(this._map._container, "touchstart", this._onDown, this);
           },
-          _onDown: function(e2) {
+          _onDown: function(e) {
             clearTimeout(this._holdTimeout);
-            if (e2.touches.length !== 1) {
+            if (e.touches.length !== 1) {
               return;
             }
-            var first = e2.touches[0];
+            var first = e.touches[0];
             this._startPos = this._newPos = new Point(first.clientX, first.clientY);
             this._holdTimeout = setTimeout(bind(function() {
               this._cancel();
@@ -36859,25 +36847,25 @@ class InstrumentLogic extends BaseInstrument {
             off(document, "touchend touchcancel contextmenu", this._cancel, this);
             off(document, "touchmove", this._onMove, this);
           },
-          _onMove: function(e2) {
-            var first = e2.touches[0];
+          _onMove: function(e) {
+            var first = e.touches[0];
             this._newPos = new Point(first.clientX, first.clientY);
           },
           _isTapValid: function() {
             return this._newPos.distanceTo(this._startPos) <= this._map.options.tapTolerance;
           },
-          _simulateEvent: function(type, e2) {
+          _simulateEvent: function(type, e) {
             var simulatedEvent = new MouseEvent(type, {
               bubbles: true,
               cancelable: true,
               view: window,
-              screenX: e2.screenX,
-              screenY: e2.screenY,
-              clientX: e2.clientX,
-              clientY: e2.clientY
+              screenX: e.screenX,
+              screenY: e.screenY,
+              clientX: e.clientX,
+              clientY: e.clientY
             });
             simulatedEvent._simulated = true;
-            e2.target.dispatchEvent(simulatedEvent);
+            e.target.dispatchEvent(simulatedEvent);
           }
         });
         Map4.addInitHook("addHandler", "tapHold", TapHold);
@@ -36894,12 +36882,12 @@ class InstrumentLogic extends BaseInstrument {
             removeClass(this._map._container, "leaflet-touch-zoom");
             off(this._map._container, "touchstart", this._onTouchStart, this);
           },
-          _onTouchStart: function(e2) {
+          _onTouchStart: function(e) {
             var map2 = this._map;
-            if (!e2.touches || e2.touches.length !== 2 || map2._animatingZoom || this._zooming) {
+            if (!e.touches || e.touches.length !== 2 || map2._animatingZoom || this._zooming) {
               return;
             }
-            var p1 = map2.mouseEventToContainerPoint(e2.touches[0]), p2 = map2.mouseEventToContainerPoint(e2.touches[1]);
+            var p1 = map2.mouseEventToContainerPoint(e.touches[0]), p2 = map2.mouseEventToContainerPoint(e.touches[1]);
             this._centerPoint = map2.getSize()._divideBy(2);
             this._startLatLng = map2.containerPointToLatLng(this._centerPoint);
             if (map2.options.touchZoom !== "center") {
@@ -36912,13 +36900,13 @@ class InstrumentLogic extends BaseInstrument {
             map2._stop();
             on(document, "touchmove", this._onTouchMove, this);
             on(document, "touchend touchcancel", this._onTouchEnd, this);
-            preventDefault(e2);
+            preventDefault(e);
           },
-          _onTouchMove: function(e2) {
-            if (!e2.touches || e2.touches.length !== 2 || !this._zooming) {
+          _onTouchMove: function(e) {
+            if (!e.touches || e.touches.length !== 2 || !this._zooming) {
               return;
             }
-            var map2 = this._map, p1 = map2.mouseEventToContainerPoint(e2.touches[0]), p2 = map2.mouseEventToContainerPoint(e2.touches[1]), scale2 = p1.distanceTo(p2) / this._startDist;
+            var map2 = this._map, p1 = map2.mouseEventToContainerPoint(e.touches[0]), p2 = map2.mouseEventToContainerPoint(e.touches[1]), scale2 = p1.distanceTo(p2) / this._startDist;
             this._zoom = map2.getScaleZoom(scale2, this._startZoom);
             if (!map2.options.bounceAtZoomLimits && (this._zoom < map2.getMinZoom() && scale2 < 1 || this._zoom > map2.getMaxZoom() && scale2 > 1)) {
               this._zoom = map2._limitZoom(this._zoom);
@@ -36942,7 +36930,7 @@ class InstrumentLogic extends BaseInstrument {
             cancelAnimFrame(this._animRequest);
             var moveFn = bind(map2._move, map2, this._center, this._zoom, { pinch: true, round: false }, void 0);
             this._animRequest = requestAnimFrame(moveFn, this, true);
-            preventDefault(e2);
+            preventDefault(e);
           },
           _onTouchEnd: function() {
             if (!this._moved || !this._zooming) {
@@ -37057,7 +37045,7 @@ class InstrumentLogic extends BaseInstrument {
   });
 
   // instruments/src/ElectronicFlightBag/index.tsx
-  var import_react108 = __toESM(require_react());
+  var import_react107 = __toESM(require_react());
 
   // instruments/common/Hooks/index.tsx
   var import_react3 = __toESM(require_react());
@@ -37255,7 +37243,7 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/OS/DisplayProvider/DisplayProvider.tsx
-  var import_react106 = __toESM(require_react());
+  var import_react105 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/OS/Home/Home.tsx
   var import_react8 = __toESM(require_react());
@@ -37309,7 +37297,7 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/OuroborosFlight.tsx
-  var import_react102 = __toESM(require_react());
+  var import_react101 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Components/ButtonBar/buttonBar.tsx
   var import_react12 = __toESM(require_react());
@@ -37496,7 +37484,7 @@ class InstrumentLogic extends BaseInstrument {
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Components/ButtonBar/buttonBar.tsx
   var ButtonBar = (props) => {
     const [activeButton, setActiveButton] = import_react12.default.useState(0);
-    return /* @__PURE__ */ import_react12.default.createElement("div", { className: "button-bar" }, /* @__PURE__ */ import_react12.default.createElement(ButtonBarButton, { setActiveButton, text: "Airports", to: 0, icon: /* @__PURE__ */ import_react12.default.createElement(AirportsIcon2, { width: 20 }) }), /* @__PURE__ */ import_react12.default.createElement(
+    return /* @__PURE__ */ import_react12.default.createElement("div", { className: "button-bar" }, /* @__PURE__ */ import_react12.default.createElement(ButtonBarButton, { setActiveButton, text: "Airports", to: 0, icon: /* @__PURE__ */ import_react12.default.createElement(AirportsIcon2, { width: 20 }) }), /* @__PURE__ */ import_react12.default.createElement(ButtonBarButton, { setActiveButton, text: "Maps", to: 1 }), /* @__PURE__ */ import_react12.default.createElement(
       ButtonBarButton,
       {
         setActiveButton,
@@ -37532,7 +37520,7 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Airports.tsx
-  var import_react34 = __toESM(require_react());
+  var import_react33 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/airportApiData.ts
   var ApiReturn = {
@@ -37861,8 +37849,8 @@ class InstrumentLogic extends BaseInstrument {
         className: "airports-header-search-input",
         style: { fontSize: "30px" },
         value: props.airport,
-        onChange: (e2) => {
-          props.setAirport(e2.target.value);
+        onChange: (e) => {
+          props.setAirport(e.target.value);
         }
       }
     ))), /* @__PURE__ */ import_react18.default.createElement(
@@ -38193,12 +38181,12 @@ class InstrumentLogic extends BaseInstrument {
     return degrees * (Math.PI / 180);
   };
   var calculateDistanceLatLonToNM = (coords1, coords2) => {
-    const R2 = 6371;
+    const R = 6371;
     const dLat = degToRad(coords2[0] - coords1[0]);
     const dLon = degToRad(coords2[1] - coords1[1]);
-    const a2 = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(degToRad(coords1[0])) * Math.cos(degToRad(coords2[0])) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a2), Math.sqrt(1 - a2));
-    const distKm = R2 * c;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(degToRad(coords1[0])) * Math.cos(degToRad(coords2[0])) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distKm = R * c;
     const distNM = distKm * 0.539957;
     return distNM;
   };
@@ -38222,32 +38210,32 @@ class InstrumentLogic extends BaseInstrument {
         const response = await fetch(nearestUrlBuilder(coordinates));
         const json = await response.json();
         setNearestAirports(json);
-      } catch (e2) {
-        console.error(e2);
+      } catch (e) {
+        console.error(e);
       }
     };
     import_react19.default.useEffect(() => {
       const distance = calculateDistanceLatLonToNM(prevCoords.current, coordinates);
       const minDistance = 10;
       if (Math.abs(distance) > minDistance) {
-        fetchNearest().catch((e2) => {
-          console.error(e2);
+        fetchNearest().catch((e) => {
+          console.error(e);
         });
       }
       prevCoords.current = coordinates;
     }, [coordinates]);
     import_react19.default.useEffect(() => {
-      fetchNearest().catch((e2) => {
-        console.error(e2);
+      fetchNearest().catch((e) => {
+        console.error(e);
       });
     }, []);
     const getLongestRunway = (station) => {
       if (station === null || station === void 0)
         return { longestRunwayLength: 0, longestNumberSurface: "" };
       let longestRunway = station.runways[0];
-      for (let i2 = 1; i2 < station.runways.length; i2++) {
-        if (station.runways[i2].length_ft > longestRunway.length_ft) {
-          longestRunway = station.runways[i2];
+      for (let i = 1; i < station.runways.length; i++) {
+        if (station.runways[i].length_ft > longestRunway.length_ft) {
+          longestRunway = station.runways[i];
         }
       }
       return { longestRunwayLength: longestRunway.length_ft, longestNumberSurface: longestRunway.surface };
@@ -38255,9 +38243,9 @@ class InstrumentLogic extends BaseInstrument {
     const renderNearest = () => {
       if (nearestAirports === void 0)
         return /* @__PURE__ */ import_react19.default.createElement("div", null);
-      const sortedAirports = nearestAirports.slice().sort((a2, b2) => {
-        const longestRunwayA = getLongestRunway(a2.station);
-        const longestRunwayB = getLongestRunway(b2.station);
+      const sortedAirports = nearestAirports.slice().sort((a, b) => {
+        const longestRunwayA = getLongestRunway(a.station);
+        const longestRunwayB = getLongestRunway(b.station);
         return longestRunwayB.longestRunwayLength - longestRunwayA.longestRunwayLength;
       });
       if (sortingMethod === 0) {
@@ -38371,7 +38359,7 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/AirportsDisplay/AirportsDisplay.tsx
-  var import_react22 = __toESM(require_react());
+  var import_react21 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/AirportsDisplay/AptInformationProvider/AptInformationProvider.tsx
   var import_react20 = __toESM(require_react());
@@ -38398,336 +38386,6 @@ class InstrumentLogic extends BaseInstrument {
     }
   };
 
-  // node_modules/react-toastify/dist/react-toastify.esm.mjs
-  var import_react21 = __toESM(require_react(), 1);
-
-  // node_modules/clsx/dist/clsx.m.js
-  function r(e2) {
-    var t2, f2, n2 = "";
-    if ("string" == typeof e2 || "number" == typeof e2)
-      n2 += e2;
-    else if ("object" == typeof e2)
-      if (Array.isArray(e2))
-        for (t2 = 0; t2 < e2.length; t2++)
-          e2[t2] && (f2 = r(e2[t2])) && (n2 && (n2 += " "), n2 += f2);
-      else
-        for (t2 in e2)
-          e2[t2] && (n2 && (n2 += " "), n2 += t2);
-    return n2;
-  }
-  function clsx() {
-    for (var e2, t2, f2 = 0, n2 = ""; f2 < arguments.length; )
-      (e2 = arguments[f2++]) && (t2 = r(e2)) && (n2 && (n2 += " "), n2 += t2);
-    return n2;
-  }
-  var clsx_m_default = clsx;
-
-  // node_modules/react-toastify/dist/react-toastify.esm.mjs
-  "use client";
-  var u = (t2) => "number" == typeof t2 && !isNaN(t2);
-  var d = (t2) => "string" == typeof t2;
-  var p = (t2) => "function" == typeof t2;
-  var m = (t2) => d(t2) || p(t2) ? t2 : null;
-  var f = (t2) => (0, import_react21.isValidElement)(t2) || d(t2) || p(t2) || u(t2);
-  function g(t2, e2, n2) {
-    void 0 === n2 && (n2 = 300);
-    const { scrollHeight: o2, style: s2 } = t2;
-    requestAnimationFrame(() => {
-      s2.minHeight = "initial", s2.height = o2 + "px", s2.transition = `all ${n2}ms`, requestAnimationFrame(() => {
-        s2.height = "0", s2.padding = "0", s2.margin = "0", setTimeout(e2, n2);
-      });
-    });
-  }
-  function h(e2) {
-    let { enter: a2, exit: r3, appendPosition: i2 = false, collapse: l2 = true, collapseDuration: c = 300 } = e2;
-    return function(e3) {
-      let { children: u2, position: d2, preventExitTransition: p2, done: m2, nodeRef: f2, isIn: h2 } = e3;
-      const y2 = i2 ? `${a2}--${d2}` : a2, v2 = i2 ? `${r3}--${d2}` : r3, T2 = (0, import_react21.useRef)(0);
-      return (0, import_react21.useLayoutEffect)(() => {
-        const t2 = f2.current, e4 = y2.split(" "), n2 = (o2) => {
-          o2.target === f2.current && (t2.dispatchEvent(new Event("d")), t2.removeEventListener("animationend", n2), t2.removeEventListener("animationcancel", n2), 0 === T2.current && "animationcancel" !== o2.type && t2.classList.remove(...e4));
-        };
-        t2.classList.add(...e4), t2.addEventListener("animationend", n2), t2.addEventListener("animationcancel", n2);
-      }, []), (0, import_react21.useEffect)(() => {
-        const t2 = f2.current, e4 = () => {
-          t2.removeEventListener("animationend", e4), l2 ? g(t2, m2, c) : m2();
-        };
-        h2 || (p2 ? e4() : (T2.current = 1, t2.className += ` ${v2}`, t2.addEventListener("animationend", e4)));
-      }, [h2]), import_react21.default.createElement(import_react21.default.Fragment, null, u2);
-    };
-  }
-  function y(t2, e2) {
-    return null != t2 ? { content: t2.content, containerId: t2.props.containerId, id: t2.props.toastId, theme: t2.props.theme, type: t2.props.type, data: t2.props.data || {}, isLoading: t2.props.isLoading, icon: t2.props.icon, status: e2 } : {};
-  }
-  var v = { list: /* @__PURE__ */ new Map(), emitQueue: /* @__PURE__ */ new Map(), on(t2, e2) {
-    return this.list.has(t2) || this.list.set(t2, []), this.list.get(t2).push(e2), this;
-  }, off(t2, e2) {
-    if (e2) {
-      const n2 = this.list.get(t2).filter((t3) => t3 !== e2);
-      return this.list.set(t2, n2), this;
-    }
-    return this.list.delete(t2), this;
-  }, cancelEmit(t2) {
-    const e2 = this.emitQueue.get(t2);
-    return e2 && (e2.forEach(clearTimeout), this.emitQueue.delete(t2)), this;
-  }, emit(t2) {
-    this.list.has(t2) && this.list.get(t2).forEach((e2) => {
-      const n2 = setTimeout(() => {
-        e2(...[].slice.call(arguments, 1));
-      }, 0);
-      this.emitQueue.has(t2) || this.emitQueue.set(t2, []), this.emitQueue.get(t2).push(n2);
-    });
-  } };
-  var T = (e2) => {
-    let _a = e2, { theme: n2, type: o2 } = _a, s2 = __objRest(_a, ["theme", "type"]);
-    return import_react21.default.createElement("svg", __spreadValues({ viewBox: "0 0 24 24", width: "100%", height: "100%", fill: "colored" === n2 ? "currentColor" : `var(--toastify-icon-color-${o2})` }, s2));
-  };
-  var E = { info: function(e2) {
-    return import_react21.default.createElement(T, __spreadValues({}, e2), import_react21.default.createElement("path", { d: "M12 0a12 12 0 1012 12A12.013 12.013 0 0012 0zm.25 5a1.5 1.5 0 11-1.5 1.5 1.5 1.5 0 011.5-1.5zm2.25 13.5h-4a1 1 0 010-2h.75a.25.25 0 00.25-.25v-4.5a.25.25 0 00-.25-.25h-.75a1 1 0 010-2h1a2 2 0 012 2v4.75a.25.25 0 00.25.25h.75a1 1 0 110 2z" }));
-  }, warning: function(e2) {
-    return import_react21.default.createElement(T, __spreadValues({}, e2), import_react21.default.createElement("path", { d: "M23.32 17.191L15.438 2.184C14.728.833 13.416 0 11.996 0c-1.42 0-2.733.833-3.443 2.184L.533 17.448a4.744 4.744 0 000 4.368C1.243 23.167 2.555 24 3.975 24h16.05C22.22 24 24 22.044 24 19.632c0-.904-.251-1.746-.68-2.44zm-9.622 1.46c0 1.033-.724 1.823-1.698 1.823s-1.698-.79-1.698-1.822v-.043c0-1.028.724-1.822 1.698-1.822s1.698.79 1.698 1.822v.043zm.039-12.285l-.84 8.06c-.057.581-.408.943-.897.943-.49 0-.84-.367-.896-.942l-.84-8.065c-.057-.624.25-1.095.779-1.095h1.91c.528.005.84.476.784 1.1z" }));
-  }, success: function(e2) {
-    return import_react21.default.createElement(T, __spreadValues({}, e2), import_react21.default.createElement("path", { d: "M12 0a12 12 0 1012 12A12.014 12.014 0 0012 0zm6.927 8.2l-6.845 9.289a1.011 1.011 0 01-1.43.188l-4.888-3.908a1 1 0 111.25-1.562l4.076 3.261 6.227-8.451a1 1 0 111.61 1.183z" }));
-  }, error: function(e2) {
-    return import_react21.default.createElement(T, __spreadValues({}, e2), import_react21.default.createElement("path", { d: "M11.983 0a12.206 12.206 0 00-8.51 3.653A11.8 11.8 0 000 12.207 11.779 11.779 0 0011.8 24h.214A12.111 12.111 0 0024 11.791 11.766 11.766 0 0011.983 0zM10.5 16.542a1.476 1.476 0 011.449-1.53h.027a1.527 1.527 0 011.523 1.47 1.475 1.475 0 01-1.449 1.53h-.027a1.529 1.529 0 01-1.523-1.47zM11 12.5v-6a1 1 0 012 0v6a1 1 0 11-2 0z" }));
-  }, spinner: function() {
-    return import_react21.default.createElement("div", { className: "Toastify__spinner" });
-  } };
-  function C(t2) {
-    const [, o2] = (0, import_react21.useReducer)((t3) => t3 + 1, 0), [l2, c] = (0, import_react21.useState)([]), g2 = (0, import_react21.useRef)(null), h2 = (0, import_react21.useRef)(/* @__PURE__ */ new Map()).current, T2 = (t3) => -1 !== l2.indexOf(t3), C2 = (0, import_react21.useRef)({ toastKey: 1, displayedToast: 0, count: 0, queue: [], props: t2, containerId: null, isToastActive: T2, getToast: (t3) => h2.get(t3) }).current;
-    function b2(t3) {
-      let { containerId: e2 } = t3;
-      const { limit: n2 } = C2.props;
-      !n2 || e2 && C2.containerId !== e2 || (C2.count -= C2.queue.length, C2.queue = []);
-    }
-    function I2(t3) {
-      c((e2) => null == t3 ? [] : e2.filter((e3) => e3 !== t3));
-    }
-    function _3() {
-      const { toastContent: t3, toastProps: e2, staleId: n2 } = C2.queue.shift();
-      O2(t3, e2, n2);
-    }
-    function L3(t3, n2) {
-      let _a = n2, { delay: s2, staleId: r3 } = _a, i2 = __objRest(_a, ["delay", "staleId"]);
-      if (!f(t3) || function(t4) {
-        return !g2.current || C2.props.enableMultiContainer && t4.containerId !== C2.props.containerId || h2.has(t4.toastId) && null == t4.updateId;
-      }(i2))
-        return;
-      const { toastId: l3, updateId: c2, data: T3 } = i2, { props: b3 } = C2, L4 = () => I2(l3), N2 = null == c2;
-      N2 && C2.count++;
-      const M2 = __spreadProps(__spreadValues(__spreadProps(__spreadValues({}, b3), { style: b3.toastStyle, key: C2.toastKey++ }), Object.fromEntries(Object.entries(i2).filter((t4) => {
-        let [e2, n3] = t4;
-        return null != n3;
-      }))), { toastId: l3, updateId: c2, data: T3, closeToast: L4, isIn: false, className: m(i2.className || b3.toastClassName), bodyClassName: m(i2.bodyClassName || b3.bodyClassName), progressClassName: m(i2.progressClassName || b3.progressClassName), autoClose: !i2.isLoading && (R2 = i2.autoClose, w2 = b3.autoClose, false === R2 || u(R2) && R2 > 0 ? R2 : w2), deleteToast() {
-        const t4 = y(h2.get(l3), "removed");
-        h2.delete(l3), v.emit(4, t4);
-        const e2 = C2.queue.length;
-        if (C2.count = null == l3 ? C2.count - C2.displayedToast : C2.count - 1, C2.count < 0 && (C2.count = 0), e2 > 0) {
-          const t5 = null == l3 ? C2.props.limit : 1;
-          if (1 === e2 || 1 === t5)
-            C2.displayedToast++, _3();
-          else {
-            const n3 = t5 > e2 ? e2 : t5;
-            C2.displayedToast = n3;
-            for (let t6 = 0; t6 < n3; t6++)
-              _3();
-          }
-        } else
-          o2();
-      } });
-      var R2, w2;
-      M2.iconOut = function(t4) {
-        let { theme: n3, type: o3, isLoading: s3, icon: r4 } = t4, i3 = null;
-        const l4 = { theme: n3, type: o3 };
-        return false === r4 || (p(r4) ? i3 = r4(l4) : (0, import_react21.isValidElement)(r4) ? i3 = (0, import_react21.cloneElement)(r4, l4) : d(r4) || u(r4) ? i3 = r4 : s3 ? i3 = E.spinner() : ((t5) => t5 in E)(o3) && (i3 = E[o3](l4))), i3;
-      }(M2), p(i2.onOpen) && (M2.onOpen = i2.onOpen), p(i2.onClose) && (M2.onClose = i2.onClose), M2.closeButton = b3.closeButton, false === i2.closeButton || f(i2.closeButton) ? M2.closeButton = i2.closeButton : true === i2.closeButton && (M2.closeButton = !f(b3.closeButton) || b3.closeButton);
-      let x2 = t3;
-      (0, import_react21.isValidElement)(t3) && !d(t3.type) ? x2 = (0, import_react21.cloneElement)(t3, { closeToast: L4, toastProps: M2, data: T3 }) : p(t3) && (x2 = t3({ closeToast: L4, toastProps: M2, data: T3 })), b3.limit && b3.limit > 0 && C2.count > b3.limit && N2 ? C2.queue.push({ toastContent: x2, toastProps: M2, staleId: r3 }) : u(s2) ? setTimeout(() => {
-        O2(x2, M2, r3);
-      }, s2) : O2(x2, M2, r3);
-    }
-    function O2(t3, e2, n2) {
-      const { toastId: o3 } = e2;
-      n2 && h2.delete(n2);
-      const s2 = { content: t3, props: e2 };
-      h2.set(o3, s2), c((t4) => [...t4, o3].filter((t5) => t5 !== n2)), v.emit(4, y(s2, null == s2.props.updateId ? "added" : "updated"));
-    }
-    return (0, import_react21.useEffect)(() => (C2.containerId = t2.containerId, v.cancelEmit(3).on(0, L3).on(1, (t3) => g2.current && I2(t3)).on(5, b2).emit(2, C2), () => {
-      h2.clear(), v.emit(3, C2);
-    }), []), (0, import_react21.useEffect)(() => {
-      C2.props = t2, C2.isToastActive = T2, C2.displayedToast = l2.length;
-    }), { getToastToRender: function(e2) {
-      const n2 = /* @__PURE__ */ new Map(), o3 = Array.from(h2.values());
-      return t2.newestOnTop && o3.reverse(), o3.forEach((t3) => {
-        const { position: e3 } = t3.props;
-        n2.has(e3) || n2.set(e3, []), n2.get(e3).push(t3);
-      }), Array.from(n2, (t3) => e2(t3[0], t3[1]));
-    }, containerRef: g2, isToastActive: T2 };
-  }
-  function b(t2) {
-    return t2.targetTouches && t2.targetTouches.length >= 1 ? t2.targetTouches[0].clientX : t2.clientX;
-  }
-  function I(t2) {
-    return t2.targetTouches && t2.targetTouches.length >= 1 ? t2.targetTouches[0].clientY : t2.clientY;
-  }
-  function _(t2) {
-    const [o2, a2] = (0, import_react21.useState)(false), [r3, l2] = (0, import_react21.useState)(false), c = (0, import_react21.useRef)(null), u2 = (0, import_react21.useRef)({ start: 0, x: 0, y: 0, delta: 0, removalDistance: 0, canCloseOnClick: true, canDrag: false, boundingRect: null, didMove: false }).current, d2 = (0, import_react21.useRef)(t2), { autoClose: m2, pauseOnHover: f2, closeToast: g2, onClick: h2, closeOnClick: y2 } = t2;
-    function v2(e2) {
-      if (t2.draggable) {
-        "touchstart" === e2.nativeEvent.type && e2.nativeEvent.preventDefault(), u2.didMove = false, document.addEventListener("mousemove", _3), document.addEventListener("mouseup", L3), document.addEventListener("touchmove", _3), document.addEventListener("touchend", L3);
-        const n2 = c.current;
-        u2.canCloseOnClick = true, u2.canDrag = true, u2.boundingRect = n2.getBoundingClientRect(), n2.style.transition = "", u2.x = b(e2.nativeEvent), u2.y = I(e2.nativeEvent), "x" === t2.draggableDirection ? (u2.start = u2.x, u2.removalDistance = n2.offsetWidth * (t2.draggablePercent / 100)) : (u2.start = u2.y, u2.removalDistance = n2.offsetHeight * (80 === t2.draggablePercent ? 1.5 * t2.draggablePercent : t2.draggablePercent / 100));
-      }
-    }
-    function T2(e2) {
-      if (u2.boundingRect) {
-        const { top: n2, bottom: o3, left: s2, right: a3 } = u2.boundingRect;
-        "touchend" !== e2.nativeEvent.type && t2.pauseOnHover && u2.x >= s2 && u2.x <= a3 && u2.y >= n2 && u2.y <= o3 ? C2() : E2();
-      }
-    }
-    function E2() {
-      a2(true);
-    }
-    function C2() {
-      a2(false);
-    }
-    function _3(e2) {
-      const n2 = c.current;
-      u2.canDrag && n2 && (u2.didMove = true, o2 && C2(), u2.x = b(e2), u2.y = I(e2), u2.delta = "x" === t2.draggableDirection ? u2.x - u2.start : u2.y - u2.start, u2.start !== u2.x && (u2.canCloseOnClick = false), n2.style.transform = `translate${t2.draggableDirection}(${u2.delta}px)`, n2.style.opacity = "" + (1 - Math.abs(u2.delta / u2.removalDistance)));
-    }
-    function L3() {
-      document.removeEventListener("mousemove", _3), document.removeEventListener("mouseup", L3), document.removeEventListener("touchmove", _3), document.removeEventListener("touchend", L3);
-      const e2 = c.current;
-      if (u2.canDrag && u2.didMove && e2) {
-        if (u2.canDrag = false, Math.abs(u2.delta) > u2.removalDistance)
-          return l2(true), void t2.closeToast();
-        e2.style.transition = "transform 0.2s, opacity 0.2s", e2.style.transform = `translate${t2.draggableDirection}(0)`, e2.style.opacity = "1";
-      }
-    }
-    (0, import_react21.useEffect)(() => {
-      d2.current = t2;
-    }), (0, import_react21.useEffect)(() => (c.current && c.current.addEventListener("d", E2, { once: true }), p(t2.onOpen) && t2.onOpen((0, import_react21.isValidElement)(t2.children) && t2.children.props), () => {
-      const t3 = d2.current;
-      p(t3.onClose) && t3.onClose((0, import_react21.isValidElement)(t3.children) && t3.children.props);
-    }), []), (0, import_react21.useEffect)(() => (t2.pauseOnFocusLoss && (document.hasFocus() || C2(), window.addEventListener("focus", E2), window.addEventListener("blur", C2)), () => {
-      t2.pauseOnFocusLoss && (window.removeEventListener("focus", E2), window.removeEventListener("blur", C2));
-    }), [t2.pauseOnFocusLoss]);
-    const O2 = { onMouseDown: v2, onTouchStart: v2, onMouseUp: T2, onTouchEnd: T2 };
-    return m2 && f2 && (O2.onMouseEnter = C2, O2.onMouseLeave = E2), y2 && (O2.onClick = (t3) => {
-      h2 && h2(t3), u2.canCloseOnClick && g2();
-    }), { playToast: E2, pauseToast: C2, isRunning: o2, preventExitTransition: r3, toastRef: c, eventHandlers: O2 };
-  }
-  function L2(e2) {
-    let { closeToast: n2, theme: o2, ariaLabel: s2 = "close" } = e2;
-    return import_react21.default.createElement("button", { className: `Toastify__close-button Toastify__close-button--${o2}`, type: "button", onClick: (t2) => {
-      t2.stopPropagation(), n2(t2);
-    }, "aria-label": s2 }, import_react21.default.createElement("svg", { "aria-hidden": "true", viewBox: "0 0 14 16" }, import_react21.default.createElement("path", { fillRule: "evenodd", d: "M7.71 8.23l3.75 3.75-1.48 1.48-3.75-3.75-3.75 3.75L1 11.98l3.75-3.75L1 4.48 2.48 3l3.75 3.75L9.98 3l1.48 1.48-3.75 3.75z" })));
-  }
-  function O(e2) {
-    let { delay: n2, isRunning: o2, closeToast: s2, type: a2 = "default", hide: r3, className: i2, style: l2, controlledProgress: u2, progress: d2, rtl: m2, isIn: f2, theme: g2 } = e2;
-    const h2 = r3 || u2 && 0 === d2, y2 = __spreadProps(__spreadValues({}, l2), { animationDuration: `${n2}ms`, animationPlayState: o2 ? "running" : "paused", opacity: h2 ? 0 : 1 });
-    u2 && (y2.transform = `scaleX(${d2})`);
-    const v2 = clsx_m_default("Toastify__progress-bar", u2 ? "Toastify__progress-bar--controlled" : "Toastify__progress-bar--animated", `Toastify__progress-bar-theme--${g2}`, `Toastify__progress-bar--${a2}`, { "Toastify__progress-bar--rtl": m2 }), T2 = p(i2) ? i2({ rtl: m2, type: a2, defaultClassName: v2 }) : clsx_m_default(v2, i2);
-    return import_react21.default.createElement("div", { role: "progressbar", "aria-hidden": h2 ? "true" : "false", "aria-label": "notification timer", className: T2, style: y2, [u2 && d2 >= 1 ? "onTransitionEnd" : "onAnimationEnd"]: u2 && d2 < 1 ? null : () => {
-      f2 && s2();
-    } });
-  }
-  var N = (n2) => {
-    const { isRunning: o2, preventExitTransition: s2, toastRef: r3, eventHandlers: i2 } = _(n2), { closeButton: l2, children: u2, autoClose: d2, onClick: m2, type: f2, hideProgressBar: g2, closeToast: h2, transition: y2, position: v2, className: T2, style: E2, bodyClassName: C2, bodyStyle: b2, progressClassName: I2, progressStyle: N2, updateId: M2, role: R2, progress: w2, rtl: x2, toastId: $2, deleteToast: k2, isIn: P2, isLoading: B2, iconOut: D2, closeOnClick: A2, theme: z2 } = n2, F2 = clsx_m_default("Toastify__toast", `Toastify__toast-theme--${z2}`, `Toastify__toast--${f2}`, { "Toastify__toast--rtl": x2 }, { "Toastify__toast--close-on-click": A2 }), H2 = p(T2) ? T2({ rtl: x2, position: v2, type: f2, defaultClassName: F2 }) : clsx_m_default(F2, T2), S2 = !!w2 || !d2, q2 = { closeToast: h2, type: f2, theme: z2 };
-    let Q2 = null;
-    return false === l2 || (Q2 = p(l2) ? l2(q2) : (0, import_react21.isValidElement)(l2) ? (0, import_react21.cloneElement)(l2, q2) : L2(q2)), import_react21.default.createElement(y2, { isIn: P2, done: k2, position: v2, preventExitTransition: s2, nodeRef: r3 }, import_react21.default.createElement("div", __spreadProps(__spreadValues({ id: $2, onClick: m2, className: H2 }, i2), { style: E2, ref: r3 }), import_react21.default.createElement("div", __spreadProps(__spreadValues({}, P2 && { role: R2 }), { className: p(C2) ? C2({ type: f2 }) : clsx_m_default("Toastify__toast-body", C2), style: b2 }), null != D2 && import_react21.default.createElement("div", { className: clsx_m_default("Toastify__toast-icon", { "Toastify--animate-icon Toastify__zoom-enter": !B2 }) }, D2), import_react21.default.createElement("div", null, u2)), Q2, import_react21.default.createElement(O, __spreadProps(__spreadValues({}, M2 && !S2 ? { key: `pb-${M2}` } : {}), { rtl: x2, theme: z2, delay: d2, isRunning: o2, isIn: P2, closeToast: h2, hide: g2, type: f2, style: N2, className: I2, controlledProgress: S2, progress: w2 || 0 }))));
-  };
-  var M = function(t2, e2) {
-    return void 0 === e2 && (e2 = false), { enter: `Toastify--animate Toastify__${t2}-enter`, exit: `Toastify--animate Toastify__${t2}-exit`, appendPosition: e2 };
-  };
-  var R = h(M("bounce", true));
-  var w = h(M("slide", true));
-  var x = h(M("zoom"));
-  var $ = h(M("flip"));
-  var k = (0, import_react21.forwardRef)((e2, n2) => {
-    const { getToastToRender: o2, containerRef: a2, isToastActive: r3 } = C(e2), { className: i2, style: l2, rtl: u2, containerId: d2 } = e2;
-    function f2(t2) {
-      const e3 = clsx_m_default("Toastify__toast-container", `Toastify__toast-container--${t2}`, { "Toastify__toast-container--rtl": u2 });
-      return p(i2) ? i2({ position: t2, rtl: u2, defaultClassName: e3 }) : clsx_m_default(e3, m(i2));
-    }
-    return (0, import_react21.useEffect)(() => {
-      n2 && (n2.current = a2.current);
-    }, []), import_react21.default.createElement("div", { ref: a2, className: "Toastify", id: d2 }, o2((e3, n3) => {
-      const o3 = n3.length ? __spreadValues({}, l2) : __spreadProps(__spreadValues({}, l2), { pointerEvents: "none" });
-      return import_react21.default.createElement("div", { className: f2(e3), style: o3, key: `container-${e3}` }, n3.map((e4, o4) => {
-        let { content: s2, props: a3 } = e4;
-        return import_react21.default.createElement(N, __spreadProps(__spreadValues({}, a3), { isIn: r3(a3.toastId), style: __spreadProps(__spreadValues({}, a3.style), { "--nth": o4 + 1, "--len": n3.length }), key: `toast-${a3.key}` }), s2);
-      }));
-    }));
-  });
-  k.displayName = "ToastContainer", k.defaultProps = { position: "top-right", transition: R, autoClose: 5e3, closeButton: L2, pauseOnHover: true, pauseOnFocusLoss: true, closeOnClick: true, draggable: true, draggablePercent: 80, draggableDirection: "x", role: "alert", theme: "light" };
-  var P;
-  var B = /* @__PURE__ */ new Map();
-  var D = [];
-  var A = 1;
-  function z() {
-    return "" + A++;
-  }
-  function F(t2) {
-    return t2 && (d(t2.toastId) || u(t2.toastId)) ? t2.toastId : z();
-  }
-  function H(t2, e2) {
-    return B.size > 0 ? v.emit(0, t2, e2) : D.push({ content: t2, options: e2 }), e2.toastId;
-  }
-  function S(t2, e2) {
-    return __spreadProps(__spreadValues({}, e2), { type: e2 && e2.type || t2, toastId: F(e2) });
-  }
-  function q(t2) {
-    return (e2, n2) => H(e2, S(t2, n2));
-  }
-  function Q(t2, e2) {
-    return H(t2, S("default", e2));
-  }
-  Q.loading = (t2, e2) => H(t2, S("default", __spreadValues({ isLoading: true, autoClose: false, closeOnClick: false, closeButton: false, draggable: false }, e2))), Q.promise = function(t2, e2, n2) {
-    let o2, { pending: s2, error: a2, success: r3 } = e2;
-    s2 && (o2 = d(s2) ? Q.loading(s2, n2) : Q.loading(s2.render, __spreadValues(__spreadValues({}, n2), s2)));
-    const i2 = { isLoading: null, autoClose: null, closeOnClick: null, closeButton: null, draggable: null }, l2 = (t3, e3, s3) => {
-      if (null == e3)
-        return void Q.dismiss(o2);
-      const a3 = __spreadProps(__spreadValues(__spreadValues({ type: t3 }, i2), n2), { data: s3 }), r4 = d(e3) ? { render: e3 } : e3;
-      return o2 ? Q.update(o2, __spreadValues(__spreadValues({}, a3), r4)) : Q(r4.render, __spreadValues(__spreadValues({}, a3), r4)), s3;
-    }, c = p(t2) ? t2() : t2;
-    return c.then((t3) => l2("success", r3, t3)).catch((t3) => l2("error", a2, t3)), c;
-  }, Q.success = q("success"), Q.info = q("info"), Q.error = q("error"), Q.warning = q("warning"), Q.warn = Q.warning, Q.dark = (t2, e2) => H(t2, S("default", __spreadValues({ theme: "dark" }, e2))), Q.dismiss = (t2) => {
-    B.size > 0 ? v.emit(1, t2) : D = D.filter((e2) => null != t2 && e2.options.toastId !== t2);
-  }, Q.clearWaitingQueue = function(t2) {
-    return void 0 === t2 && (t2 = {}), v.emit(5, t2);
-  }, Q.isActive = (t2) => {
-    let e2 = false;
-    return B.forEach((n2) => {
-      n2.isToastActive && n2.isToastActive(t2) && (e2 = true);
-    }), e2;
-  }, Q.update = function(t2, e2) {
-    void 0 === e2 && (e2 = {}), setTimeout(() => {
-      const n2 = function(t3, e3) {
-        let { containerId: n3 } = e3;
-        const o2 = B.get(n3 || P);
-        return o2 && o2.getToast(t3);
-      }(t2, e2);
-      if (n2) {
-        const { props: o2, content: s2 } = n2, a2 = __spreadProps(__spreadValues(__spreadValues({ delay: 100 }, o2), e2), { toastId: e2.toastId || t2, updateId: z() });
-        a2.toastId !== t2 && (a2.staleId = t2);
-        const r3 = a2.render || s2;
-        delete a2.render, H(r3, a2);
-      }
-    }, 0);
-  }, Q.done = (t2) => {
-    Q.update(t2, { progress: 1 });
-  }, Q.onChange = (t2) => (v.on(4, t2), () => {
-    v.off(4, t2);
-  }), Q.POSITION = { TOP_LEFT: "top-left", TOP_RIGHT: "top-right", TOP_CENTER: "top-center", BOTTOM_LEFT: "bottom-left", BOTTOM_RIGHT: "bottom-right", BOTTOM_CENTER: "bottom-center" }, Q.TYPE = { INFO: "info", SUCCESS: "success", WARNING: "warning", ERROR: "error", DEFAULT: "default" }, v.on(2, (t2) => {
-    P = t2.containerId || t2, B.set(P, t2), D.forEach((t3) => {
-      v.emit(0, t3.content, t3.options);
-    }), D = [];
-  }).on(3, (t2) => {
-    B.delete(t2.containerId || t2), 0 === B.size && v.off(0).off(1).off(5);
-  });
-
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/AirportsDisplay/AirportsDisplay.tsx
   var import_sunrise_sunset_js = __toESM(require_dist());
   var AirportDisplay = (props) => {
@@ -38738,7 +38396,7 @@ class InstrumentLogic extends BaseInstrument {
     const UtcDateArray = UtcStringArray.map((utcString) => new Date(utcString));
     const UtcHoursArray = UtcDateArray.map((utcDate) => utcDate.getUTCHours());
     const UtcMinutesArray = UtcDateArray.map((utcDate) => utcDate.getUTCMinutes());
-    return /* @__PURE__ */ import_react22.default.createElement("div", { className: "airport-display" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "airport-display-title-group" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "airport-display-airport" }, props.airport, ": ", props.name), /* @__PURE__ */ import_react22.default.createElement(
+    return /* @__PURE__ */ import_react21.default.createElement("div", { className: "airport-display" }, /* @__PURE__ */ import_react21.default.createElement("div", { className: "airport-display-title-group" }, /* @__PURE__ */ import_react21.default.createElement("div", { className: "airport-display-airport" }, props.airport, ": ", props.name), /* @__PURE__ */ import_react21.default.createElement(
       "div",
       {
         onClick: () => {
@@ -38746,7 +38404,6 @@ class InstrumentLogic extends BaseInstrument {
             props.removeFavorite(props.airport);
           } else {
             if (props.favorites.length >= 12) {
-              Q("You can only have 12 favorites");
               return;
             }
             props.addFavorite(props.airport);
@@ -38754,7 +38411,7 @@ class InstrumentLogic extends BaseInstrument {
         },
         className: "airports-favorite-button"
       },
-      /* @__PURE__ */ import_react22.default.createElement("svg", { viewBox: "0 0 65 60", width: 50 }, /* @__PURE__ */ import_react22.default.createElement(
+      /* @__PURE__ */ import_react21.default.createElement("svg", { viewBox: "0 0 65 60", width: 50 }, /* @__PURE__ */ import_react21.default.createElement(
         "path",
         {
           stroke: "yellow",
@@ -38763,7 +38420,7 @@ class InstrumentLogic extends BaseInstrument {
           d: "M 46.296296,51.906272 L 31.916351,42.474649 L 17.502712,51.8547 L 22.029072,35.264028 L 8.654054,24.454438 L 25.831443,23.632463 L 31.978866,7.5717174 L 38.068716,23.65438 L 55.243051,24.537884 L 41.829396,35.299492 L 46.296296,51.906272 z "
         }
       ))
-    )), /* @__PURE__ */ import_react22.default.createElement("div", null, props.city, ", ", props.country), /* @__PURE__ */ import_react22.default.createElement(
+    )), /* @__PURE__ */ import_react21.default.createElement("div", null, props.city, ", ", props.country), /* @__PURE__ */ import_react21.default.createElement(
       AirportInformationProvider,
       {
         field: "Latest Weather",
@@ -38772,13 +38429,13 @@ class InstrumentLogic extends BaseInstrument {
         metarRaw: props.metarRaw,
         isWeather: true
       }
-    ), /* @__PURE__ */ import_react22.default.createElement("div", { className: "airport-display-divider" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "airport-display-left-content" }, /* @__PURE__ */ import_react22.default.createElement(AirportInformationProvider, { field: "Elevation", content: props.fieldElevation.toString() + "' MSL" }), /* @__PURE__ */ import_react22.default.createElement(
+    ), /* @__PURE__ */ import_react21.default.createElement("div", { className: "airport-display-divider" }, /* @__PURE__ */ import_react21.default.createElement("div", { className: "airport-display-left-content" }, /* @__PURE__ */ import_react21.default.createElement(AirportInformationProvider, { field: "Elevation", content: props.fieldElevation.toString() + "' MSL" }), /* @__PURE__ */ import_react21.default.createElement(
       AirportInformationProvider,
       {
         field: "Sunrise / Sunset",
         content: UtcHoursArray[0].toString().padStart(2, "0") + ":" + UtcMinutesArray[0].toString().padStart(2, "0") + " / " + UtcHoursArray[1].toString().padStart(2, "0") + ":" + UtcMinutesArray[1].toString().padStart(2, "0") + "Z"
       }
-    )), /* @__PURE__ */ import_react22.default.createElement("div", { className: "airport-display-right-content" }, /* @__PURE__ */ import_react22.default.createElement(
+    )), /* @__PURE__ */ import_react21.default.createElement("div", { className: "airport-display-right-content" }, /* @__PURE__ */ import_react21.default.createElement(
       AirportInformationProvider,
       {
         field: "Pattern Altitude: Turbine / Light",
@@ -38788,10 +38445,10 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Weather/weather.tsx
-  var import_react26 = __toESM(require_react());
+  var import_react25 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Weather/METAR/metarProvider.tsx
-  var import_react23 = __toESM(require_react());
+  var import_react22 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/common/getFlightCategory.ts
   var getFlightCategory = (cielings, visibility) => {
@@ -38815,14 +38472,14 @@ class InstrumentLogic extends BaseInstrument {
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Weather/METAR/metarProvider.tsx
   var MetarOrganizer = (props) => {
     var _a;
-    return /* @__PURE__ */ import_react23.default.createElement("div", { className: "metar-organizer-container" }, /* @__PURE__ */ import_react23.default.createElement("div", { className: "metar-organizer-field" }, " ", props.field), /* @__PURE__ */ import_react23.default.createElement("div", { className: "metar-organizer-content", style: { color: (_a = props.colorOvrd) != null ? _a : "" } }, props.text));
+    return /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-organizer-container" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-organizer-field" }, " ", props.field), /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-organizer-content", style: { color: (_a = props.colorOvrd) != null ? _a : "" } }, props.text));
   };
   var MetarProvider = (props) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B;
     if (props.metar === void 0)
-      return /* @__PURE__ */ import_react23.default.createElement("div", { className: "metar-wrapper" }, "Loading...");
+      return /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-wrapper" }, "Loading...");
     if (props.parsedMetar === void 0)
-      return /* @__PURE__ */ import_react23.default.createElement("div", { className: "metar-wrapper" }, "Loading...");
+      return /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-wrapper" }, "Loading...");
     const flightCategory = getFlightCategory(
       {
         type: (_c = (_b = (_a = props.parsedMetar) == null ? void 0 : _a.clouds[props.parsedMetar.clouds.length - 1]) == null ? void 0 : _b.quantity) != null ? _c : "",
@@ -38843,10 +38500,10 @@ class InstrumentLogic extends BaseInstrument {
     const calculateRelativeHumidity = (temperatureCelsius, dewPointCelsius) => {
       if (temperatureCelsius === void 0 || dewPointCelsius === void 0)
         return null;
-      const a2 = 17.27;
-      const b2 = 237.7;
-      const saturationVaporPressureTemp = 6.112 * Math.exp(a2 * temperatureCelsius / (b2 + temperatureCelsius));
-      const saturationVaporPressureDewPoint = 6.112 * Math.exp(a2 * dewPointCelsius / (b2 + dewPointCelsius));
+      const a = 17.27;
+      const b = 237.7;
+      const saturationVaporPressureTemp = 6.112 * Math.exp(a * temperatureCelsius / (b + temperatureCelsius));
+      const saturationVaporPressureDewPoint = 6.112 * Math.exp(a * dewPointCelsius / (b + dewPointCelsius));
       const actualVaporPressure = saturationVaporPressureDewPoint;
       const relativeHumidity = actualVaporPressure / saturationVaporPressureTemp * 100;
       return relativeHumidity;
@@ -38952,63 +38609,63 @@ class InstrumentLogic extends BaseInstrument {
     const clouds = props.parsedMetar.clouds;
     const formattedHumidity = humidity != null && !isNaN(humidity) ? humidity.toFixed(0) + "%" : "N/A";
     const formattedDegrees = String(degrees).padStart(3, "0");
-    return /* @__PURE__ */ import_react23.default.createElement("div", { className: "metar-wrapper" }, /* @__PURE__ */ import_react23.default.createElement("div", { className: "metar-header" }, /* @__PURE__ */ import_react23.default.createElement("div", { className: "flight-cat-group" }, /* @__PURE__ */ import_react23.default.createElement("div", { className: "flight-cat-bubble", style: { backgroundColor: flightCategory.color } }), /* @__PURE__ */ import_react23.default.createElement("div", { style: { color: flightCategory.color } }, flightCategory.flightCategory))), /* @__PURE__ */ import_react23.default.createElement("div", { className: "metar-raw", style: { color: flightCategory.color } }, props.metar), /* @__PURE__ */ import_react23.default.createElement(
+    return /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-wrapper" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-header" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "flight-cat-group" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "flight-cat-bubble", style: { backgroundColor: flightCategory.color } }), /* @__PURE__ */ import_react22.default.createElement("div", { style: { color: flightCategory.color } }, flightCategory.flightCategory))), /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-raw", style: { color: flightCategory.color } }, props.metar), /* @__PURE__ */ import_react22.default.createElement(
       MetarOrganizer,
       {
         field: "Time:",
-        text: /* @__PURE__ */ import_react23.default.createElement("div", null, padNumber(props.parsedMetar.hour) + ":" + padNumber(props.parsedMetar.minute) + "z")
+        text: /* @__PURE__ */ import_react22.default.createElement("div", null, padNumber(props.parsedMetar.hour) + ":" + padNumber(props.parsedMetar.minute) + "z")
       }
-    ), /* @__PURE__ */ import_react23.default.createElement(
+    ), /* @__PURE__ */ import_react22.default.createElement(
       MetarOrganizer,
       {
         field: "Wind:",
-        text: /* @__PURE__ */ import_react23.default.createElement("div", null, ((_l = props.parsedMetar.wind) == null ? void 0 : _l.degrees) === 0 ? /* @__PURE__ */ import_react23.default.createElement("div", null, "Calm") : /* @__PURE__ */ import_react23.default.createElement("div", null, ((_m = props.parsedMetar.wind) == null ? void 0 : _m.direction) === "VRB" ? /* @__PURE__ */ import_react23.default.createElement("div", null, "Variable at ", (_n = props.parsedMetar.wind) == null ? void 0 : _n.speed, ((_o = props.parsedMetar.wind) == null ? void 0 : _o.gust) !== void 0 ? " - " + ((_p = props.parsedMetar.wind) == null ? void 0 : _p.gust) + " " : " ", "knots") : /* @__PURE__ */ import_react23.default.createElement("div", null, formattedDegrees, "\xB0 at ", (_q = props.parsedMetar.wind) == null ? void 0 : _q.speed, ((_r = props.parsedMetar.wind) == null ? void 0 : _r.gust) !== void 0 ? " - " + ((_s = props.parsedMetar.wind) == null ? void 0 : _s.gust) + " " : " ", "knots")))
+        text: /* @__PURE__ */ import_react22.default.createElement("div", null, ((_l = props.parsedMetar.wind) == null ? void 0 : _l.degrees) === 0 ? /* @__PURE__ */ import_react22.default.createElement("div", null, "Calm") : /* @__PURE__ */ import_react22.default.createElement("div", null, ((_m = props.parsedMetar.wind) == null ? void 0 : _m.direction) === "VRB" ? /* @__PURE__ */ import_react22.default.createElement("div", null, "Variable at ", (_n = props.parsedMetar.wind) == null ? void 0 : _n.speed, ((_o = props.parsedMetar.wind) == null ? void 0 : _o.gust) !== void 0 ? " - " + ((_p = props.parsedMetar.wind) == null ? void 0 : _p.gust) + " " : " ", "knots") : /* @__PURE__ */ import_react22.default.createElement("div", null, formattedDegrees, "\xB0 at ", (_q = props.parsedMetar.wind) == null ? void 0 : _q.speed, ((_r = props.parsedMetar.wind) == null ? void 0 : _r.gust) !== void 0 ? " - " + ((_s = props.parsedMetar.wind) == null ? void 0 : _s.gust) + " " : " ", "knots")))
       }
-    ), /* @__PURE__ */ import_react23.default.createElement(MetarOrganizer, { field: "Visibility:", text: /* @__PURE__ */ import_react23.default.createElement("div", null, " ", (_t = props.parsedMetar.visibility) == null ? void 0 : _t.value, " sm") }), Array.isArray(clouds) && clouds.length > 0 ? /* @__PURE__ */ import_react23.default.createElement(
+    ), /* @__PURE__ */ import_react22.default.createElement(MetarOrganizer, { field: "Visibility:", text: /* @__PURE__ */ import_react22.default.createElement("div", null, " ", (_t = props.parsedMetar.visibility) == null ? void 0 : _t.value, " sm") }), Array.isArray(clouds) && clouds.length > 0 ? /* @__PURE__ */ import_react22.default.createElement(
       MetarOrganizer,
       {
         field: " Clouds (AGL):",
-        text: /* @__PURE__ */ import_react23.default.createElement("div", null, (_v = (_u = props.parsedMetar) == null ? void 0 : _u.clouds[props.parsedMetar.clouds.length - 1]) == null ? void 0 : _v.quantity, " ", (_x = (_w = props.parsedMetar) == null ? void 0 : _w.clouds[props.parsedMetar.clouds.length - 1]) == null ? void 0 : _x.height, "\u2019")
+        text: /* @__PURE__ */ import_react22.default.createElement("div", null, (_v = (_u = props.parsedMetar) == null ? void 0 : _u.clouds[props.parsedMetar.clouds.length - 1]) == null ? void 0 : _v.quantity, " ", (_x = (_w = props.parsedMetar) == null ? void 0 : _w.clouds[props.parsedMetar.clouds.length - 1]) == null ? void 0 : _x.height, "\u2019")
       }
-    ) : "", Array.isArray(weatherConditions) && weatherConditions.length > 0 ? /* @__PURE__ */ import_react23.default.createElement(
+    ) : "", Array.isArray(weatherConditions) && weatherConditions.length > 0 ? /* @__PURE__ */ import_react22.default.createElement(
       MetarOrganizer,
       {
         field: " Weather:",
         colorOvrd: "#ff0066",
-        text: /* @__PURE__ */ import_react23.default.createElement("div", null, props.parsedMetar.weatherConditions.map((c, index) => {
+        text: /* @__PURE__ */ import_react22.default.createElement("div", null, props.parsedMetar.weatherConditions.map((c, index) => {
           var _a2, _b2;
-          return /* @__PURE__ */ import_react23.default.createElement("div", { key: index, style: { display: "flex", flexDirection: "row" } }, decodeWeatherIndensity((_a2 = c.intensity) != null ? _a2 : ""), " ", decodeWeatherDescriptor((_b2 = c.descriptive) != null ? _b2 : ""), " ", c.phenomenons.map((w2) => decodeWeatherType(w2)));
+          return /* @__PURE__ */ import_react22.default.createElement("div", { key: index, style: { display: "flex", flexDirection: "row" } }, decodeWeatherIndensity((_a2 = c.intensity) != null ? _a2 : ""), " ", decodeWeatherDescriptor((_b2 = c.descriptive) != null ? _b2 : ""), " ", c.phenomenons.map((w) => decodeWeatherType(w)));
         }))
       }
-    ) : "", /* @__PURE__ */ import_react23.default.createElement(
+    ) : "", /* @__PURE__ */ import_react22.default.createElement(
       MetarOrganizer,
       {
         field: "Temperature: ",
-        text: /* @__PURE__ */ import_react23.default.createElement("div", null, props.parsedMetar.temperature, "\xB0C (", cToF((_y = props.parsedMetar.temperature) != null ? _y : 999), ")\xB0F")
+        text: /* @__PURE__ */ import_react22.default.createElement("div", null, props.parsedMetar.temperature, "\xB0C (", cToF((_y = props.parsedMetar.temperature) != null ? _y : 999), ")\xB0F")
       }
-    ), /* @__PURE__ */ import_react23.default.createElement(
+    ), /* @__PURE__ */ import_react22.default.createElement(
       MetarOrganizer,
       {
         field: "Dewpoint:",
-        text: /* @__PURE__ */ import_react23.default.createElement("div", null, props.parsedMetar.dewPoint, "\xB0C (", cToF((_z = props.parsedMetar.dewPoint) != null ? _z : 999), ")\xB0F")
+        text: /* @__PURE__ */ import_react22.default.createElement("div", null, props.parsedMetar.dewPoint, "\xB0C (", cToF((_z = props.parsedMetar.dewPoint) != null ? _z : 999), ")\xB0F")
       }
-    ), /* @__PURE__ */ import_react23.default.createElement(
+    ), /* @__PURE__ */ import_react22.default.createElement(
       MetarOrganizer,
       {
         field: " Altimeter: ",
-        text: /* @__PURE__ */ import_react23.default.createElement("div", null, (_A = props.parsedMetar.altimeter) == null ? void 0 : _A.value, " ", (_B = props.parsedMetar.altimeter) == null ? void 0 : _B.unit)
+        text: /* @__PURE__ */ import_react22.default.createElement("div", null, (_A = props.parsedMetar.altimeter) == null ? void 0 : _A.value, " ", (_B = props.parsedMetar.altimeter) == null ? void 0 : _B.unit)
       }
-    ), /* @__PURE__ */ import_react23.default.createElement(MetarOrganizer, { field: "Humidity: ", text: /* @__PURE__ */ import_react23.default.createElement("div", null, formattedHumidity) }), /* @__PURE__ */ import_react23.default.createElement(MetarOrganizer, { field: "Density Altitude:", text: /* @__PURE__ */ import_react23.default.createElement("div", null, " ", DA, "\u2019") }));
+    ), /* @__PURE__ */ import_react22.default.createElement(MetarOrganizer, { field: "Humidity: ", text: /* @__PURE__ */ import_react22.default.createElement("div", null, formattedHumidity) }), /* @__PURE__ */ import_react22.default.createElement(MetarOrganizer, { field: "Density Altitude:", text: /* @__PURE__ */ import_react22.default.createElement("div", null, " ", DA, "\u2019") }));
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Weather/TAF/tafProvider.tsx
-  var import_react24 = __toESM(require_react());
+  var import_react23 = __toESM(require_react());
   var TafProvider = (props) => {
-    return /* @__PURE__ */ import_react24.default.createElement("div", null, /* @__PURE__ */ import_react24.default.createElement("div", null, props.taf));
+    return /* @__PURE__ */ import_react23.default.createElement("div", null, /* @__PURE__ */ import_react23.default.createElement("div", null, props.taf));
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Weather/weatherButton.tsx
-  var import_react25 = __toESM(require_react());
+  var import_react24 = __toESM(require_react());
   var WeatherButton = (props) => {
     const isActive = () => {
       if (props.state === props.to) {
@@ -39016,7 +38673,7 @@ class InstrumentLogic extends BaseInstrument {
       }
       return false;
     };
-    return /* @__PURE__ */ import_react25.default.createElement(
+    return /* @__PURE__ */ import_react24.default.createElement(
       "div",
       {
         className: `weather-button ${isActive() ? "active-weather" : ""}`,
@@ -39024,20 +38681,20 @@ class InstrumentLogic extends BaseInstrument {
           props.setState(props.to);
         }
       },
-      /* @__PURE__ */ import_react25.default.createElement("div", { className: "weather-text" }, /* @__PURE__ */ import_react25.default.createElement("div", null, " ", props.text), /* @__PURE__ */ import_react25.default.createElement("div", null, ">"))
+      /* @__PURE__ */ import_react24.default.createElement("div", { className: "weather-text" }, /* @__PURE__ */ import_react24.default.createElement("div", null, " ", props.text), /* @__PURE__ */ import_react24.default.createElement("div", null, ">"))
     );
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Weather/weather.tsx
   var Weather = (props) => {
-    const [weatherPage, setWeatherPage] = import_react26.default.useState(0);
-    return /* @__PURE__ */ import_react26.default.createElement("div", { className: "weather-wrapper" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "weather-buttons-wrapper" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "weather-buttons-title" }, "Weather"), /* @__PURE__ */ import_react26.default.createElement(WeatherButton, { to: 0, setState: setWeatherPage, state: weatherPage, text: "METAR" }), /* @__PURE__ */ import_react26.default.createElement(WeatherButton, { to: 1, setState: setWeatherPage, state: weatherPage, text: "TAF" })), /* @__PURE__ */ import_react26.default.createElement("div", { className: "weather-display" }, weatherPage === 0 ? /* @__PURE__ */ import_react26.default.createElement(MetarProvider, { metar: props.metar.raw, parsedMetar: props.parsedMetar, fieldElev: props.fieldElev }) : /* @__PURE__ */ import_react26.default.createElement(TafProvider, { taf: props.taf.raw, parsedTaf: props.parsedTaf })));
+    const [weatherPage, setWeatherPage] = import_react25.default.useState(0);
+    return /* @__PURE__ */ import_react25.default.createElement("div", { className: "weather-wrapper" }, /* @__PURE__ */ import_react25.default.createElement("div", { className: "weather-buttons-wrapper" }, /* @__PURE__ */ import_react25.default.createElement("div", { className: "weather-buttons-title" }, "Weather"), /* @__PURE__ */ import_react25.default.createElement(WeatherButton, { to: 0, setState: setWeatherPage, state: weatherPage, text: "METAR" }), /* @__PURE__ */ import_react25.default.createElement(WeatherButton, { to: 1, setState: setWeatherPage, state: weatherPage, text: "TAF" })), /* @__PURE__ */ import_react25.default.createElement("div", { className: "weather-display" }, weatherPage === 0 ? /* @__PURE__ */ import_react25.default.createElement(MetarProvider, { metar: props.metar.raw, parsedMetar: props.parsedMetar, fieldElev: props.fieldElev }) : /* @__PURE__ */ import_react25.default.createElement(TafProvider, { taf: props.taf.raw, parsedTaf: props.parsedTaf })));
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Runway/runway.tsx
-  var import_react27 = __toESM(require_react());
+  var import_react26 = __toESM(require_react());
   var RunwayDisplay = (props) => {
-    return /* @__PURE__ */ import_react27.default.createElement("div", { className: "runway-display-container" }, /* @__PURE__ */ import_react27.default.createElement("div", { className: "runway-display-left" }, /* @__PURE__ */ import_react27.default.createElement("div", { className: "runway-display-left-ident" }, props.ident.ident1, " - ", props.ident.ident2), /* @__PURE__ */ import_react27.default.createElement("div", { className: "runway-display-left-dimensions" }, props.dimensions.length, "' x ", props.dimensions.width, "'")), /* @__PURE__ */ import_react27.default.createElement("div", { className: "runway-display-right" }, /* @__PURE__ */ import_react27.default.createElement("div", { className: "runway-top" }, /* @__PURE__ */ import_react27.default.createElement("div", { className: "runway-display-right-ident" }, "Rwy ", props.ident.ident1), !props.isCalm ? /* @__PURE__ */ import_react27.default.createElement("div", { className: "runway-display-right-winds" }, " ", props.winds.cw, " kts", " ", /* @__PURE__ */ import_react27.default.createElement("div", { style: { color: props.winds.isTw ? "#ff0066" : "#00ffb4" } }, props.winds.hw, " kts")) : /* @__PURE__ */ import_react27.default.createElement("div", { className: "runway-display-right-winds" }, "Clm")), /* @__PURE__ */ import_react27.default.createElement("div", { className: "runway-bottom" }, /* @__PURE__ */ import_react27.default.createElement("div", { className: "runway-display-right-ident" }, " Rwy ", props.ident.ident2), !props.isCalm ? /* @__PURE__ */ import_react27.default.createElement("div", { className: "runway-display-right-winds" }, props.winds2.cw, " kts", " ", /* @__PURE__ */ import_react27.default.createElement("div", { style: { color: props.winds2.isTw ? "#ff0066" : "#00ffb4" } }, props.winds2.hw, " kts")) : /* @__PURE__ */ import_react27.default.createElement("div", { className: "runway-display-right-winds" }, "Clm "))));
+    return /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-container" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-left" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-left-ident" }, props.ident.ident1, " - ", props.ident.ident2), /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-left-dimensions" }, props.dimensions.length, "' x ", props.dimensions.width, "'")), /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-right" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-top" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-right-ident" }, "Rwy ", props.ident.ident1), !props.isCalm ? /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-right-winds" }, " ", props.winds.cw, " kts", " ", /* @__PURE__ */ import_react26.default.createElement("div", { style: { color: props.winds.isTw ? "#ff0066" : "#00ffb4" } }, props.winds.hw, " kts")) : /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-right-winds" }, "Clm")), /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-bottom" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-right-ident" }, " Rwy ", props.ident.ident2), !props.isCalm ? /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-right-winds" }, props.winds2.cw, " kts", " ", /* @__PURE__ */ import_react26.default.createElement("div", { style: { color: props.winds2.isTw ? "#ff0066" : "#00ffb4" } }, props.winds2.hw, " kts")) : /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-right-winds" }, "Clm "))));
   };
   var Runway = (props) => {
     const formatRunwayInput = (rw) => {
@@ -39048,11 +38705,11 @@ class InstrumentLogic extends BaseInstrument {
       const GetHeadingDiff = (_Heading1, _Heading2) => {
         return Math.abs((_Heading2 - _Heading1 + 540) % 360 - 180);
       };
-      const getHW = (dif2, v2) => {
-        return v2 * Math.cos(dif2);
+      const getHW = (dif2, v) => {
+        return v * Math.cos(dif2);
       };
-      const getCW = (dif2, v2) => {
-        return v2 * Math.sin(dif2);
+      const getCW = (dif2, v) => {
+        return v * Math.sin(dif2);
       };
       let dif = GetHeadingDiff(runwayHeading, windD);
       if (dif > 90) {
@@ -39069,9 +38726,9 @@ class InstrumentLogic extends BaseInstrument {
           cW: Math.abs(getCW(dif, windV)).toFixed(0)
         };
     };
-    return /* @__PURE__ */ import_react27.default.createElement("div", { className: "runway-wrapper" }, /* @__PURE__ */ import_react27.default.createElement("div", { className: "runway-content-wrapper" }, /* @__PURE__ */ import_react27.default.createElement("div", { style: { padding: "20px" } }, "Runways"), props.runways.map((rw) => {
+    return /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-wrapper" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-content-wrapper" }, /* @__PURE__ */ import_react26.default.createElement("div", { style: { padding: "20px" } }, "Runways"), props.runways.map((rw) => {
       if (rw.ident1.startsWith("H"))
-        return /* @__PURE__ */ import_react27.default.createElement(import_react27.default.Fragment, null);
+        return /* @__PURE__ */ import_react26.default.createElement(import_react26.default.Fragment, null);
       const winds1 = calculateCrosswindComponents(
         Number(formatRunwayInput(rw.ident1)),
         props.wind.direction,
@@ -39082,7 +38739,7 @@ class InstrumentLogic extends BaseInstrument {
         props.wind.direction,
         props.wind.velocity
       );
-      return /* @__PURE__ */ import_react27.default.createElement(
+      return /* @__PURE__ */ import_react26.default.createElement(
         RunwayDisplay,
         {
           ident: { ident1: rw.ident1, ident2: rw.ident2 },
@@ -39096,7 +38753,7 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Procedure/procedure.tsx
-  var import_react31 = __toESM(require_react());
+  var import_react30 = __toESM(require_react());
 
   // node_modules/@navigraph/app/dist/index.esm.js
   var __defProp2 = Object.defineProperty;
@@ -39247,18 +38904,18 @@ class InstrumentLogic extends BaseInstrument {
   var __hasOwnProp2 = Object.prototype.hasOwnProperty;
   var __propIsEnum2 = Object.prototype.propertyIsEnumerable;
   var __defNormalProp3 = (obj, key, value) => key in obj ? __defProp3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-  var __spreadValues2 = (a2, b2) => {
-    for (var prop in b2 || (b2 = {}))
-      if (__hasOwnProp2.call(b2, prop))
-        __defNormalProp3(a2, prop, b2[prop]);
+  var __spreadValues2 = (a, b) => {
+    for (var prop in b || (b = {}))
+      if (__hasOwnProp2.call(b, prop))
+        __defNormalProp3(a, prop, b[prop]);
     if (__getOwnPropSymbols2)
-      for (var prop of __getOwnPropSymbols2(b2)) {
-        if (__propIsEnum2.call(b2, prop))
-          __defNormalProp3(a2, prop, b2[prop]);
+      for (var prop of __getOwnPropSymbols2(b)) {
+        if (__propIsEnum2.call(b, prop))
+          __defNormalProp3(a, prop, b[prop]);
       }
-    return a2;
+    return a;
   };
-  var __spreadProps2 = (a2, b2) => __defProps2(a2, __getOwnPropDescs2(b2));
+  var __spreadProps2 = (a, b) => __defProps2(a, __getOwnPropDescs2(b));
   var __commonJS2 = (cb, mod) => function __require() {
     return mod || (0, cb[__getOwnPropNames2(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
@@ -39279,18 +38936,18 @@ class InstrumentLogic extends BaseInstrument {
       var fulfilled = (value) => {
         try {
           step(generator.next(value));
-        } catch (e2) {
-          reject(e2);
+        } catch (e) {
+          reject(e);
         }
       };
       var rejected = (value) => {
         try {
           step(generator.throw(value));
-        } catch (e2) {
-          reject(e2);
+        } catch (e) {
+          reject(e);
         }
       };
-      var step = (x2) => x2.done ? resolve2(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+      var step = (x) => x.done ? resolve2(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
       step((generator = generator.apply(__this, __arguments)).next());
     });
   };
@@ -39300,8 +38957,8 @@ class InstrumentLogic extends BaseInstrument {
       module2.exports = function bind(fn, thisArg) {
         return function wrap() {
           var args = new Array(arguments.length);
-          for (var i2 = 0; i2 < args.length; i2++) {
-            args[i2] = arguments[i2];
+          for (var i = 0; i < args.length; i++) {
+            args[i] = arguments[i];
           }
           return fn.apply(thisArg, args);
         };
@@ -39388,8 +39045,8 @@ class InstrumentLogic extends BaseInstrument {
           obj = [obj];
         }
         if (isArray2(obj)) {
-          for (var i2 = 0, l2 = obj.length; i2 < l2; i2++) {
-            fn.call(null, obj[i2], i2, obj);
+          for (var i = 0, l = obj.length; i < l; i++) {
+            fn.call(null, obj[i], i, obj);
           }
         } else {
           for (var key in obj) {
@@ -39412,20 +39069,20 @@ class InstrumentLogic extends BaseInstrument {
             result[key] = val;
           }
         }
-        for (var i2 = 0, l2 = arguments.length; i2 < l2; i2++) {
-          forEach2(arguments[i2], assignValue2);
+        for (var i = 0, l = arguments.length; i < l; i++) {
+          forEach2(arguments[i], assignValue2);
         }
         return result;
       }
-      function extend(a2, b2, thisArg) {
-        forEach2(b2, function assignValue2(val, key) {
+      function extend(a, b, thisArg) {
+        forEach2(b, function assignValue2(val, key) {
           if (thisArg && typeof val === "function") {
-            a2[key] = bind(val, thisArg);
+            a[key] = bind(val, thisArg);
           } else {
-            a2[key] = val;
+            a[key] = val;
           }
         });
-        return a2;
+        return a;
       }
       function stripBOM(content) {
         if (content.charCodeAt(0) === 65279) {
@@ -39486,13 +39143,13 @@ class InstrumentLogic extends BaseInstrument {
             } else {
               val = [val];
             }
-            utils.forEach(val, function parseValue(v2) {
-              if (utils.isDate(v2)) {
-                v2 = v2.toISOString();
-              } else if (utils.isObject(v2)) {
-                v2 = JSON.stringify(v2);
+            utils.forEach(val, function parseValue(v) {
+              if (utils.isDate(v)) {
+                v = v.toISOString();
+              } else if (utils.isObject(v)) {
+                v = JSON.stringify(v);
               }
-              parts.push(encode(key) + "=" + encode(v2));
+              parts.push(encode(key) + "=" + encode(v));
             });
           });
           serializedParams = parts.join("&");
@@ -39530,9 +39187,9 @@ class InstrumentLogic extends BaseInstrument {
         }
       };
       InterceptorManager.prototype.forEach = function forEach2(fn) {
-        utils.forEach(this.handlers, function forEachHandler(h2) {
-          if (h2 !== null) {
-            fn(h2);
+        utils.forEach(this.handlers, function forEachHandler(h) {
+          if (h !== null) {
+            fn(h);
           }
         });
       };
@@ -39713,14 +39370,14 @@ class InstrumentLogic extends BaseInstrument {
         var parsed = {};
         var key;
         var val;
-        var i2;
+        var i;
         if (!headers) {
           return parsed;
         }
         utils.forEach(headers.split("\n"), function parser(line3) {
-          i2 = line3.indexOf(":");
-          key = utils.trim(line3.substr(0, i2)).toLowerCase();
-          val = utils.trim(line3.substr(i2 + 1));
+          i = line3.indexOf(":");
+          key = utils.trim(line3.substr(0, i)).toLowerCase();
+          val = utils.trim(line3.substr(i + 1));
           if (key) {
             if (parsed[key] && ignoreDuplicateOf.indexOf(key) >= 0) {
               return;
@@ -39962,9 +39619,9 @@ class InstrumentLogic extends BaseInstrument {
           try {
             (parser || JSON.parse)(rawValue);
             return utils.trim(rawValue);
-          } catch (e2) {
-            if (e2.name !== "SyntaxError") {
-              throw e2;
+          } catch (e) {
+            if (e.name !== "SyntaxError") {
+              throw e;
             }
           }
         }
@@ -40004,12 +39661,12 @@ class InstrumentLogic extends BaseInstrument {
           if (strictJSONParsing || forcedJSONParsing && utils.isString(data) && data.length) {
             try {
               return JSON.parse(data);
-            } catch (e2) {
+            } catch (e) {
               if (strictJSONParsing) {
-                if (e2.name === "SyntaxError") {
-                  throw enhanceError(e2, this, "E_JSON_PARSE");
+                if (e.name === "SyntaxError") {
+                  throw enhanceError(e, this, "E_JSON_PARSE");
                 }
-                throw e2;
+                throw e;
               }
             }
           }
@@ -40215,9 +39872,9 @@ class InstrumentLogic extends BaseInstrument {
       "use strict";
       var VERSION = require_data().version;
       var validators = {};
-      ["object", "boolean", "number", "function", "string", "symbol"].forEach(function(type, i2) {
+      ["object", "boolean", "number", "function", "string", "symbol"].forEach(function(type, i) {
         validators[type] = function validator(thing) {
-          return typeof thing === type || "a" + (i2 < 1 ? "n " : " ") + type;
+          return typeof thing === type || "a" + (i < 1 ? "n " : " ") + type;
         };
       });
       var deprecatedWarnings = {};
@@ -40246,9 +39903,9 @@ class InstrumentLogic extends BaseInstrument {
           throw new TypeError("options must be an object");
         }
         var keys22 = Object.keys(options);
-        var i2 = keys22.length;
-        while (i2-- > 0) {
-          var opt = keys22[i2];
+        var i = keys22.length;
+        while (i-- > 0) {
+          var opt = keys22[i];
           var validator = schema[opt];
           if (validator) {
             var value = options[opt];
@@ -40395,10 +40052,10 @@ class InstrumentLogic extends BaseInstrument {
         this.promise.then(function(cancel) {
           if (!token._listeners)
             return;
-          var i2;
-          var l2 = token._listeners.length;
-          for (i2 = 0; i2 < l2; i2++) {
-            token._listeners[i2](cancel);
+          var i;
+          var l = token._listeners.length;
+          for (i = 0; i < l; i++) {
+            token._listeners[i](cancel);
           }
           token._listeners = null;
         });
@@ -40517,38 +40174,38 @@ class InstrumentLogic extends BaseInstrument {
   });
   var require_pkce = __commonJS2({
     "../../node_modules/@navigraph/pkce/index.js"(exports2, module2) {
-      function sha256(r3) {
-        function t2(r22, t22) {
-          return r22 >>> t22 | r22 << 32 - t22;
+      function sha256(r) {
+        function t(r2, t2) {
+          return r2 >>> t2 | r2 << 32 - t2;
         }
-        for (var h2, n2, o2 = Math.pow, e2 = o2(2, 32), f2 = "", a2 = [], l2 = 8 * r3.length, g2 = sha256.h = sha256.h || [], c = sha256.k = sha256.k || [], i2 = c.length, s2 = {}, u2 = 2; i2 < 64; u2++)
-          if (!s2[u2]) {
-            for (h2 = 0; h2 < 313; h2 += u2)
-              s2[h2] = u2;
-            g2[i2] = o2(u2, 0.5) * e2 | 0, c[i2++] = o2(u2, 1 / 3) * e2 | 0;
+        for (var h, n, o = Math.pow, e = o(2, 32), f = "", a = [], l = 8 * r.length, g = sha256.h = sha256.h || [], c = sha256.k = sha256.k || [], i = c.length, s = {}, u = 2; i < 64; u++)
+          if (!s[u]) {
+            for (h = 0; h < 313; h += u)
+              s[h] = u;
+            g[i] = o(u, 0.5) * e | 0, c[i++] = o(u, 1 / 3) * e | 0;
           }
-        for (r3 += "\x80"; r3.length % 64 - 56; )
-          r3 += "\0";
-        for (h2 = 0; h2 < r3.length; h2++) {
-          if ((n2 = r3.charCodeAt(h2)) >> 8)
+        for (r += "\x80"; r.length % 64 - 56; )
+          r += "\0";
+        for (h = 0; h < r.length; h++) {
+          if ((n = r.charCodeAt(h)) >> 8)
             return;
-          a2[h2 >> 2] |= n2 << (3 - h2) % 4 * 8;
+          a[h >> 2] |= n << (3 - h) % 4 * 8;
         }
-        for (a2[a2.length] = l2 / e2 | 0, a2[a2.length] = l2, n2 = 0; n2 < a2.length; ) {
-          var v2 = a2.slice(n2, n2 += 16), k2 = g2;
-          for (g2 = g2.slice(0, 8), h2 = 0; h2 < 64; h2++) {
-            var d2 = v2[h2 - 15], p2 = v2[h2 - 2], w2 = g2[0], A2 = g2[4], C2 = g2[7] + (t2(A2, 6) ^ t2(A2, 11) ^ t2(A2, 25)) + (A2 & g2[5] ^ ~A2 & g2[6]) + c[h2] + (v2[h2] = h2 < 16 ? v2[h2] : v2[h2 - 16] + (t2(d2, 7) ^ t2(d2, 18) ^ d2 >>> 3) + v2[h2 - 7] + (t2(p2, 17) ^ t2(p2, 19) ^ p2 >>> 10) | 0);
-            (g2 = [C2 + ((t2(w2, 2) ^ t2(w2, 13) ^ t2(w2, 22)) + (w2 & g2[1] ^ w2 & g2[2] ^ g2[1] & g2[2])) | 0].concat(g2))[4] = g2[4] + C2 | 0;
+        for (a[a.length] = l / e | 0, a[a.length] = l, n = 0; n < a.length; ) {
+          var v = a.slice(n, n += 16), k = g;
+          for (g = g.slice(0, 8), h = 0; h < 64; h++) {
+            var d = v[h - 15], p = v[h - 2], w = g[0], A = g[4], C = g[7] + (t(A, 6) ^ t(A, 11) ^ t(A, 25)) + (A & g[5] ^ ~A & g[6]) + c[h] + (v[h] = h < 16 ? v[h] : v[h - 16] + (t(d, 7) ^ t(d, 18) ^ d >>> 3) + v[h - 7] + (t(p, 17) ^ t(p, 19) ^ p >>> 10) | 0);
+            (g = [C + ((t(w, 2) ^ t(w, 13) ^ t(w, 22)) + (w & g[1] ^ w & g[2] ^ g[1] & g[2])) | 0].concat(g))[4] = g[4] + C | 0;
           }
-          for (h2 = 0; h2 < 8; h2++)
-            g2[h2] = g2[h2] + k2[h2] | 0;
+          for (h = 0; h < 8; h++)
+            g[h] = g[h] + k[h] | 0;
         }
-        for (h2 = 0; h2 < 8; h2++)
-          for (n2 = 3; n2 + 1; n2--) {
-            var M2 = g2[h2] >> 8 * n2 & 255;
-            f2 += (M2 < 16 ? 0 : "") + M2.toString(16);
+        for (h = 0; h < 8; h++)
+          for (n = 3; n + 1; n--) {
+            var M = g[h] >> 8 * n & 255;
+            f += (M < 16 ? 0 : "") + M.toString(16);
           }
-        return f2;
+        return f;
       }
       function getRandomBytes(length) {
         const bytes = new Uint8Array(length);
@@ -40581,12 +40238,12 @@ class InstrumentLogic extends BaseInstrument {
       module2.exports = pkce2;
     }
   });
-  Promise.prototype.finally || (Promise.prototype.finally = function(t2) {
-    if ("function" != typeof t2)
-      return this.then(t2, t2);
-    const e2 = this.constructor || Promise;
-    return this.then((o2) => e2.resolve(t2()).then(() => o2), (o2) => e2.resolve(t2()).then(() => {
-      throw o2;
+  Promise.prototype.finally || (Promise.prototype.finally = function(t) {
+    if ("function" != typeof t)
+      return this.then(t, t);
+    const e = this.constructor || Promise;
+    return this.then((o) => e.resolve(t()).then(() => o), (o) => e.resolve(t()).then(() => {
+      throw o;
     }));
   });
   var import_axios2 = __toESM2(require_axios2());
@@ -40621,7 +40278,7 @@ class InstrumentLogic extends BaseInstrument {
     try {
       const decoded = JSON.parse(atob(token.split(".")[1]));
       return isDecodedToken(decoded) ? decoded : null;
-    } catch (e2) {
+    } catch (e) {
       return null;
     }
   }
@@ -40643,9 +40300,9 @@ class InstrumentLogic extends BaseInstrument {
     return __async(this, arguments, function* (key, fn, { timeout = 1e3, lockWriteTime = 50, checkTime = 10, retry = true } = {}) {
       const timerRunWithLock = () => __async(this, null, function* () {
         return new Promise(
-          (r3) => setTimeout(() => __async(this, null, function* () {
+          (r) => setTimeout(() => __async(this, null, function* () {
             yield runWithLock.bind(null, key, fn, { timeout, lockWriteTime, checkTime, retry })();
-            r3();
+            r();
           }), checkTime)
         );
       });
@@ -40663,7 +40320,7 @@ class InstrumentLogic extends BaseInstrument {
       const id = getId();
       yield STORAGE.setItem(key, JSON.stringify({ id, time: Date.now() }));
       yield new Promise(
-        (r3) => setTimeout(() => __async(this, null, function* () {
+        (r) => setTimeout(() => __async(this, null, function* () {
           const currentResult = yield STORAGE.getItem(key);
           if (!currentResult)
             return;
@@ -40671,7 +40328,7 @@ class InstrumentLogic extends BaseInstrument {
           if (data.id !== id) {
             if (retry)
               yield timerRunWithLock();
-            r3();
+            r();
             return;
           }
           try {
@@ -40679,7 +40336,7 @@ class InstrumentLogic extends BaseInstrument {
           } finally {
             yield STORAGE.setItem(key, "");
           }
-          r3();
+          r();
         }), lockWriteTime)
       );
     });
@@ -40824,7 +40481,7 @@ class InstrumentLogic extends BaseInstrument {
             }
           }));
         }
-        signOut().catch((e2) => Logger_default.warning("Failed to sign out after a token refresh failure", e2));
+        signOut().catch((e) => Logger_default.warning("Failed to sign out after a token refresh failure", e));
       }
       throw error;
     })
@@ -40915,9 +40572,9 @@ class InstrumentLogic extends BaseInstrument {
     return __async(this, null, function* () {
       if (INITIALIZED)
         return Promise.resolve();
-      yield verifyUser().catch((e2) => {
-        Logger_default.warning("Failed to load persisted credentials", e2);
-        signOut().catch((e22) => Logger_default.warning("Failed to sign out after failed initialization attempt", e22));
+      yield verifyUser().catch((e) => {
+        Logger_default.warning("Failed to load persisted credentials", e);
+        signOut().catch((e2) => Logger_default.warning("Failed to sign out after failed initialization attempt", e2));
       });
       INITIALIZED = true;
     });
@@ -40959,34 +40616,34 @@ class InstrumentLogic extends BaseInstrument {
   var __hasOwnProp3 = Object.prototype.hasOwnProperty;
   var __propIsEnum3 = Object.prototype.propertyIsEnumerable;
   var __defNormalProp4 = (obj, key, value) => key in obj ? __defProp4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-  var __spreadValues3 = (a2, b2) => {
-    for (var prop in b2 || (b2 = {}))
-      if (__hasOwnProp3.call(b2, prop))
-        __defNormalProp4(a2, prop, b2[prop]);
+  var __spreadValues3 = (a, b) => {
+    for (var prop in b || (b = {}))
+      if (__hasOwnProp3.call(b, prop))
+        __defNormalProp4(a, prop, b[prop]);
     if (__getOwnPropSymbols3)
-      for (var prop of __getOwnPropSymbols3(b2)) {
-        if (__propIsEnum3.call(b2, prop))
-          __defNormalProp4(a2, prop, b2[prop]);
+      for (var prop of __getOwnPropSymbols3(b)) {
+        if (__propIsEnum3.call(b, prop))
+          __defNormalProp4(a, prop, b[prop]);
       }
-    return a2;
+    return a;
   };
   var __async2 = (__this, __arguments, generator) => {
     return new Promise((resolve2, reject) => {
       var fulfilled = (value) => {
         try {
           step(generator.next(value));
-        } catch (e2) {
-          reject(e2);
+        } catch (e) {
+          reject(e);
         }
       };
       var rejected = (value) => {
         try {
           step(generator.throw(value));
-        } catch (e2) {
-          reject(e2);
+        } catch (e) {
+          reject(e);
         }
       };
-      var step = (x2) => x2.done ? resolve2(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+      var step = (x) => x.done ? resolve2(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
       step((generator = generator.apply(__this, __arguments)).next());
     });
   };
@@ -41094,7 +40751,7 @@ class InstrumentLogic extends BaseInstrument {
   var getAirportApiRoot = () => `https://api.${getDefaultAppDomain()}/v2/airport`;
   function getAirportInfo(_0) {
     return __async2(this, arguments, function* ({ icao }) {
-      const result = yield navigraphRequest.get(`${getAirportApiRoot()}/${icao}`).catch((e2) => Logger_default.err("Failed to fetch airport information. Reason:", isAxiosError(e2) ? e2.message : e2));
+      const result = yield navigraphRequest.get(`${getAirportApiRoot()}/${icao}`).catch((e) => Logger_default.err("Failed to fetch airport information. Reason:", isAxiosError(e) ? e.message : e));
       return (result == null ? void 0 : result.data) || null;
     });
   }
@@ -41103,14 +40760,14 @@ class InstrumentLogic extends BaseInstrument {
       const imageUrl = theme === "light" ? chart.image_day_url : chart.image_night_url;
       const result = yield navigraphRequest.get(imageUrl, {
         responseType: "blob"
-      }).catch((e2) => Logger_default.err("Failed to fetch charts image. Reason:", isAxiosError(e2) ? e2.message : e2));
+      }).catch((e) => Logger_default.err("Failed to fetch charts image. Reason:", isAxiosError(e) ? e.message : e));
       return (result == null ? void 0 : result.data) || null;
     });
   }
   function getChartsIndex(_0) {
     return __async2(this, arguments, function* ({ icao, version = "STD" }) {
       var _a;
-      const result = yield navigraphRequest.get(`${getChartsApiRoot()}/${icao}`, { params: { version } }).catch((e2) => Logger_default.err("Failed to fetch charts index. Reason:", isAxiosError(e2) ? e2.message : e2));
+      const result = yield navigraphRequest.get(`${getChartsApiRoot()}/${icao}`, { params: { version } }).catch((e) => Logger_default.err("Failed to fetch charts index. Reason:", isAxiosError(e) ? e.message : e));
       return ((_a = result == null ? void 0 : result.data) == null ? void 0 : _a.charts) || null;
     });
   }
@@ -41136,18 +40793,18 @@ class InstrumentLogic extends BaseInstrument {
       var fulfilled = (value) => {
         try {
           step(generator.next(value));
-        } catch (e2) {
-          reject(e2);
+        } catch (e) {
+          reject(e);
         }
       };
       var rejected = (value) => {
         try {
           step(generator.throw(value));
-        } catch (e2) {
-          reject(e2);
+        } catch (e) {
+          reject(e);
         }
       };
-      var step = (x2) => x2.done ? resolve2(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+      var step = (x) => x.done ? resolve2(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
       step((generator = generator.apply(__this, __arguments)).next());
     });
   };
@@ -41166,8 +40823,8 @@ class InstrumentLogic extends BaseInstrument {
         } else {
           return (result == null ? void 0 : result.data) ? result.data.map(mapResponseToNavigraphPackage) : null;
         }
-      } catch (e2) {
-        const error = isAxiosError(e2) ? e2.message : e2;
+      } catch (e) {
+        const error = isAxiosError(e) ? e.message : e;
         Logger_default.err("Failed to fetch packages. Reason:", error);
         throw new RequestFailedError("packages", error);
       }
@@ -41244,8 +40901,8 @@ class InstrumentLogic extends BaseInstrument {
   var packages = getPackagesAPI();
 
   // instruments/src/ElectronicFlightBag/hooks/useNavigraphAuth.tsx
-  var import_react28 = __toESM(require_react());
-  var authContext = (0, import_react28.createContext)({
+  var import_react27 = __toESM(require_react());
+  var authContext = (0, import_react27.createContext)({
     isInitialized: false,
     user: null,
     signIn: () => Promise.reject("Not initialized"),
@@ -41253,15 +40910,15 @@ class InstrumentLogic extends BaseInstrument {
   });
   var NavigraphAuthProvider = ({ children }) => {
     const auth2 = useProvideAuth();
-    return /* @__PURE__ */ import_react28.default.createElement(authContext.Provider, { value: auth2 }, children);
+    return /* @__PURE__ */ import_react27.default.createElement(authContext.Provider, { value: auth2 }, children);
   };
-  var useNavigraphAuth = () => (0, import_react28.useContext)(authContext);
+  var useNavigraphAuth = () => (0, import_react27.useContext)(authContext);
   var useProvideAuth = () => {
-    const [user, setUser2] = (0, import_react28.useState)(null);
-    const [isInitialized, setIsInitialized] = (0, import_react28.useState)(false);
-    (0, import_react28.useEffect)(() => {
-      const unsubscribe = auth.onAuthStateChanged((u2) => {
-        setUser2(u2);
+    const [user, setUser2] = (0, import_react27.useState)(null);
+    const [isInitialized, setIsInitialized] = (0, import_react27.useState)(false);
+    (0, import_react27.useEffect)(() => {
+      const unsubscribe = auth.onAuthStateChanged((u) => {
+        setUser2(u);
         setIsInitialized(true);
       });
       return () => unsubscribe();
@@ -41275,17 +40932,17 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Procedure/chartSorter.tsx
-  var import_react29 = __toESM(require_react());
+  var import_react28 = __toESM(require_react());
   var ChartSorter = (props) => {
-    const [hoveredItem, setHoveredItem] = (0, import_react29.useState)(null);
-    const itemRef = (0, import_react29.useRef)(null);
+    const [hoveredItem, setHoveredItem] = (0, import_react28.useState)(null);
+    const itemRef = (0, import_react28.useRef)(null);
     const handleMouseEnter = (item) => {
       setHoveredItem(item);
     };
     const handleMouseLeave = () => {
       setHoveredItem(null);
     };
-    (0, import_react29.useEffect)(() => {
+    (0, import_react28.useEffect)(() => {
       props.isHovering(!!hoveredItem);
       if (hoveredItem && itemRef.current) {
         const rect = itemRef.current.getBoundingClientRect();
@@ -41294,8 +40951,8 @@ class InstrumentLogic extends BaseInstrument {
     }, [hoveredItem, props.setCoords, props.isHovering]);
     const sortedCharts = props.chart.filter((chart) => chart.category === props.filter);
     if (props.filter === "")
-      return /* @__PURE__ */ import_react29.default.createElement(import_react29.default.Fragment, null);
-    return /* @__PURE__ */ import_react29.default.createElement(
+      return /* @__PURE__ */ import_react28.default.createElement(import_react28.default.Fragment, null);
+    return /* @__PURE__ */ import_react28.default.createElement(
       "div",
       {
         onMouseEnter: () => {
@@ -41306,7 +40963,7 @@ class InstrumentLogic extends BaseInstrument {
         },
         className: "chart-sorter-wrapper"
       },
-      sortedCharts.map((chart) => /* @__PURE__ */ import_react29.default.createElement(
+      sortedCharts.map((chart) => /* @__PURE__ */ import_react28.default.createElement(
         "div",
         {
           ref: chart.name === hoveredItem ? itemRef : null,
@@ -41316,13 +40973,13 @@ class InstrumentLogic extends BaseInstrument {
           onMouseEnter: () => handleMouseEnter(chart.name),
           onMouseLeave: handleMouseLeave
         },
-        /* @__PURE__ */ import_react29.default.createElement("div", { className: "procedure-page-chart-button-text" }, chart.name)
+        /* @__PURE__ */ import_react28.default.createElement("div", { className: "procedure-page-chart-button-text" }, chart.name)
       ))
     );
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Procedure/procedureButtonBarButton.tsx
-  var import_react30 = __toESM(require_react());
+  var import_react29 = __toESM(require_react());
   var ProcedureButton = (props) => {
     const isActive = () => {
       if (props.state === props.to) {
@@ -41330,7 +40987,7 @@ class InstrumentLogic extends BaseInstrument {
       }
       return false;
     };
-    return /* @__PURE__ */ import_react30.default.createElement(
+    return /* @__PURE__ */ import_react29.default.createElement(
       "div",
       {
         className: `procedure-button ${isActive() ? "active-proc" : ""}`,
@@ -41338,18 +40995,18 @@ class InstrumentLogic extends BaseInstrument {
           props.setState(props.to);
         }
       },
-      /* @__PURE__ */ import_react30.default.createElement("div", { className: "procedure-text" }, /* @__PURE__ */ import_react30.default.createElement("div", null, " ", props.text), /* @__PURE__ */ import_react30.default.createElement("div", null, ">"))
+      /* @__PURE__ */ import_react29.default.createElement("div", { className: "procedure-text" }, /* @__PURE__ */ import_react29.default.createElement("div", null, " ", props.text), /* @__PURE__ */ import_react29.default.createElement("div", null, ">"))
     );
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Procedure/procedure.tsx
   var Procedure = (props) => {
-    const [chartIndex, setChartIndex] = import_react31.default.useState([]);
-    const [chartBlob, setChartBlob] = import_react31.default.useState(null);
-    const [procedurePage, setProcedurePage] = import_react31.default.useState(0);
-    const [psudoCoords, setPsudoCoords] = import_react31.default.useState({ x: 0, y: 0 });
-    const [isHover, setIsHover] = import_react31.default.useState(false);
-    const { state } = import_react31.default.useContext(AppContext);
+    const [chartIndex, setChartIndex] = import_react30.default.useState([]);
+    const [chartBlob, setChartBlob] = import_react30.default.useState(null);
+    const [procedurePage, setProcedurePage] = import_react30.default.useState(0);
+    const [psudoCoords, setPsudoCoords] = import_react30.default.useState({ x: 0, y: 0 });
+    const [isHover, setIsHover] = import_react30.default.useState(false);
+    const { state } = import_react30.default.useContext(AppContext);
     const fetchChartsIndex = (icao) => {
       charts.getChartsIndex({ icao }).then((idx) => idx && setChartIndex(idx));
     };
@@ -41370,11 +41027,11 @@ class InstrumentLogic extends BaseInstrument {
           return "";
       }
     };
-    import_react31.default.useEffect(() => {
+    import_react30.default.useEffect(() => {
       fetchChartsIndex(props.airport);
     }, [props.airport]);
     const { user } = useNavigraphAuth();
-    return /* @__PURE__ */ import_react31.default.createElement("div", { className: "procedure-wrapper" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "procedure-buttons-continer" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "procedure-buttons-title" }, "Procedure"), /* @__PURE__ */ import_react31.default.createElement(ProcedureButton, { to: 0, setState: setProcedurePage, state: procedurePage, text: "Airport" }), /* @__PURE__ */ import_react31.default.createElement(ProcedureButton, { to: 1, setState: setProcedurePage, state: procedurePage, text: "Departure" }), /* @__PURE__ */ import_react31.default.createElement(ProcedureButton, { to: 2, setState: setProcedurePage, state: procedurePage, text: "Arrival" }), /* @__PURE__ */ import_react31.default.createElement(ProcedureButton, { to: 3, setState: setProcedurePage, state: procedurePage, text: "Approach" })), chartIndex.length ? /* @__PURE__ */ import_react31.default.createElement("div", { className: "procedure-chart-buttons-container" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "procedure-buttons-title" }, "Plates"), isHover && /* @__PURE__ */ import_react31.default.createElement("div", { className: "psudo-hover", style: { left: psudoCoords.x - 630, top: psudoCoords.y - 745 } }), /* @__PURE__ */ import_react31.default.createElement(
+    return /* @__PURE__ */ import_react30.default.createElement("div", { className: "procedure-wrapper" }, /* @__PURE__ */ import_react30.default.createElement("div", { className: "procedure-buttons-continer" }, /* @__PURE__ */ import_react30.default.createElement("div", { className: "procedure-buttons-title" }, "Procedure"), /* @__PURE__ */ import_react30.default.createElement(ProcedureButton, { to: 0, setState: setProcedurePage, state: procedurePage, text: "Airport" }), /* @__PURE__ */ import_react30.default.createElement(ProcedureButton, { to: 1, setState: setProcedurePage, state: procedurePage, text: "Departure" }), /* @__PURE__ */ import_react30.default.createElement(ProcedureButton, { to: 2, setState: setProcedurePage, state: procedurePage, text: "Arrival" }), /* @__PURE__ */ import_react30.default.createElement(ProcedureButton, { to: 3, setState: setProcedurePage, state: procedurePage, text: "Approach" })), chartIndex.length ? /* @__PURE__ */ import_react30.default.createElement("div", { className: "procedure-chart-buttons-container" }, /* @__PURE__ */ import_react30.default.createElement("div", { className: "procedure-buttons-title" }, "Plates"), isHover && /* @__PURE__ */ import_react30.default.createElement("div", { className: "psudo-hover", style: { left: psudoCoords.x - 630, top: psudoCoords.y - 745 } }), /* @__PURE__ */ import_react30.default.createElement(
       ChartSorter,
       {
         setCoords: setPsudoCoords,
@@ -41383,7 +41040,7 @@ class InstrumentLogic extends BaseInstrument {
         filter: getStringFromPage(procedurePage),
         handleClick: loadChart
       }
-    )) : "Loading...", user && chartBlob ? /* @__PURE__ */ import_react31.default.createElement("div", { className: "chart-container" }, /* @__PURE__ */ import_react31.default.createElement("div", { className: "chart-header" }, /* @__PURE__ */ import_react31.default.createElement(
+    )) : "Loading...", user && chartBlob ? /* @__PURE__ */ import_react30.default.createElement("div", { className: "chart-container" }, /* @__PURE__ */ import_react30.default.createElement("div", { className: "chart-header" }, /* @__PURE__ */ import_react30.default.createElement(
       "div",
       {
         onClick: () => {
@@ -41392,7 +41049,7 @@ class InstrumentLogic extends BaseInstrument {
         className: "chart-close"
       },
       "Close"
-    )), /* @__PURE__ */ import_react31.default.createElement("img", { className: "chart", src: URL.createObjectURL(chartBlob), alt: "chart" })) : "");
+    )), /* @__PURE__ */ import_react30.default.createElement("img", { className: "chart", src: URL.createObjectURL(chartBlob), alt: "chart" })) : "");
   };
 
   // node_modules/metar-taf-parser/locale/en.js
@@ -41795,12 +41452,12 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // node_modules/metar-taf-parser/metar-taf-parser.js
-  function __classPrivateFieldGet(receiver, state, kind, f2) {
-    if (kind === "a" && !f2)
+  function __classPrivateFieldGet(receiver, state, kind, f) {
+    if (kind === "a" && !f)
       throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f2 : !state.has(receiver))
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver))
       throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f2 : kind === "a" ? f2.call(receiver) : f2 ? f2.value : state.get(receiver);
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
   }
   var ParseError = class extends Error {
     constructor(message) {
@@ -41841,14 +41498,14 @@ class InstrumentLogic extends BaseInstrument {
       Object.setPrototypeOf(this, new.target.prototype);
     }
   };
-  function pySplit(string, separator, n2) {
+  function pySplit(string, separator, n) {
     let split = string.split(separator);
     if (separator === " ")
-      split = split.filter((n3) => n3);
-    if (n2 == null || split.length <= n2)
+      split = split.filter((n2) => n2);
+    if (n == null || split.length <= n)
       return split;
-    const out = split.slice(0, n2);
-    out.push(split.slice(n2).join(separator));
+    const out = split.slice(0, n);
+    out.push(split.slice(n).join(separator));
     return out;
   }
   function resolve(obj, path, separator = ".") {
@@ -41860,7 +41517,7 @@ class InstrumentLogic extends BaseInstrument {
       throw new CommandExecutionError(`${input} not found in ${Object.values(enumExpected)}`);
     return input;
   }
-  function _2(path, lang) {
+  function _(path, lang) {
     const translation = resolve(lang, path);
     if (!translation || typeof translation !== "string")
       return void 0;
@@ -41898,7 +41555,7 @@ class InstrumentLogic extends BaseInstrument {
         throw new UnexpectedParseError("Match not found");
       const min = +matches[1] * 100;
       const max = +matches[2] * 100;
-      const description = format(_2("Remark.Ceiling.Height", this.locale), min, max);
+      const description = format(_("Remark.Ceiling.Height", this.locale), min, max);
       remark.push({
         type: RemarkType.CeilingHeight,
         description,
@@ -41925,7 +41582,7 @@ class InstrumentLogic extends BaseInstrument {
         throw new UnexpectedParseError("Match not found");
       const height = +matches[1] * 100;
       const location = matches[2];
-      const description = format(_2("Remark.Ceiling.Second.Location", this.locale), height, location);
+      const description = format(_("Remark.Ceiling.Second.Location", this.locale), height, location);
       remark.push({
         type: RemarkType.CeilingSecondLocation,
         description,
@@ -42215,7 +41872,7 @@ class InstrumentLogic extends BaseInstrument {
       const matches = code.match(__classPrivateFieldGet(this, _HailSizeCommand_regex, "f"));
       if (!matches)
         throw new UnexpectedParseError("Match not found");
-      const description = format(_2("Remark.Hail.0", this.locale), matches[1]);
+      const description = format(_("Remark.Hail.0", this.locale), matches[1]);
       remark.push({
         type: RemarkType.HailSize,
         description,
@@ -42239,7 +41896,7 @@ class InstrumentLogic extends BaseInstrument {
       const matches = code.match(__classPrivateFieldGet(this, _HourlyMaximumMinimumTemperatureCommand_regex, "f"));
       if (!matches)
         throw new UnexpectedParseError("Match not found");
-      const description = format(_2("Remark.Hourly.Maximum.Minimum.Temperature", this.locale), convertTemperatureRemarks(matches[1], matches[2]).toFixed(1), convertTemperatureRemarks(matches[3], matches[4]).toFixed(1));
+      const description = format(_("Remark.Hourly.Maximum.Minimum.Temperature", this.locale), convertTemperatureRemarks(matches[1], matches[2]).toFixed(1), convertTemperatureRemarks(matches[3], matches[4]).toFixed(1));
       remark.push({
         type: RemarkType.HourlyMaximumMinimumTemperature,
         description,
@@ -42264,7 +41921,7 @@ class InstrumentLogic extends BaseInstrument {
       const matches = code.match(__classPrivateFieldGet(this, _HourlyMaximumTemperatureCommand_regex, "f"));
       if (!matches)
         throw new UnexpectedParseError("Match not found");
-      const description = format(_2("Remark.Hourly.Maximum.Temperature", this.locale), convertTemperatureRemarks(matches[1], matches[2]).toFixed(1));
+      const description = format(_("Remark.Hourly.Maximum.Temperature", this.locale), convertTemperatureRemarks(matches[1], matches[2]).toFixed(1));
       remark.push({
         type: RemarkType.HourlyMaximumTemperature,
         description,
@@ -42288,7 +41945,7 @@ class InstrumentLogic extends BaseInstrument {
       const matches = code.match(__classPrivateFieldGet(this, _HourlyMinimumTemperatureCommand_regex, "f"));
       if (!matches)
         throw new UnexpectedParseError("Match not found");
-      const description = format(_2("Remark.Hourly.Minimum.Temperature", this.locale), convertTemperatureRemarks(matches[1], matches[2]).toFixed(1));
+      const description = format(_("Remark.Hourly.Minimum.Temperature", this.locale), convertTemperatureRemarks(matches[1], matches[2]).toFixed(1));
       remark.push({
         type: RemarkType.HourlyMinimumTemperature,
         description,
@@ -42313,7 +41970,7 @@ class InstrumentLogic extends BaseInstrument {
       if (!matches)
         throw new UnexpectedParseError("Match not found");
       const amount = +matches[1];
-      const description = format(_2("Remark.Precipitation.Amount.Hourly", this.locale), amount);
+      const description = format(_("Remark.Precipitation.Amount.Hourly", this.locale), amount);
       remark.push({
         type: RemarkType.HourlyPrecipitationAmount,
         description,
@@ -42337,8 +41994,8 @@ class InstrumentLogic extends BaseInstrument {
       const matches = code.match(__classPrivateFieldGet(this, _HourlyPressureCommand_regex, "f"));
       if (!matches)
         throw new UnexpectedParseError("Match not found");
-      const part1 = _2(`Remark.Barometer.${+matches[1]}`, this.locale);
-      const part2 = format(_2("Remark.Pressure.Tendency", this.locale), +matches[2] / 10);
+      const part1 = _(`Remark.Barometer.${+matches[1]}`, this.locale);
+      const part2 = format(_("Remark.Pressure.Tendency", this.locale), +matches[2] / 10);
       const description = part1 != null && part2 != null ? `${part1} ${part2}` : void 0;
       remark.push({
         type: RemarkType.HourlyPressure,
@@ -42366,7 +42023,7 @@ class InstrumentLogic extends BaseInstrument {
         throw new UnexpectedParseError("Match not found");
       const temperature = convertTemperatureRemarks(matches[1], matches[2]);
       if (!matches[3]) {
-        const description = format(_2("Remark.Hourly.Temperature.0", this.locale), temperature.toFixed(1));
+        const description = format(_("Remark.Hourly.Temperature.0", this.locale), temperature.toFixed(1));
         remark.push({
           type: RemarkType.HourlyTemperatureDewPoint,
           description,
@@ -42375,7 +42032,7 @@ class InstrumentLogic extends BaseInstrument {
         });
       } else {
         const dewPoint = convertTemperatureRemarks(matches[4], matches[5]);
-        const description = format(_2("Remark.Hourly.Temperature.Dew.Point", this.locale), temperature.toFixed(1), dewPoint.toFixed(1));
+        const description = format(_("Remark.Hourly.Temperature.Dew.Point", this.locale), temperature.toFixed(1), dewPoint.toFixed(1));
         remark.push({
           type: RemarkType.HourlyTemperatureDewPoint,
           description,
@@ -42401,7 +42058,7 @@ class InstrumentLogic extends BaseInstrument {
       const matches = code.match(__classPrivateFieldGet(this, _IceAccretionCommand_regex, "f"));
       if (!matches)
         throw new UnexpectedParseError("Match not found");
-      const description = format(_2("Remark.Ice.Accretion.Amount", this.locale), +matches[2], +matches[1]);
+      const description = format(_("Remark.Ice.Accretion.Amount", this.locale), +matches[2], +matches[1]);
       remark.push({
         type: RemarkType.IceAccretion,
         description,
@@ -42429,7 +42086,7 @@ class InstrumentLogic extends BaseInstrument {
       const quantity = as(matches[2], CloudQuantity);
       const height = 100 * +matches[3];
       const phenomenon = as(matches[1], Phenomenon);
-      const description = format(_2("Remark.Obscuration", this.locale), _2(`CloudQuantity.${quantity}`, this.locale), height, _2(`Phenomenon.${phenomenon}`, this.locale));
+      const description = format(_("Remark.Obscuration", this.locale), _(`CloudQuantity.${quantity}`, this.locale), height, _(`Phenomenon.${phenomenon}`, this.locale));
       remark.push({
         type: RemarkType.Obscuration,
         description,
@@ -42456,7 +42113,7 @@ class InstrumentLogic extends BaseInstrument {
       if (!matches)
         throw new UnexpectedParseError("Match not found");
       const amount = convertPrecipitationAmount(matches[1]);
-      const description = format(_2("Remark.Precipitation.Amount.24", this.locale), amount);
+      const description = format(_("Remark.Precipitation.Amount.24", this.locale), amount);
       remark.push({
         type: RemarkType.PrecipitationAmount24Hour,
         description,
@@ -42482,7 +42139,7 @@ class InstrumentLogic extends BaseInstrument {
         throw new UnexpectedParseError("Match not found");
       const periodInHours = +matches[1];
       const amount = convertPrecipitationAmount(matches[2]);
-      const description = format(_2("Remark.Precipitation.Amount.3.6", this.locale), periodInHours, amount);
+      const description = format(_("Remark.Precipitation.Amount.3.6", this.locale), periodInHours, amount);
       remark.push({
         type: RemarkType.PrecipitationAmount36Hour,
         description,
@@ -42509,7 +42166,7 @@ class InstrumentLogic extends BaseInstrument {
         throw new UnexpectedParseError("Match not found");
       const descriptive = matches[2] ? as(matches[2], Descriptive) : void 0;
       const phenomenon = as(matches[3], Phenomenon);
-      const description = format(_2("Remark.Precipitation.Beg.End", this.locale), descriptive ? _2(`Descriptive.${descriptive}`, this.locale) : "", _2(`Phenomenon.${phenomenon}`, this.locale), matches[4] || "", matches[5], matches[6] || "", matches[7]);
+      const description = format(_("Remark.Precipitation.Beg.End", this.locale), descriptive ? _(`Descriptive.${descriptive}`, this.locale) : "", _(`Phenomenon.${phenomenon}`, this.locale), matches[4] || "", matches[5], matches[6] || "", matches[7]);
       remark.push({
         type: RemarkType.PrecipitationBegEnd,
         description,
@@ -42540,7 +42197,7 @@ class InstrumentLogic extends BaseInstrument {
         throw new UnexpectedParseError("Match not found");
       const minVisibility = matches[1];
       const maxVisibility = matches[5];
-      const description = format(_2("Remark.Variable.Prevailing.Visibility", this.locale), minVisibility, maxVisibility);
+      const description = format(_("Remark.Variable.Prevailing.Visibility", this.locale), minVisibility, maxVisibility);
       remark.push({
         type: RemarkType.PrevailingVisibility,
         description,
@@ -42567,7 +42224,7 @@ class InstrumentLogic extends BaseInstrument {
         throw new UnexpectedParseError("Match not found");
       let pressure = matches[1].startsWith("9") ? "9" : "10";
       pressure += matches[1] + "." + matches[2];
-      const description = format(_2("Remark.Sea.Level.Pressure", this.locale), pressure);
+      const description = format(_("Remark.Sea.Level.Pressure", this.locale), pressure);
       remark.push({
         type: RemarkType.SeaLevelPressure,
         description,
@@ -42593,7 +42250,7 @@ class InstrumentLogic extends BaseInstrument {
         throw new UnexpectedParseError("Match not found");
       const distance = matches[1];
       const location = matches[5];
-      const description = format(_2("Remark.Second.Location.Visibility", this.locale), distance, location);
+      const description = format(_("Remark.Second.Location.Visibility", this.locale), distance, location);
       remark.push({
         type: RemarkType.SecondLocationVisibility,
         description,
@@ -42619,7 +42276,7 @@ class InstrumentLogic extends BaseInstrument {
       if (!matches)
         throw new UnexpectedParseError("Match not found");
       const direction = as(matches[1], Direction);
-      const description = format(_2("Remark.Sector.Visibility", this.locale), _2(`Converter.${direction}`, this.locale), matches[2]);
+      const description = format(_("Remark.Sector.Visibility", this.locale), _(`Converter.${direction}`, this.locale), matches[2]);
       remark.push({
         type: RemarkType.SectorVisibility,
         description,
@@ -42644,7 +42301,7 @@ class InstrumentLogic extends BaseInstrument {
       const matches = code.match(__classPrivateFieldGet(this, _SmallHailSizeCommand_regex, "f"));
       if (!matches)
         throw new UnexpectedParseError("Match not found");
-      const description = format(_2("Remark.Hail.LesserThan", this.locale), matches[1]);
+      const description = format(_("Remark.Hail.LesserThan", this.locale), matches[1]);
       remark.push({
         type: RemarkType.SmallHailSize,
         description,
@@ -42669,7 +42326,7 @@ class InstrumentLogic extends BaseInstrument {
       if (!matches)
         throw new UnexpectedParseError("Match not found");
       const depth = +matches[1];
-      const description = format(_2("Remark.Snow.Depth", this.locale), depth);
+      const description = format(_("Remark.Snow.Depth", this.locale), depth);
       remark.push({
         type: RemarkType.SnowDepth,
         description,
@@ -42695,7 +42352,7 @@ class InstrumentLogic extends BaseInstrument {
         throw new UnexpectedParseError("Match not found");
       const inchesLastHour = +matches[1];
       const totalDepth = +matches[2];
-      const description = format(_2("Remark.Snow.Increasing.Rapidly", this.locale), inchesLastHour, totalDepth);
+      const description = format(_("Remark.Snow.Increasing.Rapidly", this.locale), inchesLastHour, totalDepth);
       remark.push({
         type: RemarkType.SnowIncrease,
         description,
@@ -42720,7 +42377,7 @@ class InstrumentLogic extends BaseInstrument {
       const matches = code.match(__classPrivateFieldGet(this, _SnowPelletsCommand_regex, "f"));
       if (!matches)
         throw new UnexpectedParseError("Match not found");
-      const description = format(_2("Remark.Snow.Pellets", this.locale), _2(`Remark.${matches[1]}`, this.locale));
+      const description = format(_("Remark.Snow.Pellets", this.locale), _(`Remark.${matches[1]}`, this.locale));
       remark.push({
         type: RemarkType.SnowPellets,
         description,
@@ -42745,7 +42402,7 @@ class InstrumentLogic extends BaseInstrument {
       if (!matches)
         throw new UnexpectedParseError("Match not found");
       const duration = +matches[1];
-      const description = format(_2("Remark.Sunshine.Duration", this.locale), duration);
+      const description = format(_("Remark.Sunshine.Duration", this.locale), duration);
       remark.push({
         type: RemarkType.SunshineDuration,
         description,
@@ -42770,7 +42427,7 @@ class InstrumentLogic extends BaseInstrument {
       if (!matches)
         throw new UnexpectedParseError("Match not found");
       const distance = matches[1];
-      const description = format(_2("Remark.Surface.Visibility", this.locale), distance);
+      const description = format(_("Remark.Surface.Visibility", this.locale), distance);
       remark.push({
         type: RemarkType.SurfaceVisibility,
         description,
@@ -42795,7 +42452,7 @@ class InstrumentLogic extends BaseInstrument {
       if (!matches)
         throw new UnexpectedParseError("Match not found");
       const location = as(matches[1], Direction);
-      const description = format(_2("Remark.Thunderstorm.Location.0", this.locale), _2(`Converter.${location}`, this.locale));
+      const description = format(_("Remark.Thunderstorm.Location.0", this.locale), _(`Converter.${location}`, this.locale));
       remark.push({
         type: RemarkType.ThunderStormLocation,
         description,
@@ -42821,7 +42478,7 @@ class InstrumentLogic extends BaseInstrument {
         throw new UnexpectedParseError("Match not found");
       const location = as(matches[1], Direction);
       const moving = as(matches[2], Direction);
-      const description = format(_2("Remark.Thunderstorm.Location.Moving", this.locale), _2(`Converter.${location}`, this.locale), _2(`Converter.${moving}`, this.locale));
+      const description = format(_("Remark.Thunderstorm.Location.Moving", this.locale), _(`Converter.${location}`, this.locale), _(`Converter.${moving}`, this.locale));
       remark.push({
         type: RemarkType.ThunderStormLocationMoving,
         description,
@@ -42847,7 +42504,7 @@ class InstrumentLogic extends BaseInstrument {
       if (!matches)
         throw new UnexpectedParseError("Match not found");
       const direction = as(matches[7], Direction);
-      const description = format(_2("Remark.Tornadic.Activity.Beginning", this.locale), _2(`Remark.${matches[1].replace(" ", "")}`, this.locale), matches[3] || "", matches[4], matches[6], _2(`Converter.${direction}`, this.locale));
+      const description = format(_("Remark.Tornadic.Activity.Beginning", this.locale), _(`Remark.${matches[1].replace(" ", "")}`, this.locale), matches[3] || "", matches[4], matches[6], _(`Converter.${direction}`, this.locale));
       remark.push({
         type: RemarkType.TornadicActivityBeg,
         description,
@@ -42876,7 +42533,7 @@ class InstrumentLogic extends BaseInstrument {
       if (!matches)
         throw new UnexpectedParseError("Match not found");
       const direction = as(matches[10], Direction);
-      const description = format(_2("Remark.Tornadic.Activity.BegEnd", this.locale), _2(`Remark.${matches[1].replace(" ", "")}`, this.locale), matches[3] || "", matches[4], matches[6] || "", matches[7], matches[9], _2(`Converter.${direction}`, this.locale));
+      const description = format(_("Remark.Tornadic.Activity.BegEnd", this.locale), _(`Remark.${matches[1].replace(" ", "")}`, this.locale), matches[3] || "", matches[4], matches[6] || "", matches[7], matches[9], _(`Converter.${direction}`, this.locale));
       remark.push({
         type: RemarkType.TornadicActivityBegEnd,
         description,
@@ -42907,7 +42564,7 @@ class InstrumentLogic extends BaseInstrument {
       if (!matches)
         throw new UnexpectedParseError("Match not found");
       const direction = as(matches[7], Direction);
-      const description = format(_2("Remark.Tornadic.Activity.Ending", this.locale), _2(`Remark.${matches[1].replace(" ", "")}`, this.locale), matches[3] || "", matches[4], matches[6], _2(`Converter.${direction}`, this.locale));
+      const description = format(_("Remark.Tornadic.Activity.Ending", this.locale), _(`Remark.${matches[1].replace(" ", "")}`, this.locale), matches[3] || "", matches[4], matches[6], _(`Converter.${direction}`, this.locale));
       remark.push({
         type: RemarkType.TornadicActivityEnd,
         description,
@@ -42936,7 +42593,7 @@ class InstrumentLogic extends BaseInstrument {
       if (!matches)
         throw new UnexpectedParseError("Match not found");
       const distance = matches[1];
-      const description = format(_2("Remark.Tower.Visibility", this.locale), distance);
+      const description = format(_("Remark.Tower.Visibility", this.locale), distance);
       remark.push({
         type: RemarkType.TowerVisibility,
         description,
@@ -42962,7 +42619,7 @@ class InstrumentLogic extends BaseInstrument {
         throw new UnexpectedParseError("Match not found");
       const firstQuantity = as(matches[1], CloudQuantity);
       const secondQuantity = as(matches[2], CloudQuantity);
-      const description = format(_2("Remark.Variable.Sky.Condition.0", this.locale), _2(`CloudQuantity.${firstQuantity}`, this.locale), _2(`CloudQuantity.${secondQuantity}`, this.locale));
+      const description = format(_("Remark.Variable.Sky.Condition.0", this.locale), _(`CloudQuantity.${firstQuantity}`, this.locale), _(`CloudQuantity.${secondQuantity}`, this.locale));
       remark.push({
         type: RemarkType.VariableSky,
         description,
@@ -42989,7 +42646,7 @@ class InstrumentLogic extends BaseInstrument {
       const firstQuantity = as(matches[1], CloudQuantity);
       const secondQuantity = as(matches[3], CloudQuantity);
       const height = 100 * +matches[2];
-      const description = format(_2("Remark.Variable.Sky.Condition.Height", this.locale), height, _2(`CloudQuantity.${firstQuantity}`, this.locale), _2(`CloudQuantity.${secondQuantity}`, this.locale));
+      const description = format(_("Remark.Variable.Sky.Condition.Height", this.locale), height, _(`CloudQuantity.${firstQuantity}`, this.locale), _(`CloudQuantity.${secondQuantity}`, this.locale));
       remark.push({
         type: RemarkType.VariableSkyHeight,
         description,
@@ -43015,7 +42672,7 @@ class InstrumentLogic extends BaseInstrument {
       if (!matches)
         throw new UnexpectedParseError("Match not found");
       const direction = as(matches[1], Direction);
-      const description = format(_2("Remark.Virga.Direction", this.locale), _2(`Converter.${direction}`, this.locale));
+      const description = format(_("Remark.Virga.Direction", this.locale), _(`Converter.${direction}`, this.locale));
       remark.push({
         type: RemarkType.VirgaDirection,
         description,
@@ -43040,7 +42697,7 @@ class InstrumentLogic extends BaseInstrument {
       if (!matches)
         throw new UnexpectedParseError("Match not found");
       const amount = +matches[1] / 10;
-      const description = format(_2("Remark.Water.Equivalent.Snow.Ground", this.locale), amount);
+      const description = format(_("Remark.Water.Equivalent.Snow.Ground", this.locale), amount);
       remark.push({
         type: RemarkType.WaterEquivalentSnow,
         description,
@@ -43066,7 +42723,7 @@ class InstrumentLogic extends BaseInstrument {
         throw new UnexpectedParseError("Match not found");
       const degrees = +matches[1];
       const speed = +matches[2];
-      const description = format(_2("Remark.PeakWind", this.locale), degrees, speed, matches[3] || "", matches[4]);
+      const description = format(_("Remark.PeakWind", this.locale), degrees, speed, matches[3] || "", matches[4]);
       remark.push({
         type: RemarkType.WindPeak,
         description,
@@ -43093,7 +42750,7 @@ class InstrumentLogic extends BaseInstrument {
       const matches = code.match(__classPrivateFieldGet(this, _WindShiftCommand_regex, "f"));
       if (!matches)
         throw new UnexpectedParseError("Match not found");
-      const description = format(_2("Remark.WindShift.0", this.locale), matches[1] || "", matches[2]);
+      const description = format(_("Remark.WindShift.0", this.locale), matches[1] || "", matches[2]);
       remark.push({
         type: RemarkType.WindShift,
         description,
@@ -43118,7 +42775,7 @@ class InstrumentLogic extends BaseInstrument {
       const matches = code.match(__classPrivateFieldGet(this, _WindShiftFropaCommand_regex, "f"));
       if (!matches)
         throw new UnexpectedParseError("Match not found");
-      const description = format(_2("Remark.WindShift.FROPA", this.locale), matches[1] || "", matches[2]);
+      const description = format(_("Remark.WindShift.FROPA", this.locale), matches[1] || "", matches[2]);
       remark.push({
         type: RemarkType.WindShiftFropa,
         description,
@@ -43136,7 +42793,7 @@ class InstrumentLogic extends BaseInstrument {
     }
     execute(code, remark) {
       const rmkSplit = pySplit(code, " ", 1);
-      const rem = _2(`Remark.${rmkSplit[0]}`, this.locale);
+      const rem = _(`Remark.${rmkSplit[0]}`, this.locale);
       if (RemarkType[rmkSplit[0]]) {
         remark.push({
           type: rmkSplit[0],
@@ -43173,7 +42830,7 @@ class InstrumentLogic extends BaseInstrument {
         throw new UnexpectedParseError("Match not found");
       const descriptive = matches[2] ? as(matches[2], Descriptive) : void 0;
       const phenomenon = as(matches[3], Phenomenon);
-      const description = (_a = format(_2("Remark.Precipitation.Beg.0", this.locale), descriptive ? _2(`Descriptive.${descriptive}`, this.locale) : "", _2(`Phenomenon.${phenomenon}`, this.locale), matches[4] || "", matches[5])) == null ? void 0 : _a.trim();
+      const description = (_a = format(_("Remark.Precipitation.Beg.0", this.locale), descriptive ? _(`Descriptive.${descriptive}`, this.locale) : "", _(`Phenomenon.${phenomenon}`, this.locale), matches[4] || "", matches[5])) == null ? void 0 : _a.trim();
       remark.push({
         type: RemarkType.PrecipitationBeg,
         description,
@@ -43203,7 +42860,7 @@ class InstrumentLogic extends BaseInstrument {
         throw new UnexpectedParseError("Match not found");
       const descriptive = matches[2] ? as(matches[2], Descriptive) : void 0;
       const phenomenon = as(matches[3], Phenomenon);
-      const description = (_a = format(_2("Remark.Precipitation.End", this.locale), descriptive ? _2(`Descriptive.${descriptive}`, this.locale) : "", _2(`Phenomenon.${phenomenon}`, this.locale), matches[4] || "", matches[5])) == null ? void 0 : _a.trim();
+      const description = (_a = format(_("Remark.Precipitation.End", this.locale), descriptive ? _(`Descriptive.${descriptive}`, this.locale) : "", _(`Phenomenon.${phenomenon}`, this.locale), matches[4] || "", matches[5])) == null ? void 0 : _a.trim();
       remark.push({
         type: RemarkType.PrecipitationEnd,
         description,
@@ -43348,13 +43005,13 @@ class InstrumentLogic extends BaseInstrument {
       _CloudCommand_cloudRegex.set(this, /^([A-Z]{3})(?:\/{3}|(\d{3}))?(?:\/{3}|(?:([A-Z]{2,3})(?:\/([A-Z]{2,3}))?))?$/);
     }
     parse(cloudString) {
-      const m2 = cloudString.match(__classPrivateFieldGet(this, _CloudCommand_cloudRegex, "f"));
-      if (!m2)
+      const m = cloudString.match(__classPrivateFieldGet(this, _CloudCommand_cloudRegex, "f"));
+      if (!m)
         return;
-      const quantity = as(m2[1], CloudQuantity);
-      const height = 100 * +m2[2] || void 0;
-      const type = m2[3] ? as(m2[3], CloudType) : void 0;
-      const secondaryType = m2[4] ? as(m2[4], CloudType) : void 0;
+      const quantity = as(m[1], CloudQuantity);
+      const height = 100 * +m[2] || void 0;
+      const type = m[3] ? as(m[3], CloudType) : void 0;
+      const secondaryType = m[4] ? as(m[4], CloudType) : void 0;
       return { quantity, height, type, secondaryType };
     }
     execute(container, cloudString) {
@@ -43811,8 +43468,8 @@ class InstrumentLogic extends BaseInstrument {
       }
       let descriptive;
       const descriptives = Object.values(Descriptive);
-      for (let i2 = 0; i2 < descriptives.length; i2++) {
-        const key = descriptives[i2];
+      for (let i = 0; i < descriptives.length; i++) {
+        const key = descriptives[i];
         if (input.startsWith(key)) {
           descriptive = key;
           input = input.slice(key.length);
@@ -43825,8 +43482,8 @@ class InstrumentLogic extends BaseInstrument {
         phenomenons: []
       };
       const phenomenons = Object.values(Phenomenon);
-      for (let i2 = 0; i2 < phenomenons.length; i2++) {
-        const key = phenomenons[i2];
+      for (let i = 0; i < phenomenons.length; i++) {
+        const key = phenomenons[i];
         if (descriptive === key)
           continue;
         const conditionRegex = new RegExp(`^/?${key}`);
@@ -43834,7 +43491,7 @@ class InstrumentLogic extends BaseInstrument {
         if (inputMatch) {
           weatherCondition.phenomenons.push(key);
           input = input.slice(inputMatch.length);
-          i2 = -1;
+          i = -1;
           continue;
         }
       }
@@ -43847,14 +43504,14 @@ class InstrumentLogic extends BaseInstrument {
       const smRegex = /^\d\/\dSM$/;
       const digitRegex = /^(P|M)?\d$/;
       const splitted = input.split(splitRegex);
-      for (let i2 = 0; i2 < splitted.length; i2++) {
-        if (digitRegex.test(splitted[i2])) {
-          if (splitted[i2 + 1] && smRegex.test(splitted[i2 + 1])) {
-            splitted.splice(i2, 2, `${splitted[i2]} ${splitted[i2 + 1]}`);
+      for (let i = 0; i < splitted.length; i++) {
+        if (digitRegex.test(splitted[i])) {
+          if (splitted[i + 1] && smRegex.test(splitted[i + 1])) {
+            splitted.splice(i, 2, `${splitted[i]} ${splitted[i + 1]}`);
           }
         }
       }
-      return splitted.filter((t2) => t2);
+      return splitted.filter((t) => t);
     }
     generalParse(abstractWeatherContainer, input) {
       if (input === __classPrivateFieldGet(this, _AbstractParser_CAVOK, "f")) {
@@ -43893,21 +43550,21 @@ class InstrumentLogic extends BaseInstrument {
       _MetarParser_commandSupplier.set(this, new CommandSupplier$1());
     }
     parseTrend(index, trend, trendParts) {
-      let i2 = index + 1;
-      while (i2 < trendParts.length && trendParts[i2] !== this.TEMPO && trendParts[i2] !== this.INTER && trendParts[i2] !== this.BECMG) {
-        if (trendParts[i2].startsWith(this.FM) || trendParts[i2].startsWith(this.TL) || trendParts[i2].startsWith(this.AT)) {
+      let i = index + 1;
+      while (i < trendParts.length && trendParts[i] !== this.TEMPO && trendParts[i] !== this.INTER && trendParts[i] !== this.BECMG) {
+        if (trendParts[i].startsWith(this.FM) || trendParts[i].startsWith(this.TL) || trendParts[i].startsWith(this.AT)) {
           const trendTime = {
-            type: TimeIndicator[trendParts[i2].slice(0, 2)],
-            hour: +trendParts[i2].slice(2, 4),
-            minute: +trendParts[i2].slice(4, 6)
+            type: TimeIndicator[trendParts[i].slice(0, 2)],
+            hour: +trendParts[i].slice(2, 4),
+            minute: +trendParts[i].slice(4, 6)
           };
           trend.times.push(trendTime);
         } else {
-          this.generalParse(trend, trendParts[i2]);
+          this.generalParse(trend, trendParts[i]);
         }
-        i2 = i2 + 1;
+        i = i + 1;
       }
-      return i2 - 1;
+      return i - 1;
     }
     parse(input) {
       const metarTab = this.tokenize(input);
@@ -44025,11 +43682,11 @@ class InstrumentLogic extends BaseInstrument {
         weatherConditions: [],
         initialRaw: lines[0].join(" ")
       });
-      for (let i2 = index + 1; i2 < lines[0].length; i2++) {
-        const token = lines[0][i2];
+      for (let i = index + 1; i < lines[0].length; i++) {
+        const token = lines[0][i];
         const tafCommand = __classPrivateFieldGet(this, _TAFParser_commandSupplier, "f").get(token);
         if (token == this.RMK) {
-          parseRemark(taf, lines[0], i2, this.locale);
+          parseRemark(taf, lines[0], i, this.locale);
           break;
         } else if (tafCommand) {
           tafCommand.execute(taf, token);
@@ -44044,8 +43701,8 @@ class InstrumentLogic extends BaseInstrument {
       if (lines.length > 1)
         minMaxTemperatureLines.push(lines[lines.length - 1]);
       this.parseMaxMinTemperatures(taf, minMaxTemperatureLines);
-      for (let i2 = 1; i2 < lines.length; i2++) {
-        this.parseLine(taf, lines[i2]);
+      for (let i = 1; i < lines.length; i++) {
+        this.parseLine(taf, lines[i]);
       }
       return taf;
     }
@@ -44066,9 +43723,9 @@ class InstrumentLogic extends BaseInstrument {
       const cleanLine = singleLine.replace(/\s{2,}/g, " ");
       const lines = joinProbIfNeeded(cleanLine.replace(/\s(?=PROB\d{2}\s(?=TEMPO|INTER)|TEMPO|INTER|BECMG|FM(?![A-Z]{2}\s)|PROB)/g, "\n").split(/\n/));
       function joinProbIfNeeded(ls) {
-        for (let i2 = 0; i2 < ls.length; i2++) {
-          if (/^PROB\d{2}$/.test(ls[i2]) && /^TEMPO|INTER/.test(ls[i2 + 1])) {
-            ls.splice(i2, 2, `${ls[i2]} ${ls[i2 + 1]}`);
+        for (let i = 0; i < ls.length; i++) {
+          if (/^PROB\d{2}$/.test(ls[i]) && /^TEMPO|INTER/.test(ls[i + 1])) {
+            ls.splice(i, 2, `${ls[i]} ${ls[i + 1]}`);
           }
         }
         return ls;
@@ -44118,24 +43775,24 @@ class InstrumentLogic extends BaseInstrument {
     }
     findLineValidity(index, line3) {
       let validity;
-      for (let i2 = index; i2 < line3.length; i2++) {
-        if (__classPrivateFieldGet(this, _TAFParser_validityPattern, "f").test(line3[i2]))
-          validity = parseValidity(line3[i2]);
+      for (let i = index; i < line3.length; i++) {
+        if (__classPrivateFieldGet(this, _TAFParser_validityPattern, "f").test(line3[i]))
+          validity = parseValidity(line3[i]);
       }
       return validity;
     }
     parseTrend(index, line3, trend) {
-      for (let i2 = index; i2 < line3.length; i2++) {
-        const tafCommand = __classPrivateFieldGet(this, _TAFParser_commandSupplier, "f").get(line3[i2]);
-        if (line3[i2] === this.RMK) {
-          parseRemark(trend, line3, i2, this.locale);
+      for (let i = index; i < line3.length; i++) {
+        const tafCommand = __classPrivateFieldGet(this, _TAFParser_commandSupplier, "f").get(line3[i]);
+        if (line3[i] === this.RMK) {
+          parseRemark(trend, line3, i, this.locale);
           break;
-        } else if (__classPrivateFieldGet(this, _TAFParser_validityPattern, "f").test(line3[i2]))
+        } else if (__classPrivateFieldGet(this, _TAFParser_validityPattern, "f").test(line3[i]))
           continue;
         else if (tafCommand) {
-          tafCommand.execute(trend, line3[i2]);
+          tafCommand.execute(trend, line3[i]);
         } else
-          super.generalParse(trend, line3[i2]);
+          super.generalParse(trend, line3[i]);
       }
     }
     makeEmptyTAFTrend() {
@@ -44158,11 +43815,11 @@ class InstrumentLogic extends BaseInstrument {
       while (rmkStr) {
         try {
           [rmkStr, rmkList] = __classPrivateFieldGet(this, _RemarkParser_supplier, "f").get(rmkStr).execute(rmkStr, rmkList);
-        } catch (e2) {
-          if (e2 instanceof CommandExecutionError) {
+        } catch (e) {
+          if (e instanceof CommandExecutionError) {
             [rmkStr, rmkList] = __classPrivateFieldGet(this, _RemarkParser_supplier, "f").defaultCommand.execute(rmkStr, rmkList);
           } else {
-            throw e2;
+            throw e;
           }
         }
       }
@@ -44178,10 +43835,10 @@ class InstrumentLogic extends BaseInstrument {
       setDateComponents(new Date(date), day, hour, minute),
       setDateComponents(addMonthsUTC(date, 1), day, hour, minute)
     ];
-    return months.map((d2) => ({
-      date: d2,
-      difference: Math.abs(d2.getTime() - date.getTime())
-    })).sort((a2, b2) => a2.difference - b2.difference)[0].date;
+    return months.map((d) => ({
+      date: d,
+      difference: Math.abs(d.getTime() - date.getTime())
+    })).sort((a, b) => a.difference - b.difference)[0].date;
   }
   function setDateComponents(date, day, hour, minute) {
     date.setUTCDate(day);
@@ -44192,11 +43849,11 @@ class InstrumentLogic extends BaseInstrument {
   }
   function addMonthsUTC(date, count) {
     if (date && count) {
-      let m2, d2 = (date = new Date(+date)).getUTCDate();
+      let m, d = (date = new Date(+date)).getUTCDate();
       date.setUTCMonth(date.getUTCMonth() + count, 1);
-      m2 = date.getUTCMonth();
-      date.setUTCDate(d2);
-      if (date.getUTCMonth() !== m2)
+      m = date.getUTCMonth();
+      date.setUTCDate(d);
+      if (date.getUTCMonth() !== m)
         date.setUTCDate(0);
     }
     return date;
@@ -44251,25 +43908,25 @@ class InstrumentLogic extends BaseInstrument {
         return datesHydrator(report, options.issued);
       }
       return report;
-    } catch (e2) {
-      if (e2 instanceof ParseError)
-        throw e2;
-      throw new InvalidWeatherStatementError(e2);
+    } catch (e) {
+      if (e instanceof ParseError)
+        throw e;
+      throw new InvalidWeatherStatementError(e);
     }
   }
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Notams/notams.tsx
-  var import_react32 = __toESM(require_react());
+  var import_react31 = __toESM(require_react());
   var Notams = (props) => {
-    return /* @__PURE__ */ import_react32.default.createElement("div", { className: "notams-wrapper" }, /* @__PURE__ */ import_react32.default.createElement("h1", null, "Notams"), /* @__PURE__ */ import_react32.default.createElement("div", null, "Notams are coming soon"));
+    return /* @__PURE__ */ import_react31.default.createElement("div", { className: "notams-wrapper" }, /* @__PURE__ */ import_react31.default.createElement("h1", null, "Notams"), /* @__PURE__ */ import_react31.default.createElement("div", null, "Notams are coming soon"));
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Settings/Settings.tsx
-  var import_react33 = __toESM(require_react());
+  var import_react32 = __toESM(require_react());
   var import_react_toggle_button = __toESM(require_lib());
   var Settings = (props) => {
     const useOutsideAlerter = (ref) => {
-      import_react33.default.useEffect(() => {
+      import_react32.default.useEffect(() => {
         const handleClickOutside = (event) => {
           if (ref.current && !ref.current.contains(event.target)) {
             props.forceClose(false);
@@ -44281,7 +43938,7 @@ class InstrumentLogic extends BaseInstrument {
         };
       }, [ref]);
     };
-    const { state, updateState } = import_react33.default.useContext(AppContext);
+    const { state, updateState } = import_react32.default.useContext(AppContext);
     const setDarkMode = (darkMode) => {
       updateState(__spreadProps(__spreadValues({}, state), {
         state: {
@@ -44301,10 +43958,10 @@ class InstrumentLogic extends BaseInstrument {
         }
       }));
     };
-    const wrapperRef = import_react33.default.useRef(null);
+    const wrapperRef = import_react32.default.useRef(null);
     useOutsideAlerter(wrapperRef);
     if (props.open) {
-      return /* @__PURE__ */ import_react33.default.createElement("div", { className: "settings-background" }, /* @__PURE__ */ import_react33.default.createElement("div", { ref: wrapperRef, className: "settings-container" }, /* @__PURE__ */ import_react33.default.createElement("div", { className: "settings-header" }, /* @__PURE__ */ import_react33.default.createElement(
+      return /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-background" }, /* @__PURE__ */ import_react32.default.createElement("div", { ref: wrapperRef, className: "settings-container" }, /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-header" }, /* @__PURE__ */ import_react32.default.createElement(
         "div",
         {
           onClick: () => {
@@ -44313,7 +43970,7 @@ class InstrumentLogic extends BaseInstrument {
           className: "settings-close-button"
         },
         "X"
-      )), /* @__PURE__ */ import_react33.default.createElement("div", { className: "settings-content" }, /* @__PURE__ */ import_react33.default.createElement("div", { className: "settings-field" }, "Dark mode pates", /* @__PURE__ */ import_react33.default.createElement(
+      )), /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-content" }, /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-field" }, "Dark mode pates", /* @__PURE__ */ import_react32.default.createElement(
         import_react_toggle_button.default,
         {
           inactiveLabel: "",
@@ -44340,25 +43997,25 @@ class InstrumentLogic extends BaseInstrument {
             setDarkMode(!(state == null ? void 0 : state.ouroborosFlight.darkMode));
           }
         }
-      )), /* @__PURE__ */ import_react33.default.createElement("div", { className: "settings-field" }, "Show only airports with acceptable runway lengths"), /* @__PURE__ */ import_react33.default.createElement("div", { className: "settings-field" }, "Sort nearest airports by:"), /* @__PURE__ */ import_react33.default.createElement("div", { className: "settings-field" }, "Sign out of Navigraph"), /* @__PURE__ */ import_react33.default.createElement("div", { className: "settings-field" }, "Reset all favorites"))));
+      )), /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-field" }, "Show only airports with acceptable runway lengths"), /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-field" }, "Sort nearest airports by:"), /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-field" }, "Sign out of Navigraph"), /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-field" }, "Reset all favorites"))));
     } else
-      return /* @__PURE__ */ import_react33.default.createElement("div", null);
+      return /* @__PURE__ */ import_react32.default.createElement("div", null);
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Airports.tsx
   var Airports = (props) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k;
-    const [parsedMetar, setParsedMetar] = import_react34.default.useState();
-    const [parsedTaf, setParsedTaf] = import_react34.default.useState();
-    const { state, updateState } = (0, import_react34.useContext)(AppContext);
-    const [airportsState, setAirportsState] = (0, import_react34.useState)(0);
-    const [stationInfo, setStationInfo] = (0, import_react34.useState)(sampleStation);
-    const [data, setData] = (0, import_react34.useState)(ApiReturn);
-    const [airport, setAirport] = (0, import_react34.useState)((_a = state == null ? void 0 : state.ouroborosFlight.currentAirport) != null ? _a : "");
-    const [metar, setMetar] = import_react34.default.useState(sampleMetar);
-    const [taf, setTaf] = import_react34.default.useState(sampleTaf);
-    const [settingsShow, setSettingsShow] = import_react34.default.useState(false);
-    import_react34.default.useEffect(() => {
+    const [parsedMetar, setParsedMetar] = import_react33.default.useState();
+    const [parsedTaf, setParsedTaf] = import_react33.default.useState();
+    const { state, updateState } = (0, import_react33.useContext)(AppContext);
+    const [airportsState, setAirportsState] = (0, import_react33.useState)(0);
+    const [stationInfo, setStationInfo] = (0, import_react33.useState)(sampleStation);
+    const [data, setData] = (0, import_react33.useState)(ApiReturn);
+    const [airport, setAirport] = (0, import_react33.useState)((_a = state == null ? void 0 : state.ouroborosFlight.currentAirport) != null ? _a : "");
+    const [metar, setMetar] = import_react33.default.useState(sampleMetar);
+    const [taf, setTaf] = import_react33.default.useState(sampleTaf);
+    const [settingsShow, setSettingsShow] = import_react33.default.useState(false);
+    import_react33.default.useEffect(() => {
       const fetchMetar = async () => {
         try {
           if ((state == null ? void 0 : state.ouroborosFlight.currentAirport) === void 0)
@@ -44366,8 +44023,8 @@ class InstrumentLogic extends BaseInstrument {
           const response = await fetch(weatherUrlBuilder(0 /* METAR */, state.ouroborosFlight.currentAirport));
           const json = await response.json();
           setMetar(json);
-        } catch (e2) {
-          console.error(e2);
+        } catch (e) {
+          console.error(e);
         }
       };
       const fetchTaf = async () => {
@@ -44377,8 +44034,8 @@ class InstrumentLogic extends BaseInstrument {
           const response = await fetch(weatherUrlBuilder(1 /* TAF */, state.ouroborosFlight.currentAirport));
           const json = await response.json();
           setTaf(json);
-        } catch (e2) {
-          console.error(e2);
+        } catch (e) {
+          console.error(e);
         }
       };
       const fetchStation = async () => {
@@ -44388,18 +44045,18 @@ class InstrumentLogic extends BaseInstrument {
           const response = await fetch(stationUrlBuilder(state.ouroborosFlight.currentAirport));
           const json = await response.json();
           setStationInfo(json);
-        } catch (e2) {
-          console.error(e2);
+        } catch (e) {
+          console.error(e);
         }
       };
-      fetchMetar().catch((e2) => {
-        console.error(e2);
+      fetchMetar().catch((e) => {
+        console.error(e);
       });
-      fetchTaf().catch((e2) => {
-        console.error(e2);
+      fetchTaf().catch((e) => {
+        console.error(e);
       });
-      fetchStation().catch((e2) => {
-        console.error(e2);
+      fetchStation().catch((e) => {
+        console.error(e);
       });
     }, [state == null ? void 0 : state.ouroborosFlight.currentAirport]);
     const apiToken = "5d1e61679edc3c46fa2c7c05860f095648549faaf740803e53717fa25448c7d5ff617a124a89d8d8d2d85fbf776136d4";
@@ -44474,7 +44131,7 @@ class InstrumentLogic extends BaseInstrument {
       const Url = `https://airportdb.io/api/v1/airport/${ICAO}?apiToken=${apiToken}`;
       return Url;
     };
-    (0, import_react34.useEffect)(() => {
+    (0, import_react33.useEffect)(() => {
       const fetchData = async () => {
         try {
           if ((state == null ? void 0 : state.ouroborosFlight.currentAirport) === void 0)
@@ -44482,22 +44139,22 @@ class InstrumentLogic extends BaseInstrument {
           const response = await fetch(urlBulder(state.ouroborosFlight.currentAirport));
           const json = await response.json();
           setData(json);
-        } catch (e2) {
-          console.error(e2);
+        } catch (e) {
+          console.error(e);
         }
       };
-      fetchData().catch((e2) => {
-        console.error(e2);
+      fetchData().catch((e) => {
+        console.error(e);
       });
     }, [state == null ? void 0 : state.ouroborosFlight.currentAirport]);
-    import_react34.default.useEffect(() => {
+    import_react33.default.useEffect(() => {
       if (metar.raw === void 0 || metar.raw === null)
         return;
       if (metar.raw === "")
         return;
       setParsedMetar(parseMetar(metar.raw));
     }, [metar.raw]);
-    import_react34.default.useEffect(() => {
+    import_react33.default.useEffect(() => {
       if (taf.raw === void 0 || taf.raw === null)
         return;
       if (taf.raw === "")
@@ -44515,9 +44172,9 @@ class InstrumentLogic extends BaseInstrument {
       var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2;
       switch (airportsState) {
         case 0:
-          return /* @__PURE__ */ import_react34.default.createElement(Info, { data });
+          return /* @__PURE__ */ import_react33.default.createElement(Info, { data });
         case 1:
-          return /* @__PURE__ */ import_react34.default.createElement(
+          return /* @__PURE__ */ import_react33.default.createElement(
             Weather,
             {
               airport: (_a2 = data == null ? void 0 : data.ident) != null ? _a2 : "",
@@ -44530,7 +44187,7 @@ class InstrumentLogic extends BaseInstrument {
             }
           );
         case 2:
-          return /* @__PURE__ */ import_react34.default.createElement(
+          return /* @__PURE__ */ import_react33.default.createElement(
             Runway,
             {
               runways: stationInfo.runways,
@@ -44539,14 +44196,14 @@ class InstrumentLogic extends BaseInstrument {
             }
           );
         case 3:
-          return /* @__PURE__ */ import_react34.default.createElement(Procedure, { airport: (_g2 = data == null ? void 0 : data.ident) != null ? _g2 : "" });
+          return /* @__PURE__ */ import_react33.default.createElement(Procedure, { airport: (_g2 = data == null ? void 0 : data.ident) != null ? _g2 : "" });
         case 4:
-          return /* @__PURE__ */ import_react34.default.createElement(Notams, { airport: (_h2 = data == null ? void 0 : data.ident) != null ? _h2 : "" });
+          return /* @__PURE__ */ import_react33.default.createElement(Notams, { airport: (_h2 = data == null ? void 0 : data.ident) != null ? _h2 : "" });
         default:
-          return /* @__PURE__ */ import_react34.default.createElement("div", null);
+          return /* @__PURE__ */ import_react33.default.createElement("div", null);
       }
     };
-    return /* @__PURE__ */ import_react34.default.createElement("div", null, /* @__PURE__ */ import_react34.default.createElement(
+    return /* @__PURE__ */ import_react33.default.createElement("div", null, /* @__PURE__ */ import_react33.default.createElement(
       AirportsHeader,
       {
         settingsButtonCallback: setSettingsShow,
@@ -44554,7 +44211,7 @@ class InstrumentLogic extends BaseInstrument {
         airport,
         changeAirport
       }
-    ), /* @__PURE__ */ import_react34.default.createElement(Settings, { open: settingsShow, forceClose: setSettingsShow }), /* @__PURE__ */ import_react34.default.createElement(InfoButtonBar, { state: airportsState, setState: setAirportsState }), /* @__PURE__ */ import_react34.default.createElement(AirportsFavorites, { setAirport: changeAirport, favorites: (_h = state == null ? void 0 : state.ouroborosFlight.favorites) != null ? _h : [] }), /* @__PURE__ */ import_react34.default.createElement(
+    ), /* @__PURE__ */ import_react33.default.createElement(Settings, { open: settingsShow, forceClose: setSettingsShow }), /* @__PURE__ */ import_react33.default.createElement(InfoButtonBar, { state: airportsState, setState: setAirportsState }), /* @__PURE__ */ import_react33.default.createElement(AirportsFavorites, { setAirport: changeAirport, favorites: (_h = state == null ? void 0 : state.ouroborosFlight.favorites) != null ? _h : [] }), /* @__PURE__ */ import_react33.default.createElement(
       AirportDisplay,
       {
         city: stationInfo.city,
@@ -44573,21 +44230,21 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Scratchpads/Scratchpads.tsx
-  var import_react88 = __toESM(require_react());
+  var import_react87 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Scratchpads/ScratchpadHeader.tsx
-  var import_react35 = __toESM(require_react());
+  var import_react34 = __toESM(require_react());
   var ScratchpadHeader = (props) => {
-    return /* @__PURE__ */ import_react35.default.createElement("div", { className: "scratchpad-header" }, !props.isEditMode ? /* @__PURE__ */ import_react35.default.createElement("div", { className: "sp-header-edit", onClick: props.EditClicked }, "Edit") : /* @__PURE__ */ import_react35.default.createElement("div", { className: "sp-header-done", onClick: props.DoneClicked }, "Done"), !props.isEditMode ? props.addAvailable ? /* @__PURE__ */ import_react35.default.createElement("div", { className: "sp-header-add", onClick: props.AddClicked }, "+") : "" : /* @__PURE__ */ import_react35.default.createElement("div", { className: "sp-header-delete", onClick: props.DeleteAllClick }, "Delete All"));
+    return /* @__PURE__ */ import_react34.default.createElement("div", { className: "scratchpad-header" }, !props.isEditMode ? /* @__PURE__ */ import_react34.default.createElement("div", { className: "sp-header-edit", onClick: props.EditClicked }, "Edit") : /* @__PURE__ */ import_react34.default.createElement("div", { className: "sp-header-done", onClick: props.DoneClicked }, "Done"), !props.isEditMode ? props.addAvailable ? /* @__PURE__ */ import_react34.default.createElement("div", { className: "sp-header-add", onClick: props.AddClicked }, "+") : "" : /* @__PURE__ */ import_react34.default.createElement("div", { className: "sp-header-delete", onClick: props.DeleteAllClick }, "Delete All"));
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Scratchpads/ScratchpadPopup.tsx
-  var import_react37 = __toESM(require_react());
+  var import_react36 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Scratchpads/ScratchpadIcons.tsx
-  var import_react36 = __toESM(require_react());
+  var import_react35 = __toESM(require_react());
   var SpPopoutIcon = (props) => {
-    return /* @__PURE__ */ import_react36.default.createElement("svg", { ref: props.ref, className: props.className, width: `${props.width}px`, viewBox: "0 0 100 100" }, /* @__PURE__ */ import_react36.default.createElement(
+    return /* @__PURE__ */ import_react35.default.createElement("svg", { ref: props.ref, className: props.className, width: `${props.width}px`, viewBox: "0 0 100 100" }, /* @__PURE__ */ import_react35.default.createElement(
       "path",
       {
         stroke: "#2a2fff",
@@ -44600,13 +44257,13 @@ class InstrumentLogic extends BaseInstrument {
     ));
   };
   var SpPopoutHoldIcon = (props) => {
-    return /* @__PURE__ */ import_react36.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react36.default.createElement(
+    return /* @__PURE__ */ import_react35.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react35.default.createElement(
       "path",
       {
         fill: "white",
         d: "M145.75587,3.24779c-0.0157,0-0.0325,0.00001-0.0482,0.00002c-0.00375,0-0.00748,0.00001-0.01123,0.00001  c-0.01572,0.00001-0.03214,0.00003-0.04785,0.00005l-0.00053,0c-0.0157,0.00002-0.03218,0.00006-0.0479,0.00009  c-0.0045,0.00001-0.00769,0.00002-0.01219,0.00003c-0.01459,0.00003-0.03056,0.00007-0.04515,0.00012  c-0.00075,0-0.00215,0.00001-0.0029,0.00001c-0.01572,0.00005-0.03133,0.0001-0.04704,0.00016  c-0.0045,0.00002-0.00842,0.00003-0.01292,0.00005c-0.01459,0.00006-0.02914,0.00011-0.04373,0.00018  c-0.0015,0.00001-0.00284,0.00001-0.00435,0.00002c-0.0157,0.00007-0.0311,0.00015-0.0468,0.00023  c-0.0045,0.00002-0.00887,0.00005-0.01337,0.00007c-0.01459,0.00008-0.02753,0.00015-0.04211,0.00024  c-0.00226,0.00001-0.0034,0.00002-0.00566,0.00003c-0.0157,0.00009-0.03076,0.00019-0.04648,0.00029  c-0.0045,0.00003-0.0089,0.00006-0.0134,0.00009c-0.01459,0.0001-0.02753,0.00019-0.04211,0.0003  c-0.00226,0.00002-0.0036,0.00003-0.00584,0.00004c-0.01572,0.00012-0.03177,0.00024-0.04749,0.00037  c-0.00375,0.00003-0.00781,0.00006-0.01157,0.0001c-0.01459,0.00012-0.0285,0.00024-0.04309,0.00037  c-0.00224,0.00002-0.00333,0.00003-0.00557,0.00005c-0.01572,0.00014-0.03107,0.00029-0.04677,0.00044  c-0.0045,0.00004-0.00795,0.00008-0.01245,0.00012c-0.01459,0.00014-0.02911,0.00029-0.0437,0.00044  c-0.00151,0.00002-0.00317,0.00003-0.00468,0.00005c-0.0157,0.00016-0.03172,0.00034-0.04744,0.00051  c-0.0045,0.00005-0.00771,0.00009-0.01221,0.00014c-0.01459,0.00016-0.02754,0.00031-0.04213,0.00049  c-0.00151,0.00002-0.00471,0.00005-0.00621,0.00007c-0.0157,0.00019-0.03117,0.00038-0.04688,0.00058  c-0.0045,0.00006-0.00835,0.00011-0.01285,0.00016c-0.01346,0.00017-0.02705,0.00035-0.04051,0.00053  c-0.00226,0.00003-0.00577,0.00008-0.00803,0.00011c-0.01459,0.0002-0.03236,0.00044-0.04695,0.00065  c-0.00375,0.00005-0.00801,0.00011-0.01176,0.00017c-0.01459,0.00021-0.02898,0.00042-0.04356,0.00063  c-0.00151,0.00002-0.00308,0.00005-0.00458,0.00007c-0.01683,0.00025-0.03195,0.00048-0.04878,0.00075  c-0.00375,0.00006-0.00555,0.00009-0.00931,0.00015c-0.01459,0.00023-0.02919,0.00046-0.04378,0.0007  c-0.00224,0.00004-0.00432,0.00007-0.00658,0.00011c-0.0157,0.00026-0.03163,0.00053-0.04733,0.00079  c-0.00375,0.00006-0.00795,0.00014-0.0117,0.0002c-0.01346,0.00023-0.02708,0.00047-0.04054,0.00071  c-0.00301,0.00005-0.00543,0.0001-0.00844,0.00015c-0.01572,0.00028-0.03133,0.00057-0.04704,0.00086  c-0.00375,0.00007-0.00746,0.00014-0.01122,0.00021c-0.01346,0.00025-0.02811,0.00053-0.04158,0.00079  c-0.00299,0.00006-0.00496,0.00009-0.00797,0.00015c-0.0157,0.00031-0.03151,0.00062-0.04723,0.00093  c-0.00375,0.00008-0.00764,0.00015-0.0114,0.00023c-0.01346,0.00027-0.02708,0.00055-0.04056,0.00083  c-0.00299,0.00006-0.00558,0.00011-0.00859,0.00018c-0.0157,0.00033-0.03114,0.00066-0.04686,0.001  c-0.0045,0.0001-0.00729,0.00016-0.0118,0.00026c-0.01346,0.00029-0.02583,0.00056-0.03929,0.00086  c-0.00375,0.00008-0.00679,0.00015-0.01054,0.00023c-0.01572,0.00035-0.03033,0.00068-0.04604,0.00105  c-0.0045,0.0001-0.00826,0.00019-0.01276,0.0003c-0.01347,0.00031-0.02441,0.00057-0.03789,0.00089  c-0.00375,0.00009-0.00714,0.00017-0.01089,0.00026c-0.01572,0.00038-0.03041,0.00073-0.04613,0.00112  c-0.0045,0.00011-0.00783,0.00019-0.01233,0.0003c-0.01346,0.00033-0.02486,0.00062-0.03833,0.00096  c-0.00375,0.00009-0.00772,0.00019-0.01146,0.00029c-0.01459,0.00037-0.03073,0.00079-0.04532,0.00117  c-0.0045,0.00012-0.00958,0.00025-0.01408,0.00037c-0.01122,0.00029-0.02368,0.00062-0.0349,0.00092  c-0.00452,0.00012-0.00948,0.00025-0.01398,0.00037c-0.0157,0.00042-0.02934,0.00079-0.04506,0.00123  c-0.00375,0.0001-0.0087,0.00024-0.01245,0.00034c-0.01346,0.00037-0.02432,0.00068-0.03778,0.00106  c-0.0045,0.00013-0.00775,0.00022-0.01225,0.00035c-0.01572,0.00045-0.02959,0.00084-0.04529,0.0013  c-0.00375,0.00011-0.00909,0.00026-0.01285,0.00037c-0.01346,0.00039-0.02437,0.00071-0.03783,0.00111  c-0.00375,0.00011-0.00743,0.00022-0.01118,0.00033c-0.0157,0.00047-0.03,0.0009-0.04572,0.00138  c-0.0045,0.00014-0.00851,0.00026-0.01303,0.0004c-0.01346,0.00041-0.02454,0.00076-0.03799,0.00118  c-0.00375,0.00012-0.00729,0.00023-0.01105,0.00034c-0.0157,0.00049-0.03116,0.00098-0.04686,0.00148  c-0.00375,0.00012-0.00699,0.00023-0.01074,0.00035c-0.01233,0.0004-0.02588,0.00084-0.03822,0.00124  c-0.00375,0.00012-0.00859,0.00028-0.01234,0.0004c-0.0157,0.00052-0.03043,0.001-0.04614,0.00153  c-0.00299,0.0001-0.00772,0.00026-0.01073,0.00036c-0.01346,0.00045-0.02541,0.00086-0.03886,0.00132  c-0.00374,0.00013-0.00851,0.00029-0.01227,0.00042c-0.0157,0.00054-0.03021,0.00104-0.04591,0.00159  c-0.00375,0.00013-0.00726,0.00026-0.011,0.00039c-0.01346,0.00047-0.02545,0.0009-0.03891,0.00138  c-0.00375,0.00013-0.00754,0.00027-0.01129,0.0004c-0.0157,0.00056-0.03012,0.00108-0.04582,0.00166  c-0.0045,0.00016-0.00827,0.0003-0.01277,0.00047c-0.01234,0.00045-0.02472,0.00091-0.03705,0.00137  c-0.0045,0.00017-0.00813,0.0003-0.01263,0.00047c-0.0157,0.00059-0.03038,0.00114-0.04608,0.00173  c-0.00375,0.00014-0.00705,0.00027-0.01079,0.00041c-0.01346,0.00051-0.02545,0.00097-0.03889,0.00149  c-0.00375,0.00014-0.00774,0.0003-0.01149,0.00044c-0.01569,0.00061-0.03137,0.00122-0.04707,0.00184  c-0.00301,0.00012-0.00592,0.00023-0.00893,0.00035c-0.01344,0.00053-0.02759,0.0011-0.04105,0.00164  c-0.00301,0.00012-0.00751,0.0003-0.01051,0.00042c-0.0157,0.00063-0.03113,0.00126-0.04683,0.0019  c-0.00375,0.00015-0.00696,0.00029-0.01071,0.00044c-0.01346,0.00055-0.02448,0.00101-0.03793,0.00157  c-0.00375,0.00016-0.00928,0.00039-0.01303,0.00054c-0.0157,0.00066-0.03006,0.00126-0.04575,0.00193  c-0.00375,0.00016-0.00739,0.00031-0.01114,0.00047c-0.01344,0.00057-0.02458,0.00105-0.03804,0.00163  c-0.00375,0.00016-0.00906,0.00039-0.01282,0.00055c-0.0157,0.00068-0.03029,0.00132-0.04599,0.00201  c-0.00375,0.00016-0.00706,0.00031-0.01082,0.00048c-0.01233,0.00054-0.02466,0.00109-0.037,0.00164  c-0.0045,0.0002-0.01003,0.00045-0.01453,0.00065c-0.01457,0.00065-0.02988,0.00134-0.04445,0.00201  c-0.0045,0.0002-0.00864,0.00039-0.01314,0.0006c-0.01122,0.00051-0.02417,0.00111-0.03537,0.00162  c-0.00525,0.00024-0.00992,0.00046-0.01517,0.0007c-0.01457,0.00068-0.02908,0.00135-0.04366,0.00203  c-0.00525,0.00025-0.0099,0.00047-0.01515,0.00071c-0.01122,0.00053-0.02158,0.00102-0.03279,0.00155  c-0.00525,0.00025-0.01073,0.00051-0.01598,0.00076c-0.01457,0.0007-0.02983,0.00143-0.0444,0.00214  c-0.0045,0.00022-0.00824,0.0004-0.01274,0.00062c-0.0112,0.00055-0.02386,0.00116-0.03508,0.00171  c-0.00525,0.00026-0.01065,0.00052-0.0159,0.00078c-0.01457,0.00072-0.03015,0.00149-0.04472,0.00222  c-0.00375,0.00019-0.0067,0.00034-0.01045,0.00052c-0.01233,0.00062-0.0248,0.00125-0.03712,0.00187  c-0.00525,0.00027-0.00967,0.00049-0.01492,0.00076c-0.01457,0.00074-0.03023,0.00154-0.0448,0.00229  c-0.00374,0.00019-0.00714,0.00037-0.01088,0.00056c-0.01346,0.00069-0.02443,0.00126-0.03789,0.00196  c-0.00449,0.00023-0.00945,0.00049-0.01395,0.00073c-0.01457,0.00076-0.02994,0.00157-0.04451,0.00234  c-0.0045,0.00024-0.00919,0.00049-0.01369,0.00073c-0.0112,0.0006-0.02249,0.0012-0.03369,0.0018  c-0.00525,0.00028-0.01112,0.0006-0.01637,0.00088c-0.01457,0.00078-0.02908,0.00157-0.04364,0.00236  c-0.0045,0.00024-0.00916,0.0005-0.01366,0.00075c-0.01122,0.00061-0.02357,0.00129-0.03477,0.00191  c-0.00525,0.00029-0.01033,0.00057-0.01558,0.00086c-0.01457,0.00081-0.03021,0.00167-0.04478,0.00249  c-0.00375,0.00021-0.00708,0.0004-0.01082,0.00061c-0.01122,0.00063-0.02425,0.00136-0.03545,0.002  c-0.006,0.00034-0.01128,0.00064-0.01727,0.00098c-0.01457,0.00083-0.02869,0.00163-0.04326,0.00247  c-0.0045,0.00026-0.00842,0.00049-0.01292,0.00075c-0.01122,0.00065-0.02373,0.00137-0.03493,0.00202  c-0.00525,0.0003-0.01112,0.00065-0.01637,0.00095c-0.01457,0.00085-0.02937,0.00172-0.04395,0.00257  c-0.00449,0.00026-0.00743,0.00044-0.01193,0.00071c-0.0112,0.00066-0.02374,0.00141-0.03494,0.00207  c-0.006,0.00036-0.0107,0.00064-0.01669,0.001c-0.01457,0.00087-0.02927,0.00175-0.04382,0.00263  c-0.00375,0.00023-0.00813,0.00049-0.01189,0.00072c-0.0112,0.00068-0.02484,0.00151-0.03606,0.00219  c-0.00525,0.00032-0.01054,0.00064-0.01579,0.00097c-0.01457,0.00089-0.03,0.00184-0.04456,0.00274  c-0.00375,0.00023-0.00642,0.0004-0.01018,0.00063c-0.01231,0.00076-0.02394,0.00149-0.03627,0.00226  c-0.00525,0.00033-0.01169,0.00073-0.01694,0.00106c-0.01456,0.00091-0.02806,0.00177-0.04262,0.00269  c-0.0045,0.00028-0.00771,0.00049-0.01219,0.00078c-0.01233,0.00078-0.02467,0.00157-0.03699,0.00236  c-0.00525,0.00034-0.01027,0.00066-0.01552,0.001c-0.01456,0.00094-0.02998,0.00193-0.04456,0.00288  c-0.00374,0.00024-0.00635,0.00041-0.01009,0.00066c-0.01233,0.0008-0.02393,0.00156-0.03625,0.00237  c-0.00525,0.00034-0.01204,0.00079-0.01729,0.00114c-0.01344,0.00088-0.02557,0.00169-0.03902,0.00258  c-0.00523,0.00035-0.01138,0.00076-0.01663,0.00111c-0.0112,0.00075-0.0238,0.00159-0.035,0.00234  c-0.00525,0.00035-0.01175,0.00079-0.017,0.00114c-0.01456,0.00098-0.02892,0.00195-0.04347,0.00294  c-0.00224,0.00015-0.00645,0.00044-0.0087,0.00059c-0.01233,0.00084-0.02589,0.00177-0.03822,0.00261  c-0.00598,0.00041-0.01137,0.00078-0.01736,0.00119c-0.01344,0.00092-0.02425,0.00167-0.03769,0.0026  c-0.00523,0.00036-0.01178,0.00082-0.01701,0.00118c-0.0112,0.00078-0.02415,0.00168-0.03535,0.00247  c-0.00598,0.00042-0.01251,0.00088-0.01851,0.0013c-0.0112,0.00079-0.02217,0.00156-0.03337,0.00235  c-0.00749,0.00053-0.01537,0.00109-0.02286,0.00162c-0.01009,0.00072-0.02171,0.00155-0.03178,0.00227  c-0.006,0.00043-0.01369,0.00098-0.01968,0.00141c-0.01007,0.00072-0.02191,0.00158-0.032,0.00231  c-0.00824,0.0006-0.01672,0.00121-0.02496,0.00181c-0.01009,0.00073-0.02103,0.00153-0.0311,0.00226  c-0.006,0.00044-0.01363,0.001-0.01962,0.00144c-0.01118,0.00082-0.02339,0.00172-0.03458,0.00254  c-0.006,0.00044-0.01271,0.00094-0.01871,0.00138c-0.0112,0.00083-0.02315,0.00172-0.03435,0.00255  c-0.00674,0.0005-0.01349,0.00101-0.02023,0.00151c-0.0112,0.00084-0.02077,0.00156-0.03197,0.0024  c-0.00674,0.00051-0.0152,0.00115-0.02194,0.00165c-0.0112,0.00085-0.02269,0.00172-0.03389,0.00257  c-0.00748,0.00057-0.01312,0.001-0.02061,0.00157c-0.01007,0.00077-0.01804,0.00138-0.02811,0.00215  c-0.00974,0.00075-0.01833,0.00141-0.02806,0.00216c-0.01007,0.00078-0.01959,0.00151-0.02966,0.00229  c-0.00674,0.00052-0.01508,0.00117-0.02182,0.00169c-0.01007,0.00078-0.01834,0.00143-0.02841,0.00222  c-0.00824,0.00064-0.0173,0.00136-0.02554,0.002c-0.0112,0.00088-0.02202,0.00173-0.0332,0.00262  c-0.00674,0.00053-0.01242,0.00098-0.01915,0.00152c-0.0112,0.00089-0.02167,0.00172-0.03285,0.00261  c-0.006,0.00048-0.0121,0.00096-0.01808,0.00144c-0.01231,0.00099-0.02437,0.00195-0.03667,0.00294  c-0.00674,0.00054-0.01416,0.00114-0.02089,0.00169c-0.01007,0.00081-0.01855,0.0015-0.02863,0.00232  c-0.00824,0.00067-0.01741,0.00142-0.02565,0.00209c-0.01118,0.00091-0.02116,0.00173-0.03235,0.00265  c-0.00674,0.00055-0.01465,0.0012-0.02139,0.00176c-0.01007,0.00083-0.01712,0.00141-0.02719,0.00225  c-0.00974,0.0008-0.01765,0.00146-0.02739,0.00227c-0.01007,0.00084-0.02081,0.00173-0.03088,0.00257  c-0.00749,0.00063-0.01508,0.00126-0.02257,0.00189c-0.00783,0.00066-0.01776,0.00149-0.0256,0.00215  c-0.00972,0.00082-0.02052,0.00173-0.03024,0.00255c-0.01007,0.00085-0.0188,0.00159-0.02887,0.00245  c-0.00824,0.0007-0.01547,0.00132-0.0237,0.00202c-0.00784,0.00067-0.01517,0.0013-0.02299,0.00197  c-0.01198,0.00103-0.02348,0.00202-0.03546,0.00305c-0.00894,0.00077-0.01543,0.00133-0.02437,0.0021  c-0.00899,0.00078-0.01686,0.00146-0.02585,0.00224c-0.00671,0.00058-0.01302,0.00113-0.01973,0.00172  c-0.01273,0.00111-0.02486,0.00217-0.03758,0.00329c-0.00896,0.00078-0.01649,0.00145-0.02544,0.00223  c-0.00748,0.00066-0.01636,0.00144-0.02383,0.0021c-0.00783,0.00069-0.01416,0.00125-0.02199,0.00195  c-0.01271,0.00113-0.02518,0.00224-0.0379,0.00337c-0.00783,0.0007-0.0148,0.00132-0.02263,0.00202  c-0.00822,0.00074-0.01675,0.0015-0.02499,0.00224c-0.00783,0.0007-0.01491,0.00134-0.02275,0.00205  c-0.01196,0.00108-0.02309,0.00209-0.03505,0.00317c-0.00896,0.00081-0.01608,0.00146-0.02504,0.00227  c-0.00897,0.00082-0.01648,0.0015-0.02545,0.00232c-0.00783,0.00072-0.01355,0.00124-0.02138,0.00196  c-0.01047,0.00096-0.01973,0.00181-0.03021,0.00278c-0.01006,0.00093-0.02054,0.00189-0.03059,0.00283  c-0.00897,0.00083-0.01645,0.00152-0.02542,0.00236c-0.0056,0.00052-0.01433,0.00133-0.01991,0.00185  c-0.01271,0.00118-0.02434,0.00227-0.03705,0.00346c-0.00894,0.00084-0.01669,0.00156-0.02563,0.00241  c-0.00822,0.00077-0.01608,0.00152-0.02431,0.00229c-0.00783,0.00074-0.01379,0.0013-0.02162,0.00204  c-0.01047,0.00099-0.02106,0.002-0.03152,0.00299c-0.01006,0.00096-0.01942,0.00185-0.02948,0.00281  c-0.00824,0.00079-0.01628,0.00156-0.02451,0.00235c-0.00783,0.00075-0.01482,0.00142-0.02263,0.00218  c-0.01123,0.00108-0.02217,0.00214-0.03339,0.00322c-0.00894,0.00086-0.0177,0.00171-0.02666,0.00258  c-0.00897,0.00087-0.01743,0.00169-0.0264,0.00257c-0.0067,0.00065-0.01244,0.00121-0.01913,0.00187  c-0.01196,0.00117-0.02429,0.00238-0.03625,0.00355c-0.00894,0.00088-0.01624,0.0016-0.02518,0.00248  c-0.00897,0.00088-0.01773,0.00175-0.0267,0.00264c-0.0067,0.00066-0.01253,0.00124-0.01923,0.00191  c-0.01271,0.00126-0.0248,0.00246-0.03751,0.00373c-0.00783,0.00078-0.01726,0.00172-0.02509,0.00251  c-0.00822,0.00082-0.01686,0.00169-0.02509,0.00252c-0.0067,0.00067-0.01393,0.0014-0.02065,0.00208  c-0.00822,0.00083-0.0157,0.00158-0.02393,0.00241c-0.0123,0.00124-0.02542,0.00257-0.0377,0.00382  c-0.00822,0.00084-0.01601,0.00163-0.02423,0.00247c-0.00781,0.0008-0.01489,0.00152-0.02272,0.00232  c-0.00748,0.00076-0.01541,0.00158-0.02289,0.00234c-0.0134,0.00138-0.0249,0.00256-0.03831,0.00394  c-0.00748,0.00077-0.01604,0.00166-0.02351,0.00243c-0.0067,0.00069-0.01633,0.00169-0.02304,0.00239  c-0.00671,0.0007-0.01486,0.00154-0.02159,0.00224c-0.01341,0.0014-0.02596,0.00271-0.03937,0.00411  c-0.00748,0.00078-0.01498,0.00157-0.02246,0.00236c-0.00781,0.00082-0.01601,0.00168-0.02382,0.00251  c-0.00748,0.00079-0.01541,0.00162-0.02289,0.00241c-0.0134,0.00142-0.02467,0.00261-0.03809,0.00403  c-0.00746,0.00079-0.01648,0.00175-0.02396,0.00255c-0.0067,0.00071-0.01427,0.00152-0.02097,0.00224  c-0.00822,0.00088-0.01639,0.00175-0.0246,0.00263c-0.01228,0.00132-0.02441,0.00262-0.0367,0.00394  c-0.00822,0.00088-0.01706,0.00184-0.02528,0.00273c-0.0067,0.00072-0.01483,0.0016-0.02153,0.00233  c-0.00822,0.00089-0.01561,0.00169-0.02383,0.00258c-0.0134,0.00146-0.02409,0.00262-0.03749,0.00408  c-0.00821,0.0009-0.01619,0.00177-0.02441,0.00267c-0.0067,0.00073-0.01459,0.0016-0.02129,0.00234  c-0.00746,0.00082-0.01634,0.00179-0.0238,0.00262c-0.01228,0.00135-0.02493,0.00275-0.03722,0.00411  c-0.00897,0.00099-0.0172,0.00191-0.02615,0.0029c-0.0067,0.00074-0.01237,0.00137-0.01907,0.00212  c-0.00896,0.001-0.01669,0.00186-0.02565,0.00286c-0.01228,0.00137-0.02513,0.00281-0.03741,0.00419  c-0.00822,0.00092-0.01649,0.00185-0.0247,0.00278c-0.0067,0.00075-0.0127,0.00143-0.01939,0.00219  c-0.00896,0.00101-0.01712,0.00193-0.02609,0.00295c-0.0067,0.00076-0.01552,0.00176-0.0222,0.00252  c-0.0127,0.00144-0.02707,0.00308-0.03976,0.00452c-0.00668,0.00076-0.013,0.00148-0.01968,0.00225  c-0.00897,0.00102-0.01712,0.00196-0.02608,0.00299c-0.00446,0.00051-0.008,0.00092-0.01247,0.00143  c-0.01717,0.00197-0.03383,0.00389-0.05099,0.00588c-0.00558,0.00065-0.01054,0.00122-0.01613,0.00187  c-0.0097,0.00112-0.01814,0.0021-0.02785,0.00323c-0.00223,0.00026-0.00568,0.00066-0.0079,0.00092  c-0.01941,0.00226-0.03737,0.00436-0.05678,0.00663c-0.00446,0.00052-0.00949,0.00111-0.01396,0.00164  c-0.0097,0.00114-0.01962,0.0023-0.02933,0.00345c-0.00111,0.00013-0.00188,0.00022-0.00301,0.00035  c-0.02014,0.00237-0.03949,0.00466-0.05963,0.00705c-0.00558,0.00066-0.01082,0.00128-0.0164,0.00195  c-0.00896,0.00107-0.01846,0.0022-0.0274,0.00326c-0.00447,0.00053-0.01019,0.00122-0.01465,0.00175  c-0.01642,0.00196-0.032,0.00383-0.04842,0.0058c-0.00558,0.00067-0.01151,0.00138-0.01707,0.00205  c-0.0097,0.00117-0.01805,0.00217-0.02776,0.00335c-0.00334,0.0004-0.00687,0.00083-0.01021,0.00124  c-0.01791,0.00217-0.03522,0.00427-0.05313,0.00645c-0.00558,0.00068-0.00978,0.00119-0.01537,0.00187  c-0.00969,0.00118-0.01888,0.0023-0.02856,0.00349c-0.00336,0.00041-0.00613,0.00075-0.00948,0.00116  c-0.0179,0.00219-0.03635,0.00446-0.05426,0.00667c-0.00557,0.00069-0.00934,0.00115-0.01492,0.00184  c-0.00969,0.0012-0.01918,0.00237-0.02887,0.00357c-0.00336,0.00041-0.00557,0.00069-0.00891,0.0011  c-0.0179,0.00222-0.03677,0.00457-0.05469,0.0068c-0.00557,0.0007-0.00902,0.00113-0.0146,0.00182  c-0.00894,0.00112-0.01993,0.00249-0.02888,0.00361c-0.00334,0.00042-0.0061,0.00077-0.00946,0.00119  c-0.0179,0.00225-0.03619,0.00455-0.05409,0.00681c-0.00557,0.0007-0.00978,0.00123-0.01535,0.00194  c-0.00894,0.00113-0.01929,0.00244-0.02824,0.00358c-0.00334,0.00042-0.00848,0.00108-0.01183,0.0015  c-0.01715,0.00218-0.03453,0.00439-0.05168,0.00659c-0.00557,0.00071-0.00984,0.00126-0.01541,0.00197  c-0.00896,0.00115-0.0184,0.00236-0.02736,0.00351c-0.00668,0.00086-0.01169,0.0015-0.01837,0.00236  c-0.01492,0.00192-0.02979,0.00384-0.04469,0.00577c-0.00558,0.00072-0.01181,0.00153-0.01738,0.00225  c-0.00894,0.00116-0.01843,0.00239-0.02737,0.00355c-0.00446,0.00058-0.01048,0.00136-0.01494,0.00194  c-0.01566,0.00204-0.03293,0.00429-0.04858,0.00634c-0.00446,0.00058-0.01111,0.00145-0.01556,0.00204  c-0.00969,0.00127-0.01883,0.00247-0.02852,0.00374c-0.00334,0.00044-0.00758,0.001-0.01093,0.00144  c-0.0179,0.00235-0.03455,0.00455-0.05243,0.00692c-0.00446,0.00059-0.01129,0.0015-0.01575,0.00209  c-0.00894,0.00119-0.01888,0.0025-0.02783,0.00369c-0.00446,0.00059-0.00896,0.00119-0.01341,0.00179  c-0.01715,0.00228-0.03372,0.0045-0.05086,0.00679c-0.00446,0.0006-0.0099,0.00133-0.01436,0.00192  c-0.00969,0.0013-0.01836,0.00246-0.02805,0.00377c-0.00446,0.0006-0.01125,0.00152-0.0157,0.00212  c-0.01566,0.00211-0.03247,0.00438-0.04811,0.0065c-0.00446,0.0006-0.01138,0.00154-0.01584,0.00215  c-0.00969,0.00131-0.01834,0.00249-0.02802,0.00381c-0.00446,0.00061-0.00955,0.0013-0.01401,0.00191  c-0.01714,0.00233-0.03322,0.00453-0.05034,0.00688c-0.00446,0.00061-0.0094,0.00129-0.01385,0.0019  c-0.00969,0.00133-0.02014,0.00276-0.02982,0.0041c-0.00334,0.00046-0.00496,0.00068-0.0083,0.00114  c-0.01936,0.00267-0.03842,0.0053-0.0578,0.00798c-0.00333,0.00046-0.00713,0.00099-0.01047,0.00145  c-0.01044,0.00145-0.02077,0.00288-0.03119,0.00433c-0.00223,0.00031-0.00421,0.00059-0.00644,0.0009  c-0.02011,0.0028-0.03984,0.00555-0.05994,0.00837c-0.00334,0.00047-0.00568,0.00079-0.00902,0.00126  c-0.01042,0.00146-0.02086,0.00293-0.03128,0.00439c-0.00334,0.00047-0.00488,0.00069-0.00822,0.00116  c-0.01935,0.00273-0.03857,0.00544-0.05792,0.00818c-0.00334,0.00047-0.00687,0.00097-0.01019,0.00144  c-0.01044,0.00148-0.02071,0.00294-0.03113,0.00442c-0.00223,0.00032-0.00494,0.0007-0.00716,0.00102  c-0.02011,0.00286-0.03996,0.00569-0.06007,0.00857c-0.00221,0.00032-0.00583,0.00084-0.00806,0.00115  c-0.01042,0.00149-0.02098,0.00301-0.0314,0.00451c-0.00223,0.00032-0.00621,0.00089-0.00844,0.00121  c-0.01935,0.00278-0.03816,0.0055-0.05751,0.0083c-0.00334,0.00048-0.0074,0.00107-0.01074,0.00155  c-0.01042,0.00151-0.01978,0.00287-0.0302,0.00438c-0.00334,0.00048-0.00659,0.00096-0.00993,0.00144  c-0.01935,0.00281-0.03844,0.0056-0.05779,0.00842c-0.00223,0.00033-0.00591,0.00086-0.00813,0.00119  c-0.01041,0.00152-0.02104,0.00308-0.03146,0.00461c-0.00223,0.00033-0.0063,0.00093-0.00853,0.00125  c-0.01935,0.00284-0.04022,0.00592-0.05957,0.00877c-0.00221,0.00033-0.00528,0.00078-0.00751,0.00111  c-0.01042,0.00154-0.02211,0.00327-0.03252,0.00482c-0.00223,0.00033-0.00278,0.00041-0.00499,0.00074  c-0.02084,0.00309-0.04349,0.00646-0.06432,0.00957c-0.00111,0.00017-0.00333,0.0005-0.00444,0.00066  c-0.01117,0.00167-0.02168,0.00324-0.03285,0.00491c-0.00221,0.00033-0.004,0.0006-0.00621,0.00093  c-0.02158,0.00323-0.04309,0.00647-0.06467,0.00972c-0.00111,0.00017-0.002,0.0003-0.00311,0.00047  c-0.0119,0.0018-0.02248,0.00339-0.03438,0.0052l-0.00204,0.00031c-0.02306,0.00349-0.04686,0.00711-0.06992,0.01062  l-0.00005,0.00001c-0.01115,0.0017-0.02283,0.00348-0.03398,0.00519c-0.00223,0.00034-0.00325,0.0005-0.00548,0.00084  c-0.03346,0.00512-0.06844,0.0105-0.1019,0.01567c-0.00223,0.00034-0.0024,0.00037-0.00462,0.00071  c-0.03419,0.00528-0.06767,0.01048-0.10187,0.01582c-0.00221,0.00035-0.00395,0.00062-0.00618,0.00096  c-0.02155,0.00336-0.04301,0.00672-0.06456,0.01011c-0.00111,0.00017-0.00206,0.00032-0.00317,0.0005  c-0.01115,0.00175-0.02257,0.00355-0.03372,0.0053c-0.00111,0.00017-0.00302,0.00048-0.00414,0.00065  c-0.03418,0.00539-0.06743,0.01065-0.10161,0.01609c-0.00334,0.00053-0.00441,0.0007-0.00774,0.00123  c-0.02081,0.00331-0.04117,0.00656-0.06198,0.00989c-0.00221,0.00036-0.00294,0.00047-0.00516,0.00083  c-0.01041,0.00167-0.02074,0.00332-0.03114,0.00499c-0.00333,0.00054-0.00697,0.00112-0.0103,0.00166  c-0.0327,0.00525-0.06517,0.0105-0.09785,0.0158c-0.00223,0.00036-0.00444,0.00072-0.00667,0.00108  c-0.03342,0.00542-0.06647,0.01081-0.09988,0.01628c-0.00223,0.00036-0.00545,0.00089-0.00766,0.00126  c-0.03342,0.00547-0.06567,0.01078-0.09909,0.0163c-0.00223,0.00037-0.0054,0.00089-0.00763,0.00126  c-0.0334,0.00552-0.06686,0.01108-0.10027,0.01665c-0.00223,0.00037-0.00285,0.00047-0.00507,0.00084  c-0.0349,0.00582-0.06816,0.0114-0.10304,0.01727l-0.00189,0.00032c-0.03415,0.00575-0.0699,0.0118-0.10403,0.01759  c-0.00221,0.00038-0.00195,0.00033-0.00417,0.00071c-0.03413,0.0058-0.0679,0.01157-0.10204,0.01742  c-0.00221,0.00038-0.00339,0.00058-0.0056,0.00096c-0.03413,0.00585-0.06769,0.01163-0.10181,0.01754  c-0.00111,0.00019-0.0031,0.00054-0.00421,0.00073c-0.03412,0.0059-0.06895,0.01196-0.10306,0.01791  c-0.00111,0.00019-0.00179,0.00031-0.0029,0.0005c-0.0341,0.00596-0.06973,0.0122-0.10384,0.01821  c-0.00111,0.0002-0.00183,0.00032-0.00294,0.00052c-0.0341,0.00601-0.06905,0.01219-0.10315,0.01825  c-0.0011,0.0002-0.00313,0.00056-0.00424,0.00075c-0.03484,0.00619-0.06952,0.01238-0.10435,0.01862L133.019,4.37947  c-0.03557,0.00638-0.07037,0.01264-0.10594,0.01907l-0.0013,0.00024c-0.03557,0.00643-0.06976,0.01264-0.10533,0.01912  l-0.0014,0.00026c-0.03482,0.00635-0.06952,0.0127-0.10432,0.0191l-0.00316,0.00058c-0.03407,0.00627-0.0699,0.01288-0.10396,0.0192  l-0.00218,0.0004c-0.03481,0.00645-0.06926,0.01287-0.10406,0.01938c-0.0011,0.00021-0.00172,0.00032-0.00284,0.00053  c-0.03479,0.00651-0.06996,0.01311-0.10475,0.01967l-0.0009,0.00017c-0.03477,0.00656-0.06895,0.01303-0.10373,0.01964  c-0.00111,0.00021-0.00331,0.00063-0.00443,0.00084c-0.03477,0.00661-0.06923,0.01319-0.104,0.01986  c-0.0011,0.00021,0.00018-0.00003-0.00093,0.00018c-0.07101,0.01361-0.14134,0.0272-0.21233,0.04103l-0.00044,0.00009  c-0.03474,0.00677-0.07037,0.01374-0.10512,0.02056l-0.00194,0.00038c-0.14194,0.02787-0.2825,0.05592-0.4243,0.08465  l-0.00078,0.00016c-0.61444,0.12452-1.2269,0.25698-1.83853,0.39769l-0.00119,0.00027  c-0.35286,0.08118-0.70367,0.16467-1.05553,0.25124l-0.00182,0.00045c-0.03519,0.00866-0.06885,0.01697-0.10402,0.02568  l-0.00107,0.00026c-0.03444,0.00853-0.06906,0.01713-0.10349,0.02571c-0.0011,0.00027-0.00218,0.00054-0.00328,0.00082  c-0.03442,0.00858-0.06836,0.01707-0.10277,0.0257c-0.0011,0.00027-0.00079,0.0002-0.00188,0.00047  c-0.03516,0.00882-0.06851,0.01721-0.10365,0.02608c-0.00108,0.00028-0.00052,0.00013-0.00162,0.00041  c-0.03441,0.00869-0.06856,0.01733-0.10295,0.02607c-0.00109,0.00028-0.00235,0.0006-0.00345,0.00088  c-0.03366,0.00855-0.06718,0.0171-0.10084,0.0257c-0.00219,0.00056-0.00356,0.00091-0.00574,0.00147  c-0.03366,0.00861-0.06726,0.01723-0.10091,0.02588c-0.00109,0.00028-0.00185,0.00048-0.00294,0.00076  c-0.03365,0.00866-0.06768,0.01744-0.10131,0.02615c-0.00219,0.00057-0.00269,0.0007-0.00488,0.00126  c-0.03364,0.00871-0.06624,0.01718-0.09987,0.02594c-0.00218,0.00057-0.00373,0.00097-0.00591,0.00154  c-0.03289,0.00857-0.06572,0.01715-0.0986,0.02577c-0.00218,0.00057-0.00512,0.00134-0.0073,0.00191  c-0.03288,0.00862-0.06725,0.01766-0.10013,0.02633c-0.00109,0.00029-0.00179,0.00047-0.00288,0.00076  c-0.03288,0.00867-0.06728,0.01777-0.10014,0.02649c-0.00218,0.00058-0.00469,0.00125-0.00687,0.00182  c-0.03359,0.00892-0.06601,0.01755-0.09959,0.02651c-0.00109,0.00029-0.00317,0.00085-0.00426,0.00114  c-0.03285,0.00877-0.06694,0.0179-0.09978,0.02672c-0.00109,0.00029-0.00512,0.00137-0.00621,0.00167  c-0.03357,0.00902-0.0657,0.01768-0.09927,0.02675c-0.00109,0.0003-0.00421,0.00114-0.0053,0.00143  c-0.03283,0.00887-0.06507,0.01761-0.09789,0.02654c-0.00327,0.00089-0.00516,0.0014-0.00843,0.00229  c-0.03209,0.00873-0.06579,0.01792-0.09787,0.02669c-0.00218,0.0006-0.00388,0.00106-0.00607,0.00166  c-0.03281,0.00898-0.06548,0.01794-0.09827,0.02696c-0.00218,0.0006-0.00494,0.00136-0.00712,0.00196  c-0.03353,0.00923-0.06608,0.01821-0.09959,0.02748c-0.00218,0.0006-0.00171,0.00047-0.00389,0.00108  c-0.03352,0.00928-0.06754,0.01872-0.10104,0.02805c-0.00218,0.00061-0.00164,0.00046-0.00381,0.00106  c-0.03278,0.00913-0.06697,0.01867-0.09973,0.02785c-0.00218,0.00061-0.00365,0.00102-0.00583,0.00163  c-0.03277,0.00918-0.06519,0.01829-0.09795,0.02751c-0.00217,0.00061-0.00537,0.00151-0.00755,0.00212  c-0.03275,0.00923-0.06579,0.01856-0.09853,0.02784c-0.00217,0.00062-0.00319,0.0009-0.00536,0.00152  c-0.03347,0.00948-0.06629,0.01881-0.09975,0.02834c-0.00109,0.00031-0.00362,0.00103-0.00471,0.00134  c-0.03273,0.00933-0.06499,0.01855-0.09771,0.02792c-0.00326,0.00093-0.00502,0.00144-0.00828,0.00237  c-0.01091,0.00313-0.02003,0.00574-0.03094,0.00888c-0.00217,0.00062-0.00372,0.00107-0.00589,0.00169  c-0.01963,0.00564-0.03969,0.01141-0.05931,0.01707c-0.00327,0.00094-0.00496,0.00143-0.00822,0.00237  c-0.03271,0.00943-0.06505,0.01878-0.09775,0.02826c-0.00217,0.00063-0.00416,0.0012-0.00633,0.00183  c-0.01089,0.00316-0.02125,0.00616-0.03215,0.00933c-0.00217,0.00063-0.00151,0.00044-0.00368,0.00107  c-0.02034,0.00591-0.04056,0.01179-0.06089,0.01772c-0.00326,0.00095-0.00523,0.00152-0.00848,0.00247  c-0.01017,0.00296-0.02097,0.00612-0.03113,0.00909c-0.00217,0.00063-0.00343,0.001-0.00559,0.00163  c-0.01961,0.00573-0.03909,0.01143-0.05869,0.01717c-0.00326,0.00095-0.00607,0.00178-0.00933,0.00273  c-0.01016,0.00298-0.02023,0.00593-0.03039,0.00892c-0.00326,0.00096-0.00433,0.00127-0.00759,0.00223  c-0.0196,0.00576-0.03899,0.01147-0.05859,0.01725c-0.00217,0.00064-0.00501,0.00148-0.00718,0.00212  c-0.01089,0.00321-0.02116,0.00624-0.03204,0.00946c-0.00108,0.00032-0.00241,0.00071-0.00349,0.00103  c-0.02104,0.00622-0.04164,0.01231-0.06268,0.01855c-0.00217,0.00064-0.00381,0.00113-0.00597,0.00177  c-0.01015,0.00301-0.02078,0.00617-0.03094,0.00918c-0.00325,0.00097-0.00633,0.00188-0.00959,0.00285  c-0.01814,0.00539-0.03599,0.0107-0.05412,0.01611c-0.00325,0.00097-0.00784,0.00234-0.01109,0.00331  c-0.01015,0.00303-0.01925,0.00574-0.0294,0.00878c-0.00325,0.00097-0.00658,0.00197-0.00983,0.00294  c-0.01813,0.00542-0.0357,0.01068-0.05383,0.01611c-0.00433,0.0013-0.00708,0.00212-0.01141,0.00342  c-0.01015,0.00304-0.01847,0.00554-0.02862,0.00859c-0.00433,0.0013-0.00744,0.00224-0.01178,0.00354  c-0.0174,0.00523-0.03561,0.01071-0.053,0.01595c-0.00433,0.00131-0.00624,0.00188-0.01057,0.00319  c-0.01015,0.00306-0.01962,0.00592-0.02977,0.00898c-0.00217,0.00065-0.00668,0.00202-0.00885,0.00267  c-0.01884,0.00569-0.03749,0.01134-0.05633,0.01705c-0.00325,0.00098-0.00576,0.00174-0.00901,0.00273  c-0.00941,0.00286-0.01934,0.00587-0.02876,0.00873c-0.00541,0.00164-0.0084,0.00255-0.01382,0.0042  c-0.01594,0.00484-0.03294,0.01002-0.04888,0.01487c-0.00433,0.00132-0.00951,0.0029-0.01384,0.00422  c-0.00941,0.00287-0.01801,0.00549-0.02743,0.00837c-0.00541,0.00165-0.00928,0.00283-0.01469,0.00449  c-0.01593,0.00487-0.03169,0.00969-0.04762,0.01457c-0.00433,0.00133-0.0099,0.00303-0.01424,0.00436  c-0.00941,0.00288-0.0185,0.00567-0.02791,0.00856c-0.00433,0.00133-0.00881,0.0027-0.01314,0.00403  c-0.01665,0.00511-0.03237,0.00995-0.04902,0.01508c-0.00433,0.00133-0.00992,0.00306-0.01424,0.00439  c-0.00941,0.0029-0.01836,0.00566-0.02777,0.00856c-0.00433,0.00134-0.00881,0.00272-0.01314,0.00406  c-0.01664,0.00514-0.03363,0.01039-0.05027,0.01555c-0.00433,0.00134-0.00799,0.00247-0.01231,0.00381  c-0.00941,0.00291-0.01809,0.00561-0.0275,0.00852c-0.0054,0.00168-0.01058,0.00329-0.01599,0.00496  c-0.01447,0.00449-0.02914,0.00906-0.0436,0.01356c-0.00649,0.00202-0.01186,0.00369-0.01834,0.00571  c-0.00795,0.00248-0.0174,0.00542-0.02536,0.00791c-0.00648,0.00202-0.01118,0.00349-0.01767,0.00552  c-0.01374,0.00429-0.02807,0.00877-0.04181,0.01307c-0.00648,0.00203-0.01257,0.00393-0.01905,0.00596  c-0.00796,0.00249-0.01668,0.00523-0.02463,0.00772c-0.00648,0.00203-0.01325,0.00416-0.01974,0.00619  c-0.01301,0.00408-0.02687,0.00844-0.03987,0.01253c-0.00648,0.00204-0.01321,0.00415-0.01969,0.00619  c-0.00867,0.00273-0.01662,0.00524-0.02528,0.00797c-0.00648,0.00204-0.01167,0.00368-0.01815,0.00572  c-0.013,0.0041-0.02754,0.0087-0.04054,0.01281c-0.00648,0.00205-0.01324,0.00419-0.01972,0.00624  c-0.00867,0.00274-0.01624,0.00514-0.0249,0.00789c-0.00648,0.00205-0.01291,0.00409-0.01939,0.00615  c-0.013,0.00412-0.02553,0.0081-0.03853,0.01223c-0.00755,0.0024-0.01392,0.00443-0.02148,0.00683  c-0.00867,0.00276-0.01595,0.00508-0.02461,0.00784c-0.00647,0.00206-0.01254,0.004-0.01902,0.00606  c-0.01155,0.00368-0.02491,0.00795-0.03646,0.01164c-0.00755,0.00241-0.01621,0.00518-0.02376,0.0076  c-0.00794,0.00254-0.01567,0.00502-0.02361,0.00756c-0.00755,0.00242-0.01296,0.00415-0.02051,0.00657  c-0.01227,0.00393-0.02517,0.00807-0.03743,0.01201c-0.00755,0.00243-0.01466,0.00471-0.02222,0.00714  c-0.00866,0.00278-0.0159,0.00512-0.02456,0.0079c-0.00539,0.00174-0.01255,0.00404-0.01794,0.00578  c-0.0137,0.00442-0.02827,0.00912-0.04198,0.01354c-0.00646,0.00209-0.01215,0.00392-0.01862,0.00601  c-0.00793,0.00256-0.01649,0.00533-0.02442,0.0079c-0.00755,0.00244-0.01288,0.00417-0.02042,0.00661  c-0.01154,0.00374-0.02343,0.00759-0.03497,0.01134c-0.00755,0.00245-0.01691,0.00549-0.02446,0.00794  c-0.00793,0.00258-0.01546,0.00503-0.02339,0.00761c-0.00755,0.00245-0.01407,0.00458-0.02161,0.00703  c-0.00864,0.00282-0.01655,0.00539-0.0252,0.00821c-0.01077,0.00351-0.02309,0.00753-0.03387,0.01105  c-0.00793,0.00259-0.01426,0.00466-0.02219,0.00725c-0.00754,0.00247-0.01552,0.00508-0.02306,0.00754  c-0.0072,0.00236-0.01379,0.00451-0.021,0.00687c-0.01292,0.00424-0.02496,0.00819-0.03788,0.01243  c-0.00721,0.00237-0.01456,0.00478-0.02176,0.00715c-0.00754,0.00248-0.01456,0.00479-0.02209,0.00727  c-0.0072,0.00237-0.01472,0.00485-0.02193,0.00722c-0.01292,0.00426-0.02469,0.00814-0.03761,0.0124  c-0.0072,0.00238-0.01346,0.00444-0.02065,0.00682c-0.00861,0.00284-0.01726,0.0057-0.02586,0.00855  c-0.00576,0.0019-0.01263,0.00418-0.01839,0.00608c-0.01292,0.00428-0.02705,0.00896-0.03996,0.01324  c-0.00576,0.00191-0.01157,0.00384-0.01732,0.00575c-0.01076,0.00357-0.01871,0.00621-0.02946,0.00979  c-0.00504,0.00167-0.01099,0.00365-0.01602,0.00533c-0.01398,0.00465-0.02625,0.00874-0.04023,0.0134  c-0.00576,0.00192-0.01228,0.0041-0.01804,0.00602c-0.00861,0.00287-0.01962,0.00655-0.02822,0.00942  c-0.00576,0.00192-0.01165,0.00389-0.0174,0.00581c-0.0129,0.00432-0.0271,0.00907-0.04,0.01339  c-0.00575,0.00193-0.01191,0.00399-0.01766,0.00592c-0.0086,0.00288-0.01956,0.00656-0.02816,0.00945  c-0.00575,0.00193-0.01157,0.00389-0.01733,0.00582c-0.0129,0.00434-0.02715,0.00913-0.04004,0.01347  c-0.00575,0.00194-0.01169,0.00394-0.01743,0.00588c-0.00967,0.00326-0.01927,0.0065-0.02895,0.00976  c-0.00574,0.00194-0.01106,0.00373-0.01681,0.00568c-0.01289,0.00436-0.02774,0.00938-0.04063,0.01374  c-0.00504,0.0017-0.01138,0.00385-0.01641,0.00556c-0.00967,0.00327-0.01952,0.00662-0.02919,0.0099  c-0.00575,0.00195-0.01128,0.00383-0.01703,0.00578c-0.01289,0.00438-0.02737,0.00929-0.04025,0.01368  c-0.00575,0.00196-0.01134,0.00386-0.01708,0.00582c-0.00859,0.00292-0.01994,0.00679-0.02853,0.00972  c-0.00574,0.00196-0.01188,0.00405-0.01762,0.00601c-0.01288,0.0044-0.02728,0.00931-0.04015,0.01372  c-0.00574,0.00196-0.01069,0.00366-0.01643,0.00562c-0.01073,0.00367-0.01875,0.00642-0.02949,0.0101  c-0.00502,0.00172-0.0116,0.00398-0.01662,0.0057c-0.01288,0.00442-0.02762,0.00948-0.0405,0.0139  c-0.00574,0.00197-0.01062,0.00365-0.01637,0.00563c-0.01073,0.00369-0.0187,0.00643-0.02943,0.01013  c-0.00502,0.00173-0.01212,0.00417-0.01714,0.0059c-0.01287,0.00444-0.02725,0.0094-0.04012,0.01384  c-0.00574,0.00198-0.0113,0.0039-0.01704,0.00589c-0.00965,0.00334-0.01889,0.00653-0.02854,0.00987  c-0.00574,0.00199-0.01117,0.00387-0.01691,0.00585c-0.01286,0.00446-0.02798,0.0097-0.04084,0.01416  c-0.00502,0.00174-0.01073,0.00373-0.01575,0.00547c-0.01072,0.00372-0.01929,0.0067-0.03001,0.01043  c-0.00574,0.00199-0.01077,0.00374-0.0165,0.00574c-0.01393,0.00485-0.02773,0.00966-0.04166,0.01451  c-0.00502,0.00175-0.00822,0.00287-0.01324,0.00462c-0.01071,0.00374-0.02171,0.00758-0.03242,0.01133  c-0.00502,0.00175-0.00996,0.00348-0.01498,0.00523c-0.01392,0.00487-0.02827,0.00989-0.04218,0.01477  c-0.0043,0.00151-0.00831,0.00291-0.01261,0.00442c-0.0107,0.00376-0.02325,0.00816-0.03395,0.01192  c-0.00501,0.00176-0.00909,0.00319-0.01411,0.00496c-0.01392,0.00489-0.02846,0.01001-0.04237,0.01491  c-0.0043,0.00151-0.00842,0.00296-0.01271,0.00448c-0.0107,0.00377-0.02259,0.00796-0.03329,0.01174  c-0.0043,0.00152-0.00997,0.00352-0.01427,0.00504c-0.01392,0.00491-0.02863,0.01011-0.04253,0.01504  c-0.0043,0.00152-0.00773,0.00274-0.01202,0.00426c-0.0107,0.00379-0.02406,0.00852-0.03476,0.01232  c-0.0043,0.00152-0.00912,0.00324-0.01342,0.00476c-0.01391,0.00494-0.02959,0.01051-0.0435,0.01545  c-0.00358,0.00127-0.00607,0.00216-0.00965,0.00344c-0.01284,0.00457-0.0238,0.00847-0.03663,0.01304  c-0.00429,0.00153-0.00798,0.00284-0.01227,0.00437c-0.01498,0.00534-0.02959,0.01056-0.04456,0.01591  c-0.00286,0.00102-0.00488,0.00174-0.00774,0.00277c-0.01283,0.00459-0.02606,0.00932-0.03889,0.01392  c-0.00429,0.00154-0.00713,0.00255-0.01142,0.00409c-0.01604,0.00574-0.02934,0.01051-0.04536,0.01627  c-0.00143,0.00051-0.0038,0.00137-0.00523,0.00188c-0.01389,0.00499-0.02725,0.00979-0.04115,0.01479  c-0.00357,0.00129-0.00681,0.00245-0.01038,0.00373c-0.01603,0.00577-0.0298,0.01073-0.04582,0.01651  c-0.00143,0.00052-0.00352,0.00127-0.00495,0.00179c-0.01389,0.00501-0.02825,0.0102-0.04214,0.01522  c-0.00357,0.00129-0.00594,0.00215-0.00952,0.00344c-0.01601,0.00579-0.03053,0.01105-0.04654,0.01685  c-0.00072,0.00026-0.00214,0.00077-0.00285,0.00103c-0.01389,0.00503-0.02972,0.01078-0.04359,0.01582  c-0.00357,0.0013-0.00581,0.00211-0.00938,0.00341c-0.01601,0.00582-0.03048,0.01108-0.04649,0.01691  c-0.00143,0.00052-0.00191,0.0007-0.00334,0.00122c-0.01388,0.00505-0.02987,0.01089-0.04374,0.01595  c-0.00357,0.0013-0.00528,0.00193-0.00885,0.00323C121.04707,7.61249,121.032,7.618,121.016,7.62386l-0.00114,0.00042  c-0.01601,0.00586-0.02998,0.01098-0.04597,0.01685c-0.00214,0.00078-0.00542,0.00199-0.00756,0.00277  c-0.016,0.00587-0.03173,0.01165-0.04773,0.01753c-0.00071,0.00026-0.00037,0.00013-0.00108,0.0004  c-0.016,0.00588-0.03044,0.0112-0.04643,0.01709c-0.00214,0.00079-0.00481,0.00177-0.00695,0.00256  c-0.03198,0.01179-0.06324,0.02334-0.09521,0.03518c-0.00285,0.00106-0.00448,0.00166-0.00733,0.00272  c-0.03197,0.01184-0.06382,0.02367-0.09578,0.03555c-0.00142,0.00053-0.00469,0.00175-0.00612,0.00228  c-0.03195,0.01189-0.06398,0.02383-0.09592,0.03577c-0.00214,0.0008-0.00414,0.00155-0.00628,0.00235  c-0.03194,0.01194-0.06384,0.02389-0.09576,0.03588c-0.00214,0.0008-0.00454,0.00171-0.00668,0.00251  c-0.03193,0.01199-0.06451,0.02426-0.09642,0.03629c-0.00214,0.00081-0.00276,0.00104-0.0049,0.00185  c-0.03297,0.01244-0.06535,0.02468-0.09831,0.03718c-0.00071,0.00027-0.0022,0.00084-0.00292,0.00111  c-0.03402,0.0129-0.06573,0.02494-0.09974,0.03789c-0.00071,0.00027-0.00098,0.00037-0.00169,0.00064  c-0.03401,0.01295-0.06699,0.02554-0.10098,0.03854l-0.00039,0.00015c-0.034,0.013-0.06759,0.02588-0.10156,0.03894  l-0.00038,0.00015c-3.34653,1.28604-6.61654,2.8319-9.77832,4.6371l7.27125,12.73511  c8.57767-4.89747,18.37067-7.48613,28.3202-7.48613V3.24779L145.75587,3.24779L145.75587,3.24779z M88.05655,31.19099  c0,0-0.41136,0.41136-1.13123,1.13123l0,0c-0.71987,0.71988-1.74826,1.74826-2.98233,2.98233l0,0  c-1.23407,1.23407-2.67382,2.67382-4.21641,4.2164l0,0c-1.54258,1.54259-3.18801,3.18801-4.83344,4.83344l0,0  c-1.64542,1.64542-3.29085,3.29085-4.83344,4.83344l0,0c-1.54259,1.54259-2.98233,2.98233-4.2164,4.2164l0,0  c-1.23407,1.23407-2.26246,2.26246-2.98233,2.98233l0,0c-0.71987,0.71987-1.13123,1.13123-1.13123,1.13123l0,0l10.36954,10.36953  l26.3268-26.3268L88.05655,31.19099L88.05655,31.19099z M41.25335,77.99419c0,0-0.31582,0.31582-0.86851,0.86851l0,0  c-0.55269,0.55269-1.34224,1.34225-2.28971,2.28971l0,0c-0.94747,0.94746-2.05284,2.05284-3.23717,3.23717l0,0  c-1.18433,1.18433-2.44762,2.44762-3.71091,3.71091l0,0c-1.26329,1.26328-2.52658,2.52657-3.71091,3.71091l0,0  c-1.18433,1.18433-2.28971,2.2897-3.23717,3.23717l0,0c-0.94746,0.94746-1.73702,1.73701-2.28971,2.2897l0,0  c-0.55269,0.55269-0.86851,0.86852-0.86851,0.86852l0,0l0,0c-0.01512,0.01512-0.03006,0.03008-0.04516,0.0452  c-0.00513,0.00514-0.00901,0.00903-0.01414,0.01417c-0.01032,0.01035-0.02055,0.0206-0.03086,0.03094  c-0.00513,0.00515-0.01236,0.01241-0.01748,0.01756c-0.00943,0.00947-0.01867,0.01875-0.02809,0.02822  c-0.00683,0.00686-0.01039,0.01044-0.01721,0.01731c-0.00954,0.0096-0.01902,0.01913-0.02855,0.02873  c-0.00682,0.00687-0.01048,0.01055-0.01729,0.01742c-0.01054,0.01062-0.02091,0.02108-0.03144,0.0317  c-0.00511,0.00516-0.00813,0.00819-0.01323,0.01335c-0.01491,0.01505-0.0297,0.02998-0.04459,0.04504  c-0.0034,0.00344-0.00575,0.00582-0.00915,0.00926c-0.01201,0.01215-0.02411,0.0244-0.03611,0.03655  c-0.0051,0.00517-0.01003,0.01017-0.01513,0.01534c-0.00962,0.00975-0.01922,0.01949-0.02884,0.02924  c-0.00509,0.00517-0.01361,0.01382-0.0187,0.01898c-0.00899,0.00912-0.01764,0.01792-0.02662,0.02705  c-0.00508,0.00517-0.01313,0.01334-0.01821,0.01851c-0.00948,0.00964-0.0188,0.01913-0.02827,0.02878  c-0.00508,0.00517-0.0112,0.0114-0.01627,0.01657c-0.01233,0.01257-0.02469,0.02517-0.03701,0.03773  c-0.00338,0.00346-0.004,0.00408-0.00738,0.00753c-0.01481,0.01511-0.02965,0.03027-0.04444,0.04539  c-0.00338,0.00346-0.00968,0.00991-0.01306,0.01337c-0.01068,0.01093-0.02122,0.02171-0.0319,0.03265  c-0.00506,0.00518-0.01023,0.01048-0.01529,0.01567c-0.0098,0.01005-0.01969,0.02018-0.02949,0.03024  c-0.00674,0.00692-0.01013,0.0104-0.01687,0.01732c-0.0093,0.00954-0.01874,0.01925-0.02803,0.0288  c-0.00673,0.00692-0.01018,0.01045-0.0169,0.01738c-0.00953,0.0098-0.01918,0.01974-0.02871,0.02955  c-0.00504,0.00519-0.01115,0.01147-0.01619,0.01667c-0.01447,0.01492-0.02929,0.0302-0.04375,0.04512  c-0.00168,0.00173-0.00056,0.00058-0.00224,0.00231c-0.01384,0.01428-0.02778,0.02869-0.0416,0.04298  c-0.00503,0.0052-0.01047,0.01083-0.0155,0.01603c-0.00962,0.00996-0.0193,0.01997-0.02892,0.02994  c-0.00503,0.0052-0.01227,0.01271-0.01729,0.01791c-0.009,0.00932-0.01819,0.01886-0.02718,0.02819  c-0.00669,0.00694-0.01056,0.01096-0.01726,0.01791c-0.0096,0.00997-0.01934,0.02009-0.02893,0.03006  c-0.00501,0.00521-0.01041,0.01081-0.01542,0.01603c-0.01094,0.01138-0.0217,0.02258-0.03264,0.03397  c-0.00501,0.00522-0.00655,0.00682-0.01156,0.01204c-0.01462,0.01523-0.02916,0.03039-0.04375,0.04563  c-0.00333,0.00348-0.00743,0.00776-0.01076,0.01124c-0.01104,0.01153-0.02199,0.02296-0.03302,0.0345  c-0.005,0.00523-0.01171,0.01225-0.0167,0.01747c-0.00919,0.00961-0.01815,0.01899-0.02733,0.02861  c-0.00499,0.00523-0.01239,0.01298-0.01738,0.0182c-0.00905,0.00949-0.01823,0.01912-0.02728,0.02861  c-0.00499,0.00523-0.01203,0.01262-0.01701,0.01785c-0.0099,0.01039-0.02003,0.02103-0.02992,0.03143  c-0.00498,0.00523-0.00838,0.00881-0.01336,0.01405c-0.0127,0.01335-0.02543,0.02676-0.03812,0.04012  c-0.00166,0.00175-0.00458,0.00482-0.00624,0.00657c-0.01451,0.01529-0.02913,0.03071-0.04363,0.04601  c-0.00331,0.00349-0.00928,0.0098-0.01259,0.01329c-0.01023,0.0108-0.0206,0.02176-0.03082,0.03257  c-0.00661,0.00699-0.00986,0.01042-0.01647,0.01742c-0.00912,0.00965-0.01822,0.01929-0.02734,0.02894  c-0.00661,0.007-0.01118,0.01185-0.01778,0.01884c-0.00838,0.00889-0.01669,0.01769-0.02507,0.02658  c-0.0066,0.007-0.01259,0.01336-0.01919,0.02036c-0.00898,0.00954-0.01781,0.01892-0.02678,0.02846  c-0.00494,0.00526-0.01124,0.01195-0.01619,0.0172c-0.01418,0.01508-0.02852,0.03035-0.04269,0.04544  c-0.00329,0.00351-0.00432,0.00461-0.00761,0.00812c-0.01174,0.01251-0.0235,0.02505-0.03524,0.03757  c-0.00493,0.00526-0.01226,0.0131-0.01719,0.01836c-0.0087,0.00929-0.01712,0.01829-0.02582,0.02759  c-0.00492,0.00526-0.01413,0.01511-0.01905,0.02038c-0.00833,0.00892-0.01663,0.01779-0.02495,0.02671  c-0.00656,0.00703-0.01137,0.01218-0.01793,0.01921c-0.00868,0.00931-0.01734,0.01859-0.02602,0.0279  c-0.00655,0.00703-0.01128,0.01211-0.01783,0.01914c-0.01012,0.01086-0.02021,0.02171-0.03033,0.03259  c-0.00491,0.00527-0.00721,0.00774-0.01212,0.01302c-0.01396,0.01501-0.02792,0.03004-0.04187,0.04507  c-0.0049,0.00528-0.01064,0.01147-0.01554,0.01675c-0.00937,0.0101-0.01901,0.02049-0.02838,0.0306  c-0.00653,0.00705-0.01004,0.01084-0.01656,0.01789c-0.00864,0.00933-0.01729,0.01867-0.02592,0.02801  c-0.00652,0.00705-0.0119,0.01287-0.01842,0.01992c-0.00851,0.00921-0.0167,0.01807-0.02521,0.02728  c-0.00651,0.00706-0.01163,0.0126-0.01814,0.01965c-0.00838,0.00909-0.01668,0.01809-0.02506,0.02718  c-0.00488,0.00529-0.01313,0.01425-0.01801,0.01955c-0.01029,0.01117-0.02045,0.02222-0.03073,0.03339  c-0.00487,0.00529-0.01388,0.01509-0.01875,0.02039c-0.01135,0.01235-0.02288,0.0249-0.03422,0.03725  c-0.00487,0.0053-0.01327,0.01447-0.01814,0.01977c-0.00811,0.00885-0.01612,0.01758-0.02423,0.02643  c-0.00648,0.00707-0.01317,0.01438-0.01965,0.02145c-0.00763,0.00833-0.01523,0.01665-0.02286,0.02498  c-0.00647,0.00707-0.01414,0.01546-0.02061,0.02253c-0.00738,0.00808-0.0147,0.0161-0.02208,0.02417  c-0.00646,0.00708-0.01351,0.0148-0.01997,0.02188c-0.00809,0.00887-0.01604,0.01759-0.02411,0.02645  c-0.00646,0.00708-0.01204,0.0132-0.01849,0.02029c-0.01342,0.01473-0.02696,0.02961-0.04036,0.04435  c-0.00484,0.00532-0.01122,0.01234-0.01605,0.01766c-0.00866,0.00953-0.01705,0.01876-0.0257,0.02829  c-0.00644,0.0071-0.0136,0.01499-0.02003,0.02209c-0.00746,0.00822-0.01509,0.01664-0.02255,0.02487  c-0.00643,0.0071-0.01394,0.01539-0.02037,0.02249c-0.0071,0.00784-0.01437,0.01588-0.02146,0.02372  c-0.00643,0.0071-0.01429,0.0158-0.02071,0.0229c-0.00733,0.00811-0.01485,0.01644-0.02217,0.02454  c-0.00642,0.00711-0.01385,0.01534-0.02027,0.02245c-0.00708,0.00785-0.01409,0.01562-0.02117,0.02348  c-0.01122,0.01245-0.02552,0.02834-0.03673,0.04079c-0.00766,0.00851-0.01537,0.01707-0.02302,0.02558  c-0.008,0.0089-0.01351,0.01504-0.02151,0.02393c-0.00683,0.0076-0.01355,0.01508-0.02037,0.02268  c-0.00799,0.0089-0.01458,0.01626-0.02257,0.02516c-0.00623,0.00695-0.01238,0.01381-0.01861,0.02076  c-0.00798,0.0089-0.01543,0.01723-0.02341,0.02614c-0.00587,0.00656-0.0118,0.01319-0.01767,0.01975  c-0.00797,0.00891-0.01626,0.01817-0.02423,0.02709c-0.00563,0.0063-0.01113,0.01246-0.01675,0.01876  c-0.00797,0.00892-0.01643,0.01839-0.02439,0.02731c-0.00468,0.00525-0.00945,0.0106-0.01413,0.01585  c-0.01751,0.01963-0.03707,0.0416-0.05454,0.06124c-0.00327,0.00368-0.00666,0.00748-0.00993,0.01116  c-0.00953,0.01071-0.01754,0.01974-0.02707,0.03046c-0.00455,0.00513-0.00912,0.01027-0.01367,0.0154  c-0.00793,0.00894-0.01857,0.02093-0.02649,0.02987c-0.0049,0.00552-0.0097,0.01093-0.0146,0.01646  c-0.00951,0.01073-0.01685,0.01902-0.02636,0.02975c-0.00443,0.005-0.0089,0.01006-0.01333,0.01506  c-0.0095,0.01074-0.01817,0.02055-0.02766,0.03129c-0.00361,0.00408-0.00724,0.00819-0.01085,0.01228  c-0.03321,0.0376-0.06541,0.07412-0.09853,0.11178c-0.00255,0.0029-0.00508,0.00577-0.00763,0.00867  c-0.00946,0.01076-0.01934,0.022-0.02879,0.03277c-0.00383,0.00436-0.0078,0.00888-0.01163,0.01324  c-0.00945,0.01077-0.01924,0.02192-0.02868,0.03269c-0.00371,0.00423-0.00712,0.00813-0.01083,0.01235  c-0.00944,0.01077-0.01996,0.02278-0.02939,0.03355c-0.00289,0.0033-0.00585,0.00669-0.00874,0.00999  c-0.04715,0.05389-0.09266,0.10605-0.13962,0.16004c-0.00219,0.00252-0.00437,0.00502-0.00656,0.00754  c-0.01096,0.0126-0.02022,0.02326-0.03116,0.03587c-0.00265,0.00305-0.00524,0.00603-0.00789,0.00909  c-0.00938,0.0108-0.02228,0.02567-0.03165,0.03648c-0.00218,0.00252-0.0045,0.0052-0.00669,0.00771  c-0.01093,0.01261-0.02213,0.02554-0.03305,0.03815c-0.0008,0.00093-0.00154,0.00179-0.00235,0.00271  c-0.04992,0.05769-0.09744,0.11278-0.14716,0.17058c-0.00023,0.00027-0.00052,0.0006-0.00075,0.00087  c-0.01087,0.01265-0.02356,0.0274-0.03442,0.04006c-0.0016,0.00186-0.00323,0.00376-0.00483,0.00562  c-0.01241,0.01446-0.02219,0.02585-0.03459,0.04032c-0.00046,0.00053-0.00071,0.00082-0.00116,0.00135  c-0.66654,0.77757-1.31178,1.56358-1.93967,2.36225l11.52838,9.06372c1.41073-1.79433,2.95133-3.52946,4.579-5.15714  l20.2126-20.2126L41.25335,77.99419L41.25335,77.99419z M2.43997,130.39366c-1.32846,4.97183-2.114,10.05621-2.35779,15.16386  l0,0.00002c-0.00342,0.07175-0.00674,0.14348-0.00995,0.21524l0,0.00003c-0.00321,0.07175-0.00626,0.1422-0.00926,0.21396  c-0.00003,0.00075-0.00008,0.00183-0.00011,0.00258c-0.0015,0.03589-0.00291,0.07027-0.00435,0.10616l-0.00002,0.00044  c-0.00144,0.03589-0.00284,0.07112-0.00423,0.10699c-0.00003,0.00076-0.00001,0.0002-0.00004,0.00095  c-0.00139,0.03589-0.0027,0.07022-0.00403,0.10611c-0.00003,0.00075-0.00006,0.00154-0.00009,0.0023  c-0.00134,0.03589-0.00257,0.06956-0.00385,0.10545c-0.00003,0.00076-0.00005,0.00142-0.00008,0.00218  c-0.00128,0.03589-0.00247,0.06972-0.0037,0.10561l-0.00007,0.00203c-0.00123,0.03589-0.00235,0.06929-0.00353,0.10519  c-0.00002,0.00075-0.00008,0.00256-0.00011,0.00333c-0.00118,0.03589-0.00222,0.06833-0.00334,0.10423  c-0.00005,0.00151-0.00007,0.00215-0.00011,0.00366c-0.00056,0.01794-0.00102,0.03285-0.00157,0.0508  c-0.00002,0.00076-0.00001,0.0004-0.00004,0.00114c-0.00055,0.01794-0.00103,0.03403-0.00157,0.05197  c-0.00005,0.00151-0.00008,0.00285-0.00013,0.00436c-0.00054,0.01794-0.00093,0.03136-0.00145,0.04932  c-0.00004,0.00151-0.00003,0.00095-0.00007,0.00246c-0.00052,0.01796-0.00097,0.03346-0.00148,0.05142  c-0.00004,0.00151-0.00009,0.00331-0.00014,0.00484c-0.00051,0.01794-0.00087,0.03076-0.00136,0.04872  c-0.00002,0.00075-0.00006,0.00218-0.00008,0.00294c-0.00049,0.01794-0.00094,0.03419-0.00142,0.05214  c-0.00002,0.00076-0.00004,0.00153-0.00006,0.00229c-0.00048,0.01794-0.00083,0.03123-0.0013,0.04919  c-0.00004,0.00151-0.00009,0.00331-0.00013,0.00482c-0.00047,0.01794-0.00085,0.03279-0.0013,0.05075  c-0.00004,0.00151-0.00008,0.00308-0.00012,0.00459c-0.0004,0.0157-0.00075,0.02997-0.00114,0.04567  c-0.00006,0.00227-0.00015,0.00587-0.0002,0.00813c-0.00044,0.01796-0.00076,0.03101-0.00119,0.04895  c-0.00005,0.00227-0.0001,0.00409-0.00015,0.00636c-0.00032,0.01346-0.00072,0.03067-0.00104,0.04413  c-0.00007,0.00302-0.00012,0.00526-0.00019,0.00829c-0.00041,0.01794-0.00073,0.03162-0.00113,0.04956  c-0.00003,0.00151-0.00006,0.00262-0.00009,0.00414c-0.00035,0.0157-0.00066,0.03004-0.00101,0.04575  c-0.00007,0.00304-0.00013,0.00584-0.00019,0.00888c-0.00034,0.0157-0.00072,0.0338-0.00105,0.0495  c-0.00002,0.00076-0.00003,0.00143-0.00005,0.0022c-0.00033,0.0157-0.00065,0.03139-0.00097,0.0471  c-0.00006,0.00302-0.00012,0.00594-0.00018,0.00896c-0.00063,0.03142-0.00134,0.06822-0.00193,0.09964  c-0.00004,0.00226-0.00011,0.00578-0.00015,0.00804c-0.00058,0.03142-0.00124,0.06812-0.00178,0.09953  c-0.00005,0.00302-0.00009,0.00526-0.00014,0.00829c-0.00054,0.03142-0.00114,0.06848-0.00164,0.0999  c-0.00005,0.00302-0.00008,0.00488-0.00012,0.0079c-0.00049,0.03142-0.00103,0.06804-0.00148,0.09946  c-0.00004,0.00302-0.00008,0.00587-0.00013,0.0089c-0.00022,0.01572-0.00045,0.03218-0.00066,0.0479  c-0.00001,0.00075-0.00001,0.00081-0.00002,0.00156c-0.00021,0.01572-0.00044,0.03351-0.00064,0.04922  c-0.00004,0.00302-0.00009,0.00699-0.00013,0.01001c-0.00017,0.01346-0.00038,0.03055-0.00054,0.04402  c-0.00002,0.00151-0.00005,0.00381-0.00006,0.00533c-0.00019,0.0157-0.00038,0.03297-0.00056,0.04868  c-0.00004,0.00378-0.00006,0.0054-0.0001,0.00917c-0.00015,0.01347-0.00034,0.03091-0.00048,0.04437  c-0.00002,0.00227-0.00004,0.00359-0.00006,0.00586c-0.00016,0.0157-0.00033,0.03203-0.00048,0.04773  c-0.00004,0.00378-0.00008,0.0078-0.00011,0.01158c-0.00013,0.01347-0.00025,0.02655-0.00037,0.04002  c-0.00003,0.00378-0.00005,0.00555-0.00009,0.00934c-0.00014,0.01572-0.00027,0.03067-0.0004,0.04637  c-0.00004,0.00453-0.00007,0.00835-0.0001,0.01288c-0.00011,0.01347-0.0002,0.02446-0.0003,0.03792  c-0.00003,0.00378-0.00006,0.00768-0.00009,0.01146c-0.0001,0.01346-0.00023,0.03256-0.00033,0.04602  c-0.00003,0.00378-0.00006,0.00891-0.00008,0.0127c-0.00009,0.01346-0.00015,0.02252-0.00023,0.036  c-0.00003,0.00453-0.00006,0.00948-0.00009,0.01401c-0.00008,0.01347-0.00018,0.03125-0.00025,0.04471  c-0.00002,0.00455-0.00005,0.009-0.00007,0.01353c-0.00007,0.01347-0.00011,0.02281-0.00018,0.03629  c-0.00002,0.00453-0.00004,0.00871-0.00006,0.01324c-0.00006,0.01346-0.00013,0.0318-0.00019,0.04526  c-0.00002,0.00453-0.00003,0.00867-0.00005,0.0132c-0.00005,0.01347-0.00008,0.02243-0.00012,0.03589  c-0.00001,0.00455-0.00003,0.00896-0.00004,0.0135c-0.00004,0.01346-0.00009,0.03178-0.00012,0.04524  c-0.00001,0.00453-0.00002,0.00865-0.00003,0.0132c-0.00003,0.01346-0.00005,0.02219-0.00007,0.03564  c-0.00001,0.00455-0.00002,0.01004-0.00002,0.01457c-0.00002,0.01346-0.00004,0.03139-0.00005,0.04485  c0,0.00455,0,0.00854-0.00001,0.01308C0,148.97058,0,148.98212,0,148.99333c0,0.00529,0,0.01173,0,0.01701  c0,0.01347,0.00001,0.02982,0.00002,0.04329c0,0.00453,0.00001,0.00986,0.00001,0.01439  c0.00001,0.01122,0.00002,0.02225,0.00004,0.03348c0.00001,0.00529,0.00002,0.01192,0.00002,0.01721  c0.00002,0.01347,0.00005,0.0293,0.00008,0.04276c0.00001,0.00529,0.00003,0.0108,0.00004,0.0161  c0.00002,0.00899,0.00005,0.02167,0.00008,0.03064c0.00002,0.00604,0.00004,0.01302,0.00006,0.01907  c0.00004,0.01346,0.00009,0.02676,0.00014,0.04024c0.00002,0.00528,0.00004,0.01129,0.00006,0.01659  c0.00004,0.01122,0.00009,0.02187,0.00014,0.03308c0.00003,0.00606,0.00005,0.01176,0.00008,0.01781  c0.00007,0.0157,0.00013,0.02759,0.00021,0.04329c0.00002,0.00378,0.00004,0.00719,0.00006,0.01097  c0.00007,0.01346,0.00012,0.02185,0.0002,0.03532c0.00004,0.00604,0.00008,0.01291,0.00011,0.01895  c0.00008,0.01347,0.00015,0.02399,0.00024,0.03746c0.00003,0.00528,0.00007,0.01048,0.00011,0.01576  c0.00009,0.01347,0.00016,0.02324,0.00026,0.03671c0.00004,0.00604,0.00009,0.01184,0.00013,0.01788  c0.0001,0.01346,0.00017,0.02237,0.00028,0.03583c0.00004,0.00529,0.00009,0.011,0.00013,0.0163  c0.00011,0.01346,0.00021,0.02461,0.00033,0.03807c0.00005,0.00529,0.00011,0.0119,0.00015,0.0172  c0.00012,0.01347,0.00021,0.02248,0.00033,0.03595c0.00005,0.00528,0.00009,0.00948,0.00014,0.01477  c0.00013,0.01346,0.00027,0.02676,0.0004,0.04022c0.00005,0.00529,0.00013,0.01215,0.00018,0.01744  c0.00014,0.01347,0.00023,0.02164,0.00038,0.03511c0.00004,0.00377,0.00009,0.008,0.00013,0.01178  c0.00018,0.0157,0.00031,0.02737,0.0005,0.04309c0.00007,0.00604,0.00015,0.01274,0.00022,0.01878  c0.00011,0.00897,0.00028,0.02316,0.0004,0.03214c0.00007,0.00529,0.00012,0.00941,0.00018,0.01469  c0.00017,0.01347,0.00039,0.03009,0.00057,0.04356c0.00008,0.00604,0.00015,0.01105,0.00023,0.01711  c0.00012,0.00897,0.00031,0.02269,0.00044,0.03166c0.00007,0.00529,0.00015,0.01071,0.00022,0.01601  c0.00019,0.01346,0.00042,0.02908,0.00062,0.04256c0.00009,0.00604,0.00018,0.01205,0.00027,0.0181  c0.00014,0.00897,0.00034,0.02211,0.00047,0.03108c0.00008,0.00529,0.00018,0.01138,0.00026,0.01668  c0.00021,0.01346,0.00045,0.02847,0.00067,0.04195c0.0001,0.00604,0.00022,0.01311,0.00032,0.01915  c0.00015,0.00899,0.00034,0.02066,0.0005,0.02963c0.0001,0.00604,0.00019,0.01117,0.00029,0.01723  c0.00023,0.01346,0.00048,0.02771,0.00072,0.04117c0.00013,0.00755,0.00025,0.01416,0.00039,0.02173  c0.00016,0.00897,0.0003,0.01651,0.00047,0.0255c0.00013,0.00679,0.00026,0.01421,0.00039,0.021  c0.00025,0.01347,0.00051,0.02705,0.00077,0.04051c0.00013,0.00681,0.00026,0.01353,0.0004,0.02034  c0.00018,0.00897,0.00034,0.0175,0.00052,0.02647c0.00014,0.00681,0.00028,0.01387,0.00041,0.02068  c0.00027,0.01346,0.00055,0.02681,0.00083,0.04027c0.00014,0.00681,0.00028,0.01337,0.00042,0.02017  c0.00019,0.00897,0.00039,0.0186,0.00059,0.02757c0.00015,0.00681,0.00029,0.01363,0.00044,0.02043  c0.00029,0.01346,0.00057,0.02608,0.00087,0.03954c0.00017,0.00757,0.00034,0.01494,0.00051,0.02249  c0.0002,0.00897,0.00034,0.01523,0.00055,0.02422c0.00016,0.00679,0.00035,0.01509,0.0005,0.0219  c0.00026,0.01122,0.0005,0.02138,0.00076,0.03259c0.00023,0.00983,0.00047,0.01991,0.00071,0.02974  c0.00022,0.00897,0.00037,0.01514,0.00058,0.02411c0.00017,0.00681,0.00036,0.01462,0.00053,0.02142  c0.00033,0.01346,0.00069,0.02777,0.00103,0.04123c0.00015,0.00604,0.00029,0.01123,0.00044,0.01727  c0.00023,0.00899,0.00052,0.02039,0.00075,0.02937c0.00018,0.00679,0.00035,0.01332,0.00052,0.02013  c0.00029,0.01122,0.00058,0.02206,0.00088,0.03328c0.00024,0.00906,0.00047,0.0174,0.00071,0.02646  c0.00024,0.00897,0.00053,0.01938,0.00077,0.02837c0.00019,0.00679,0.00036,0.01314,0.00055,0.01993  c0.00031,0.01123,0.00061,0.02202,0.00093,0.03323c0.00023,0.00832,0.0005,0.01759,0.00073,0.02589  c0.00026,0.00897,0.00057,0.01994,0.00083,0.02892c0.0002,0.00681,0.00037,0.01277,0.00057,0.01958  c0.00033,0.01122,0.00058,0.0197,0.00091,0.03091c0.00031,0.01057,0.0006,0.0202,0.00092,0.03078  c0.00027,0.00897,0.00049,0.0164,0.00077,0.02538c0.00023,0.00755,0.00046,0.01524,0.0007,0.02281  c0.00028,0.00897,0.00055,0.0179,0.00083,0.02687c0.00033,0.01059,0.00068,0.0218,0.00101,0.03239  c0.00028,0.00897,0.00053,0.01671,0.00081,0.02568c0.00024,0.00755,0.0005,0.01578,0.00075,0.02333  c0.00029,0.00897,0.00053,0.01648,0.00083,0.02545c0.00034,0.01059,0.00069,0.02104,0.00104,0.03162  c0.00037,0.01122,0.00059,0.01776,0.00096,0.02898c0.00023,0.00681,0.00048,0.01447,0.00071,0.02127  c0.0003,0.00897,0.00058,0.01714,0.00089,0.02611c0.00039,0.01134,0.00075,0.02206,0.00115,0.0334  c0.00023,0.00673,0.00068,0.01956,0.00091,0.02629c0.00026,0.00755,0.00053,0.0152,0.0008,0.02277  c0.00032,0.00897,0.00056,0.01584,0.00088,0.02481c0.0004,0.01132,0.00081,0.02257,0.00121,0.03391  c0.00032,0.00897,0.00064,0.01772,0.00096,0.02669c0.00027,0.00755,0.00057,0.0157,0.00085,0.02325  c0.00033,0.00897,0.00057,0.01537,0.0009,0.02434c0.00034,0.00906,0.00068,0.01843,0.00102,0.0275  c0.00042,0.01122,0.00082,0.02187,0.00125,0.03308c0.00029,0.00755,0.0006,0.01585,0.00089,0.02341  c0.00026,0.00673,0.00061,0.01595,0.00087,0.02267c0.00041,0.01057,0.00079,0.02043,0.0012,0.03102  c0.00044,0.0112,0.00079,0.02025,0.00123,0.03146c0.0003,0.00755,0.00061,0.01543,0.00091,0.02298  c0.00027,0.00673,0.00062,0.01569,0.00089,0.02242c0.00036,0.00906,0.00075,0.01871,0.00112,0.02779  c0.00045,0.0112,0.00093,0.02284,0.00138,0.03406c0.00034,0.00832,0.00067,0.01636,0.00101,0.02467  c0.00028,0.00673,0.00057,0.01384,0.00085,0.02057c0.0005,0.01208,0.00098,0.02365,0.00149,0.03575  c0.00038,0.00896,0.00075,0.01796,0.00113,0.02693c0.00035,0.0083,0.00074,0.01743,0.0011,0.02573  c0.00019,0.00449,0.00064,0.01489,0.00083,0.01938c0.00039,0.00906,0.00071,0.01643,0.0011,0.0255  c0.00058,0.01344,0.00107,0.02457,0.00166,0.03802c0.00036,0.00832,0.00068,0.01552,0.00105,0.02382  c0.0004,0.00897,0.00057,0.01295,0.00097,0.02193c0.00034,0.00755,0.00075,0.01678,0.00109,0.02434  c0.0006,0.01346,0.00115,0.02553,0.00176,0.03899c0.00031,0.00679,0.00068,0.01498,0.00099,0.02177  c0.00041,0.00897,0.00065,0.01431,0.00107,0.02327c0.00038,0.00832,0.00073,0.01587,0.00112,0.02417  c0.00042,0.00897,0.0008,0.01709,0.00121,0.02606c0.00056,0.01208,0.00118,0.02521,0.00175,0.03729  c0.00032,0.00673,0.00058,0.01227,0.0009,0.01898c0.00043,0.00906,0.00084,0.01778,0.00128,0.02684  c0.00032,0.00673,0.00063,0.0132,0.00096,0.01993c0.00065,0.0136,0.00135,0.02785,0.00201,0.04144  c0.00033,0.00673,0.0007,0.01442,0.00103,0.02115c0.00037,0.00755,0.0008,0.0164,0.00118,0.02396  c0.00055,0.01122,0.00096,0.01939,0.00152,0.03061c0.00049,0.00981,0.00103,0.02055,0.00152,0.03036  c0.00045,0.00897,0.00074,0.01472,0.00119,0.02368c0.00038,0.00755,0.00084,0.01653,0.00122,0.02408  c0.00046,0.00896,0.00096,0.01875,0.00142,0.02771c0.00054,0.01057,0.00109,0.0213,0.00164,0.03186  c0.00046,0.00897,0.00081,0.01572,0.00128,0.02469c0.00039,0.00754,0.00083,0.01591,0.00122,0.02347  c0.00035,0.00673,0.00095,0.01802,0.0013,0.02473c0.00064,0.01208,0.00126,0.0238,0.0019,0.03589  c0.00036,0.00671,0.00092,0.01718,0.00128,0.02391c0.00044,0.0083,0.00084,0.0157,0.00129,0.024  c0.00036,0.00673,0.00097,0.01794,0.00133,0.02467c0.00061,0.01132,0.00124,0.02287,0.00186,0.03419  c0.00049,0.00897,0.00089,0.01633,0.00139,0.0253c0.00042,0.00754,0.00085,0.01538,0.00127,0.02292  c0.0005,0.00897,0.00101,0.01816,0.00151,0.02713c0.00059,0.01056,0.00116,0.02081,0.00176,0.03139  c0.0005,0.00897,0.001,0.01773,0.0015,0.02669c0.00043,0.00755,0.00088,0.01556,0.00131,0.02312  c0.00051,0.00896,0.00104,0.01823,0.00155,0.02719c0.00052,0.00906,0.00105,0.0183,0.00157,0.02736  c0.00052,0.00896,0.00126,0.02179,0.00178,0.03076c0.00044,0.00754,0.00087,0.01495,0.00131,0.02249  c0.00039,0.00673,0.00103,0.01764,0.00143,0.02437c0.00071,0.01208,0.00138,0.02351,0.0021,0.03558  c0.0004,0.00673,0.00107,0.01814,0.00147,0.02487c0.00049,0.0083,0.00094,0.01582,0.00144,0.02414  c0.0004,0.00671,0.00099,0.0164,0.00139,0.02313c0.00064,0.01056,0.00124,0.02051,0.00188,0.03107  c0.00068,0.0112,0.00116,0.01909,0.00184,0.03029c0.00046,0.00755,0.00087,0.01422,0.00133,0.02177  c0.00055,0.00896,0.0011,0.01782,0.00165,0.02678c0.00056,0.00906,0.00107,0.01729,0.00163,0.02634  c0.0007,0.01122,0.00135,0.0217,0.00205,0.0329c0.00047,0.00755,0.001,0.01602,0.00148,0.02357  c0.00056,0.00896,0.0009,0.01428,0.00147,0.02324c0.00048,0.00755,0.00092,0.01465,0.0014,0.0222  c0.00085,0.01344,0.00161,0.02531,0.00247,0.03876c0.00053,0.00832,0.001,0.01564,0.00154,0.02394  c0.00058,0.00897,0.00086,0.01328,0.00144,0.02223c0.00049,0.00755,0.00106,0.0164,0.00155,0.02396  c0.00087,0.01344,0.00161,0.02477,0.0025,0.03821c0.00054,0.0083,0.00102,0.01549,0.00157,0.02379  c0.00059,0.00896,0.00084,0.01274,0.00143,0.0217c0.00055,0.0083,0.00105,0.01582,0.0016,0.02412  c0.00089,0.01344,0.00164,0.02466,0.00255,0.0381c0.00051,0.00755,0.00106,0.01582,0.00157,0.02336  c0.0006,0.00896,0.00098,0.01454,0.00159,0.02351c0.00051,0.00754,0.00103,0.01518,0.00154,0.02274  c0.00091,0.01344,0.00172,0.0253,0.00265,0.03873c0.00057,0.0083,0.00102,0.0148,0.00159,0.0231  c0.00062,0.00896,0.00102,0.01482,0.00164,0.02379c0.00052,0.00754,0.00096,0.01392,0.00149,0.02145  c0.00093,0.01344,0.00181,0.02597,0.00275,0.0394c0.00058,0.0083,0.00109,0.01553,0.00168,0.02383  c0.00063,0.00896,0.00091,0.01289,0.00154,0.02185c0.00059,0.0083,0.00116,0.01645,0.00175,0.02475  c0.00064,0.00896,0.00121,0.01704,0.00185,0.026c0.00086,0.01207,0.00177,0.02478,0.00264,0.03685  c0.00048,0.00671,0.00092,0.01285,0.00141,0.01956c0.0006,0.0083,0.00121,0.01683,0.00182,0.02512  c0.00081,0.0112,0.00135,0.01854,0.00216,0.02974c0.00072,0.0098,0.0015,0.02051,0.00222,0.03032  c0.00066,0.00896,0.00117,0.01599,0.00184,0.02495c0.00056,0.00754,0.00111,0.01506,0.00167,0.02261  c0.00083,0.0112,0.00131,0.01772,0.00215,0.0289c0.00079,0.01056,0.00157,0.0211,0.00236,0.03165  c0.00067,0.00896,0.00118,0.01581,0.00186,0.02477c0.00057,0.00754,0.00108,0.01428,0.00165,0.02182  c0.00085,0.0112,0.00144,0.01897,0.00229,0.03017c0.00074,0.0098,0.00157,0.02061,0.00232,0.03041  c0.00068,0.00896,0.00125,0.01637,0.00194,0.02533c0.00058,0.00754,0.00118,0.0154,0.00176,0.02293  c0.00069,0.00896,0.00136,0.01761,0.00205,0.02657c0.00088,0.01131,0.00169,0.02185,0.00258,0.03316  c0.0007,0.00896,0.00125,0.01607,0.00195,0.02502c0.00059,0.00754,0.00119,0.01518,0.00178,0.02272  c0.0007,0.00896,0.00143,0.01813,0.00213,0.02708c0.00083,0.01054,0.00162,0.02054,0.00246,0.03108  c0.00071,0.00896,0.00151,0.01906,0.00223,0.02802c0.0006,0.00754,0.00113,0.01411,0.00173,0.02165  c0.00072,0.00896,0.00137,0.01703,0.00209,0.02599c0.00091,0.01131,0.00174,0.02164,0.00266,0.03294  c0.00072,0.00896,0.00143,0.01761,0.00215,0.02655c0.00061,0.00754,0.0012,0.01477,0.00182,0.02231  c0.00055,0.00671,0.00152,0.01862,0.00207,0.02533c0.00093,0.01131,0.00192,0.02344,0.00286,0.03474  c0.00055,0.00671,0.00152,0.01842,0.00207,0.02513c0.00069,0.00829,0.00129,0.01559,0.00198,0.02388  c0.00056,0.00671,0.00127,0.0153,0.00183,0.02202c0.00101,0.01205,0.00213,0.02551,0.00314,0.03757  c0.00056,0.00671,0.00145,0.01726,0.00202,0.02397c0.00064,0.00754,0.00141,0.01669,0.00205,0.02423  c0.00057,0.00671,0.00132,0.01562,0.00189,0.02234c0.00102,0.01205,0.00189,0.02225,0.00292,0.0343  c0.00096,0.01118,0.00143,0.01678,0.00239,0.02797c0.00065,0.00754,0.00133,0.0155,0.00198,0.02304  c0.00058,0.00671,0.00132,0.01535,0.0019,0.02206c0.00111,0.01282,0.00222,0.02567,0.00334,0.03847  c0.00058,0.00671,0.0014,0.01613,0.00199,0.02284c0.00072,0.00829,0.0015,0.01717,0.00223,0.02547  c0.00059,0.00671,0.00118,0.01346,0.00177,0.02016c0.00119,0.01357,0.00245,0.02786,0.00366,0.04143  c0.00079,0.00896,0.00107,0.0121,0.00186,0.02106c0.00074,0.00829,0.00157,0.01768,0.00231,0.02597  c0.0006,0.00671,0.0011,0.01236,0.0017,0.01906c0.00074,0.00829,0.00154,0.0172,0.00228,0.02548  c0.00121,0.01341,0.00215,0.02396,0.00337,0.03738c0.00075,0.00829,0.00154,0.01706,0.0023,0.02534  c0.00061,0.00671,0.00122,0.01344,0.00183,0.02016c0.00075,0.00829,0.00154,0.01697,0.0023,0.02525  c0.00123,0.01343,0.00223,0.02444,0.00347,0.03786c0.00069,0.00754,0.00154,0.01669,0.00223,0.02423  c0.00082,0.00894,0.00107,0.01163,0.0019,0.02057c0.00077,0.00829,0.00154,0.01669,0.00231,0.02498  c0.00125,0.01341,0.0023,0.02478,0.00356,0.03819c0.0007,0.00754,0.00137,0.01465,0.00208,0.02219  c0.00084,0.00894,0.00144,0.01538,0.00228,0.02434c0.00071,0.00752,0.00144,0.01532,0.00215,0.02286  c0.00127,0.01341,0.00236,0.02502,0.00364,0.03844c0.00079,0.00829,0.00155,0.01628,0.00234,0.02457  c0.00064,0.00671,0.0012,0.01265,0.00185,0.01936c0.00086,0.00903,0.00166,0.01735,0.00252,0.02638  c0.00086,0.00896,0.00146,0.01521,0.00232,0.02415c0.00116,0.01205,0.00242,0.02516,0.00359,0.03722  c0.00065,0.0067,0.00139,0.01437,0.00204,0.02109c0.0008,0.00829,0.00164,0.01689,0.00245,0.02518  c0.00087,0.00894,0.00212,0.02174,0.003,0.03069c0.00103,0.01054,0.00191,0.01953,0.00295,0.03006  c0.00066,0.00671,0.00147,0.01492,0.00213,0.02162c0.00089,0.00903,0.00161,0.01631,0.0025,0.02536  c0.00066,0.0067,0.00179,0.01807,0.00246,0.02477c0.0012,0.01205,0.00233,0.02344,0.00353,0.03548  c0.00067,0.00671,0.00163,0.01637,0.0023,0.02309c0.00083,0.00827,0.0016,0.01595,0.00243,0.02423  c0.0009,0.00894,0.00173,0.01723,0.00263,0.02617c0.00106,0.01054,0.00225,0.02228,0.00331,0.03282  c0.0009,0.00894,0.00164,0.01617,0.00255,0.02512c0.00076,0.00752,0.00151,0.01482,0.00227,0.02234  c0.00091,0.00894,0.00217,0.02122,0.00308,0.03017c0.00092,0.00903,0.00197,0.01924,0.0029,0.02827  c0.00092,0.00893,0.00187,0.01819,0.00279,0.02713c0.00078,0.00752,0.00156,0.01508,0.00233,0.0226  c0.00092,0.00894,0.00204,0.01971,0.00297,0.02866c0.00094,0.00903,0.00193,0.01852,0.00287,0.02756  c0.00093,0.00894,0.0021,0.02016,0.00304,0.0291c0.00079,0.00752,0.00151,0.01439,0.0023,0.02191  c0.00094,0.00894,0.00203,0.01936,0.00298,0.02829c0.00095,0.00903,0.00183,0.0174,0.00279,0.02643  c0.00118,0.01117,0.00222,0.02101,0.00341,0.03218c0.00072,0.00677,0.00145,0.01367,0.00217,0.02045  c0.00095,0.00894,0.00207,0.01944,0.00303,0.02838c0.00088,0.00827,0.00184,0.01724,0.00273,0.02551  c0.0012,0.01117,0.00228,0.02127,0.00348,0.03244c0.00081,0.00752,0.00146,0.01352,0.00227,0.02104  c0.00096,0.00894,0.00223,0.0206,0.00319,0.02954c0.00065,0.00601,0.00143,0.01321,0.00209,0.01924  c0.00146,0.0134,0.0028,0.02577,0.00427,0.03917c0.00066,0.00601,0.00132,0.01208,0.00198,0.01811  c0.00122,0.01117,0.0026,0.02373,0.00383,0.0349c0.00041,0.00375,0.00081,0.00734,0.00122,0.01111  c0.00172,0.01562,0.00312,0.02832,0.00486,0.04396c0.00058,0.00526,0.00136,0.0123,0.00195,0.01756  c0.00099,0.00894,0.00251,0.02257,0.0035,0.03151c0.00059,0.00526,0.00118,0.0106,0.00177,0.01588  c0.0015,0.0134,0.00327,0.02927,0.00478,0.04266c0.00068,0.00603,0.00129,0.01149,0.00197,0.0175  c0.001,0.00894,0.00249,0.02214,0.0035,0.03107c0.00059,0.00526,0.00125,0.01105,0.00184,0.01631  c0.00152,0.0134,0.00321,0.02832,0.00473,0.04172c0.00068,0.00601,0.00146,0.01282,0.00215,0.01883  c0.00102,0.00893,0.00253,0.02213,0.00355,0.03105c0.0006,0.00526,0.00121,0.01057,0.00181,0.01584  c0.00154,0.01338,0.00338,0.02942,0.00492,0.04282c0.00061,0.00526,0.00137,0.01183,0.00197,0.01709  c0.00103,0.00893,0.00257,0.02223,0.00361,0.03116c0.00061,0.00526,0.00129,0.01117,0.00191,0.01643  c0.00156,0.0134,0.00337,0.02893,0.00493,0.04233c0.0007,0.00601,0.0014,0.01193,0.0021,0.01794  c0.00105,0.00893,0.00255,0.02177,0.0036,0.0307c0.00062,0.00526,0.00132,0.01126,0.00194,0.01653  c0.00158,0.01338,0.00358,0.03038,0.00517,0.04378c0.00062,0.00526,0.00102,0.00859,0.00164,0.01384  c0.00159,0.0134,0.00245,0.02063,0.00404,0.03403c0.00063,0.00525,0.00125,0.01051,0.00188,0.01578  c0.0016,0.01338,0.0035,0.02934,0.00511,0.04272c0.00063,0.00526,0.0013,0.01083,0.00193,0.01608  c0.00134,0.01117,0.00266,0.02216,0.00401,0.03331c0.00054,0.00452,0.00125,0.01035,0.00179,0.01486  c0.00189,0.01561,0.0035,0.02896,0.0054,0.04459c0.00046,0.00375,0.001,0.00824,0.00146,0.01199  c0.00163,0.01338,0.00278,0.02284,0.00441,0.03622c0.00064,0.00526,0.00108,0.00888,0.00173,0.01414  c0.00191,0.01561,0.00359,0.02931,0.00551,0.04494c0.00046,0.00375,0.00101,0.00824,0.00148,0.01199  c0.00165,0.01338,0.00276,0.02242,0.00442,0.0358c0.00056,0.0045,0.00132,0.01071,0.00188,0.01521  c0.00193,0.01562,0.00367,0.02966,0.00562,0.04527c0.00028,0.00226,0.00073,0.00586,0.00101,0.00812  c0.00167,0.01338,0.0032,0.02568,0.00488,0.03906c0.00056,0.0045,0.00126,0.01004,0.00182,0.01456  c0.00196,0.01561,0.00375,0.02989,0.00572,0.0455c0.00028,0.00226,0.00057,0.00452,0.00085,0.00677  c0.00169,0.01338,0.00367,0.02907,0.00536,0.04245c0.00048,0.00375,0.00093,0.00732,0.0014,0.01108  c0.00198,0.01561,0.00409,0.03226,0.00608,0.04787c0.0001,0.00075,0.00017,0.00134,0.00027,0.00209  c0.00199,0.01561,0.00378,0.02957,0.00578,0.04518c0.00058,0.0045,0.00106,0.00829,0.00164,0.01279  c0.002,0.01561,0.00371,0.02893,0.00573,0.04454c0.00019,0.0015,0.00036,0.00282,0.00056,0.00432  c0.00201,0.01561,0.00392,0.03036,0.00595,0.04596c0.00049,0.00375,0.00111,0.00858,0.0016,0.01233  c0.00203,0.01561,0.00408,0.03143,0.00612,0.04703l0.00002,0.00015c0.00204,0.01559,0.00426,0.03255,0.0063,0.04814  c0.00049,0.00375,0.00104,0.0079,0.00153,0.01166c0.00176,0.01338,0.00363,0.02757,0.00539,0.04094  c0.0004,0.00301,0.00066,0.00497,0.00105,0.00798c0.00206,0.01559,0.00407,0.03079,0.00614,0.04639  c0.0006,0.00452,0.00105,0.00787,0.00164,0.01239c0.00178,0.01337,0.00364,0.02737,0.00543,0.04074  c0.0003,0.00226,0.00068,0.00508,0.00098,0.00732c0.00208,0.01559,0.00423,0.03157,0.00632,0.04718  c0.0005,0.00374,0.00093,0.00693,0.00144,0.01068c0.0018,0.01337,0.00399,0.02962,0.00579,0.04298  c0.0003,0.00224,0.00051,0.00377,0.00081,0.00603c0.00211,0.01559,0.00434,0.03204,0.00646,0.04764  c0.00051,0.00375,0.00097,0.00711,0.00148,0.01086c0.00182,0.01337,0.0038,0.02794,0.00563,0.04131  c0.00031,0.00224,0.00072,0.00526,0.00103,0.00751c0.00213,0.01559,0.00435,0.03181,0.00649,0.04741  c0.00052,0.00375,0.00099,0.00719,0.0015,0.01094c0.00184,0.01335,0.00349,0.02539,0.00534,0.03874  c0.00052,0.00375,0.00103,0.00748,0.00155,0.01123c0.00216,0.01558,0.00437,0.03156,0.00653,0.04715  c0.00042,0.00301,0.00075,0.00537,0.00116,0.00838c0.00186,0.01337,0.00408,0.02934,0.00595,0.04271  c0.00031,0.00224,0.00075,0.00537,0.00106,0.00761c0.00249,0.01782,0.00428,0.03061,0.00678,0.04842  c0.00032,0.00224,0.00079,0.00563,0.00111,0.00789c0.00188,0.01335,0.00406,0.02888,0.00595,0.04224  c0.00042,0.00301,0.00086,0.00613,0.00129,0.00914c0.00251,0.01781,0.00431,0.03046,0.00683,0.04826  c0.00032,0.00224,0.00059,0.00414,0.00091,0.00638c0.0019,0.01335,0.00439,0.0309,0.0063,0.04425  c0.00043,0.00301,0.00062,0.00436,0.00105,0.00735c0.00254,0.01781,0.0045,0.03148,0.00705,0.04929  c0.00032,0.00224,0.00049,0.00342,0.00081,0.00566c0.00192,0.01335,0.00414,0.02881,0.00606,0.04216  c0.00054,0.00375,0.00116,0.00803,0.0017,0.01178c0.00225,0.01558,0.0046,0.03185,0.00686,0.04742  c0.00022,0.0015,0.00051,0.00354,0.00073,0.00504c0.00194,0.01335,0.00453,0.03114,0.00647,0.04449  c0.00044,0.00301,0.00084,0.00574,0.00127,0.00874c0.00227,0.01556,0.0049,0.03355,0.00718,0.04912  c0.00011,0.00075,0.00032,0.0022,0.00043,0.00294c0.00228,0.01556,0.00463,0.03151,0.00692,0.04709  c0.00033,0.00224,0.00075,0.00508,0.00108,0.00734c0.00492,0.03337,0.00975,0.06601,0.01472,0.09937  c0.00033,0.00226,0.00079,0.00528,0.00112,0.00754c0.00497,0.03336,0.00979,0.06558,0.0148,0.09894  c0.00045,0.00301,0.00081,0.00542,0.00126,0.00841c0.00468,0.03114,0.01024,0.0679,0.01497,0.09903  c0.00034,0.00224,0.00078,0.00516,0.00112,0.0074c0.00473,0.03113,0.01036,0.06801,0.01513,0.09914  c0.00046,0.00299,0.00078,0.00511,0.00124,0.0081c0.00478,0.03113,0.01045,0.06792,0.01527,0.09903  c0.00035,0.00224,0.00078,0.00504,0.00113,0.00728c0.00517,0.03334,0.01034,0.06659,0.01556,0.09991  c0.00035,0.00224,0.00072,0.00461,0.00107,0.00685c0.00522,0.03334,0.0106,0.06754,0.01586,0.10088  c0.00024,0.0015,0.00047,0.00296,0.00071,0.00446c0.00562,0.03555,0.01074,0.06781,0.01641,0.10335l0.00033,0.00206  c0.00567,0.03555,0.01096,0.06853,0.01668,0.10405c0.00012,0.00075,0.00041,0.00256,0.00053,0.00333  c0.00573,0.03552,0.01106,0.06848,0.01684,0.104l0.00027,0.00165c0.36155,2.22279,0.82714,4.42888,1.39813,6.61627l14.18938-3.70352  c-2.50627-9.6024-2.47727-19.74527,0.08393-29.33188l-14.16787-3.78513H2.43997z M26.62841,184.01425l-11.58033,8.99727  c1.18167,1.52084,2.4324,3.00467,3.75323,4.44809c0.0005,0.00055,0.00108,0.00117,0.00158,0.00172  c0.01295,0.01414,0.02408,0.02631,0.03704,0.04045c0.001,0.00108,0.00194,0.00212,0.00294,0.0032  c0.05185,0.05658,0.10002,0.10896,0.15209,0.16542c0.00101,0.00108,0.00193,0.00209,0.00293,0.00317  c0.01139,0.01234,0.02323,0.02518,0.03463,0.03751c0.00239,0.00259,0.00485,0.00525,0.00724,0.00784  c0.0114,0.01233,0.02333,0.02524,0.03474,0.03757c0.00113,0.00122,0.00207,0.00224,0.00321,0.00346  c0.0375,0.04053,0.07264,0.07841,0.11025,0.11887c0.00202,0.00218,0.00425,0.00458,0.00627,0.00674  c0.01145,0.01231,0.02093,0.02251,0.03239,0.03481c0.00316,0.0034,0.00658,0.00708,0.00974,0.01047  c0.00982,0.01054,0.02206,0.02368,0.03189,0.03421c0.00341,0.00366,0.00663,0.00711,0.01004,0.01077  c0.03606,0.03865,0.07068,0.07568,0.10684,0.11427c0.00178,0.00189,0.0035,0.00374,0.00527,0.00563  c0.00986,0.01053,0.0202,0.02155,0.03007,0.03206c0.00457,0.00487,0.00923,0.00984,0.0138,0.01471  c0.00987,0.01051,0.01957,0.02084,0.02945,0.03136c0.00432,0.00459,0.00859,0.00912,0.01291,0.01373  c0.00989,0.0105,0.01999,0.02124,0.02988,0.03175c0.00356,0.00378,0.00733,0.00778,0.01089,0.01155  c0.01814,0.01927,0.03848,0.04083,0.05665,0.06007c0.00497,0.00526,0.00988,0.01048,0.01486,0.01575  c0.00826,0.00874,0.01682,0.01779,0.02509,0.02654c0.00625,0.00661,0.01264,0.01337,0.01889,0.01997  c0.00827,0.00874,0.01695,0.01791,0.02523,0.02664c0.00651,0.00688,0.01307,0.01379,0.01958,0.02066  c0.00828,0.00874,0.01613,0.01701,0.02441,0.02576c0.00716,0.00754,0.01442,0.01518,0.02158,0.02272  c0.00829,0.00873,0.01404,0.01479,0.02233,0.02351c0.01369,0.0144,0.02716,0.02856,0.04087,0.04295  c0.0083,0.00873,0.01485,0.01559,0.02316,0.02431c0.00705,0.0074,0.0141,0.0148,0.02115,0.0222  c0.00831,0.00871,0.01584,0.0166,0.02416,0.02531c0.00706,0.00739,0.01425,0.01492,0.02131,0.02231  c0.00832,0.00871,0.01407,0.01472,0.0224,0.02344c0.00809,0.00847,0.01612,0.01685,0.02422,0.02531  c0.00833,0.0087,0.01261,0.01317,0.02095,0.02187c0.01402,0.01463,0.02776,0.02896,0.04179,0.04359  c0.00668,0.00696,0.01174,0.01222,0.01842,0.01918c0.00889,0.00925,0.01767,0.01839,0.02656,0.02763  c0.00668,0.00696,0.01397,0.01453,0.02065,0.02148c0.00851,0.00883,0.01687,0.01753,0.02539,0.02637  c0.00669,0.00694,0.0138,0.01433,0.0205,0.02127c0.00852,0.00885,0.01697,0.01759,0.02549,0.02644  c0.0067,0.00694,0.01312,0.0136,0.01982,0.02054c0.01138,0.01178,0.02301,0.0238,0.03439,0.03558  c0.00838,0.00867,0.0136,0.01407,0.02199,0.02274c0.01061,0.01097,0.02109,0.02179,0.03171,0.03275  c0.00672,0.00693,0.01339,0.01381,0.02011,0.02075c0.00868,0.00894,0.017,0.01752,0.02569,0.02647  c0.00672,0.00693,0.01345,0.01385,0.02018,0.02078c0.00882,0.00908,0.01767,0.01817,0.02649,0.02725  c0.00673,0.00693,0.01257,0.01294,0.01931,0.01985c0.01169,0.01201,0.02356,0.0242,0.03526,0.03621  c0.00337,0.00345,0.0062,0.00636,0.00957,0.00981c0.01483,0.01521,0.02976,0.03052,0.0446,0.04572  c0.00506,0.00517,0.01164,0.0119,0.0167,0.01709c0.01003,0.01025,0.01993,0.02039,0.02996,0.03064  c0.00507,0.00519,0.01229,0.01256,0.01736,0.01775c0.00978,0.00998,0.01951,0.01991,0.0293,0.02989  c0.00676,0.00691,0.01085,0.01108,0.01762,0.01797c0.01083,0.01105,0.02177,0.02219,0.03262,0.03323  c0.00508,0.00517,0.00834,0.0085,0.01343,0.01367c0.0149,0.01515,0.02972,0.03023,0.04464,0.04538  c0.00509,0.00517,0.01012,0.01027,0.01521,0.01544c0.01047,0.01064,0.0211,0.02142,0.03158,0.03204  c0.00509,0.00516,0.01148,0.01164,0.01658,0.0168c0.01035,0.0105,0.02034,0.0206,0.03069,0.0311  c0.0051,0.00516,0.01178,0.01192,0.01688,0.01707c0.01102,0.01115,0.02184,0.02208,0.03287,0.03323  c0.0034,0.00343,0.00994,0.01004,0.01335,0.01347c0.01523,0.01538,0.03069,0.03098,0.04594,0.04636  c0.00341,0.00343,0.00612,0.00615,0.00953,0.00958c0.01236,0.01247,0.02478,0.02498,0.03716,0.03741  c0.00512,0.00516,0.01096,0.01102,0.01608,0.01617c0.01014,0.01019,0.02028,0.02039,0.03043,0.03058  c0.00683,0.00685,0.0107,0.01074,0.01754,0.01759c0.01068,0.01073,0.02138,0.02145,0.03207,0.03217  c0.00513,0.00514,0.00936,0.00938,0.01449,0.01453c0.01557,0.01559,0.03099,0.03104,0.04658,0.04663  c0.00126,0.00125,0.00203,0.00203,0.00329,0.00328c0.01284,0.01285,0.02457,0.02455,0.03742,0.03738  c0.00504,0.00504,0.00986,0.00984,0.0149,0.01486c0.00857,0.00856,0.01728,0.01726,0.02586,0.0258  c0.00546,0.00545,0.01097,0.01093,0.01643,0.01636c0.00858,0.00854,0.01584,0.01579,0.02442,0.02432  c0.00547,0.00545,0.01098,0.01093,0.01645,0.01637c0.00772,0.00768,0.01658,0.01649,0.02431,0.02417  c0.00589,0.00586,0.01189,0.01181,0.01778,0.01765c0.00772,0.00768,0.01534,0.01524,0.02307,0.0229  c0.00547,0.00543,0.01176,0.01167,0.01724,0.01709c0.00773,0.00768,0.01599,0.01587,0.02372,0.02353  c0.00548,0.00542,0.01134,0.01122,0.01681,0.01663c0.00773,0.00766,0.01653,0.01637,0.02427,0.02403  c0.00506,0.00499,0.01069,0.01056,0.01575,0.01556c0.0086,0.0085,0.01658,0.01639,0.02519,0.02489  c0.00548,0.00542,0.01088,0.01073,0.01636,0.01614c0.0086,0.0085,0.01611,0.0159,0.02472,0.02438  c0.00506,0.00499,0.01019,0.01006,0.01526,0.01505c0.00861,0.00848,0.01728,0.01701,0.02589,0.0255  c0.00507,0.00499,0.01066,0.0105,0.01573,0.01547c0.00862,0.00848,0.01643,0.01617,0.02504,0.02464  c0.00549,0.00539,0.01079,0.01059,0.01628,0.01599c0.00776,0.00761,0.01694,0.01663,0.0247,0.02425  c0.00592,0.00581,0.01079,0.01059,0.01671,0.01639c0.00776,0.00761,0.01684,0.01653,0.0246,0.02412  c0.00508,0.00497,0.01062,0.01041,0.01569,0.01537c0.00863,0.00845,0.01679,0.01645,0.02543,0.02489  c0.0055,0.00539,0.0102,0.00998,0.0157,0.01537c0.00864,0.00844,0.01711,0.01672,0.02575,0.02516  c0.00508,0.00496,0.00952,0.00929,0.0146,0.01425c0.00864,0.00844,0.01788,0.01744,0.02652,0.02588  c0.00508,0.00496,0.01027,0.01001,0.01536,0.01497c0.00864,0.00842,0.01718,0.01674,0.02583,0.02516  c0.00509,0.00496,0.00994,0.00967,0.01503,0.01463c0.00865,0.00841,0.01748,0.017,0.02614,0.02542  c0.00509,0.00494,0.01009,0.0098,0.01518,0.01474c0.00866,0.00841,0.01793,0.01741,0.02659,0.02582  c0.00467,0.00453,0.00909,0.00882,0.01376,0.01335c0.00953,0.00925,0.01797,0.01743,0.0275,0.02666  c0.0051,0.00494,0.0093,0.009,0.01439,0.01395c0.00953,0.00923,0.01731,0.01677,0.02685,0.02599  c0.00467,0.00453,0.00934,0.00905,0.01402,0.01357c0.00954,0.00922,0.01796,0.01736,0.0275,0.02658  c0.00468,0.00452,0.00947,0.00914,0.01415,0.01366c0.00954,0.00922,0.01764,0.01703,0.02719,0.02625  c0.00426,0.0041,0.00956,0.00922,0.01382,0.01332c0.00868,0.00836,0.01867,0.01799,0.02736,0.02635  c0.00468,0.00452,0.01003,0.00966,0.01471,0.01416c0.00869,0.00836,0.01844,0.01775,0.02713,0.02609  c0.00426,0.0041,0.00905,0.00871,0.01331,0.0128c0.00956,0.00919,0.01901,0.01826,0.02857,0.02744  c0.00426,0.00409,0.00861,0.00827,0.01288,0.01236c0.00956,0.00919,0.01922,0.01843,0.02879,0.0276  c0.00426,0.00409,0.00815,0.00781,0.01241,0.0119c0.00957,0.00917,0.01946,0.01863,0.02904,0.0278  c0.00427,0.00409,0.00845,0.00809,0.01272,0.01216c0.00958,0.00917,0.01971,0.01886,0.02929,0.028  c0.00384,0.00368,0.00787,0.00752,0.01171,0.0112c0.00958,0.00914,0.02042,0.01949,0.03001,0.02864  c0.00385,0.00366,0.00783,0.00746,0.01168,0.01114c0.01046,0.00996,0.02014,0.0192,0.03061,0.02916  c0.00342,0.00325,0.00696,0.00662,0.01038,0.00989c0.01047,0.00996,0.02018,0.01921,0.03065,0.02916  c0.00385,0.00366,0.0079,0.00751,0.01175,0.01117c0.0096,0.00912,0.02093,0.01988,0.03053,0.02899  c0.00342,0.00325,0.00704,0.0067,0.01047,0.00995c0.01048,0.00993,0.0208,0.01973,0.03128,0.02966  c0.00343,0.00325,0.00718,0.00681,0.01061,0.01006c0.01048,0.00993,0.0209,0.01979,0.03138,0.02971  c0.00343,0.00325,0.00668,0.00633,0.01011,0.00957c0.01049,0.00992,0.0212,0.02005,0.03169,0.02997  c0.00343,0.00323,0.00672,0.00635,0.01015,0.0096c0.01137,0.01073,0.02177,0.02054,0.03314,0.03128  c0.00257,0.00243,0.00538,0.00507,0.00795,0.00749c0.01138,0.01073,0.02324,0.0219,0.03462,0.03262  c0.00257,0.00243,0.00455,0.00429,0.00712,0.00671c0.01226,0.01154,0.02463,0.02318,0.03689,0.0347  c0.00172,0.00162,0.00259,0.00244,0.00431,0.00406c0.01226,0.01154,0.02461,0.02313,0.03688,0.03465  c0.00172,0.00162,0.00371,0.00348,0.00542,0.0051c0.01315,0.01233,0.02626,0.02463,0.03941,0.03696  c0.00043,0.0004,0.00138,0.0013,0.00181,0.00169c0.01315,0.01233,0.02722,0.0255,0.04038,0.03781  c0.00043,0.00041,0.00127,0.00119,0.0017,0.00159c6.45856,6.04282,13.76097,10.67038,21.5111,13.88254l5.61471-13.54727  c-6.92233-2.869-13.14807-7.03954-18.50433-12.39574C29.70455,187.72513,28.09568,185.90273,26.62841,184.01425L26.62841,184.01425z   M100.64041,198.41165c-8.5288,4.98154-18.2952,7.6656-28.24353,7.76215l0.14233,14.66406  c12.29122-0.11906,24.5579-3.37405,35.49738-9.76323L100.64041,198.41165L100.64041,198.41165z M215.07848,56.19686  l-14.15247,3.84207c2.59947,9.57547,2.66907,19.71813,0.20107,29.3314l14.20421,3.64654  c2.06491-8.044,2.71642-16.37573,1.95378-24.60136c-0.00006-0.00076-0.00014-0.00159-0.00021-0.00233  c-0.00331-0.03578-0.00647-0.06955-0.00984-0.10533c-0.00008-0.00076-0.00009-0.00099-0.00017-0.00175  c-0.00337-0.03577-0.00661-0.06982-0.01003-0.1056c-0.00008-0.00075-0.00011-0.00113-0.00018-0.00188  c-0.00342-0.03577-0.00662-0.06892-0.0101-0.10469c-0.00014-0.0015-0.0002-0.002-0.00034-0.0035  c-0.00348-0.03577-0.00665-0.06808-0.01018-0.10385c-0.00008-0.00075-0.00027-0.00285-0.00035-0.00359  c-0.00354-0.03577-0.00681-0.06864-0.01039-0.1044c-0.00008-0.00076-0.00014-0.00132-0.00021-0.00208  c-0.00359-0.03576-0.00702-0.06976-0.01065-0.10552c-0.00008-0.00076-0.00008-0.00066-0.00015-0.0014  c-0.00728-0.07152-0.01454-0.14188-0.02203-0.21338c-0.00008-0.00076,0-0.00005-0.00008-0.00079  c-0.0206-0.19662-0.04181-0.39126-0.06403-0.58774c-0.00008-0.00075-0.0002-0.00174-0.00027-0.00249  c-0.00404-0.03573-0.00783-0.06901-0.01193-0.10473c-0.00008-0.00075-0.00018-0.00165-0.00027-0.0024  c-0.00409-0.03572-0.00787-0.0685-0.01202-0.10422c-0.00008-0.00075-0.00034-0.00291-0.00041-0.00365  c-0.00415-0.03571-0.00778-0.06671-0.01198-0.10242c-0.00017-0.0015-0.00049-0.00417-0.00067-0.00567  c-0.0042-0.03571-0.00774-0.06568-0.01199-0.10139c-0.00027-0.00225-0.00047-0.00391-0.00073-0.00616  c-0.00426-0.03571-0.00789-0.06602-0.01221-0.10172c-0.00018-0.0015-0.0004-0.00327-0.00056-0.00477  c-0.00432-0.0357-0.008-0.06596-0.01234-0.10165c-0.00027-0.00225-0.00055-0.00441-0.00082-0.00667  c-0.00191-0.01562-0.00406-0.0332-0.00598-0.04881c-0.00009-0.00076-0.00005-0.00046-0.00014-0.00121  c-0.0022-0.01785-0.00397-0.03215-0.00618-0.05c-0.00027-0.00225-0.00064-0.00524-0.00092-0.0075  c-0.00194-0.01561-0.00392-0.03166-0.00587-0.04727c-0.00009-0.00075-0.00024-0.00198-0.00034-0.00273  c-0.00223-0.01785-0.004-0.03201-0.00623-0.04985c-0.00038-0.00301-0.00056-0.0045-0.00095-0.0075  c-0.00166-0.01338-0.00401-0.03208-0.00571-0.04546c-0.00018-0.0015-0.00041-0.0033-0.0006-0.0048  c-0.00226-0.01784-0.00397-0.03146-0.00623-0.04929c-0.00029-0.00225-0.00069-0.00532-0.00096-0.00757  c-0.00198-0.01561-0.00383-0.03019-0.00583-0.04579c-0.00018-0.0015-0.00037-0.00285-0.00055-0.00435  c-0.00227-0.01784-0.00415-0.03252-0.00644-0.05035c-0.0002-0.0015-0.0005-0.00394-0.0007-0.00544  c-0.00171-0.01337-0.0042-0.03271-0.00594-0.04609c-0.00018-0.0015-0.00052-0.00412-0.00072-0.00562  c-0.0023-0.01783-0.00407-0.03151-0.00638-0.04934c-0.00031-0.00226-0.0006-0.00455-0.00089-0.00681  c-0.00174-0.01337-0.00418-0.03206-0.00592-0.04543c-0.00029-0.00225-0.00043-0.00326-0.00072-0.00551  c-0.00232-0.01783-0.00421-0.03218-0.00655-0.05001c-0.0002-0.0015-0.0005-0.0038-0.0007-0.0053  c-0.00175-0.01337-0.00414-0.03152-0.00591-0.04489c-0.0004-0.003-0.0006-0.00449-0.00099-0.00749  c-0.00235-0.01782-0.00415-0.03143-0.00652-0.04925c-0.00031-0.00226-0.00043-0.00319-0.00073-0.00544  c-0.00177-0.01337-0.00421-0.03165-0.006-0.04502c-0.00029-0.00225-0.0007-0.00532-0.00101-0.00757  c-0.00238-0.01782-0.00423-0.03155-0.00661-0.04937c-0.00021-0.0015-0.00043-0.00307-0.00063-0.00458  c-0.0018-0.01337-0.00418-0.03106-0.00598-0.04443c-0.00041-0.003-0.00085-0.00636-0.00127-0.00936  c-0.00211-0.01559-0.00453-0.03351-0.00665-0.0491c-0.00011-0.00075-0.00024-0.00183-0.00035-0.00259  c-0.00212-0.01559-0.00427-0.03136-0.00639-0.04694c-0.00041-0.00301-0.0007-0.0051-0.00111-0.0081  c-0.00212-0.01559-0.00462-0.03387-0.00677-0.04945c-0.0002-0.0015-0.00012-0.0009-0.00032-0.0024  c-0.00215-0.01559-0.00403-0.02927-0.00618-0.04487c-0.00063-0.00449-0.00101-0.00729-0.00163-0.01179  c-0.00215-0.01559-0.00446-0.03222-0.00662-0.04781c-0.00011-0.00075-0.00026-0.00185-0.00037-0.0026  c-0.00217-0.01559-0.00415-0.02989-0.00633-0.04548c-0.00052-0.00375-0.00102-0.00726-0.00154-0.01102  c-0.00435-0.03117-0.00896-0.06398-0.01337-0.09515c-0.00052-0.00375-0.00125-0.00892-0.00179-0.01266  c-0.0022-0.01559-0.00446-0.03151-0.00667-0.04709c-0.00011-0.00076-0.00014-0.00095-0.00024-0.0017  c-0.00221-0.01559-0.0042-0.02953-0.00641-0.04511c-0.00066-0.00449-0.00139-0.00967-0.00203-0.01418  c-0.00191-0.01335-0.00412-0.02879-0.00603-0.04215c-0.00034-0.00224-0.00055-0.00373-0.00087-0.00598  c-0.00223-0.01558-0.00406-0.02831-0.0063-0.04388c-0.00076-0.00525-0.00146-0.01014-0.00223-0.01539  c-0.00192-0.01335-0.00383-0.02654-0.00577-0.03989c-0.00034-0.00225-0.0007-0.00484-0.00102-0.00709  c-0.00226-0.01558-0.0043-0.02957-0.00658-0.04515c-0.00076-0.00525-0.00146-0.01006-0.00223-0.01531  c-0.00195-0.01335-0.00351-0.02403-0.00546-0.03738c-0.00055-0.00375-0.00084-0.00577-0.00139-0.00951  c-0.00229-0.01557-0.00427-0.02903-0.00656-0.0446c-0.00076-0.00524-0.00153-0.0104-0.0023-0.01565  c-0.00197-0.01334-0.00334-0.02264-0.00531-0.03599c-0.00056-0.00375-0.00111-0.00753-0.00168-0.01128  c-0.0023-0.01557-0.00429-0.02896-0.00661-0.04453c-0.00078-0.00524-0.00146-0.00989-0.00226-0.01514  c-0.00198-0.01334-0.00334-0.02246-0.00534-0.0358c-0.00056-0.00375-0.00116-0.00777-0.00172-0.01151  c-0.00232-0.01557-0.0042-0.02809-0.00655-0.04366c-0.0009-0.00599-0.00162-0.01078-0.00252-0.01678  c-0.00168-0.01112-0.00334-0.02215-0.00502-0.03326c-0.00067-0.00449-0.00146-0.00974-0.00215-0.01423  c-0.00201-0.01334-0.00455-0.03004-0.00656-0.04337c-0.00079-0.00524-0.0016-0.01055-0.00241-0.0158  c-0.00203-0.01334-0.00316-0.02075-0.00519-0.0341c-0.00056-0.00374-0.00143-0.00945-0.00201-0.0132  c-0.00204-0.01334-0.00461-0.03014-0.00665-0.04348c-0.00081-0.00524-0.00182-0.01184-0.00262-0.01708  c-0.00137-0.0089-0.00346-0.02255-0.00484-0.03144c-0.00092-0.00599-0.00154-0.01006-0.00247-0.01605  c-0.00206-0.01334-0.00452-0.0292-0.00658-0.04253c-0.00081-0.00524-0.00185-0.01192-0.00266-0.01716  c-0.00139-0.0089-0.00343-0.02204-0.00481-0.03093c-0.00082-0.00524-0.00174-0.01113-0.00255-0.01637  c-0.00208-0.01334-0.00449-0.02877-0.00658-0.04211c-0.00093-0.00599-0.00183-0.01168-0.00276-0.01767  c-0.0014-0.00889-0.00342-0.02178-0.00482-0.03067c-0.00093-0.00599-0.00172-0.01104-0.00267-0.01703  c-0.00211-0.01333-0.00455-0.02887-0.00665-0.0422c-0.00095-0.00599-0.00177-0.01116-0.00272-0.01714  c-0.0014-0.00889-0.00331-0.02094-0.00473-0.02983c-0.00095-0.00599-0.00188-0.01184-0.00282-0.01782  c-0.00212-0.01333-0.0045-0.02831-0.00662-0.04164c-0.00096-0.00599-0.00191-0.01189-0.00287-0.01787  c-0.00142-0.00889-0.00337-0.02114-0.00479-0.03003c-0.00084-0.00523-0.00197-0.01228-0.00281-0.01752  c-0.00215-0.01333-0.0047-0.02927-0.00685-0.04259c-0.00084-0.00524-0.00165-0.01018-0.00249-0.01542  c-0.00143-0.00888-0.00357-0.02213-0.005-0.03101c-0.00098-0.00599-0.00197-0.01212-0.00293-0.0181  c-0.00217-0.01332-0.00412-0.02544-0.00629-0.03876c-0.0011-0.00673-0.00214-0.01307-0.00323-0.01979  c-0.00143-0.00888-0.00345-0.02124-0.0049-0.03012c-0.00099-0.00599-0.00211-0.01285-0.00308-0.01883  c-0.00218-0.01332-0.00383-0.0234-0.00601-0.03672c-0.00124-0.00748-0.00217-0.01314-0.00339-0.02061  c-0.00146-0.00888-0.00357-0.02171-0.00504-0.03059c-0.00111-0.00673-0.00195-0.01181-0.00307-0.01854  c-0.0022-0.01332-0.00359-0.02171-0.00578-0.03502c-0.00124-0.00748-0.00244-0.01473-0.00368-0.02221  c-0.00148-0.00888-0.00366-0.02198-0.00513-0.03086c-0.00113-0.00673-0.00223-0.01337-0.00336-0.0201  c-0.00148-0.00888-0.00352-0.02119-0.005-0.03007c-0.00163-0.00972-0.00304-0.01808-0.00465-0.02779  c-0.0015-0.00888-0.0031-0.01844-0.00458-0.02731c-0.00127-0.00748-0.00259-0.01545-0.00386-0.02293  c-0.00111-0.00666-0.00291-0.0173-0.00403-0.02395c-0.00189-0.01121-0.00386-0.0229-0.00575-0.03411  c-0.00188-0.01109-0.00269-0.01582-0.00456-0.02691c-0.00127-0.00747-0.00241-0.01425-0.00368-0.02172  c-0.00151-0.00887-0.00278-0.01633-0.00429-0.0252c-0.00179-0.01046-0.00351-0.02059-0.00529-0.03105  c-0.00151-0.00887-0.00333-0.01951-0.00484-0.02838c-0.00128-0.00747-0.0025-0.01462-0.00378-0.02209  c-0.00153-0.00887-0.00275-0.01604-0.00427-0.02491c-0.0018-0.01046-0.00357-0.02077-0.00537-0.03122  c-0.00191-0.01109-0.00308-0.01793-0.00499-0.02901c-0.0013-0.00747-0.00252-0.01454-0.0038-0.02201  c-0.00154-0.00887-0.00275-0.01586-0.00429-0.02473c-0.00156-0.00896-0.00305-0.01765-0.00461-0.02661  c-0.00192-0.01109-0.00374-0.02149-0.00566-0.03258c-0.00143-0.00821-0.00282-0.01619-0.00426-0.02441  c-0.00116-0.00665-0.00229-0.01308-0.00345-0.01973c-0.00247-0.01419-0.00485-0.02773-0.00734-0.04191  c-0.00156-0.00887-0.00204-0.0117-0.0036-0.02057c-0.00145-0.00821-0.00291-0.01659-0.00436-0.02481  c-0.00117-0.00665-0.00246-0.01392-0.00363-0.02057c-0.00157-0.00896-0.00316-0.01794-0.00473-0.0269  c-0.00235-0.0133-0.00386-0.02184-0.00623-0.03513c-0.00133-0.00747-0.00269-0.01519-0.00401-0.02265  c-0.00157-0.00887-0.00253-0.01428-0.00412-0.02314c-0.00172-0.0097-0.00317-0.01789-0.00491-0.02759  c-0.00197-0.01108-0.00394-0.02208-0.00591-0.03315c-0.00148-0.00821-0.00299-0.01665-0.00446-0.02486  c-0.00119-0.00665-0.0023-0.01283-0.00349-0.01948c-0.0016-0.00896-0.00301-0.01676-0.00461-0.02571  c-0.00079-0.00443-0.00162-0.00895-0.00241-0.01338c-0.00296-0.01642-0.00613-0.03407-0.00911-0.05048  c-0.00079-0.00443-0.00197-0.01093-0.00278-0.01536c-0.00552-0.03059-0.01088-0.06007-0.01645-0.09066  c-0.00081-0.00443-0.00229-0.01252-0.0031-0.01695c-0.00177-0.0097-0.00325-0.01785-0.00504-0.02755  c-0.0004-0.00221-0.00163-0.00891-0.00203-0.01112c-0.00314-0.01715-0.00639-0.03489-0.00955-0.05204  c-0.00081-0.00443-0.00206-0.01124-0.00288-0.01566c-0.00177-0.0097-0.00346-0.01889-0.00526-0.02858  c-0.0004-0.00221-0.00137-0.00744-0.00177-0.00965c-0.00331-0.0179-0.00647-0.03502-0.0098-0.05291  c-0.00122-0.00664-0.00172-0.00933-0.00296-0.01597c-0.00166-0.00895-0.00342-0.01841-0.00508-0.02736  c-0.00082-0.00443-0.002-0.01073-0.00282-0.01516c-0.00305-0.0164-0.00632-0.03393-0.00938-0.05033  c-0.00041-0.00221-0.00198-0.01061-0.0024-0.01282c-0.00182-0.00969-0.0038-0.02026-0.00562-0.02995  c-0.00041-0.00221-0.00122-0.00651-0.00163-0.00872c-0.00351-0.01863-0.0071-0.03769-0.0106-0.05632  c-0.00041-0.00221-0.00175-0.00935-0.00218-0.01157c-0.00183-0.00969-0.00381-0.02021-0.00565-0.02989  c-0.00084-0.00443-0.00134-0.00711-0.00218-0.01153c-0.00339-0.01788-0.00658-0.03471-0.00998-0.0526  c-0.00084-0.00443-0.00169-0.00895-0.00253-0.01337c-0.00185-0.00969-0.00391-0.02051-0.00575-0.03019  c-0.00043-0.00221-0.00111-0.00581-0.00154-0.00802c-0.00369-0.01937-0.00746-0.03905-0.01117-0.05841  c-0.00084-0.00442-0.00092-0.00481-0.00177-0.00923c-0.002-0.01043-0.00394-0.02052-0.00594-0.03094  c-0.00085-0.00443-0.00093-0.00483-0.00179-0.00925c-0.00388-0.02011-0.00784-0.04071-0.01173-0.06081  c-0.00043-0.00221-0.00052-0.00272-0.00095-0.00493c-0.00217-0.01117-0.0043-0.02227-0.00647-0.03344l-0.0009-0.00463  c-0.0042-0.0216-0.00879-0.0452-0.01299-0.0668c-0.00044-0.00221,0.00012,0.00067-0.00031-0.00154  c-0.00218-0.01117-0.00436-0.02241-0.00656-0.03357c-0.00043-0.00221-0.00075-0.00388-0.00119-0.00608  c-0.00655-0.0335-0.01337-0.06823-0.01996-0.10173c-0.00043-0.00221-0.00032-0.00164-0.00076-0.00385  c-0.00674-0.03424-0.01323-0.06706-0.02003-0.10129c-0.00044-0.00221-0.0013-0.00657-0.00174-0.00878  c-0.00665-0.03349-0.01314-0.06595-0.01984-0.09943c-0.00044-0.00221-0.0007-0.00356-0.00114-0.00577  c-0.00656-0.03273-0.01334-0.06646-0.01994-0.09919c-0.00089-0.00441-0.00119-0.00589-0.00208-0.01031  c-0.00645-0.03198-0.01312-0.06491-0.01962-0.09689c-0.0009-0.00441-0.00093-0.00456-0.00183-0.00897  c-0.00681-0.03346-0.0134-0.06578-0.02026-0.09923l-0.00127-0.00619c-0.00716-0.03494-0.01395-0.06794-0.02116-0.10287  l-0.00044-0.00214c-0.00722-0.03493-0.01425-0.06889-0.02151-0.10381c-0.00046-0.0022-0.00035-0.00166-0.00081-0.00387  c-0.00711-0.03418-0.01443-0.06926-0.02161-0.10342c-0.00046-0.00221-0.0002-0.00093-0.00066-0.00314  c-0.00716-0.03417-0.01448-0.06892-0.0217-0.10308c-0.00046-0.0022-0.00041-0.002-0.00089-0.0042  C215.75481,58.83654,215.43559,57.51231,215.07848,56.19686L215.07848,56.19686z M172.64427,8.44973l-5.48126,13.6018  c7.1284,2.87267,13.52774,7.11413,19.0202,12.6066c1.57314,1.57313,3.06573,3.24746,4.43646,4.9766l11.49187-9.10993  c-0.40051-0.50525-0.80884-1.0064-1.22488-1.5032l-0.00325-0.00387c-0.0127-0.01516-0.02521-0.03008-0.03792-0.04523  l-0.00339-0.00404c-0.0126-0.01502-0.02531-0.03016-0.03793-0.04517l-0.00345-0.00411  c-0.041-0.04878-0.08203-0.09745-0.1232-0.14615c-0.00307-0.00363-0.00331-0.00393-0.00638-0.00756  c-0.01103-0.01304-0.02191-0.02591-0.03296-0.03894c-0.00307-0.00363-0.00812-0.0096-0.0112-0.01323  c-0.00974-0.01149-0.01955-0.02307-0.02928-0.03455c-0.00308-0.00363-0.00894-0.01054-0.01202-0.01417  c-0.00897-0.01058-0.01813-0.02136-0.02711-0.03194c-0.00462-0.00544-0.00977-0.0115-0.01439-0.01694  c-0.00867-0.01019-0.01743-0.02049-0.02609-0.03068c-0.00464-0.00544-0.00957-0.01123-0.01419-0.01667  c-0.009-0.01056-0.01816-0.02131-0.02716-0.03187c-0.00464-0.00543-0.00838-0.00984-0.01302-0.01527  c-0.01318-0.01545-0.02608-0.03056-0.03928-0.046c-0.00308-0.00362-0.00775-0.00906-0.01083-0.01268  c-0.00958-0.0112-0.01901-0.02223-0.02858-0.03342c-0.00465-0.00543-0.0139-0.01622-0.01854-0.02164  c-0.00705-0.00823-0.01407-0.01642-0.02113-0.02465c-0.0062-0.00723-0.01309-0.01527-0.01929-0.0225  c-0.00685-0.00797-0.01363-0.01588-0.02048-0.02384c-0.00621-0.00723-0.01436-0.01671-0.02057-0.02394  c-0.00618-0.00719-0.01241-0.01442-0.01859-0.02161c-0.00777-0.00903-0.01401-0.01627-0.02177-0.0253  c-0.00565-0.00655-0.01131-0.01312-0.01695-0.01967c-0.00777-0.00903-0.01567-0.01819-0.02345-0.02721  c-0.00497-0.00578-0.00996-0.01154-0.01494-0.01731c-0.00778-0.00902-0.01685-0.01952-0.02464-0.02854  c-0.00322-0.00372-0.00652-0.00754-0.00974-0.01126c-0.03117-0.03607-0.06418-0.07417-0.09544-0.11019  c-0.00333-0.00384-0.00681-0.00785-0.01015-0.01169c-0.00938-0.01081-0.01735-0.01998-0.02673-0.03078  c-0.00446-0.00512-0.00885-0.01018-0.01331-0.0153c-0.00938-0.0108-0.01727-0.01985-0.02667-0.03064  c-0.00401-0.00461-0.00784-0.00901-0.01186-0.01362c-0.0094-0.01079-0.0186-0.02135-0.02802-0.03214  c-0.00368-0.00422-0.00714-0.00818-0.01082-0.0124c-0.01099-0.01258-0.01802-0.02066-0.02902-0.03324  c-0.00267-0.00307-0.00513-0.00587-0.0078-0.00893c-0.04869-0.0557-0.09477-0.10827-0.14366-0.16386  c-0.00067-0.00076-0.00133-0.00151-0.002-0.00228c-0.01103-0.01255-0.02052-0.02333-0.03157-0.03588  c-0.00281-0.00319-0.00557-0.00632-0.00838-0.00951c-0.00946-0.01075-0.02071-0.0235-0.03018-0.03425  c-0.00314-0.00357-0.00626-0.00709-0.0094-0.01066c-0.00949-0.01075-0.02042-0.02313-0.02991-0.03387  c-0.00304-0.00344-0.00578-0.00654-0.00882-0.00998c-0.01108-0.01253-0.02057-0.02326-0.03165-0.03578  c-0.0018-0.00204-0.00337-0.00381-0.00517-0.00584c-0.06018-0.06799-0.1228-0.13847-0.18329-0.20628  c-0.00159-0.00178-0.00323-0.00363-0.00482-0.00541c-0.01114-0.01249-0.02187-0.02451-0.03302-0.03699  c-0.00215-0.00241-0.0042-0.00469-0.00635-0.0071c-0.00955-0.0107-0.02303-0.02577-0.03261-0.03646  c-0.00226-0.00254-0.00475-0.00531-0.007-0.00784c-0.01117-0.01248-0.02153-0.02404-0.03271-0.03651  c-0.00182-0.00203-0.00365-0.00407-0.00546-0.0061c-0.01118-0.01247-0.02332-0.026-0.0345-0.03846  c-0.00035-0.00038-0.00066-0.00073-0.00101-0.00111c-0.04956-0.0552-0.09995-0.11115-0.1497-0.16623  c-0.00137-0.00152-0.00279-0.00309-0.00417-0.0046c-0.01123-0.01244-0.02222-0.02458-0.03346-0.03701  c-0.00217-0.0024-0.00439-0.00486-0.00658-0.00726c-0.01125-0.01243-0.02063-0.0228-0.03189-0.03522  c-0.00275-0.00303-0.00569-0.00628-0.00844-0.00931c-0.00966-0.01065-0.0224-0.0247-0.03207-0.03534  c-0.00229-0.00252-0.00453-0.005-0.00682-0.00753c-0.01128-0.01242-0.02185-0.02406-0.03314-0.03646  c-0.0016-0.00176-0.00305-0.00337-0.00465-0.00513c-0.04837-0.05318-0.10039-0.1102-0.14894-0.16327  c-0.00104-0.00113-0.0022-0.00241-0.00323-0.00354c-0.01134-0.01238-0.0226-0.02468-0.03394-0.03706  c-0.00208-0.00226-0.00414-0.00451-0.00621-0.00677c-0.01134-0.01238-0.02126-0.02318-0.03261-0.03555  c-0.00276-0.00302-0.00545-0.00594-0.00822-0.00896c-0.00974-0.0106-0.02251-0.0245-0.03224-0.0351  c-0.00232-0.00251-0.00482-0.00524-0.00714-0.00775c-0.01137-0.01236-0.0217-0.0236-0.03308-0.03596  c-0.00208-0.00226-0.00427-0.00465-0.00636-0.0069c-0.04877-0.05295-0.09993-0.10832-0.14888-0.16115  c-0.00104-0.00113-0.0022-0.00238-0.00325-0.00351c-0.01143-0.01233-0.02156-0.02326-0.033-0.03558  c-0.00267-0.00288-0.00528-0.00569-0.00795-0.00857c-0.01143-0.01232-0.01942-0.02092-0.03087-0.03323  c-0.00349-0.00375-0.00697-0.00749-0.01045-0.01125c-0.00981-0.01055-0.02106-0.02264-0.03088-0.03319  c-0.00314-0.00338-0.00623-0.00668-0.00937-0.01006c-0.00983-0.01055-0.02126-0.02281-0.03108-0.03335  c-0.00314-0.00337-0.00635-0.0068-0.00949-0.01017c-0.01147-0.0123-0.0208-0.0223-0.03229-0.03459  c-0.00093-0.001-0.00201-0.00216-0.00294-0.00315c-0.0361-0.03863-0.07582-0.08105-0.11201-0.11962  c-0.0014-0.0015-0.00294-0.00315-0.00435-0.00465c-0.01152-0.01227-0.02034-0.02166-0.03188-0.03392  c-0.00304-0.00324-0.00621-0.00662-0.00926-0.00986c-0.01154-0.01226-0.01848-0.01964-0.03001-0.0319  c-0.00398-0.00423-0.00821-0.00873-0.01221-0.01296c-0.00989-0.01051-0.01865-0.0198-0.02855-0.0303  c-0.00433-0.0046-0.00868-0.0092-0.01302-0.01381c-0.0099-0.0105-0.01833-0.01942-0.02824-0.02991  c-0.00458-0.00485-0.00932-0.00987-0.0139-0.01472c-0.00992-0.01049-0.01799-0.01904-0.02792-0.02953  c-0.004-0.00423-0.00797-0.00842-0.01196-0.01264c-0.03308-0.03496-0.06743-0.07118-0.1006-0.10608  c-0.0033-0.00348-0.00662-0.00698-0.00992-0.01045c-0.00996-0.01047-0.01675-0.01761-0.02672-0.02808  c-0.00519-0.00546-0.01045-0.01098-0.01564-0.01643c-0.0083-0.00872-0.01717-0.01802-0.02548-0.02674  c-0.00555-0.00583-0.01135-0.01192-0.01691-0.01774c-0.00832-0.00871-0.01712-0.01793-0.02544-0.02665  c-0.00568-0.00595-0.01141-0.01196-0.01709-0.01791c-0.00833-0.00871-0.01633-0.01708-0.02466-0.02579  c-0.00592-0.00619-0.01202-0.01257-0.01794-0.01876c-0.00833-0.0087-0.01666-0.0174-0.02499-0.0261  c-0.00569-0.00594-0.0114-0.0119-0.01709-0.01784c-0.00835-0.0087-0.01682-0.01754-0.02516-0.02623  c-0.00522-0.00544-0.01056-0.01101-0.01579-0.01645c-0.01669-0.01739-0.03252-0.03385-0.04924-0.05123  c-0.00594-0.00618-0.01184-0.01232-0.01778-0.01849c-0.00836-0.00868-0.01512-0.01569-0.02348-0.02437  c-0.0063-0.00654-0.01244-0.0129-0.01874-0.01944c-0.0067-0.00694-0.01726-0.01788-0.02396-0.02482  c-0.00655-0.00679-0.01305-0.01351-0.01959-0.0203c-0.00838-0.00867-0.01424-0.01474-0.02263-0.02341  c-0.00679-0.00703-0.01361-0.01409-0.02042-0.02111c-0.00671-0.00694-0.01566-0.01617-0.02237-0.0231  c-0.00716-0.00739-0.0144-0.01487-0.02156-0.02226c-0.00671-0.00693-0.01479-0.01525-0.02151-0.02218  c-0.00693-0.00714-0.01408-0.01451-0.02101-0.02165c-0.00673-0.00693-0.01575-0.01622-0.02248-0.02314  c-0.00754-0.00776-0.01488-0.0153-0.02242-0.02305c-0.00673-0.00692-0.01363-0.01401-0.02036-0.02093  c-0.0139-0.01427-0.02776-0.02849-0.04166-0.04275c-0.00674-0.00692-0.01016-0.01042-0.01691-0.01733  c-0.00888-0.00909-0.01768-0.01812-0.02657-0.02721c-0.00674-0.00691-0.01251-0.01282-0.01927-0.01973  c-0.00792-0.00811-0.01604-0.01641-0.02397-0.02451c-0.00674-0.00691-0.01373-0.01403-0.02049-0.02094  c-0.00781-0.00798-0.0157-0.01604-0.02353-0.02402c-0.00676-0.0069-0.01305-0.01331-0.01981-0.02021  c-0.00793-0.00809-0.01572-0.01601-0.02365-0.0241c-0.00677-0.0069-0.01384-0.0141-0.02061-0.02099  c-0.00783-0.00797-0.0159-0.01618-0.02374-0.02415c-0.00677-0.00689-0.01274-0.01296-0.01952-0.01985  c-0.00868-0.00882-0.01721-0.01748-0.02589-0.0263c-0.00679-0.00689-0.01117-0.01134-0.01796-0.01823  c-0.01424-0.01444-0.02872-0.02911-0.04297-0.04354c-0.00339-0.00344-0.00471-0.00478-0.00812-0.00822  c-0.01172-0.01187-0.02342-0.02371-0.03516-0.03557c-0.00511-0.00516-0.0125-0.01262-0.01761-0.01778  c-0.00882-0.00892-0.01768-0.01787-0.02652-0.02679c-0.00682-0.00687-0.01169-0.01179-0.01849-0.01866  c-0.00836-0.00843-0.01689-0.01702-0.02525-0.02545c-0.00682-0.00687-0.0126-0.0127-0.01942-0.01957  c-0.00848-0.00854-0.01689-0.01701-0.02539-0.02555c-0.00511-0.00515-0.01353-0.01361-0.01866-0.01876  c-0.00861-0.00866-0.01717-0.01725-0.02579-0.02591c-0.00684-0.00686-0.01144-0.01149-0.01828-0.01835  c-0.00972-0.00975-0.01962-0.01968-0.02934-0.02943c-0.00342-0.00343-0.01108-0.01111-0.01451-0.01454  c-0.01471-0.01474-0.02939-0.02943-0.04411-0.04416l0,0l0,0C189.50015,17.23599,181.34608,11.95639,172.64427,8.44973  L172.64427,8.44973z"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement("g", null, /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement("g", null, /* @__PURE__ */ import_react35.default.createElement(
       "polygon",
       {
         fill: "white",
@@ -44615,31 +44272,31 @@ class InstrumentLogic extends BaseInstrument {
     )));
   };
   var SpPopoutAtisIcon = (props) => {
-    return /* @__PURE__ */ import_react36.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react36.default.createElement(
+    return /* @__PURE__ */ import_react35.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react35.default.createElement(
       "path",
       {
         fill: "white",
         d: "M85.97998,240H72.15002l-20.92004-69.37L30.29999,240H16.47998l13.17999-43.70001l17.33002-57.40997  c-6.88-1.85004-11.95001-8.15002-11.95001-15.62006c0-8.94,7.25-16.17999,16.19-16.17999s16.17999,7.23999,16.17999,16.17999  c0,7.47003-5.06,13.76001-11.94,15.62006l17.32001,57.40997L85.97998,240z"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "path",
       {
         fill: "white",
         d: "M71.25,95.45996c-5.64001-4.06995-12.54999-6.46997-20.02002-6.46997  c-7.46997,0-14.39996,2.40002-20.03998,6.47998c-8.62,6.23004-14.23999,16.37-14.23999,27.79999  c0,12.19,6.39001,22.92004,16.01001,28.99005l1.94-6.45001c-7.11005-5.10004-11.74005-13.42999-11.74005-22.82001  c0-8.88,4.14001-16.81,10.59003-21.95001c4.79999-3.83002,10.88-6.12,17.47998-6.12c6.60004,0,12.67999,2.28998,17.48004,6.12  c6.44995,5.14001,10.58997,13.07001,10.58997,21.95001c0,9.39001-4.64001,17.71002-11.75,22.81L69.5,152.26001  c9.60999-6.08002,16.01001-16.80005,16.01001-28.99005C85.51001,111.82996,79.88,101.69,71.25,95.45996z"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "path",
       {
         fill: "white",
         d: "M64.75,73.84998c-4.31-1.17999-8.84003-1.81-13.52002-1.81c-4.69,0-9.22998,0.63-13.53998,1.82001  C15.98999,79.81,0,99.70996,0,123.26996c0,19.87006,11.35999,37.12006,27.94,45.61005l1.73999-5.75  C15.40997,155.45001,5.71002,140.37,5.71002,123.06c0-18.20001,10.73999-33.94,26.20996-41.22003  c5.87-2.76001,12.41003-4.29999,19.31-4.29999c6.89001,0,13.42999,1.53998,19.29004,4.28998  C86,89.09998,96.75,104.84998,96.75,123.06c0,17.31-9.71002,32.39001-23.96997,40.08002l1.72998,5.73999  c16.58002-8.48004,27.95001-25.73999,27.95001-45.61005C102.46002,99.70001,86.45001,79.79999,64.75,73.84998z"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "path",
       {
         fill: "white",
         d: "M222.03003,52.57996c0,5.07001-1.38,9.82001-3.80005,13.89001c-1.03998,2.79999-2.67999,5.31-4.75,7.39001  c-3.73999,3.72998-8.88,6.04999-14.54999,6.04999h-78.21997c-8.08002,0-15.12-4.71997-18.48004-11.53998  C99.98999,64.96997,98.69,60.89996,98.69,56.52997c0-11.90997,9.65997-21.57001,21.58002-21.57001  c2.04999,0,4.02997,0.29004,5.90997,0.83002c4.04999-14.77997,17.58002-25.64001,33.64001-25.64001  c12.17999,0,22.89996,6.24005,29.14001,15.71002c1.84998-0.40002,3.76996-0.60999,5.73999-0.60999  C209.78998,25.25,222.03003,37.47998,222.03003,52.57996z"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "path",
       {
         fill: "white",
@@ -44648,13 +44305,13 @@ class InstrumentLogic extends BaseInstrument {
     ));
   };
   var SpPopoutDrawIcon = (props) => {
-    return /* @__PURE__ */ import_react36.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react36.default.createElement(
+    return /* @__PURE__ */ import_react35.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react35.default.createElement(
       "path",
       {
         fill: "white",
         d: "M235.18034,29.14549l-85.13074,85.13074c-1.15114,1.15114-2.5591,2.01257-4.10809,2.51343l-15.61316,5.04848  l-8.283,2.67834c-4.04182,1.30693-7.86426-2.51364-6.55928-6.55611l2.67575-8.28876l5.04852-15.61312  c0.50087-1.54898,1.36229-2.95694,2.51343-4.10807l85.13074-85.13074c6.42621-6.4262,16.84514-6.4262,23.27135,0l1.05449,1.05449  C241.60655,12.30035,241.60655,22.71928,235.18034,29.14549z"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "path",
       {
         fill: "white",
@@ -44663,10 +44320,10 @@ class InstrumentLogic extends BaseInstrument {
     ));
   };
   var SpPopoutCraftIcon = (props) => {
-    return /* @__PURE__ */ import_react36.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react36.default.createElement("rect", { fill: "transparent", strokeWidth: 14, x: 20, y: 10, width: 200, height: 220, rx: 20, ry: 20 }), /* @__PURE__ */ import_react36.default.createElement("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "52.888" }, "C"), /* @__PURE__ */ import_react36.default.createElement("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "94.791" }, "R"), /* @__PURE__ */ import_react36.default.createElement("text", { fontWeight: "bolder", fontSize: 47, x: "45.944", y: "136.075" }, "A"), /* @__PURE__ */ import_react36.default.createElement("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "177.812" }, "F"), /* @__PURE__ */ import_react36.default.createElement("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "219.931" }, "T"));
+    return /* @__PURE__ */ import_react35.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react35.default.createElement("rect", { fill: "transparent", strokeWidth: 14, x: 20, y: 10, width: 200, height: 220, rx: 20, ry: 20 }), /* @__PURE__ */ import_react35.default.createElement("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "52.888" }, "C"), /* @__PURE__ */ import_react35.default.createElement("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "94.791" }, "R"), /* @__PURE__ */ import_react35.default.createElement("text", { fontWeight: "bolder", fontSize: 47, x: "45.944", y: "136.075" }, "A"), /* @__PURE__ */ import_react35.default.createElement("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "177.812" }, "F"), /* @__PURE__ */ import_react35.default.createElement("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "219.931" }, "T"));
   };
   var SpAddIcon = (props) => {
-    return /* @__PURE__ */ import_react36.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 24 24", fill: "none" }, /* @__PURE__ */ import_react36.default.createElement("path", { d: "M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15", stroke: "white", strokeWidth: 1, strokeLinecap: "round" }), /* @__PURE__ */ import_react36.default.createElement(
+    return /* @__PURE__ */ import_react35.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 24 24", fill: "none" }, /* @__PURE__ */ import_react35.default.createElement("path", { d: "M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15", stroke: "white", strokeWidth: 1, strokeLinecap: "round" }), /* @__PURE__ */ import_react35.default.createElement(
       "path",
       {
         className: `add-icon ${props.hovered ? "icon-hover-animation" : "icon-reset"}`,
@@ -44678,10 +44335,10 @@ class InstrumentLogic extends BaseInstrument {
     ));
   };
   var SpBGCraft = (props) => {
-    return /* @__PURE__ */ import_react36.default.createElement("svg", { width: `${props.width}px`, viewBox: "51.234 32.356 1787.128 1196.668", xmlns: "http://www.w3.org/2000/svg" }, /* @__PURE__ */ import_react36.default.createElement("text", { fill: "white", fontSize: 72, x: "150.151", y: "128.22", dx: "23.561", dy: "71.78" }, "C"), /* @__PURE__ */ import_react36.default.createElement("text", { fill: "white", fontSize: 72, x: "999.873", y: "-158.231", dx: "-826.161", dy: "558.231" }, "R"), /* @__PURE__ */ import_react36.default.createElement("text", { fill: "white", fontSize: 72, x: "387.311", y: "415.009", dx: "-211.589", dy: "184.991" }, "A"), /* @__PURE__ */ import_react36.default.createElement("text", { fill: "white", fontSize: 72, x: "134.846", y: "504.394", dx: "42.918", dy: "295.606" }, "F"), /* @__PURE__ */ import_react36.default.createElement("text", { fill: "white", fontSize: 72, x: "144.601", y: "646.498", dx: "33.163", dy: "353.502" }, "T"));
+    return /* @__PURE__ */ import_react35.default.createElement("svg", { width: `${props.width}px`, viewBox: "51.234 32.356 1787.128 1196.668", xmlns: "http://www.w3.org/2000/svg" }, /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 72, x: "150.151", y: "128.22", dx: "23.561", dy: "71.78" }, "C"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 72, x: "999.873", y: "-158.231", dx: "-826.161", dy: "558.231" }, "R"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 72, x: "387.311", y: "415.009", dx: "-211.589", dy: "184.991" }, "A"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 72, x: "134.846", y: "504.394", dx: "42.918", dy: "295.606" }, "F"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 72, x: "144.601", y: "646.498", dx: "33.163", dy: "353.502" }, "T"));
   };
   var SpBgAtis = (props) => {
-    return /* @__PURE__ */ import_react36.default.createElement("svg", { width: `${props.width}px`, viewBox: "0 0 1800 1200", xmlns: "http://www.w3.org/2000/svg" }, /* @__PURE__ */ import_react36.default.createElement(
+    return /* @__PURE__ */ import_react35.default.createElement("svg", { width: `${props.width}px`, viewBox: "0 0 1800 1200", xmlns: "http://www.w3.org/2000/svg" }, /* @__PURE__ */ import_react35.default.createElement(
       "rect",
       {
         fill: "transparent",
@@ -44694,7 +44351,7 @@ class InstrumentLogic extends BaseInstrument {
         rx: "10",
         ry: "10"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "rect",
       {
         fill: "transparent",
@@ -44707,7 +44364,7 @@ class InstrumentLogic extends BaseInstrument {
         rx: "10",
         ry: "10"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "rect",
       {
         fill: "transparent",
@@ -44720,7 +44377,7 @@ class InstrumentLogic extends BaseInstrument {
         rx: "10",
         ry: "10"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "rect",
       {
         fill: "transparent",
@@ -44733,7 +44390,7 @@ class InstrumentLogic extends BaseInstrument {
         rx: "10",
         ry: "10"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "rect",
       {
         fill: "transparent",
@@ -44746,7 +44403,7 @@ class InstrumentLogic extends BaseInstrument {
         rx: "10",
         ry: "10"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "rect",
       {
         fill: "transparent",
@@ -44759,7 +44416,7 @@ class InstrumentLogic extends BaseInstrument {
         rx: "10",
         ry: "10"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "rect",
       {
         fill: "transparent",
@@ -44772,7 +44429,7 @@ class InstrumentLogic extends BaseInstrument {
         rx: "10",
         ry: "10"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "rect",
       {
         fill: "transparent",
@@ -44785,7 +44442,7 @@ class InstrumentLogic extends BaseInstrument {
         rx: "10",
         ry: "10"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "rect",
       {
         fill: "transparent",
@@ -44798,7 +44455,7 @@ class InstrumentLogic extends BaseInstrument {
         rx: "10",
         ry: "10"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "rect",
       {
         fill: "transparent",
@@ -44811,7 +44468,7 @@ class InstrumentLogic extends BaseInstrument {
         rx: "10",
         ry: "10"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "rect",
       {
         fill: "transparent",
@@ -44824,7 +44481,7 @@ class InstrumentLogic extends BaseInstrument {
         rx: "10",
         ry: "10"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "rect",
       {
         fill: "transparent",
@@ -44837,7 +44494,7 @@ class InstrumentLogic extends BaseInstrument {
         rx: "10",
         ry: "10"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "rect",
       {
         fill: "transparent",
@@ -44850,7 +44507,7 @@ class InstrumentLogic extends BaseInstrument {
         rx: "10",
         ry: "10"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "rect",
       {
         fill: "transparent",
@@ -44863,23 +44520,23 @@ class InstrumentLogic extends BaseInstrument {
         rx: "10",
         ry: "10"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "text",
       {
         fontSize: 73,
         fill: "white",
         transform: "matrix(1.2290329933166504, 0, 0, 1.2290329933166504, -45.74797821044922, 41.262577056884766)"
       },
-      /* @__PURE__ */ import_react36.default.createElement("tspan", { x: "254.684", y: "101.505" }, "Departure")
-    ), /* @__PURE__ */ import_react36.default.createElement(
+      /* @__PURE__ */ import_react35.default.createElement("tspan", { x: "254.684", y: "101.505" }, "Departure")
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "text",
       {
         fontSize: 73,
         fill: "white",
         transform: "matrix(1.2290329933166504, 0, 0, 1.2290329933166504, 911.872802734375, 38.153472900390625)"
       },
-      /* @__PURE__ */ import_react36.default.createElement("tspan", { x: "254.684", y: "101.505" }, "Arrival")
-    ), /* @__PURE__ */ import_react36.default.createElement(
+      /* @__PURE__ */ import_react35.default.createElement("tspan", { x: "254.684", y: "101.505" }, "Arrival")
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "ellipse",
       {
         fill: "transparent",
@@ -44891,7 +44548,7 @@ class InstrumentLogic extends BaseInstrument {
         rx: "75.794",
         ry: "75.794"
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(
+    ), /* @__PURE__ */ import_react35.default.createElement(
       "ellipse",
       {
         fill: "transparent",
@@ -44903,12 +44560,12 @@ class InstrumentLogic extends BaseInstrument {
         rx: 75.794,
         ry: 75.794
       }
-    ), /* @__PURE__ */ import_react36.default.createElement("text", { fontSize: 73, fill: "white", x: "336.256", y: "335.538" }, "Information"), /* @__PURE__ */ import_react36.default.createElement("text", { fontSize: 73, fill: "white", x: "1220.259", y: "334.794" }, "Information"), /* @__PURE__ */ import_react36.default.createElement("text", { fill: "white", fontSize: 50, x: "67.187", y: "521.045" }, "Wind"), /* @__PURE__ */ import_react36.default.createElement("text", { fill: "white", fontSize: 50, x: "65.281", y: "661.904" }, "Altimeter"), /* @__PURE__ */ import_react36.default.createElement("text", { fill: "white", fontSize: 50, x: "65.48", y: "803.222" }, "Sky"), /* @__PURE__ */ import_react36.default.createElement("text", { fill: "white", fontSize: 50, x: "66.44", y: "958.298" }, "Temp/DP"), /* @__PURE__ */ import_react36.default.createElement("text", { fill: "white", fontSize: 50, x: "69.056", y: "1105.473" }, "Runway"), /* @__PURE__ */ import_react36.default.createElement("text", { fill: "white", fontSize: 50, x: "943.441", y: "521.884" }, "Wind"), /* @__PURE__ */ import_react36.default.createElement("text", { fill: "white", fontSize: 50, x: "941.535", y: "662.743" }, "Altimeter"), /* @__PURE__ */ import_react36.default.createElement("text", { fill: "white", fontSize: 50, x: "941.734", y: "804.061" }, "Sky"), /* @__PURE__ */ import_react36.default.createElement("text", { fill: "white", fontSize: 50, x: "942.694", y: "959.137" }, "Temp/DP"), /* @__PURE__ */ import_react36.default.createElement("text", { fill: "white", fontSize: 50, x: "945.31", y: "1106.312" }, "Runway"));
+    ), /* @__PURE__ */ import_react35.default.createElement("text", { fontSize: 73, fill: "white", x: "336.256", y: "335.538" }, "Information"), /* @__PURE__ */ import_react35.default.createElement("text", { fontSize: 73, fill: "white", x: "1220.259", y: "334.794" }, "Information"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "67.187", y: "521.045" }, "Wind"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "65.281", y: "661.904" }, "Altimeter"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "65.48", y: "803.222" }, "Sky"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "66.44", y: "958.298" }, "Temp/DP"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "69.056", y: "1105.473" }, "Runway"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "943.441", y: "521.884" }, "Wind"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "941.535", y: "662.743" }, "Altimeter"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "941.734", y: "804.061" }, "Sky"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "942.694", y: "959.137" }, "Temp/DP"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "945.31", y: "1106.312" }, "Runway"));
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Scratchpads/ScratchpadPopup.tsx
   var ScratchpadPopup = (props) => {
-    return /* @__PURE__ */ import_react37.default.createElement("div", { className: "popupContainer" }, /* @__PURE__ */ import_react37.default.createElement("div", { className: "popup-flex-row" }, /* @__PURE__ */ import_react37.default.createElement(
+    return /* @__PURE__ */ import_react36.default.createElement("div", { className: "popupContainer" }, /* @__PURE__ */ import_react36.default.createElement("div", { className: "popup-flex-row" }, /* @__PURE__ */ import_react36.default.createElement(
       "div",
       {
         onClick: () => {
@@ -44916,9 +44573,9 @@ class InstrumentLogic extends BaseInstrument {
         },
         className: "popup-content"
       },
-      /* @__PURE__ */ import_react37.default.createElement(SpPopoutDrawIcon, { width: 100 }),
+      /* @__PURE__ */ import_react36.default.createElement(SpPopoutDrawIcon, { width: 100 }),
       "Draw" /* DRAW */
-    ), /* @__PURE__ */ import_react37.default.createElement(
+    ), /* @__PURE__ */ import_react36.default.createElement(
       "div",
       {
         onClick: () => {
@@ -44926,9 +44583,9 @@ class InstrumentLogic extends BaseInstrument {
         },
         className: "popup-content"
       },
-      /* @__PURE__ */ import_react37.default.createElement(SpPopoutCraftIcon, { width: 100 }),
+      /* @__PURE__ */ import_react36.default.createElement(SpPopoutCraftIcon, { width: 100 }),
       "CRAFT" /* CRAFT */
-    )), /* @__PURE__ */ import_react37.default.createElement("div", { className: "popup-flex-row" }, /* @__PURE__ */ import_react37.default.createElement(
+    )), /* @__PURE__ */ import_react36.default.createElement("div", { className: "popup-flex-row" }, /* @__PURE__ */ import_react36.default.createElement(
       "div",
       {
         onClick: () => {
@@ -44936,9 +44593,9 @@ class InstrumentLogic extends BaseInstrument {
         },
         className: "popup-content"
       },
-      /* @__PURE__ */ import_react37.default.createElement(SpPopoutAtisIcon, { width: 100 }),
+      /* @__PURE__ */ import_react36.default.createElement(SpPopoutAtisIcon, { width: 100 }),
       "ATIS" /* ATIS */
-    ), /* @__PURE__ */ import_react37.default.createElement(
+    ), /* @__PURE__ */ import_react36.default.createElement(
       "div",
       {
         onClick: () => {
@@ -44946,7 +44603,7 @@ class InstrumentLogic extends BaseInstrument {
         },
         className: "popup-content"
       },
-      /* @__PURE__ */ import_react37.default.createElement(SpPopoutHoldIcon, { width: 100 }),
+      /* @__PURE__ */ import_react36.default.createElement(SpPopoutHoldIcon, { width: 100 }),
       "Holding" /* HOLDING */
     )));
   };
@@ -44984,8 +44641,8 @@ class InstrumentLogic extends BaseInstrument {
   }
   function _extends() {
     _extends = Object.assign || function(target) {
-      for (var i2 = 1; i2 < arguments.length; i2++) {
-        var source = arguments[i2];
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
         for (var key in source) {
           if (Object.prototype.hasOwnProperty.call(source, key)) {
             target[key] = source[key];
@@ -45303,10 +44960,10 @@ class InstrumentLogic extends BaseInstrument {
             return iterable;
           }
           if (!isNaN(iterable.length)) {
-            var i2 = -1, next = function next2() {
-              while (++i2 < iterable.length) {
-                if (hasOwn.call(iterable, i2)) {
-                  next2.value = iterable[i2];
+            var i = -1, next = function next2() {
+              while (++i < iterable.length) {
+                if (hasOwn.call(iterable, i)) {
+                  next2.value = iterable[i];
                   next2.done = false;
                   return next2;
                 }
@@ -45367,8 +45024,8 @@ class InstrumentLogic extends BaseInstrument {
             }
             return !!caught;
           }
-          for (var i2 = this.tryEntries.length - 1; i2 >= 0; --i2) {
-            var entry = this.tryEntries[i2];
+          for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+            var entry = this.tryEntries[i];
             var record = entry.completion;
             if (entry.tryLoc === "root") {
               return handle("end");
@@ -45397,8 +45054,8 @@ class InstrumentLogic extends BaseInstrument {
           }
         },
         abrupt: function(type, arg) {
-          for (var i2 = this.tryEntries.length - 1; i2 >= 0; --i2) {
-            var entry = this.tryEntries[i2];
+          for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+            var entry = this.tryEntries[i];
             if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) {
               var finallyEntry = entry;
               break;
@@ -45433,8 +45090,8 @@ class InstrumentLogic extends BaseInstrument {
           return ContinueSentinel;
         },
         finish: function(finallyLoc) {
-          for (var i2 = this.tryEntries.length - 1; i2 >= 0; --i2) {
-            var entry = this.tryEntries[i2];
+          for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+            var entry = this.tryEntries[i];
             if (entry.finallyLoc === finallyLoc) {
               this.complete(entry.completion, entry.afterLoc);
               resetTryEntry(entry);
@@ -45443,8 +45100,8 @@ class InstrumentLogic extends BaseInstrument {
           }
         },
         "catch": function(tryLoc) {
-          for (var i2 = this.tryEntries.length - 1; i2 >= 0; --i2) {
-            var entry = this.tryEntries[i2];
+          for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+            var entry = this.tryEntries[i];
             if (entry.tryLoc === tryLoc) {
               var record = entry.completion;
               if (record.type === "throw") {
@@ -45486,25 +45143,25 @@ class InstrumentLogic extends BaseInstrument {
   var SvgPath = function SvgPath2(_ref) {
     var paths = _ref.paths, id = _ref.id, strokeWidth = _ref.strokeWidth, strokeColor = _ref.strokeColor, _ref$command = _ref.command, command = _ref$command === void 0 ? bezierCommand : _ref$command;
     if (paths.length === 1) {
-      var _paths$ = paths[0], x2 = _paths$.x, y2 = _paths$.y;
+      var _paths$ = paths[0], x = _paths$.x, y = _paths$.y;
       var radius = strokeWidth / 2;
       return React37.createElement("circle", {
         key: id,
         id,
-        cx: x2,
-        cy: y2,
+        cx: x,
+        cy: y,
         r: radius,
         stroke: strokeColor,
         fill: strokeColor
       });
     }
-    var d2 = paths.reduce(function(acc, point, i2, a2) {
-      return i2 === 0 ? "M " + point.x + "," + point.y : acc + " " + command(point, i2, a2);
+    var d = paths.reduce(function(acc, point, i, a) {
+      return i === 0 ? "M " + point.x + "," + point.y : acc + " " + command(point, i, a);
     }, "");
     return React37.createElement("path", {
       key: id,
       id,
-      d: d2,
+      d,
       fill: "none",
       strokeLinecap: "round",
       stroke: strokeColor,
@@ -45521,20 +45178,20 @@ class InstrumentLogic extends BaseInstrument {
   };
   var controlPoint = function controlPoint2(controlPoints) {
     var current = controlPoints.current, next = controlPoints.next, previous = controlPoints.previous, reverse = controlPoints.reverse;
-    var p2 = previous || current;
-    var n2 = next || current;
+    var p = previous || current;
+    var n = next || current;
     var smoothing = 0.2;
-    var o2 = line(p2, n2);
-    var angle = o2.angle + (reverse ? Math.PI : 0);
-    var length = o2.length * smoothing;
-    var x2 = current.x + Math.cos(angle) * length;
-    var y2 = current.y + Math.sin(angle) * length;
-    return [x2, y2];
+    var o = line(p, n);
+    var angle = o.angle + (reverse ? Math.PI : 0);
+    var length = o.length * smoothing;
+    var x = current.x + Math.cos(angle) * length;
+    var y = current.y + Math.sin(angle) * length;
+    return [x, y];
   };
-  var bezierCommand = function bezierCommand2(point, i2, a2) {
+  var bezierCommand = function bezierCommand2(point, i, a) {
     var cpsX = null;
     var cpsY = null;
-    switch (i2) {
+    switch (i) {
       case 0:
         var _controlPoint = controlPoint({
           current: point
@@ -45544,7 +45201,7 @@ class InstrumentLogic extends BaseInstrument {
         break;
       case 1:
         var _controlPoint2 = controlPoint({
-          current: a2[i2 - 1],
+          current: a[i - 1],
           next: point
         });
         cpsX = _controlPoint2[0];
@@ -45552,8 +45209,8 @@ class InstrumentLogic extends BaseInstrument {
         break;
       default:
         var _controlPoint3 = controlPoint({
-          current: a2[i2 - 1],
-          previous: a2[i2 - 2],
+          current: a[i - 1],
+          previous: a[i - 2],
           next: point
         });
         cpsX = _controlPoint3[0];
@@ -45562,8 +45219,8 @@ class InstrumentLogic extends BaseInstrument {
     }
     var _controlPoint4 = controlPoint({
       current: point,
-      previous: a2[i2 - 1],
-      next: a2[i2 + 1],
+      previous: a[i - 1],
+      next: a[i + 1],
       reverse: true
     }), cpeX = _controlPoint4[0], cpeY = _controlPoint4[1];
     return "C " + cpsX + "," + cpsY + " " + cpeX + "," + cpeY + " " + point.x + ", " + point.y;
@@ -45714,8 +45371,8 @@ class InstrumentLogic extends BaseInstrument {
                           context2.drawImage(image, 0, 0);
                         });
                         resolve2(renderCanvas.toDataURL("image/" + imageType));
-                      })["catch"](function(e2) {
-                        throw e2;
+                      })["catch"](function(e) {
+                        throw e;
                       });
                       _context.next = 27;
                       break;
@@ -45752,8 +45409,8 @@ class InstrumentLogic extends BaseInstrument {
                 resolve2(svgCanvas.outerHTML);
               }
               reject(new Error("Canvas not loaded"));
-            } catch (e2) {
-              reject(e2);
+            } catch (e) {
+              reject(e);
             }
           });
         }
@@ -45813,10 +45470,10 @@ class InstrumentLogic extends BaseInstrument {
       width: "100%",
       height: "100%",
       fill: "white"
-    }), eraserPaths.map(function(eraserPath, i2) {
+    }), eraserPaths.map(function(eraserPath, i) {
       return React37.createElement(SvgPath, {
-        key: id + "__eraser-" + i2,
-        id: id + "__eraser-" + i2,
+        key: id + "__eraser-" + i,
+        id: id + "__eraser-" + i,
         paths: eraserPath.paths,
         strokeColor: "#000000",
         strokeWidth: eraserPath.strokeWidth
@@ -45835,21 +45492,21 @@ class InstrumentLogic extends BaseInstrument {
       height: "100%",
       xlinkHref: backgroundImage,
       preserveAspectRatio: preserveBackgroundImageAspectRatio
-    })), eraserPaths.map(function(_3, i2) {
+    })), eraserPaths.map(function(_2, i) {
       return React37.createElement("mask", {
-        id: id + "__eraser-mask-" + i2,
-        key: id + "__eraser-mask-" + i2,
+        id: id + "__eraser-mask-" + i,
+        key: id + "__eraser-mask-" + i,
         maskUnits: "userSpaceOnUse"
       }, React37.createElement("use", {
         href: "#" + id + "__mask-background"
       }), Array.from({
-        length: eraserPaths.length - i2
-      }, function(_4, j) {
-        return j + i2;
-      }).map(function(k2) {
+        length: eraserPaths.length - i
+      }, function(_3, j) {
+        return j + i;
+      }).map(function(k) {
         return React37.createElement("use", {
-          key: k2.toString(),
-          href: "#" + id + "__eraser-" + k2.toString()
+          key: k.toString(),
+          href: "#" + id + "__eraser-" + k.toString()
         });
       }));
     })), React37.createElement("g", {
@@ -45861,11 +45518,11 @@ class InstrumentLogic extends BaseInstrument {
       width: "100%",
       height: "100%",
       fill: backgroundImage ? "url(#" + id + "__background)" : canvasColor
-    })), pathGroups.map(function(pathGroup, i2) {
+    })), pathGroups.map(function(pathGroup, i) {
       return React37.createElement("g", {
-        id: id + "__stroke-group-" + i2,
-        key: id + "__stroke-group-" + i2,
-        mask: "url(#" + id + "__eraser-mask-" + i2 + ")"
+        id: id + "__stroke-group-" + i,
+        key: id + "__stroke-group-" + i,
+        mask: "url(#" + id + "__eraser-mask-" + i + ")"
       }, React37.createElement(Paths, {
         id,
         paths: pathGroup
@@ -45950,8 +45607,8 @@ class InstrumentLogic extends BaseInstrument {
             } else {
               exportSvg2().then(function(data) {
                 resolve2(data);
-              })["catch"](function(e2) {
-                reject(e2);
+              })["catch"](function(e) {
+                reject(e);
               });
             }
           });
@@ -45960,8 +45617,8 @@ class InstrumentLogic extends BaseInstrument {
           return new Promise(function(resolve2, reject) {
             try {
               resolve2(currentPaths);
-            } catch (e2) {
-              reject(e2);
+            } catch (e) {
+              reject(e);
             }
           });
         },
@@ -45983,8 +45640,8 @@ class InstrumentLogic extends BaseInstrument {
                 return totalSketchingTime + (endTimestamp - startTimestamp);
               }, 0);
               resolve2(sketchingTime);
-            } catch (e2) {
-              reject(e2);
+            } catch (e) {
+              reject(e);
             }
           });
         },
@@ -46067,26 +45724,26 @@ class InstrumentLogic extends BaseInstrument {
   });
 
   // instruments/src/ElectronicFlightBag/components/common/util/dangerousLoader.tsx
-  var import_react38 = __toESM(require_react());
+  var import_react37 = __toESM(require_react());
   var import_dompurify = __toESM(require_purify());
   var RenderSvgFromString = (props) => {
     const sanitizedString = import_dompurify.default.sanitize(props.element);
-    return /* @__PURE__ */ import_react38.default.createElement("div", { dangerouslySetInnerHTML: { __html: sanitizedString } });
+    return /* @__PURE__ */ import_react37.default.createElement("div", { dangerouslySetInnerHTML: { __html: sanitizedString } });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Scratchpads/ScratchpadBackground.tsx
-  var import_react39 = __toESM(require_react());
+  var import_react38 = __toESM(require_react());
   var getBackground = (type, width) => {
     switch (type) {
       case "Draw" /* DRAW */:
-        return /* @__PURE__ */ import_react39.default.createElement(import_react39.default.Fragment, null);
+        return /* @__PURE__ */ import_react38.default.createElement(import_react38.default.Fragment, null);
       case "CRAFT" /* CRAFT */:
-        return /* @__PURE__ */ import_react39.default.createElement(SpBGCraft, { width });
+        return /* @__PURE__ */ import_react38.default.createElement(SpBGCraft, { width });
       case "ATIS" /* ATIS */:
-        return /* @__PURE__ */ import_react39.default.createElement(SpBgAtis, { width });
+        return /* @__PURE__ */ import_react38.default.createElement(SpBgAtis, { width });
       case "Holding" /* HOLDING */:
       default:
-        return /* @__PURE__ */ import_react39.default.createElement(import_react39.default.Fragment, null);
+        return /* @__PURE__ */ import_react38.default.createElement(import_react38.default.Fragment, null);
     }
   };
 
@@ -46097,43 +45754,43 @@ class InstrumentLogic extends BaseInstrument {
         const svg = await canvas.current.exportSvg();
         return svg;
       }
-    } catch (e2) {
-      console.error(e2);
+    } catch (e) {
+      console.error(e);
     }
     return void 0;
   };
 
   // node_modules/react-color/es/components/alpha/Alpha.js
-  var import_react50 = __toESM(require_react());
+  var import_react49 = __toESM(require_react());
   var import_reactcss9 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/common/Alpha.js
-  var import_react41 = __toESM(require_react());
+  var import_react40 = __toESM(require_react());
   var import_reactcss2 = __toESM(require_lib2());
 
   // node_modules/react-color/es/helpers/alpha.js
-  var calculateChange = function calculateChange2(e2, hsl, direction, initialA, container) {
+  var calculateChange = function calculateChange2(e, hsl, direction, initialA, container) {
     var containerWidth = container.clientWidth;
     var containerHeight = container.clientHeight;
-    var x2 = typeof e2.pageX === "number" ? e2.pageX : e2.touches[0].pageX;
-    var y2 = typeof e2.pageY === "number" ? e2.pageY : e2.touches[0].pageY;
-    var left = x2 - (container.getBoundingClientRect().left + window.pageXOffset);
-    var top = y2 - (container.getBoundingClientRect().top + window.pageYOffset);
+    var x = typeof e.pageX === "number" ? e.pageX : e.touches[0].pageX;
+    var y = typeof e.pageY === "number" ? e.pageY : e.touches[0].pageY;
+    var left = x - (container.getBoundingClientRect().left + window.pageXOffset);
+    var top = y - (container.getBoundingClientRect().top + window.pageYOffset);
     if (direction === "vertical") {
-      var a2 = void 0;
+      var a = void 0;
       if (top < 0) {
-        a2 = 0;
+        a = 0;
       } else if (top > containerHeight) {
-        a2 = 1;
+        a = 1;
       } else {
-        a2 = Math.round(top * 100 / containerHeight) / 100;
+        a = Math.round(top * 100 / containerHeight) / 100;
       }
-      if (hsl.a !== a2) {
+      if (hsl.a !== a) {
         return {
           h: hsl.h,
           s: hsl.s,
           l: hsl.l,
-          a: a2,
+          a,
           source: "rgb"
         };
       }
@@ -46160,7 +45817,7 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // node_modules/react-color/es/components/common/Checkboard.js
-  var import_react40 = __toESM(require_react());
+  var import_react39 = __toESM(require_react());
   var import_reactcss = __toESM(require_lib2());
 
   // node_modules/react-color/es/helpers/checkboard.js
@@ -46196,8 +45853,8 @@ class InstrumentLogic extends BaseInstrument {
 
   // node_modules/react-color/es/components/common/Checkboard.js
   var _extends2 = Object.assign || function(target) {
-    for (var i2 = 1; i2 < arguments.length; i2++) {
-      var source = arguments[i2];
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
       for (var key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           target[key] = source[key];
@@ -46218,7 +45875,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return (0, import_react40.isValidElement)(children) ? import_react40.default.cloneElement(children, _extends2({}, children.props, { style: _extends2({}, children.props.style, styles.grid) })) : import_react40.default.createElement("div", { style: styles.grid });
+    return (0, import_react39.isValidElement)(children) ? import_react39.default.cloneElement(children, _extends2({}, children.props, { style: _extends2({}, children.props.style, styles.grid) })) : import_react39.default.createElement("div", { style: styles.grid });
   };
   Checkboard.defaultProps = {
     size: 8,
@@ -46230,8 +45887,8 @@ class InstrumentLogic extends BaseInstrument {
 
   // node_modules/react-color/es/components/common/Alpha.js
   var _extends3 = Object.assign || function(target) {
-    for (var i2 = 1; i2 < arguments.length; i2++) {
-      var source = arguments[i2];
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
       for (var key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           target[key] = source[key];
@@ -46242,8 +45899,8 @@ class InstrumentLogic extends BaseInstrument {
   };
   var _createClass = function() {
     function defineProperties(target, props) {
-      for (var i2 = 0; i2 < props.length; i2++) {
-        var descriptor = props[i2];
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
         descriptor.enumerable = descriptor.enumerable || false;
         descriptor.configurable = true;
         if ("value" in descriptor)
@@ -46287,11 +45944,11 @@ class InstrumentLogic extends BaseInstrument {
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
-      return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = Alpha2.__proto__ || Object.getPrototypeOf(Alpha2)).call.apply(_ref2, [this].concat(args))), _this), _this.handleChange = function(e2) {
-        var change = calculateChange(e2, _this.props.hsl, _this.props.direction, _this.props.a, _this.container);
-        change && typeof _this.props.onChange === "function" && _this.props.onChange(change, e2);
-      }, _this.handleMouseDown = function(e2) {
-        _this.handleChange(e2);
+      return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = Alpha2.__proto__ || Object.getPrototypeOf(Alpha2)).call.apply(_ref2, [this].concat(args))), _this), _this.handleChange = function(e) {
+        var change = calculateChange(e, _this.props.hsl, _this.props.direction, _this.props.a, _this.container);
+        change && typeof _this.props.onChange === "function" && _this.props.onChange(change, e);
+      }, _this.handleMouseDown = function(e) {
+        _this.handleChange(e);
         window.addEventListener("mousemove", _this.handleChange);
         window.addEventListener("mouseup", _this.handleMouseUp);
       }, _this.handleMouseUp = function() {
@@ -46361,16 +46018,16 @@ class InstrumentLogic extends BaseInstrument {
           vertical: this.props.direction === "vertical",
           overwrite: true
         });
-        return import_react41.default.createElement(
+        return import_react40.default.createElement(
           "div",
           { style: styles.alpha },
-          import_react41.default.createElement(
+          import_react40.default.createElement(
             "div",
             { style: styles.checkboard },
-            import_react41.default.createElement(Checkboard_default, { renderers: this.props.renderers })
+            import_react40.default.createElement(Checkboard_default, { renderers: this.props.renderers })
           ),
-          import_react41.default.createElement("div", { style: styles.gradient }),
-          import_react41.default.createElement(
+          import_react40.default.createElement("div", { style: styles.gradient }),
+          import_react40.default.createElement(
             "div",
             {
               style: styles.container,
@@ -46381,26 +46038,26 @@ class InstrumentLogic extends BaseInstrument {
               onTouchMove: this.handleChange,
               onTouchStart: this.handleChange
             },
-            import_react41.default.createElement(
+            import_react40.default.createElement(
               "div",
               { style: styles.pointer },
-              this.props.pointer ? import_react41.default.createElement(this.props.pointer, this.props) : import_react41.default.createElement("div", { style: styles.slider })
+              this.props.pointer ? import_react40.default.createElement(this.props.pointer, this.props) : import_react40.default.createElement("div", { style: styles.slider })
             )
           )
         );
       }
     }]);
     return Alpha2;
-  }(import_react41.PureComponent || import_react41.Component);
+  }(import_react40.PureComponent || import_react40.Component);
   var Alpha_default = Alpha;
 
   // node_modules/react-color/es/components/common/EditableInput.js
-  var import_react42 = __toESM(require_react());
+  var import_react41 = __toESM(require_react());
   var import_reactcss3 = __toESM(require_lib2());
   var _createClass2 = function() {
     function defineProperties(target, props) {
-      for (var i2 = 0; i2 < props.length; i2++) {
-        var descriptor = props[i2];
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
         descriptor.enumerable = descriptor.enumerable || false;
         descriptor.configurable = true;
         if ("value" in descriptor)
@@ -46464,29 +46121,29 @@ class InstrumentLogic extends BaseInstrument {
           _this.setState({ value: _this.state.blurValue, blurValue: null });
         }
       };
-      _this.handleChange = function(e2) {
-        _this.setUpdatedValue(e2.target.value, e2);
+      _this.handleChange = function(e) {
+        _this.setUpdatedValue(e.target.value, e);
       };
-      _this.handleKeyDown = function(e2) {
-        var value = getNumberValue(e2.target.value);
-        if (!isNaN(value) && isValidKeyCode(e2.keyCode)) {
+      _this.handleKeyDown = function(e) {
+        var value = getNumberValue(e.target.value);
+        if (!isNaN(value) && isValidKeyCode(e.keyCode)) {
           var offset = _this.getArrowOffset();
-          var updatedValue = e2.keyCode === UP_KEY_CODE ? value + offset : value - offset;
-          _this.setUpdatedValue(updatedValue, e2);
+          var updatedValue = e.keyCode === UP_KEY_CODE ? value + offset : value - offset;
+          _this.setUpdatedValue(updatedValue, e);
         }
       };
-      _this.handleDrag = function(e2) {
+      _this.handleDrag = function(e) {
         if (_this.props.dragLabel) {
-          var newValue = Math.round(_this.props.value + e2.movementX);
+          var newValue = Math.round(_this.props.value + e.movementX);
           if (newValue >= 0 && newValue <= _this.props.dragMax) {
-            _this.props.onChange && _this.props.onChange(_this.getValueObjectWithLabel(newValue), e2);
+            _this.props.onChange && _this.props.onChange(_this.getValueObjectWithLabel(newValue), e);
           }
         }
       };
-      _this.handleMouseDown = function(e2) {
+      _this.handleMouseDown = function(e) {
         if (_this.props.dragLabel) {
-          e2.preventDefault();
-          _this.handleDrag(e2);
+          e.preventDefault();
+          _this.handleDrag(e);
           window.addEventListener("mousemove", _this.handleDrag);
           window.addEventListener("mouseup", _this.handleMouseUp);
         }
@@ -46533,9 +46190,9 @@ class InstrumentLogic extends BaseInstrument {
       }
     }, {
       key: "setUpdatedValue",
-      value: function setUpdatedValue(value, e2) {
+      value: function setUpdatedValue(value, e) {
         var onChangeValue = this.props.label ? this.getValueObjectWithLabel(value) : value;
-        this.props.onChange && this.props.onChange(onChangeValue, e2);
+        this.props.onChange && this.props.onChange(onChangeValue, e);
         this.setState({ value });
       }
     }, {
@@ -46561,10 +46218,10 @@ class InstrumentLogic extends BaseInstrument {
         }, {
           "user-override": true
         }, this.props);
-        return import_react42.default.createElement(
+        return import_react41.default.createElement(
           "div",
           { style: styles.wrap },
-          import_react42.default.createElement("input", {
+          import_react41.default.createElement("input", {
             id: this.inputId,
             style: styles.input,
             ref: function ref(input) {
@@ -46577,7 +46234,7 @@ class InstrumentLogic extends BaseInstrument {
             placeholder: this.props.placeholder,
             spellCheck: "false"
           }),
-          this.props.label && !this.props.hideLabel ? import_react42.default.createElement(
+          this.props.label && !this.props.hideLabel ? import_react41.default.createElement(
             "label",
             {
               htmlFor: this.inputId,
@@ -46590,34 +46247,34 @@ class InstrumentLogic extends BaseInstrument {
       }
     }]);
     return EditableInput2;
-  }(import_react42.PureComponent || import_react42.Component);
+  }(import_react41.PureComponent || import_react41.Component);
   var EditableInput_default = EditableInput;
 
   // node_modules/react-color/es/components/common/Hue.js
-  var import_react43 = __toESM(require_react());
+  var import_react42 = __toESM(require_react());
   var import_reactcss4 = __toESM(require_lib2());
 
   // node_modules/react-color/es/helpers/hue.js
-  var calculateChange3 = function calculateChange4(e2, direction, hsl, container) {
+  var calculateChange3 = function calculateChange4(e, direction, hsl, container) {
     var containerWidth = container.clientWidth;
     var containerHeight = container.clientHeight;
-    var x2 = typeof e2.pageX === "number" ? e2.pageX : e2.touches[0].pageX;
-    var y2 = typeof e2.pageY === "number" ? e2.pageY : e2.touches[0].pageY;
-    var left = x2 - (container.getBoundingClientRect().left + window.pageXOffset);
-    var top = y2 - (container.getBoundingClientRect().top + window.pageYOffset);
+    var x = typeof e.pageX === "number" ? e.pageX : e.touches[0].pageX;
+    var y = typeof e.pageY === "number" ? e.pageY : e.touches[0].pageY;
+    var left = x - (container.getBoundingClientRect().left + window.pageXOffset);
+    var top = y - (container.getBoundingClientRect().top + window.pageYOffset);
     if (direction === "vertical") {
-      var h2 = void 0;
+      var h = void 0;
       if (top < 0) {
-        h2 = 359;
+        h = 359;
       } else if (top > containerHeight) {
-        h2 = 0;
+        h = 0;
       } else {
         var percent = -(top * 100 / containerHeight) + 100;
-        h2 = 360 * percent / 100;
+        h = 360 * percent / 100;
       }
-      if (hsl.h !== h2) {
+      if (hsl.h !== h) {
         return {
-          h: h2,
+          h,
           s: hsl.s,
           l: hsl.l,
           a: hsl.a,
@@ -46650,8 +46307,8 @@ class InstrumentLogic extends BaseInstrument {
   // node_modules/react-color/es/components/common/Hue.js
   var _createClass3 = function() {
     function defineProperties(target, props) {
-      for (var i2 = 0; i2 < props.length; i2++) {
-        var descriptor = props[i2];
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
         descriptor.enumerable = descriptor.enumerable || false;
         descriptor.configurable = true;
         if ("value" in descriptor)
@@ -46695,11 +46352,11 @@ class InstrumentLogic extends BaseInstrument {
       for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
-      return _ret = (_temp = (_this = _possibleConstructorReturn3(this, (_ref2 = Hue2.__proto__ || Object.getPrototypeOf(Hue2)).call.apply(_ref2, [this].concat(args))), _this), _this.handleChange = function(e2) {
-        var change = calculateChange3(e2, _this.props.direction, _this.props.hsl, _this.container);
-        change && typeof _this.props.onChange === "function" && _this.props.onChange(change, e2);
-      }, _this.handleMouseDown = function(e2) {
-        _this.handleChange(e2);
+      return _ret = (_temp = (_this = _possibleConstructorReturn3(this, (_ref2 = Hue2.__proto__ || Object.getPrototypeOf(Hue2)).call.apply(_ref2, [this].concat(args))), _this), _this.handleChange = function(e) {
+        var change = calculateChange3(e, _this.props.direction, _this.props.hsl, _this.container);
+        change && typeof _this.props.onChange === "function" && _this.props.onChange(change, e);
+      }, _this.handleMouseDown = function(e) {
+        _this.handleChange(e);
         window.addEventListener("mousemove", _this.handleChange);
         window.addEventListener("mouseup", _this.handleMouseUp);
       }, _this.handleMouseUp = function() {
@@ -46756,10 +46413,10 @@ class InstrumentLogic extends BaseInstrument {
             }
           }
         }, { vertical: direction === "vertical" });
-        return import_react43.default.createElement(
+        return import_react42.default.createElement(
           "div",
           { style: styles.hue },
-          import_react43.default.createElement(
+          import_react42.default.createElement(
             "div",
             {
               className: "hue-" + direction,
@@ -46771,26 +46428,26 @@ class InstrumentLogic extends BaseInstrument {
               onTouchMove: this.handleChange,
               onTouchStart: this.handleChange
             },
-            import_react43.default.createElement(
+            import_react42.default.createElement(
               "style",
               null,
               "\n            .hue-horizontal {\n              background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0\n                33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);\n              background: -webkit-linear-gradient(to right, #f00 0%, #ff0\n                17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);\n            }\n\n            .hue-vertical {\n              background: linear-gradient(to top, #f00 0%, #ff0 17%, #0f0 33%,\n                #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);\n              background: -webkit-linear-gradient(to top, #f00 0%, #ff0 17%,\n                #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);\n            }\n          "
             ),
-            import_react43.default.createElement(
+            import_react42.default.createElement(
               "div",
               { style: styles.pointer },
-              this.props.pointer ? import_react43.default.createElement(this.props.pointer, this.props) : import_react43.default.createElement("div", { style: styles.slider })
+              this.props.pointer ? import_react42.default.createElement(this.props.pointer, this.props) : import_react42.default.createElement("div", { style: styles.slider })
             )
           )
         );
       }
     }]);
     return Hue2;
-  }(import_react43.PureComponent || import_react43.Component);
+  }(import_react42.PureComponent || import_react42.Component);
   var Hue_default = Hue;
 
   // node_modules/react-color/es/components/common/Raised.js
-  var import_react44 = __toESM(require_react());
+  var import_react43 = __toESM(require_react());
   var import_prop_types = __toESM(require_prop_types());
   var import_reactcss5 = __toESM(require_lib2());
 
@@ -46930,7 +46587,7 @@ class InstrumentLogic extends BaseInstrument {
     try {
       value[symToStringTag] = void 0;
       var unmasked = true;
-    } catch (e2) {
+    } catch (e) {
     }
     var result = nativeObjectToString.call(value);
     if (unmasked) {
@@ -47006,11 +46663,11 @@ class InstrumentLogic extends BaseInstrument {
     if (func != null) {
       try {
         return funcToString.call(func);
-      } catch (e2) {
+      } catch (e) {
       }
       try {
         return func + "";
-      } catch (e2) {
+      } catch (e) {
       }
     }
     return "";
@@ -47228,7 +46885,7 @@ class InstrumentLogic extends BaseInstrument {
       var func = getNative_default(Object, "defineProperty");
       func({}, "", {});
       return func;
-    } catch (e2) {
+    } catch (e) {
     }
   }();
   var defineProperty_default = defineProperty;
@@ -47502,7 +47159,7 @@ class InstrumentLogic extends BaseInstrument {
         return types;
       }
       return freeProcess && freeProcess.binding && freeProcess.binding("util");
-    } catch (e2) {
+    } catch (e) {
     }
   }();
   var nodeUtil_default = nodeUtil;
@@ -47557,9 +47214,9 @@ class InstrumentLogic extends BaseInstrument {
   var copyObject_default = copyObject;
 
   // node_modules/lodash-es/_baseTimes.js
-  function baseTimes(n2, iteratee) {
-    var index = -1, result = Array(n2);
-    while (++index < n2) {
+  function baseTimes(n, iteratee) {
+    var index = -1, result = Array(n);
+    while (++index < n) {
       result[index] = iteratee(index);
     }
     return result;
@@ -47889,11 +47546,11 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles), { "zDepth-1": zDepth === 1 });
-    return import_react44.default.createElement(
+    return import_react43.default.createElement(
       "div",
       { style: styles.wrap },
-      import_react44.default.createElement("div", { style: styles.bg }),
-      import_react44.default.createElement(
+      import_react43.default.createElement("div", { style: styles.bg }),
+      import_react43.default.createElement(
         "div",
         { style: styles.content },
         children
@@ -47915,7 +47572,7 @@ class InstrumentLogic extends BaseInstrument {
   var Raised_default = Raised;
 
   // node_modules/react-color/es/components/common/Saturation.js
-  var import_react45 = __toESM(require_react());
+  var import_react44 = __toESM(require_react());
   var import_reactcss6 = __toESM(require_lib2());
 
   // node_modules/lodash-es/now.js
@@ -48081,12 +47738,12 @@ class InstrumentLogic extends BaseInstrument {
   var throttle_default = throttle;
 
   // node_modules/react-color/es/helpers/saturation.js
-  var calculateChange5 = function calculateChange6(e2, hsl, container) {
+  var calculateChange5 = function calculateChange6(e, hsl, container) {
     var _container$getBoundin = container.getBoundingClientRect(), containerWidth = _container$getBoundin.width, containerHeight = _container$getBoundin.height;
-    var x2 = typeof e2.pageX === "number" ? e2.pageX : e2.touches[0].pageX;
-    var y2 = typeof e2.pageY === "number" ? e2.pageY : e2.touches[0].pageY;
-    var left = x2 - (container.getBoundingClientRect().left + window.pageXOffset);
-    var top = y2 - (container.getBoundingClientRect().top + window.pageYOffset);
+    var x = typeof e.pageX === "number" ? e.pageX : e.touches[0].pageX;
+    var y = typeof e.pageY === "number" ? e.pageY : e.touches[0].pageY;
+    var left = x - (container.getBoundingClientRect().left + window.pageXOffset);
+    var top = y - (container.getBoundingClientRect().top + window.pageYOffset);
     if (left < 0) {
       left = 0;
     } else if (left > containerWidth) {
@@ -48111,8 +47768,8 @@ class InstrumentLogic extends BaseInstrument {
   // node_modules/react-color/es/components/common/Saturation.js
   var _createClass4 = function() {
     function defineProperties(target, props) {
-      for (var i2 = 0; i2 < props.length; i2++) {
-        var descriptor = props[i2];
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
         descriptor.enumerable = descriptor.enumerable || false;
         descriptor.configurable = true;
         if ("value" in descriptor)
@@ -48152,11 +47809,11 @@ class InstrumentLogic extends BaseInstrument {
     function Saturation2(props) {
       _classCallCheck4(this, Saturation2);
       var _this = _possibleConstructorReturn4(this, (Saturation2.__proto__ || Object.getPrototypeOf(Saturation2)).call(this, props));
-      _this.handleChange = function(e2) {
-        typeof _this.props.onChange === "function" && _this.throttle(_this.props.onChange, calculateChange5(e2, _this.props.hsl, _this.container), e2);
+      _this.handleChange = function(e) {
+        typeof _this.props.onChange === "function" && _this.throttle(_this.props.onChange, calculateChange5(e, _this.props.hsl, _this.container), e);
       };
-      _this.handleMouseDown = function(e2) {
-        _this.handleChange(e2);
+      _this.handleMouseDown = function(e) {
+        _this.handleChange(e);
         var renderWindow = _this.getContainerRenderWindow();
         renderWindow.addEventListener("mousemove", _this.handleChange);
         renderWindow.addEventListener("mouseup", _this.handleMouseUp);
@@ -48164,8 +47821,8 @@ class InstrumentLogic extends BaseInstrument {
       _this.handleMouseUp = function() {
         _this.unbindEventListeners();
       };
-      _this.throttle = throttle_default(function(fn, data, e2) {
-        fn(data, e2);
+      _this.throttle = throttle_default(function(fn, data, e) {
+        fn(data, e);
       }, 50);
       return _this;
     }
@@ -48236,7 +47893,7 @@ class InstrumentLogic extends BaseInstrument {
             circle
           }
         }, { "custom": !!this.props.style });
-        return import_react45.default.createElement(
+        return import_react44.default.createElement(
           "div",
           {
             style: styles.color,
@@ -48247,30 +47904,30 @@ class InstrumentLogic extends BaseInstrument {
             onTouchMove: this.handleChange,
             onTouchStart: this.handleChange
           },
-          import_react45.default.createElement(
+          import_react44.default.createElement(
             "style",
             null,
             "\n          .saturation-white {\n            background: -webkit-linear-gradient(to right, #fff, rgba(255,255,255,0));\n            background: linear-gradient(to right, #fff, rgba(255,255,255,0));\n          }\n          .saturation-black {\n            background: -webkit-linear-gradient(to top, #000, rgba(0,0,0,0));\n            background: linear-gradient(to top, #000, rgba(0,0,0,0));\n          }\n        "
           ),
-          import_react45.default.createElement(
+          import_react44.default.createElement(
             "div",
             { style: styles.white, className: "saturation-white" },
-            import_react45.default.createElement("div", { style: styles.black, className: "saturation-black" }),
-            import_react45.default.createElement(
+            import_react44.default.createElement("div", { style: styles.black, className: "saturation-black" }),
+            import_react44.default.createElement(
               "div",
               { style: styles.pointer },
-              this.props.pointer ? import_react45.default.createElement(this.props.pointer, this.props) : import_react45.default.createElement("div", { style: styles.circle })
+              this.props.pointer ? import_react44.default.createElement(this.props.pointer, this.props) : import_react44.default.createElement("div", { style: styles.circle })
             )
           )
         );
       }
     }]);
     return Saturation2;
-  }(import_react45.PureComponent || import_react45.Component);
+  }(import_react44.PureComponent || import_react44.Component);
   var Saturation_default = Saturation;
 
   // node_modules/react-color/es/components/common/ColorWrap.js
-  var import_react46 = __toESM(require_react());
+  var import_react45 = __toESM(require_react());
 
   // node_modules/lodash-es/_arrayEach.js
   function arrayEach(array, iteratee) {
@@ -48410,23 +48067,23 @@ class InstrumentLogic extends BaseInstrument {
     },
     getLuminance: function getLuminance() {
       var rgb = this.toRgb();
-      var RsRGB, GsRGB, BsRGB, R2, G, B2;
+      var RsRGB, GsRGB, BsRGB, R, G, B;
       RsRGB = rgb.r / 255;
       GsRGB = rgb.g / 255;
       BsRGB = rgb.b / 255;
       if (RsRGB <= 0.03928)
-        R2 = RsRGB / 12.92;
+        R = RsRGB / 12.92;
       else
-        R2 = Math.pow((RsRGB + 0.055) / 1.055, 2.4);
+        R = Math.pow((RsRGB + 0.055) / 1.055, 2.4);
       if (GsRGB <= 0.03928)
         G = GsRGB / 12.92;
       else
         G = Math.pow((GsRGB + 0.055) / 1.055, 2.4);
       if (BsRGB <= 0.03928)
-        B2 = BsRGB / 12.92;
+        B = BsRGB / 12.92;
       else
-        B2 = Math.pow((BsRGB + 0.055) / 1.055, 2.4);
-      return 0.2126 * R2 + 0.7152 * G + 0.0722 * B2;
+        B = Math.pow((BsRGB + 0.055) / 1.055, 2.4);
+      return 0.2126 * R + 0.7152 * G + 0.0722 * B;
     },
     setAlpha: function setAlpha(value) {
       this._a = boundAlpha(value);
@@ -48444,8 +48101,8 @@ class InstrumentLogic extends BaseInstrument {
     },
     toHsvString: function toHsvString() {
       var hsv = rgbToHsv(this._r, this._g, this._b);
-      var h2 = Math.round(hsv.h * 360), s2 = Math.round(hsv.s * 100), v2 = Math.round(hsv.v * 100);
-      return this._a == 1 ? "hsv(" + h2 + ", " + s2 + "%, " + v2 + "%)" : "hsva(" + h2 + ", " + s2 + "%, " + v2 + "%, " + this._roundA + ")";
+      var h = Math.round(hsv.h * 360), s = Math.round(hsv.s * 100), v = Math.round(hsv.v * 100);
+      return this._a == 1 ? "hsv(" + h + ", " + s + "%, " + v + "%)" : "hsva(" + h + ", " + s + "%, " + v + "%, " + this._roundA + ")";
     },
     toHsl: function toHsl() {
       var hsl = rgbToHsl(this._r, this._g, this._b);
@@ -48458,8 +48115,8 @@ class InstrumentLogic extends BaseInstrument {
     },
     toHslString: function toHslString() {
       var hsl = rgbToHsl(this._r, this._g, this._b);
-      var h2 = Math.round(hsl.h * 360), s2 = Math.round(hsl.s * 100), l2 = Math.round(hsl.l * 100);
-      return this._a == 1 ? "hsl(" + h2 + ", " + s2 + "%, " + l2 + "%)" : "hsla(" + h2 + ", " + s2 + "%, " + l2 + "%, " + this._roundA + ")";
+      var h = Math.round(hsl.h * 360), s = Math.round(hsl.s * 100), l = Math.round(hsl.l * 100);
+      return this._a == 1 ? "hsl(" + h + ", " + s + "%, " + l + "%)" : "hsla(" + h + ", " + s + "%, " + l + "%, " + this._roundA + ")";
     },
     toHex: function toHex(allow3Char) {
       return rgbToHex(this._r, this._g, this._b, allow3Char);
@@ -48509,8 +48166,8 @@ class InstrumentLogic extends BaseInstrument {
       var secondHex8String = hex8String;
       var gradientType = this._gradientType ? "GradientType = 1, " : "";
       if (secondColor) {
-        var s2 = tinycolor(secondColor);
-        secondHex8String = "#" + rgbaToArgbHex(s2._r, s2._g, s2._b, s2._a);
+        var s = tinycolor(secondColor);
+        secondHex8String = "#" + rgbaToArgbHex(s._r, s._g, s._b, s._a);
       }
       return "progid:DXImageTransform.Microsoft.gradient(" + gradientType + "startColorstr=" + hex8String + ",endColorstr=" + secondHex8String + ")";
     },
@@ -48612,12 +48269,12 @@ class InstrumentLogic extends BaseInstrument {
   tinycolor.fromRatio = function(color, opts) {
     if (_typeof(color) == "object") {
       var newColor = {};
-      for (var i2 in color) {
-        if (color.hasOwnProperty(i2)) {
-          if (i2 === "a") {
-            newColor[i2] = color[i2];
+      for (var i in color) {
+        if (color.hasOwnProperty(i)) {
+          if (i === "a") {
+            newColor[i] = color[i];
           } else {
-            newColor[i2] = convertToPercentage(color[i2]);
+            newColor[i] = convertToPercentage(color[i]);
           }
         }
       }
@@ -48631,10 +48288,10 @@ class InstrumentLogic extends BaseInstrument {
       g: 0,
       b: 0
     };
-    var a2 = 1;
-    var s2 = null;
-    var v2 = null;
-    var l2 = null;
+    var a = 1;
+    var s = null;
+    var v = null;
+    var l = null;
     var ok = false;
     var format2 = false;
     if (typeof color == "string") {
@@ -48646,159 +48303,159 @@ class InstrumentLogic extends BaseInstrument {
         ok = true;
         format2 = String(color.r).substr(-1) === "%" ? "prgb" : "rgb";
       } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
-        s2 = convertToPercentage(color.s);
-        v2 = convertToPercentage(color.v);
-        rgb = hsvToRgb(color.h, s2, v2);
+        s = convertToPercentage(color.s);
+        v = convertToPercentage(color.v);
+        rgb = hsvToRgb(color.h, s, v);
         ok = true;
         format2 = "hsv";
       } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.l)) {
-        s2 = convertToPercentage(color.s);
-        l2 = convertToPercentage(color.l);
-        rgb = hslToRgb(color.h, s2, l2);
+        s = convertToPercentage(color.s);
+        l = convertToPercentage(color.l);
+        rgb = hslToRgb(color.h, s, l);
         ok = true;
         format2 = "hsl";
       }
       if (color.hasOwnProperty("a")) {
-        a2 = color.a;
+        a = color.a;
       }
     }
-    a2 = boundAlpha(a2);
+    a = boundAlpha(a);
     return {
       ok,
       format: color.format || format2,
       r: Math.min(255, Math.max(rgb.r, 0)),
       g: Math.min(255, Math.max(rgb.g, 0)),
       b: Math.min(255, Math.max(rgb.b, 0)),
-      a: a2
+      a
     };
   }
-  function rgbToRgb(r3, g2, b2) {
+  function rgbToRgb(r, g, b) {
     return {
-      r: bound01(r3, 255) * 255,
-      g: bound01(g2, 255) * 255,
-      b: bound01(b2, 255) * 255
+      r: bound01(r, 255) * 255,
+      g: bound01(g, 255) * 255,
+      b: bound01(b, 255) * 255
     };
   }
-  function rgbToHsl(r3, g2, b2) {
-    r3 = bound01(r3, 255);
-    g2 = bound01(g2, 255);
-    b2 = bound01(b2, 255);
-    var max = Math.max(r3, g2, b2), min = Math.min(r3, g2, b2);
-    var h2, s2, l2 = (max + min) / 2;
+  function rgbToHsl(r, g, b) {
+    r = bound01(r, 255);
+    g = bound01(g, 255);
+    b = bound01(b, 255);
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, l = (max + min) / 2;
     if (max == min) {
-      h2 = s2 = 0;
+      h = s = 0;
     } else {
-      var d2 = max - min;
-      s2 = l2 > 0.5 ? d2 / (2 - max - min) : d2 / (max + min);
+      var d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
       switch (max) {
-        case r3:
-          h2 = (g2 - b2) / d2 + (g2 < b2 ? 6 : 0);
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0);
           break;
-        case g2:
-          h2 = (b2 - r3) / d2 + 2;
+        case g:
+          h = (b - r) / d + 2;
           break;
-        case b2:
-          h2 = (r3 - g2) / d2 + 4;
+        case b:
+          h = (r - g) / d + 4;
           break;
       }
-      h2 /= 6;
+      h /= 6;
     }
     return {
-      h: h2,
-      s: s2,
-      l: l2
+      h,
+      s,
+      l
     };
   }
-  function hslToRgb(h2, s2, l2) {
-    var r3, g2, b2;
-    h2 = bound01(h2, 360);
-    s2 = bound01(s2, 100);
-    l2 = bound01(l2, 100);
-    function hue2rgb(p3, q3, t2) {
-      if (t2 < 0)
-        t2 += 1;
-      if (t2 > 1)
-        t2 -= 1;
-      if (t2 < 1 / 6)
-        return p3 + (q3 - p3) * 6 * t2;
-      if (t2 < 1 / 2)
-        return q3;
-      if (t2 < 2 / 3)
-        return p3 + (q3 - p3) * (2 / 3 - t2) * 6;
-      return p3;
+  function hslToRgb(h, s, l) {
+    var r, g, b;
+    h = bound01(h, 360);
+    s = bound01(s, 100);
+    l = bound01(l, 100);
+    function hue2rgb(p2, q2, t) {
+      if (t < 0)
+        t += 1;
+      if (t > 1)
+        t -= 1;
+      if (t < 1 / 6)
+        return p2 + (q2 - p2) * 6 * t;
+      if (t < 1 / 2)
+        return q2;
+      if (t < 2 / 3)
+        return p2 + (q2 - p2) * (2 / 3 - t) * 6;
+      return p2;
     }
-    if (s2 === 0) {
-      r3 = g2 = b2 = l2;
+    if (s === 0) {
+      r = g = b = l;
     } else {
-      var q2 = l2 < 0.5 ? l2 * (1 + s2) : l2 + s2 - l2 * s2;
-      var p2 = 2 * l2 - q2;
-      r3 = hue2rgb(p2, q2, h2 + 1 / 3);
-      g2 = hue2rgb(p2, q2, h2);
-      b2 = hue2rgb(p2, q2, h2 - 1 / 3);
+      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      var p = 2 * l - q;
+      r = hue2rgb(p, q, h + 1 / 3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1 / 3);
     }
     return {
-      r: r3 * 255,
-      g: g2 * 255,
-      b: b2 * 255
+      r: r * 255,
+      g: g * 255,
+      b: b * 255
     };
   }
-  function rgbToHsv(r3, g2, b2) {
-    r3 = bound01(r3, 255);
-    g2 = bound01(g2, 255);
-    b2 = bound01(b2, 255);
-    var max = Math.max(r3, g2, b2), min = Math.min(r3, g2, b2);
-    var h2, s2, v2 = max;
-    var d2 = max - min;
-    s2 = max === 0 ? 0 : d2 / max;
+  function rgbToHsv(r, g, b) {
+    r = bound01(r, 255);
+    g = bound01(g, 255);
+    b = bound01(b, 255);
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, v = max;
+    var d = max - min;
+    s = max === 0 ? 0 : d / max;
     if (max == min) {
-      h2 = 0;
+      h = 0;
     } else {
       switch (max) {
-        case r3:
-          h2 = (g2 - b2) / d2 + (g2 < b2 ? 6 : 0);
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0);
           break;
-        case g2:
-          h2 = (b2 - r3) / d2 + 2;
+        case g:
+          h = (b - r) / d + 2;
           break;
-        case b2:
-          h2 = (r3 - g2) / d2 + 4;
+        case b:
+          h = (r - g) / d + 4;
           break;
       }
-      h2 /= 6;
+      h /= 6;
     }
     return {
-      h: h2,
-      s: s2,
-      v: v2
+      h,
+      s,
+      v
     };
   }
-  function hsvToRgb(h2, s2, v2) {
-    h2 = bound01(h2, 360) * 6;
-    s2 = bound01(s2, 100);
-    v2 = bound01(v2, 100);
-    var i2 = Math.floor(h2), f2 = h2 - i2, p2 = v2 * (1 - s2), q2 = v2 * (1 - f2 * s2), t2 = v2 * (1 - (1 - f2) * s2), mod = i2 % 6, r3 = [v2, q2, p2, p2, t2, v2][mod], g2 = [t2, v2, v2, q2, p2, p2][mod], b2 = [p2, p2, t2, v2, v2, q2][mod];
+  function hsvToRgb(h, s, v) {
+    h = bound01(h, 360) * 6;
+    s = bound01(s, 100);
+    v = bound01(v, 100);
+    var i = Math.floor(h), f = h - i, p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s), mod = i % 6, r = [v, q, p, p, t, v][mod], g = [t, v, v, q, p, p][mod], b = [p, p, t, v, v, q][mod];
     return {
-      r: r3 * 255,
-      g: g2 * 255,
-      b: b2 * 255
+      r: r * 255,
+      g: g * 255,
+      b: b * 255
     };
   }
-  function rgbToHex(r3, g2, b2, allow3Char) {
-    var hex = [pad2(Math.round(r3).toString(16)), pad2(Math.round(g2).toString(16)), pad2(Math.round(b2).toString(16))];
+  function rgbToHex(r, g, b, allow3Char) {
+    var hex = [pad2(Math.round(r).toString(16)), pad2(Math.round(g).toString(16)), pad2(Math.round(b).toString(16))];
     if (allow3Char && hex[0].charAt(0) == hex[0].charAt(1) && hex[1].charAt(0) == hex[1].charAt(1) && hex[2].charAt(0) == hex[2].charAt(1)) {
       return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0);
     }
     return hex.join("");
   }
-  function rgbaToHex(r3, g2, b2, a2, allow4Char) {
-    var hex = [pad2(Math.round(r3).toString(16)), pad2(Math.round(g2).toString(16)), pad2(Math.round(b2).toString(16)), pad2(convertDecimalToHex(a2))];
+  function rgbaToHex(r, g, b, a, allow4Char) {
+    var hex = [pad2(Math.round(r).toString(16)), pad2(Math.round(g).toString(16)), pad2(Math.round(b).toString(16)), pad2(convertDecimalToHex(a))];
     if (allow4Char && hex[0].charAt(0) == hex[0].charAt(1) && hex[1].charAt(0) == hex[1].charAt(1) && hex[2].charAt(0) == hex[2].charAt(1) && hex[3].charAt(0) == hex[3].charAt(1)) {
       return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0) + hex[3].charAt(0);
     }
     return hex.join("");
   }
-  function rgbaToArgbHex(r3, g2, b2, a2) {
-    var hex = [pad2(convertDecimalToHex(a2)), pad2(Math.round(r3).toString(16)), pad2(Math.round(g2).toString(16)), pad2(Math.round(b2).toString(16))];
+  function rgbaToArgbHex(r, g, b, a) {
+    var hex = [pad2(convertDecimalToHex(a)), pad2(Math.round(r).toString(16)), pad2(Math.round(g).toString(16)), pad2(Math.round(b).toString(16))];
     return hex.join("");
   }
   tinycolor.equals = function(color1, color2) {
@@ -48870,9 +48527,9 @@ class InstrumentLogic extends BaseInstrument {
     var hsl = tinycolor(color).toHsl();
     var result = [tinycolor(color)];
     var step = 360 / number;
-    for (var i2 = 1; i2 < number; i2++) {
+    for (var i = 1; i < number; i++) {
       result.push(tinycolor({
-        h: (hsl.h + i2 * step) % 360,
+        h: (hsl.h + i * step) % 360,
         s: hsl.s,
         l: hsl.l
       }));
@@ -48881,13 +48538,13 @@ class InstrumentLogic extends BaseInstrument {
   }
   function _splitcomplement(color) {
     var hsl = tinycolor(color).toHsl();
-    var h2 = hsl.h;
+    var h = hsl.h;
     return [tinycolor(color), tinycolor({
-      h: (h2 + 72) % 360,
+      h: (h + 72) % 360,
       s: hsl.s,
       l: hsl.l
     }), tinycolor({
-      h: (h2 + 216) % 360,
+      h: (h + 216) % 360,
       s: hsl.s,
       l: hsl.l
     })];
@@ -48907,16 +48564,16 @@ class InstrumentLogic extends BaseInstrument {
   function _monochromatic(color, results) {
     results = results || 6;
     var hsv = tinycolor(color).toHsv();
-    var h2 = hsv.h, s2 = hsv.s, v2 = hsv.v;
+    var h = hsv.h, s = hsv.s, v = hsv.v;
     var ret = [];
     var modification = 1 / results;
     while (results--) {
       ret.push(tinycolor({
-        h: h2,
-        s: s2,
-        v: v2
+        h,
+        s,
+        v
       }));
-      v2 = (v2 + modification) % 1;
+      v = (v + modification) % 1;
     }
     return ret;
   }
@@ -48924,12 +48581,12 @@ class InstrumentLogic extends BaseInstrument {
     amount = amount === 0 ? 0 : amount || 50;
     var rgb1 = tinycolor(color1).toRgb();
     var rgb2 = tinycolor(color2).toRgb();
-    var p2 = amount / 100;
+    var p = amount / 100;
     var rgba = {
-      r: (rgb2.r - rgb1.r) * p2 + rgb1.r,
-      g: (rgb2.g - rgb1.g) * p2 + rgb1.g,
-      b: (rgb2.b - rgb1.b) * p2 + rgb1.b,
-      a: (rgb2.a - rgb1.a) * p2 + rgb1.a
+      r: (rgb2.r - rgb1.r) * p + rgb1.r,
+      g: (rgb2.g - rgb1.g) * p + rgb1.g,
+      b: (rgb2.b - rgb1.b) * p + rgb1.b,
+      a: (rgb2.a - rgb1.a) * p + rgb1.a
     };
     return tinycolor(rgba);
   };
@@ -48966,11 +48623,11 @@ class InstrumentLogic extends BaseInstrument {
     includeFallbackColors = args.includeFallbackColors;
     level = args.level;
     size = args.size;
-    for (var i2 = 0; i2 < colorList.length; i2++) {
-      readability = tinycolor.readability(baseColor, colorList[i2]);
+    for (var i = 0; i < colorList.length; i++) {
+      readability = tinycolor.readability(baseColor, colorList[i]);
       if (readability > bestScore) {
         bestScore = readability;
-        bestColor = tinycolor(colorList[i2]);
+        bestColor = tinycolor(colorList[i]);
       }
     }
     if (tinycolor.isReadable(baseColor, bestColor, {
@@ -49135,34 +48792,34 @@ class InstrumentLogic extends BaseInstrument {
     yellowgreen: "9acd32"
   };
   var hexNames = tinycolor.hexNames = flip(names);
-  function flip(o2) {
+  function flip(o) {
     var flipped = {};
-    for (var i2 in o2) {
-      if (o2.hasOwnProperty(i2)) {
-        flipped[o2[i2]] = i2;
+    for (var i in o) {
+      if (o.hasOwnProperty(i)) {
+        flipped[o[i]] = i;
       }
     }
     return flipped;
   }
-  function boundAlpha(a2) {
-    a2 = parseFloat(a2);
-    if (isNaN(a2) || a2 < 0 || a2 > 1) {
-      a2 = 1;
+  function boundAlpha(a) {
+    a = parseFloat(a);
+    if (isNaN(a) || a < 0 || a > 1) {
+      a = 1;
     }
-    return a2;
+    return a;
   }
-  function bound01(n2, max) {
-    if (isOnePointZero(n2))
-      n2 = "100%";
-    var processPercent = isPercentage(n2);
-    n2 = Math.min(max, Math.max(0, parseFloat(n2)));
+  function bound01(n, max) {
+    if (isOnePointZero(n))
+      n = "100%";
+    var processPercent = isPercentage(n);
+    n = Math.min(max, Math.max(0, parseFloat(n)));
     if (processPercent) {
-      n2 = parseInt(n2 * max, 10) / 100;
+      n = parseInt(n * max, 10) / 100;
     }
-    if (Math.abs(n2 - max) < 1e-6) {
+    if (Math.abs(n - max) < 1e-6) {
       return 1;
     }
-    return n2 % max / parseFloat(max);
+    return n % max / parseFloat(max);
   }
   function clamp01(val) {
     return Math.min(1, Math.max(0, val));
@@ -49170,26 +48827,26 @@ class InstrumentLogic extends BaseInstrument {
   function parseIntFromHex(val) {
     return parseInt(val, 16);
   }
-  function isOnePointZero(n2) {
-    return typeof n2 == "string" && n2.indexOf(".") != -1 && parseFloat(n2) === 1;
+  function isOnePointZero(n) {
+    return typeof n == "string" && n.indexOf(".") != -1 && parseFloat(n) === 1;
   }
-  function isPercentage(n2) {
-    return typeof n2 === "string" && n2.indexOf("%") != -1;
+  function isPercentage(n) {
+    return typeof n === "string" && n.indexOf("%") != -1;
   }
   function pad2(c) {
     return c.length == 1 ? "0" + c : "" + c;
   }
-  function convertToPercentage(n2) {
-    if (n2 <= 1) {
-      n2 = n2 * 100 + "%";
+  function convertToPercentage(n) {
+    if (n <= 1) {
+      n = n * 100 + "%";
     }
-    return n2;
+    return n;
   }
-  function convertDecimalToHex(d2) {
-    return Math.round(parseFloat(d2) * 255).toString(16);
+  function convertDecimalToHex(d) {
+    return Math.round(parseFloat(d) * 255).toString(16);
   }
-  function convertHexToDecimal(h2) {
-    return parseIntFromHex(h2) / 255;
+  function convertHexToDecimal(h) {
+    return parseIntFromHex(h) / 255;
   }
   var matchers = function() {
     var CSS_INTEGER = "[-\\+]?\\d+%?";
@@ -49397,8 +49054,8 @@ class InstrumentLogic extends BaseInstrument {
 
   // node_modules/react-color/es/components/common/ColorWrap.js
   var _extends4 = Object.assign || function(target) {
-    for (var i2 = 1; i2 < arguments.length; i2++) {
-      var source = arguments[i2];
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
       for (var key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           target[key] = source[key];
@@ -49409,8 +49066,8 @@ class InstrumentLogic extends BaseInstrument {
   };
   var _createClass5 = function() {
     function defineProperties(target, props) {
-      for (var i2 = 0; i2 < props.length; i2++) {
-        var descriptor = props[i2];
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
         descriptor.enumerable = descriptor.enumerable || false;
         descriptor.configurable = true;
         if ("value" in descriptor)
@@ -49480,7 +49137,7 @@ class InstrumentLogic extends BaseInstrument {
           if (this.props.onSwatchHover) {
             optionalEvents.onSwatchHover = this.handleSwatchHover;
           }
-          return import_react46.default.createElement(Picker, _extends4({}, this.props, this.state, {
+          return import_react45.default.createElement(Picker, _extends4({}, this.props, this.state, {
             onChange: this.handleChange
           }, optionalEvents));
         }
@@ -49491,7 +49148,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }]);
       return ColorPicker2;
-    }(import_react46.PureComponent || import_react46.Component);
+    }(import_react45.PureComponent || import_react45.Component);
     ColorPicker.propTypes = _extends4({}, Picker.propTypes);
     ColorPicker.defaultProps = _extends4({}, Picker.defaultProps, {
       color: {
@@ -49506,14 +49163,14 @@ class InstrumentLogic extends BaseInstrument {
   var ColorWrap_default = ColorWrap;
 
   // node_modules/react-color/es/components/common/Swatch.js
-  var import_react48 = __toESM(require_react());
+  var import_react47 = __toESM(require_react());
   var import_reactcss7 = __toESM(require_lib2());
 
   // node_modules/react-color/es/helpers/interaction.js
-  var import_react47 = __toESM(require_react());
+  var import_react46 = __toESM(require_react());
   var _extends5 = Object.assign || function(target) {
-    for (var i2 = 1; i2 < arguments.length; i2++) {
-      var source = arguments[i2];
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
       for (var key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           target[key] = source[key];
@@ -49524,8 +49181,8 @@ class InstrumentLogic extends BaseInstrument {
   };
   var _createClass6 = function() {
     function defineProperties(target, props) {
-      for (var i2 = 0; i2 < props.length; i2++) {
-        var descriptor = props[i2];
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
         descriptor.enumerable = descriptor.enumerable || false;
         descriptor.configurable = true;
         if ("value" in descriptor)
@@ -49580,21 +49237,21 @@ class InstrumentLogic extends BaseInstrument {
       _createClass6(Focus, [{
         key: "render",
         value: function render4() {
-          return import_react47.default.createElement(
+          return import_react46.default.createElement(
             Span,
             { onFocus: this.handleFocus, onBlur: this.handleBlur },
-            import_react47.default.createElement(Component6, _extends5({}, this.props, this.state))
+            import_react46.default.createElement(Component6, _extends5({}, this.props, this.state))
           );
         }
       }]);
       return Focus;
-    }(import_react47.default.Component);
+    }(import_react46.default.Component);
   };
 
   // node_modules/react-color/es/components/common/Swatch.js
   var _extends6 = Object.assign || function(target) {
-    for (var i2 = 1; i2 < arguments.length; i2++) {
-      var source = arguments[i2];
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
       for (var key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           target[key] = source[key];
@@ -49620,20 +49277,20 @@ class InstrumentLogic extends BaseInstrument {
         }, style, focus ? focusStyle : {})
       }
     });
-    var handleClick = function handleClick2(e2) {
-      return onClick(color, e2);
+    var handleClick = function handleClick2(e) {
+      return onClick(color, e);
     };
-    var handleKeyDown = function handleKeyDown2(e2) {
-      return e2.keyCode === ENTER && onClick(color, e2);
+    var handleKeyDown = function handleKeyDown2(e) {
+      return e.keyCode === ENTER && onClick(color, e);
     };
-    var handleHover3 = function handleHover4(e2) {
-      return onHover(color, e2);
+    var handleHover3 = function handleHover4(e) {
+      return onHover(color, e);
     };
     var optionalEvents = {};
     if (onHover) {
       optionalEvents.onMouseOver = handleHover3;
     }
-    return import_react48.default.createElement(
+    return import_react47.default.createElement(
       "div",
       _extends6({
         style: styles.swatch,
@@ -49643,7 +49300,7 @@ class InstrumentLogic extends BaseInstrument {
         onKeyDown: handleKeyDown
       }, optionalEvents),
       children,
-      transparent && import_react48.default.createElement(Checkboard_default, {
+      transparent && import_react47.default.createElement(Checkboard_default, {
         borderRadius: styles.swatch.borderRadius,
         boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.1)"
       })
@@ -49652,7 +49309,7 @@ class InstrumentLogic extends BaseInstrument {
   var Swatch_default = handleFocus(Swatch);
 
   // node_modules/react-color/es/components/alpha/AlphaPointer.js
-  var import_react49 = __toESM(require_react());
+  var import_react48 = __toESM(require_react());
   var import_reactcss8 = __toESM(require_lib2());
   var AlphaPointer = function AlphaPointer2(_ref) {
     var direction = _ref.direction;
@@ -49673,14 +49330,14 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, { vertical: direction === "vertical" });
-    return import_react49.default.createElement("div", { style: styles.picker });
+    return import_react48.default.createElement("div", { style: styles.picker });
   };
   var AlphaPointer_default = AlphaPointer;
 
   // node_modules/react-color/es/components/alpha/Alpha.js
   var _extends7 = Object.assign || function(target) {
-    for (var i2 = 1; i2 < arguments.length; i2++) {
-      var source = arguments[i2];
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
       for (var key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           target[key] = source[key];
@@ -49704,10 +49361,10 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react50.default.createElement(
+    return import_react49.default.createElement(
       "div",
       { style: styles.picker, className: "alpha-picker " + className },
-      import_react50.default.createElement(Alpha_default, _extends7({}, styles.alpha, {
+      import_react49.default.createElement(Alpha_default, _extends7({}, styles.alpha, {
         rgb,
         hsl,
         pointer,
@@ -49726,12 +49383,12 @@ class InstrumentLogic extends BaseInstrument {
   var Alpha_default2 = ColorWrap_default(AlphaPicker);
 
   // node_modules/react-color/es/components/block/Block.js
-  var import_react52 = __toESM(require_react());
+  var import_react51 = __toESM(require_react());
   var import_prop_types2 = __toESM(require_prop_types());
   var import_reactcss11 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/block/BlockSwatches.js
-  var import_react51 = __toESM(require_react());
+  var import_react50 = __toESM(require_react());
   var import_reactcss10 = __toESM(require_lib2());
 
   // node_modules/lodash-es/_arrayMap.js
@@ -50452,11 +50109,11 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react51.default.createElement(
+    return import_react50.default.createElement(
       "div",
       { style: styles.swatches },
       map_default(colors, function(c) {
-        return import_react51.default.createElement(Swatch_default, {
+        return import_react50.default.createElement(Swatch_default, {
           key: c,
           color: c,
           style: styles.swatch,
@@ -50467,7 +50124,7 @@ class InstrumentLogic extends BaseInstrument {
           }
         });
       }),
-      import_react51.default.createElement("div", { style: styles.clear })
+      import_react50.default.createElement("div", { style: styles.clear })
     );
   };
   var BlockSwatches_default = BlockSwatches;
@@ -50476,11 +50133,11 @@ class InstrumentLogic extends BaseInstrument {
   var Block = function Block2(_ref) {
     var onChange = _ref.onChange, onSwatchHover = _ref.onSwatchHover, hex = _ref.hex, colors = _ref.colors, width = _ref.width, triangle = _ref.triangle, _ref$styles = _ref.styles, passedStyles = _ref$styles === void 0 ? {} : _ref$styles, _ref$className = _ref.className, className = _ref$className === void 0 ? "" : _ref$className;
     var transparent = hex === "transparent";
-    var handleChange = function handleChange2(hexCode, e2) {
+    var handleChange = function handleChange2(hexCode, e) {
       isValidHex(hexCode) && onChange({
         hex: hexCode,
         source: "hex"
-      }, e2);
+      }, e);
     };
     var styles = (0, import_reactcss11.default)(merge_default({
       "default": {
@@ -50538,25 +50195,25 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles), { "hide-triangle": triangle === "hide" });
-    return import_react52.default.createElement(
+    return import_react51.default.createElement(
       "div",
       { style: styles.card, className: "block-picker " + className },
-      import_react52.default.createElement("div", { style: styles.triangle }),
-      import_react52.default.createElement(
+      import_react51.default.createElement("div", { style: styles.triangle }),
+      import_react51.default.createElement(
         "div",
         { style: styles.head },
-        transparent && import_react52.default.createElement(Checkboard_default, { borderRadius: "6px 6px 0 0" }),
-        import_react52.default.createElement(
+        transparent && import_react51.default.createElement(Checkboard_default, { borderRadius: "6px 6px 0 0" }),
+        import_react51.default.createElement(
           "div",
           { style: styles.label },
           hex
         )
       ),
-      import_react52.default.createElement(
+      import_react51.default.createElement(
         "div",
         { style: styles.body },
-        import_react52.default.createElement(BlockSwatches_default, { colors, onClick: handleChange, onSwatchHover }),
-        import_react52.default.createElement(EditableInput_default, {
+        import_react51.default.createElement(BlockSwatches_default, { colors, onClick: handleChange, onSwatchHover }),
+        import_react51.default.createElement(EditableInput_default, {
           style: { input: styles.input },
           value: hex,
           onChange: handleChange
@@ -50579,7 +50236,7 @@ class InstrumentLogic extends BaseInstrument {
   var Block_default = ColorWrap_default(Block);
 
   // node_modules/react-color/es/components/circle/Circle.js
-  var import_react54 = __toESM(require_react());
+  var import_react53 = __toESM(require_react());
   var import_prop_types3 = __toESM(require_prop_types());
   var import_reactcss13 = __toESM(require_lib2());
 
@@ -50604,7 +50261,7 @@ class InstrumentLogic extends BaseInstrument {
   var blueGrey = { "50": "#eceff1", "100": "#cfd8dc", "200": "#b0bec5", "300": "#90a4ae", "400": "#78909c", "500": "#607d8b", "600": "#546e7a", "700": "#455a64", "800": "#37474f", "900": "#263238" };
 
   // node_modules/react-color/es/components/circle/CircleSwatch.js
-  var import_react53 = __toESM(require_react());
+  var import_react52 = __toESM(require_react());
   var import_reactcss12 = __toESM(require_lib2());
   var CircleSwatch = function CircleSwatch2(_ref) {
     var color = _ref.color, onClick = _ref.onClick, onSwatchHover = _ref.onSwatchHover, hover = _ref.hover, active = _ref.active, circleSize = _ref.circleSize, circleSpacing = _ref.circleSpacing;
@@ -50636,10 +50293,10 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, { hover, active });
-    return import_react53.default.createElement(
+    return import_react52.default.createElement(
       "div",
       { style: styles.swatch },
-      import_react53.default.createElement(Swatch_default, {
+      import_react52.default.createElement(Swatch_default, {
         style: styles.Swatch,
         color,
         onClick,
@@ -50668,14 +50325,14 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles));
-    var handleChange = function handleChange2(hexCode, e2) {
-      return onChange({ hex: hexCode, source: "hex" }, e2);
+    var handleChange = function handleChange2(hexCode, e) {
+      return onChange({ hex: hexCode, source: "hex" }, e);
     };
-    return import_react54.default.createElement(
+    return import_react53.default.createElement(
       "div",
       { style: styles.card, className: "circle-picker " + className },
       map_default(colors, function(c) {
-        return import_react54.default.createElement(CircleSwatch_default, {
+        return import_react53.default.createElement(CircleSwatch_default, {
           key: c,
           color: c,
           onClick: handleChange,
@@ -50703,12 +50360,12 @@ class InstrumentLogic extends BaseInstrument {
   var Circle_default = ColorWrap_default(Circle);
 
   // node_modules/react-color/es/components/chrome/Chrome.js
-  var import_react58 = __toESM(require_react());
+  var import_react57 = __toESM(require_react());
   var import_prop_types4 = __toESM(require_prop_types());
   var import_reactcss17 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/chrome/ChromeFields.js
-  var import_react55 = __toESM(require_react());
+  var import_react54 = __toESM(require_react());
   var import_reactcss14 = __toESM(require_lib2());
 
   // node_modules/lodash-es/isUndefined.js
@@ -50721,8 +50378,8 @@ class InstrumentLogic extends BaseInstrument {
   var import_UnfoldMoreHorizontalIcon = __toESM(require_UnfoldMoreHorizontalIcon());
   var _createClass7 = function() {
     function defineProperties(target, props) {
-      for (var i2 = 0; i2 < props.length; i2++) {
-        var descriptor = props[i2];
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
         descriptor.enumerable = descriptor.enumerable || false;
         descriptor.configurable = true;
         if ("value" in descriptor)
@@ -50775,19 +50432,19 @@ class InstrumentLogic extends BaseInstrument {
           }
         }
       };
-      _this.handleChange = function(data, e2) {
+      _this.handleChange = function(data, e) {
         if (data.hex) {
           isValidHex(data.hex) && _this.props.onChange({
             hex: data.hex,
             source: "hex"
-          }, e2);
+          }, e);
         } else if (data.r || data.g || data.b) {
           _this.props.onChange({
             r: data.r || _this.props.rgb.r,
             g: data.g || _this.props.rgb.g,
             b: data.b || _this.props.rgb.b,
             source: "rgb"
-          }, e2);
+          }, e);
         } else if (data.a) {
           if (data.a < 0) {
             data.a = 0;
@@ -50800,7 +50457,7 @@ class InstrumentLogic extends BaseInstrument {
             l: _this.props.hsl.l,
             a: Math.round(data.a * 100) / 100,
             source: "rgb"
-          }, e2);
+          }, e);
         } else if (data.h || data.s || data.l) {
           if (typeof data.s === "string" && data.s.includes("%")) {
             data.s = data.s.replace("%", "");
@@ -50818,14 +50475,14 @@ class InstrumentLogic extends BaseInstrument {
             s: Number(!isUndefined_default(data.s) ? data.s : _this.props.hsl.s),
             l: Number(!isUndefined_default(data.l) ? data.l : _this.props.hsl.l),
             source: "hsl"
-          }, e2);
+          }, e);
         }
       };
-      _this.showHighlight = function(e2) {
-        e2.currentTarget.style.background = "#eee";
+      _this.showHighlight = function(e) {
+        e.currentTarget.style.background = "#eee";
       };
-      _this.hideHighlight = function(e2) {
-        e2.currentTarget.style.background = "transparent";
+      _this.hideHighlight = function(e) {
+        e.currentTarget.style.background = "transparent";
       };
       if (props.hsl.a !== 1 && props.view === "hex") {
         _this.state = {
@@ -50917,13 +50574,13 @@ class InstrumentLogic extends BaseInstrument {
         }, this.props, this.state);
         var fields = void 0;
         if (this.state.view === "hex") {
-          fields = import_react55.default.createElement(
+          fields = import_react54.default.createElement(
             "div",
             { style: styles.fields, className: "flexbox-fix" },
-            import_react55.default.createElement(
+            import_react54.default.createElement(
               "div",
               { style: styles.field },
-              import_react55.default.createElement(EditableInput_default, {
+              import_react54.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "hex",
                 value: this.props.hex,
@@ -50932,43 +50589,43 @@ class InstrumentLogic extends BaseInstrument {
             )
           );
         } else if (this.state.view === "rgb") {
-          fields = import_react55.default.createElement(
+          fields = import_react54.default.createElement(
             "div",
             { style: styles.fields, className: "flexbox-fix" },
-            import_react55.default.createElement(
+            import_react54.default.createElement(
               "div",
               { style: styles.field },
-              import_react55.default.createElement(EditableInput_default, {
+              import_react54.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "r",
                 value: this.props.rgb.r,
                 onChange: this.handleChange
               })
             ),
-            import_react55.default.createElement(
+            import_react54.default.createElement(
               "div",
               { style: styles.field },
-              import_react55.default.createElement(EditableInput_default, {
+              import_react54.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "g",
                 value: this.props.rgb.g,
                 onChange: this.handleChange
               })
             ),
-            import_react55.default.createElement(
+            import_react54.default.createElement(
               "div",
               { style: styles.field },
-              import_react55.default.createElement(EditableInput_default, {
+              import_react54.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "b",
                 value: this.props.rgb.b,
                 onChange: this.handleChange
               })
             ),
-            import_react55.default.createElement(
+            import_react54.default.createElement(
               "div",
               { style: styles.alpha },
-              import_react55.default.createElement(EditableInput_default, {
+              import_react54.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "a",
                 value: this.props.rgb.a,
@@ -50978,43 +50635,43 @@ class InstrumentLogic extends BaseInstrument {
             )
           );
         } else if (this.state.view === "hsl") {
-          fields = import_react55.default.createElement(
+          fields = import_react54.default.createElement(
             "div",
             { style: styles.fields, className: "flexbox-fix" },
-            import_react55.default.createElement(
+            import_react54.default.createElement(
               "div",
               { style: styles.field },
-              import_react55.default.createElement(EditableInput_default, {
+              import_react54.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "h",
                 value: Math.round(this.props.hsl.h),
                 onChange: this.handleChange
               })
             ),
-            import_react55.default.createElement(
+            import_react54.default.createElement(
               "div",
               { style: styles.field },
-              import_react55.default.createElement(EditableInput_default, {
+              import_react54.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "s",
                 value: Math.round(this.props.hsl.s * 100) + "%",
                 onChange: this.handleChange
               })
             ),
-            import_react55.default.createElement(
+            import_react54.default.createElement(
               "div",
               { style: styles.field },
-              import_react55.default.createElement(EditableInput_default, {
+              import_react54.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "l",
                 value: Math.round(this.props.hsl.l * 100) + "%",
                 onChange: this.handleChange
               })
             ),
-            import_react55.default.createElement(
+            import_react54.default.createElement(
               "div",
               { style: styles.alpha },
-              import_react55.default.createElement(EditableInput_default, {
+              import_react54.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "a",
                 value: this.props.hsl.a,
@@ -51024,19 +50681,19 @@ class InstrumentLogic extends BaseInstrument {
             )
           );
         }
-        return import_react55.default.createElement(
+        return import_react54.default.createElement(
           "div",
           { style: styles.wrap, className: "flexbox-fix" },
           fields,
-          import_react55.default.createElement(
+          import_react54.default.createElement(
             "div",
             { style: styles.toggle },
-            import_react55.default.createElement(
+            import_react54.default.createElement(
               "div",
               { style: styles.icon, onClick: this.toggleViews, ref: function ref(icon) {
                 return _this2.icon = icon;
               } },
-              import_react55.default.createElement(import_UnfoldMoreHorizontalIcon.default, {
+              import_react54.default.createElement(import_UnfoldMoreHorizontalIcon.default, {
                 style: styles.svg,
                 onMouseOver: this.showHighlight,
                 onMouseEnter: this.showHighlight,
@@ -51056,14 +50713,14 @@ class InstrumentLogic extends BaseInstrument {
       }
     }]);
     return ChromeFields2;
-  }(import_react55.default.Component);
+  }(import_react54.default.Component);
   ChromeFields.defaultProps = {
     view: "hex"
   };
   var ChromeFields_default = ChromeFields;
 
   // node_modules/react-color/es/components/chrome/ChromePointer.js
-  var import_react56 = __toESM(require_react());
+  var import_react55 = __toESM(require_react());
   var import_reactcss15 = __toESM(require_lib2());
   var ChromePointer = function ChromePointer2() {
     var styles = (0, import_reactcss15.default)({
@@ -51078,12 +50735,12 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react56.default.createElement("div", { style: styles.picker });
+    return import_react55.default.createElement("div", { style: styles.picker });
   };
   var ChromePointer_default = ChromePointer;
 
   // node_modules/react-color/es/components/chrome/ChromePointerCircle.js
-  var import_react57 = __toESM(require_react());
+  var import_react56 = __toESM(require_react());
   var import_reactcss16 = __toESM(require_lib2());
   var ChromePointerCircle = function ChromePointerCircle2() {
     var styles = (0, import_reactcss16.default)({
@@ -51097,7 +50754,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react57.default.createElement("div", { style: styles.picker });
+    return import_react56.default.createElement("div", { style: styles.picker });
   };
   var ChromePointerCircle_default = ChromePointerCircle;
 
@@ -51184,13 +50841,13 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles), { disableAlpha });
-    return import_react58.default.createElement(
+    return import_react57.default.createElement(
       "div",
       { style: styles.picker, className: "chrome-picker " + className },
-      import_react58.default.createElement(
+      import_react57.default.createElement(
         "div",
         { style: styles.saturation },
-        import_react58.default.createElement(Saturation_default, {
+        import_react57.default.createElement(Saturation_default, {
           style: styles.Saturation,
           hsl,
           hsv,
@@ -51198,39 +50855,39 @@ class InstrumentLogic extends BaseInstrument {
           onChange
         })
       ),
-      import_react58.default.createElement(
+      import_react57.default.createElement(
         "div",
         { style: styles.body },
-        import_react58.default.createElement(
+        import_react57.default.createElement(
           "div",
           { style: styles.controls, className: "flexbox-fix" },
-          import_react58.default.createElement(
+          import_react57.default.createElement(
             "div",
             { style: styles.color },
-            import_react58.default.createElement(
+            import_react57.default.createElement(
               "div",
               { style: styles.swatch },
-              import_react58.default.createElement("div", { style: styles.active }),
-              import_react58.default.createElement(Checkboard_default, { renderers })
+              import_react57.default.createElement("div", { style: styles.active }),
+              import_react57.default.createElement(Checkboard_default, { renderers })
             )
           ),
-          import_react58.default.createElement(
+          import_react57.default.createElement(
             "div",
             { style: styles.toggles },
-            import_react58.default.createElement(
+            import_react57.default.createElement(
               "div",
               { style: styles.hue },
-              import_react58.default.createElement(Hue_default, {
+              import_react57.default.createElement(Hue_default, {
                 style: styles.Hue,
                 hsl,
                 pointer: ChromePointer_default,
                 onChange
               })
             ),
-            import_react58.default.createElement(
+            import_react57.default.createElement(
               "div",
               { style: styles.alpha },
-              import_react58.default.createElement(Alpha_default, {
+              import_react57.default.createElement(Alpha_default, {
                 style: styles.Alpha,
                 rgb,
                 hsl,
@@ -51241,7 +50898,7 @@ class InstrumentLogic extends BaseInstrument {
             )
           )
         ),
-        import_react58.default.createElement(ChromeFields_default, {
+        import_react57.default.createElement(ChromeFields_default, {
           rgb,
           hsl,
           hex,
@@ -51266,12 +50923,12 @@ class InstrumentLogic extends BaseInstrument {
   var Chrome_default = ColorWrap_default(Chrome);
 
   // node_modules/react-color/es/components/compact/Compact.js
-  var import_react61 = __toESM(require_react());
+  var import_react60 = __toESM(require_react());
   var import_prop_types5 = __toESM(require_prop_types());
   var import_reactcss20 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/compact/CompactColor.js
-  var import_react59 = __toESM(require_react());
+  var import_react58 = __toESM(require_react());
   var import_reactcss18 = __toESM(require_lib2());
   var CompactColor = function CompactColor2(_ref) {
     var color = _ref.color, _ref$onClick = _ref.onClick, onClick = _ref$onClick === void 0 ? function() {
@@ -51314,7 +50971,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, { active, "color-#FFFFFF": color === "#FFFFFF", "transparent": color === "transparent" });
-    return import_react59.default.createElement(
+    return import_react58.default.createElement(
       Swatch_default,
       {
         style: styles.color,
@@ -51323,13 +50980,13 @@ class InstrumentLogic extends BaseInstrument {
         onHover: onSwatchHover,
         focusStyle: { boxShadow: "0 0 4px " + color }
       },
-      import_react59.default.createElement("div", { style: styles.dot })
+      import_react58.default.createElement("div", { style: styles.dot })
     );
   };
   var CompactColor_default = CompactColor;
 
   // node_modules/react-color/es/components/compact/CompactFields.js
-  var import_react60 = __toESM(require_react());
+  var import_react59 = __toESM(require_react());
   var import_reactcss19 = __toESM(require_lib2());
   var CompactFields = function CompactFields2(_ref) {
     var hex = _ref.hex, rgb = _ref.rgb, onChange = _ref.onChange;
@@ -51393,44 +51050,44 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    var handleChange = function handleChange2(data, e2) {
+    var handleChange = function handleChange2(data, e) {
       if (data.r || data.g || data.b) {
         onChange({
           r: data.r || rgb.r,
           g: data.g || rgb.g,
           b: data.b || rgb.b,
           source: "rgb"
-        }, e2);
+        }, e);
       } else {
         onChange({
           hex: data.hex,
           source: "hex"
-        }, e2);
+        }, e);
       }
     };
-    return import_react60.default.createElement(
+    return import_react59.default.createElement(
       "div",
       { style: styles.fields, className: "flexbox-fix" },
-      import_react60.default.createElement("div", { style: styles.active }),
-      import_react60.default.createElement(EditableInput_default, {
+      import_react59.default.createElement("div", { style: styles.active }),
+      import_react59.default.createElement(EditableInput_default, {
         style: { wrap: styles.HEXwrap, input: styles.HEXinput, label: styles.HEXlabel },
         label: "hex",
         value: hex,
         onChange: handleChange
       }),
-      import_react60.default.createElement(EditableInput_default, {
+      import_react59.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "r",
         value: rgb.r,
         onChange: handleChange
       }),
-      import_react60.default.createElement(EditableInput_default, {
+      import_react59.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "g",
         value: rgb.g,
         onChange: handleChange
       }),
-      import_react60.default.createElement(EditableInput_default, {
+      import_react59.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "b",
         value: rgb.b,
@@ -51460,27 +51117,27 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles));
-    var handleChange = function handleChange2(data, e2) {
+    var handleChange = function handleChange2(data, e) {
       if (data.hex) {
         isValidHex(data.hex) && onChange({
           hex: data.hex,
           source: "hex"
-        }, e2);
+        }, e);
       } else {
-        onChange(data, e2);
+        onChange(data, e);
       }
     };
-    return import_react61.default.createElement(
+    return import_react60.default.createElement(
       Raised_default,
       { style: styles.Compact, styles: passedStyles },
-      import_react61.default.createElement(
+      import_react60.default.createElement(
         "div",
         { style: styles.compact, className: "compact-picker " + className },
-        import_react61.default.createElement(
+        import_react60.default.createElement(
           "div",
           null,
           map_default(colors, function(c) {
-            return import_react61.default.createElement(CompactColor_default, {
+            return import_react60.default.createElement(CompactColor_default, {
               key: c,
               color: c,
               active: c.toLowerCase() === hex,
@@ -51488,9 +51145,9 @@ class InstrumentLogic extends BaseInstrument {
               onSwatchHover
             });
           }),
-          import_react61.default.createElement("div", { style: styles.clear })
+          import_react60.default.createElement("div", { style: styles.clear })
         ),
-        import_react61.default.createElement(CompactFields_default, { hex, rgb, onChange: handleChange })
+        import_react60.default.createElement(CompactFields_default, { hex, rgb, onChange: handleChange })
       )
     );
   };
@@ -51505,12 +51162,12 @@ class InstrumentLogic extends BaseInstrument {
   var Compact_default = ColorWrap_default(Compact);
 
   // node_modules/react-color/es/components/github/Github.js
-  var import_react63 = __toESM(require_react());
+  var import_react62 = __toESM(require_react());
   var import_prop_types6 = __toESM(require_prop_types());
   var import_reactcss22 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/github/GithubSwatch.js
-  var import_react62 = __toESM(require_react());
+  var import_react61 = __toESM(require_react());
   var import_reactcss21 = __toESM(require_lib2());
   var GithubSwatch = function GithubSwatch2(_ref) {
     var hover = _ref.hover, color = _ref.color, onClick = _ref.onClick, onSwatchHover = _ref.onSwatchHover;
@@ -51532,10 +51189,10 @@ class InstrumentLogic extends BaseInstrument {
         swatch: hoverSwatch
       }
     }, { hover });
-    return import_react62.default.createElement(
+    return import_react61.default.createElement(
       "div",
       { style: styles.swatch },
-      import_react62.default.createElement(Swatch_default, {
+      import_react61.default.createElement(Swatch_default, {
         color,
         onClick,
         onHover: onSwatchHover,
@@ -51631,16 +51288,16 @@ class InstrumentLogic extends BaseInstrument {
       "bottom-left-triangle": triangle === "bottom-left",
       "bottom-right-triangle": triangle === "bottom-right"
     });
-    var handleChange = function handleChange2(hex, e2) {
-      return onChange({ hex, source: "hex" }, e2);
+    var handleChange = function handleChange2(hex, e) {
+      return onChange({ hex, source: "hex" }, e);
     };
-    return import_react63.default.createElement(
+    return import_react62.default.createElement(
       "div",
       { style: styles.card, className: "github-picker " + className },
-      import_react63.default.createElement("div", { style: styles.triangleShadow }),
-      import_react63.default.createElement("div", { style: styles.triangle }),
+      import_react62.default.createElement("div", { style: styles.triangleShadow }),
+      import_react62.default.createElement("div", { style: styles.triangle }),
       map_default(colors, function(c) {
-        return import_react63.default.createElement(GithubSwatch_default, {
+        return import_react62.default.createElement(GithubSwatch_default, {
           color: c,
           key: c,
           onClick: handleChange,
@@ -51664,12 +51321,12 @@ class InstrumentLogic extends BaseInstrument {
   var Github_default = ColorWrap_default(Github);
 
   // node_modules/react-color/es/components/hue/Hue.js
-  var import_react65 = __toESM(require_react());
+  var import_react64 = __toESM(require_react());
   var import_prop_types7 = __toESM(require_prop_types());
   var import_reactcss24 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/hue/HuePointer.js
-  var import_react64 = __toESM(require_react());
+  var import_react63 = __toESM(require_react());
   var import_reactcss23 = __toESM(require_lib2());
   var SliderPointer = function SliderPointer2(_ref) {
     var direction = _ref.direction;
@@ -51690,14 +51347,14 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, { vertical: direction === "vertical" });
-    return import_react64.default.createElement("div", { style: styles.picker });
+    return import_react63.default.createElement("div", { style: styles.picker });
   };
   var HuePointer_default = SliderPointer;
 
   // node_modules/react-color/es/components/hue/Hue.js
   var _extends8 = Object.assign || function(target) {
-    for (var i2 = 1; i2 < arguments.length; i2++) {
-      var source = arguments[i2];
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
       for (var key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           target[key] = source[key];
@@ -51723,10 +51380,10 @@ class InstrumentLogic extends BaseInstrument {
     var handleChange = function handleChange2(data) {
       return onChange({ a: 1, h: data.h, l: 0.5, s: 1 });
     };
-    return import_react65.default.createElement(
+    return import_react64.default.createElement(
       "div",
       { style: styles.picker, className: "hue-picker " + className },
-      import_react65.default.createElement(Hue_default, _extends8({}, styles.hue, {
+      import_react64.default.createElement(Hue_default, _extends8({}, styles.hue, {
         hsl,
         pointer,
         onChange: handleChange,
@@ -51747,7 +51404,7 @@ class InstrumentLogic extends BaseInstrument {
   var Hue_default2 = ColorWrap_default(HuePicker);
 
   // node_modules/react-color/es/components/material/Material.js
-  var import_react66 = __toESM(require_react());
+  var import_react65 = __toESM(require_react());
   var import_reactcss25 = __toESM(require_lib2());
   var Material = function Material2(_ref) {
     var onChange = _ref.onChange, hex = _ref.hex, rgb = _ref.rgb, _ref$styles = _ref.styles, passedStyles = _ref$styles === void 0 ? {} : _ref$styles, _ref$className = _ref.className, className = _ref$className === void 0 ? "" : _ref$className;
@@ -51817,60 +51474,60 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles));
-    var handleChange = function handleChange2(data, e2) {
+    var handleChange = function handleChange2(data, e) {
       if (data.hex) {
         isValidHex(data.hex) && onChange({
           hex: data.hex,
           source: "hex"
-        }, e2);
+        }, e);
       } else if (data.r || data.g || data.b) {
         onChange({
           r: data.r || rgb.r,
           g: data.g || rgb.g,
           b: data.b || rgb.b,
           source: "rgb"
-        }, e2);
+        }, e);
       }
     };
-    return import_react66.default.createElement(
+    return import_react65.default.createElement(
       Raised_default,
       { styles: passedStyles },
-      import_react66.default.createElement(
+      import_react65.default.createElement(
         "div",
         { style: styles.material, className: "material-picker " + className },
-        import_react66.default.createElement(EditableInput_default, {
+        import_react65.default.createElement(EditableInput_default, {
           style: { wrap: styles.HEXwrap, input: styles.HEXinput, label: styles.HEXlabel },
           label: "hex",
           value: hex,
           onChange: handleChange
         }),
-        import_react66.default.createElement(
+        import_react65.default.createElement(
           "div",
           { style: styles.split, className: "flexbox-fix" },
-          import_react66.default.createElement(
+          import_react65.default.createElement(
             "div",
             { style: styles.third },
-            import_react66.default.createElement(EditableInput_default, {
+            import_react65.default.createElement(EditableInput_default, {
               style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
               label: "r",
               value: rgb.r,
               onChange: handleChange
             })
           ),
-          import_react66.default.createElement(
+          import_react65.default.createElement(
             "div",
             { style: styles.third },
-            import_react66.default.createElement(EditableInput_default, {
+            import_react65.default.createElement(EditableInput_default, {
               style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
               label: "g",
               value: rgb.g,
               onChange: handleChange
             })
           ),
-          import_react66.default.createElement(
+          import_react65.default.createElement(
             "div",
             { style: styles.third },
-            import_react66.default.createElement(EditableInput_default, {
+            import_react65.default.createElement(EditableInput_default, {
               style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
               label: "b",
               value: rgb.b,
@@ -51884,12 +51541,12 @@ class InstrumentLogic extends BaseInstrument {
   var Material_default = ColorWrap_default(Material);
 
   // node_modules/react-color/es/components/photoshop/Photoshop.js
-  var import_react72 = __toESM(require_react());
+  var import_react71 = __toESM(require_react());
   var import_prop_types8 = __toESM(require_prop_types());
   var import_reactcss31 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/photoshop/PhotoshopFields.js
-  var import_react67 = __toESM(require_react());
+  var import_react66 = __toESM(require_react());
   var import_reactcss26 = __toESM(require_lib2());
   var PhotoshopPicker = function PhotoshopPicker2(_ref) {
     var onChange = _ref.onChange, rgb = _ref.rgb, hsv = _ref.hsv, hex = _ref.hex;
@@ -51964,89 +51621,89 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    var handleChange = function handleChange2(data, e2) {
+    var handleChange = function handleChange2(data, e) {
       if (data["#"]) {
         isValidHex(data["#"]) && onChange({
           hex: data["#"],
           source: "hex"
-        }, e2);
+        }, e);
       } else if (data.r || data.g || data.b) {
         onChange({
           r: data.r || rgb.r,
           g: data.g || rgb.g,
           b: data.b || rgb.b,
           source: "rgb"
-        }, e2);
+        }, e);
       } else if (data.h || data.s || data.v) {
         onChange({
           h: data.h || hsv.h,
           s: data.s || hsv.s,
           v: data.v || hsv.v,
           source: "hsv"
-        }, e2);
+        }, e);
       }
     };
-    return import_react67.default.createElement(
+    return import_react66.default.createElement(
       "div",
       { style: styles.fields },
-      import_react67.default.createElement(EditableInput_default, {
+      import_react66.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "h",
         value: Math.round(hsv.h),
         onChange: handleChange
       }),
-      import_react67.default.createElement(EditableInput_default, {
+      import_react66.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "s",
         value: Math.round(hsv.s * 100),
         onChange: handleChange
       }),
-      import_react67.default.createElement(EditableInput_default, {
+      import_react66.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "v",
         value: Math.round(hsv.v * 100),
         onChange: handleChange
       }),
-      import_react67.default.createElement("div", { style: styles.divider }),
-      import_react67.default.createElement(EditableInput_default, {
+      import_react66.default.createElement("div", { style: styles.divider }),
+      import_react66.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "r",
         value: rgb.r,
         onChange: handleChange
       }),
-      import_react67.default.createElement(EditableInput_default, {
+      import_react66.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "g",
         value: rgb.g,
         onChange: handleChange
       }),
-      import_react67.default.createElement(EditableInput_default, {
+      import_react66.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "b",
         value: rgb.b,
         onChange: handleChange
       }),
-      import_react67.default.createElement("div", { style: styles.divider }),
-      import_react67.default.createElement(EditableInput_default, {
+      import_react66.default.createElement("div", { style: styles.divider }),
+      import_react66.default.createElement(EditableInput_default, {
         style: { wrap: styles.HEXwrap, input: styles.HEXinput, label: styles.HEXlabel },
         label: "#",
         value: hex.replace("#", ""),
         onChange: handleChange
       }),
-      import_react67.default.createElement(
+      import_react66.default.createElement(
         "div",
         { style: styles.fieldSymbols },
-        import_react67.default.createElement(
+        import_react66.default.createElement(
           "div",
           { style: styles.symbol },
           "\xB0"
         ),
-        import_react67.default.createElement(
+        import_react66.default.createElement(
           "div",
           { style: styles.symbol },
           "%"
         ),
-        import_react67.default.createElement(
+        import_react66.default.createElement(
           "div",
           { style: styles.symbol },
           "%"
@@ -52057,7 +51714,7 @@ class InstrumentLogic extends BaseInstrument {
   var PhotoshopFields_default = PhotoshopPicker;
 
   // node_modules/react-color/es/components/photoshop/PhotoshopPointerCircle.js
-  var import_react68 = __toESM(require_react());
+  var import_react67 = __toESM(require_react());
   var import_reactcss27 = __toESM(require_lib2());
   var PhotoshopPointerCircle = function PhotoshopPointerCircle2(_ref) {
     var hsl = _ref.hsl;
@@ -52077,12 +51734,12 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, { "black-outline": hsl.l > 0.5 });
-    return import_react68.default.createElement("div", { style: styles.picker });
+    return import_react67.default.createElement("div", { style: styles.picker });
   };
   var PhotoshopPointerCircle_default = PhotoshopPointerCircle;
 
   // node_modules/react-color/es/components/photoshop/PhotoshopPointer.js
-  var import_react69 = __toESM(require_react());
+  var import_react68 = __toESM(require_react());
   var import_reactcss28 = __toESM(require_lib2());
   var PhotoshopPointerCircle3 = function PhotoshopPointerCircle4() {
     var styles = (0, import_reactcss28.default)({
@@ -52122,25 +51779,25 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react69.default.createElement(
+    return import_react68.default.createElement(
       "div",
       { style: styles.pointer },
-      import_react69.default.createElement(
+      import_react68.default.createElement(
         "div",
         { style: styles.left },
-        import_react69.default.createElement("div", { style: styles.leftInside })
+        import_react68.default.createElement("div", { style: styles.leftInside })
       ),
-      import_react69.default.createElement(
+      import_react68.default.createElement(
         "div",
         { style: styles.right },
-        import_react69.default.createElement("div", { style: styles.rightInside })
+        import_react68.default.createElement("div", { style: styles.rightInside })
       )
     );
   };
   var PhotoshopPointer_default = PhotoshopPointerCircle3;
 
   // node_modules/react-color/es/components/photoshop/PhotoshopButton.js
-  var import_react70 = __toESM(require_react());
+  var import_react69 = __toESM(require_react());
   var import_reactcss29 = __toESM(require_lib2());
   var PhotoshopButton = function PhotoshopButton2(_ref) {
     var onClick = _ref.onClick, label = _ref.label, children = _ref.children, active = _ref.active;
@@ -52166,7 +51823,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, { active });
-    return import_react70.default.createElement(
+    return import_react69.default.createElement(
       "div",
       { style: styles.button, onClick },
       label || children
@@ -52175,7 +51832,7 @@ class InstrumentLogic extends BaseInstrument {
   var PhotoshopButton_default = PhotoshopButton;
 
   // node_modules/react-color/es/components/photoshop/PhotoshopPreviews.js
-  var import_react71 = __toESM(require_react());
+  var import_react70 = __toESM(require_react());
   var import_reactcss30 = __toESM(require_lib2());
   var PhotoshopPreviews = function PhotoshopPreviews2(_ref) {
     var rgb = _ref.rgb, currentColor = _ref.currentColor;
@@ -52204,21 +51861,21 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react71.default.createElement(
+    return import_react70.default.createElement(
       "div",
       null,
-      import_react71.default.createElement(
+      import_react70.default.createElement(
         "div",
         { style: styles.label },
         "new"
       ),
-      import_react71.default.createElement(
+      import_react70.default.createElement(
         "div",
         { style: styles.swatches },
-        import_react71.default.createElement("div", { style: styles.new }),
-        import_react71.default.createElement("div", { style: styles.current })
+        import_react70.default.createElement("div", { style: styles.new }),
+        import_react70.default.createElement("div", { style: styles.current })
       ),
-      import_react71.default.createElement(
+      import_react70.default.createElement(
         "div",
         { style: styles.label },
         "current"
@@ -52230,8 +51887,8 @@ class InstrumentLogic extends BaseInstrument {
   // node_modules/react-color/es/components/photoshop/Photoshop.js
   var _createClass8 = function() {
     function defineProperties(target, props) {
-      for (var i2 = 0; i2 < props.length; i2++) {
-        var descriptor = props[i2];
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
         descriptor.enumerable = descriptor.enumerable || false;
         descriptor.configurable = true;
         if ("value" in descriptor)
@@ -52336,57 +51993,57 @@ class InstrumentLogic extends BaseInstrument {
             }
           }
         }, passedStyles));
-        return import_react72.default.createElement(
+        return import_react71.default.createElement(
           "div",
           { style: styles.picker, className: "photoshop-picker " + className },
-          import_react72.default.createElement(
+          import_react71.default.createElement(
             "div",
             { style: styles.head },
             this.props.header
           ),
-          import_react72.default.createElement(
+          import_react71.default.createElement(
             "div",
             { style: styles.body, className: "flexbox-fix" },
-            import_react72.default.createElement(
+            import_react71.default.createElement(
               "div",
               { style: styles.saturation },
-              import_react72.default.createElement(Saturation_default, {
+              import_react71.default.createElement(Saturation_default, {
                 hsl: this.props.hsl,
                 hsv: this.props.hsv,
                 pointer: PhotoshopPointerCircle_default,
                 onChange: this.props.onChange
               })
             ),
-            import_react72.default.createElement(
+            import_react71.default.createElement(
               "div",
               { style: styles.hue },
-              import_react72.default.createElement(Hue_default, {
+              import_react71.default.createElement(Hue_default, {
                 direction: "vertical",
                 hsl: this.props.hsl,
                 pointer: PhotoshopPointer_default,
                 onChange: this.props.onChange
               })
             ),
-            import_react72.default.createElement(
+            import_react71.default.createElement(
               "div",
               { style: styles.controls },
-              import_react72.default.createElement(
+              import_react71.default.createElement(
                 "div",
                 { style: styles.top, className: "flexbox-fix" },
-                import_react72.default.createElement(
+                import_react71.default.createElement(
                   "div",
                   { style: styles.previews },
-                  import_react72.default.createElement(PhotoshopPreviews_default, {
+                  import_react71.default.createElement(PhotoshopPreviews_default, {
                     rgb: this.props.rgb,
                     currentColor: this.state.currentColor
                   })
                 ),
-                import_react72.default.createElement(
+                import_react71.default.createElement(
                   "div",
                   { style: styles.actions },
-                  import_react72.default.createElement(PhotoshopButton_default, { label: "OK", onClick: this.props.onAccept, active: true }),
-                  import_react72.default.createElement(PhotoshopButton_default, { label: "Cancel", onClick: this.props.onCancel }),
-                  import_react72.default.createElement(PhotoshopFields_default, {
+                  import_react71.default.createElement(PhotoshopButton_default, { label: "OK", onClick: this.props.onAccept, active: true }),
+                  import_react71.default.createElement(PhotoshopButton_default, { label: "Cancel", onClick: this.props.onCancel }),
+                  import_react71.default.createElement(PhotoshopFields_default, {
                     onChange: this.props.onChange,
                     rgb: this.props.rgb,
                     hsv: this.props.hsv,
@@ -52400,7 +52057,7 @@ class InstrumentLogic extends BaseInstrument {
       }
     }]);
     return Photoshop2;
-  }(import_react72.default.Component);
+  }(import_react71.default.Component);
   Photoshop.propTypes = {
     header: import_prop_types8.default.string,
     styles: import_prop_types8.default.object
@@ -52412,12 +52069,12 @@ class InstrumentLogic extends BaseInstrument {
   var Photoshop_default = ColorWrap_default(Photoshop);
 
   // node_modules/react-color/es/components/sketch/Sketch.js
-  var import_react75 = __toESM(require_react());
+  var import_react74 = __toESM(require_react());
   var import_prop_types10 = __toESM(require_prop_types());
   var import_reactcss34 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/sketch/SketchFields.js
-  var import_react73 = __toESM(require_react());
+  var import_react72 = __toESM(require_react());
   var import_reactcss32 = __toESM(require_lib2());
   var SketchFields = function SketchFields2(_ref) {
     var onChange = _ref.onChange, rgb = _ref.rgb, hsl = _ref.hsl, hex = _ref.hex, disableAlpha = _ref.disableAlpha;
@@ -52461,12 +52118,12 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, { disableAlpha });
-    var handleChange = function handleChange2(data, e2) {
+    var handleChange = function handleChange2(data, e) {
       if (data.hex) {
         isValidHex(data.hex) && onChange({
           hex: data.hex,
           source: "hex"
-        }, e2);
+        }, e);
       } else if (data.r || data.g || data.b) {
         onChange({
           r: data.r || rgb.r,
@@ -52474,7 +52131,7 @@ class InstrumentLogic extends BaseInstrument {
           b: data.b || rgb.b,
           a: rgb.a,
           source: "rgb"
-        }, e2);
+        }, e);
       } else if (data.a) {
         if (data.a < 0) {
           data.a = 0;
@@ -52488,26 +52145,26 @@ class InstrumentLogic extends BaseInstrument {
           l: hsl.l,
           a: data.a,
           source: "rgb"
-        }, e2);
+        }, e);
       }
     };
-    return import_react73.default.createElement(
+    return import_react72.default.createElement(
       "div",
       { style: styles.fields, className: "flexbox-fix" },
-      import_react73.default.createElement(
+      import_react72.default.createElement(
         "div",
         { style: styles.double },
-        import_react73.default.createElement(EditableInput_default, {
+        import_react72.default.createElement(EditableInput_default, {
           style: { input: styles.input, label: styles.label },
           label: "hex",
           value: hex.replace("#", ""),
           onChange: handleChange
         })
       ),
-      import_react73.default.createElement(
+      import_react72.default.createElement(
         "div",
         { style: styles.single },
-        import_react73.default.createElement(EditableInput_default, {
+        import_react72.default.createElement(EditableInput_default, {
           style: { input: styles.input, label: styles.label },
           label: "r",
           value: rgb.r,
@@ -52516,10 +52173,10 @@ class InstrumentLogic extends BaseInstrument {
           dragMax: "255"
         })
       ),
-      import_react73.default.createElement(
+      import_react72.default.createElement(
         "div",
         { style: styles.single },
-        import_react73.default.createElement(EditableInput_default, {
+        import_react72.default.createElement(EditableInput_default, {
           style: { input: styles.input, label: styles.label },
           label: "g",
           value: rgb.g,
@@ -52528,10 +52185,10 @@ class InstrumentLogic extends BaseInstrument {
           dragMax: "255"
         })
       ),
-      import_react73.default.createElement(
+      import_react72.default.createElement(
         "div",
         { style: styles.single },
-        import_react73.default.createElement(EditableInput_default, {
+        import_react72.default.createElement(EditableInput_default, {
           style: { input: styles.input, label: styles.label },
           label: "b",
           value: rgb.b,
@@ -52540,10 +52197,10 @@ class InstrumentLogic extends BaseInstrument {
           dragMax: "255"
         })
       ),
-      import_react73.default.createElement(
+      import_react72.default.createElement(
         "div",
         { style: styles.alpha },
-        import_react73.default.createElement(EditableInput_default, {
+        import_react72.default.createElement(EditableInput_default, {
           style: { input: styles.input, label: styles.label },
           label: "a",
           value: Math.round(rgb.a * 100),
@@ -52557,12 +52214,12 @@ class InstrumentLogic extends BaseInstrument {
   var SketchFields_default = SketchFields;
 
   // node_modules/react-color/es/components/sketch/SketchPresetColors.js
-  var import_react74 = __toESM(require_react());
+  var import_react73 = __toESM(require_react());
   var import_prop_types9 = __toESM(require_prop_types());
   var import_reactcss33 = __toESM(require_lib2());
   var _extends9 = Object.assign || function(target) {
-    for (var i2 = 1; i2 < arguments.length; i2++) {
-      var source = arguments[i2];
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
       for (var key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           target[key] = source[key];
@@ -52602,22 +52259,22 @@ class InstrumentLogic extends BaseInstrument {
     }, {
       "no-presets": !colors || !colors.length
     });
-    var handleClick = function handleClick2(hex, e2) {
+    var handleClick = function handleClick2(hex, e) {
       onClick({
         hex,
         source: "hex"
-      }, e2);
+      }, e);
     };
-    return import_react74.default.createElement(
+    return import_react73.default.createElement(
       "div",
       { style: styles.colors, className: "flexbox-fix" },
       colors.map(function(colorObjOrString) {
         var c = typeof colorObjOrString === "string" ? { color: colorObjOrString } : colorObjOrString;
         var key = "" + c.color + (c.title || "");
-        return import_react74.default.createElement(
+        return import_react73.default.createElement(
           "div",
           { key, style: styles.swatchWrap },
-          import_react74.default.createElement(Swatch_default, _extends9({}, c, {
+          import_react73.default.createElement(Swatch_default, _extends9({}, c, {
             style: styles.swatch,
             onClick: handleClick,
             onHover: onSwatchHover,
@@ -52639,8 +52296,8 @@ class InstrumentLogic extends BaseInstrument {
 
   // node_modules/react-color/es/components/sketch/Sketch.js
   var _extends10 = Object.assign || function(target) {
-    for (var i2 = 1; i2 < arguments.length; i2++) {
-      var source = arguments[i2];
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
       for (var key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           target[key] = source[key];
@@ -52724,38 +52381,38 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles), { disableAlpha });
-    return import_react75.default.createElement(
+    return import_react74.default.createElement(
       "div",
       { style: styles.picker, className: "sketch-picker " + className },
-      import_react75.default.createElement(
+      import_react74.default.createElement(
         "div",
         { style: styles.saturation },
-        import_react75.default.createElement(Saturation_default, {
+        import_react74.default.createElement(Saturation_default, {
           style: styles.Saturation,
           hsl,
           hsv,
           onChange
         })
       ),
-      import_react75.default.createElement(
+      import_react74.default.createElement(
         "div",
         { style: styles.controls, className: "flexbox-fix" },
-        import_react75.default.createElement(
+        import_react74.default.createElement(
           "div",
           { style: styles.sliders },
-          import_react75.default.createElement(
+          import_react74.default.createElement(
             "div",
             { style: styles.hue },
-            import_react75.default.createElement(Hue_default, {
+            import_react74.default.createElement(Hue_default, {
               style: styles.Hue,
               hsl,
               onChange
             })
           ),
-          import_react75.default.createElement(
+          import_react74.default.createElement(
             "div",
             { style: styles.alpha },
-            import_react75.default.createElement(Alpha_default, {
+            import_react74.default.createElement(Alpha_default, {
               style: styles.Alpha,
               rgb,
               hsl,
@@ -52764,21 +52421,21 @@ class InstrumentLogic extends BaseInstrument {
             })
           )
         ),
-        import_react75.default.createElement(
+        import_react74.default.createElement(
           "div",
           { style: styles.color },
-          import_react75.default.createElement(Checkboard_default, null),
-          import_react75.default.createElement("div", { style: styles.activeColor })
+          import_react74.default.createElement(Checkboard_default, null),
+          import_react74.default.createElement("div", { style: styles.activeColor })
         )
       ),
-      import_react75.default.createElement(SketchFields_default, {
+      import_react74.default.createElement(SketchFields_default, {
         rgb,
         hsl,
         hex,
         onChange,
         disableAlpha
       }),
-      import_react75.default.createElement(SketchPresetColors_default, {
+      import_react74.default.createElement(SketchPresetColors_default, {
         colors: presetColors,
         onClick: onChange,
         onSwatchHover
@@ -52799,16 +52456,16 @@ class InstrumentLogic extends BaseInstrument {
   var Sketch_default = ColorWrap_default(Sketch);
 
   // node_modules/react-color/es/components/slider/Slider.js
-  var import_react79 = __toESM(require_react());
+  var import_react78 = __toESM(require_react());
   var import_prop_types11 = __toESM(require_prop_types());
   var import_reactcss38 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/slider/SliderSwatches.js
-  var import_react77 = __toESM(require_react());
+  var import_react76 = __toESM(require_react());
   var import_reactcss36 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/slider/SliderSwatch.js
-  var import_react76 = __toESM(require_react());
+  var import_react75 = __toESM(require_react());
   var import_reactcss35 = __toESM(require_lib2());
   var SliderSwatch = function SliderSwatch2(_ref) {
     var hsl = _ref.hsl, offset = _ref.offset, _ref$onClick = _ref.onClick, onClick = _ref$onClick === void 0 ? function() {
@@ -52838,15 +52495,15 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, { active, first, last });
-    var handleClick = function handleClick2(e2) {
+    var handleClick = function handleClick2(e) {
       return onClick({
         h: hsl.h,
         s: 0.5,
         l: offset,
         source: "hsl"
-      }, e2);
+      }, e);
     };
-    return import_react76.default.createElement("div", { style: styles.swatch, onClick: handleClick });
+    return import_react75.default.createElement("div", { style: styles.swatch, onClick: handleClick });
   };
   var SliderSwatch_default = SliderSwatch;
 
@@ -52870,13 +52527,13 @@ class InstrumentLogic extends BaseInstrument {
       }
     });
     var epsilon = 0.1;
-    return import_react77.default.createElement(
+    return import_react76.default.createElement(
       "div",
       { style: styles.swatches },
-      import_react77.default.createElement(
+      import_react76.default.createElement(
         "div",
         { style: styles.swatch },
-        import_react77.default.createElement(SliderSwatch_default, {
+        import_react76.default.createElement(SliderSwatch_default, {
           hsl,
           offset: ".80",
           active: Math.abs(hsl.l - 0.8) < epsilon && Math.abs(hsl.s - 0.5) < epsilon,
@@ -52884,40 +52541,40 @@ class InstrumentLogic extends BaseInstrument {
           first: true
         })
       ),
-      import_react77.default.createElement(
+      import_react76.default.createElement(
         "div",
         { style: styles.swatch },
-        import_react77.default.createElement(SliderSwatch_default, {
+        import_react76.default.createElement(SliderSwatch_default, {
           hsl,
           offset: ".65",
           active: Math.abs(hsl.l - 0.65) < epsilon && Math.abs(hsl.s - 0.5) < epsilon,
           onClick
         })
       ),
-      import_react77.default.createElement(
+      import_react76.default.createElement(
         "div",
         { style: styles.swatch },
-        import_react77.default.createElement(SliderSwatch_default, {
+        import_react76.default.createElement(SliderSwatch_default, {
           hsl,
           offset: ".50",
           active: Math.abs(hsl.l - 0.5) < epsilon && Math.abs(hsl.s - 0.5) < epsilon,
           onClick
         })
       ),
-      import_react77.default.createElement(
+      import_react76.default.createElement(
         "div",
         { style: styles.swatch },
-        import_react77.default.createElement(SliderSwatch_default, {
+        import_react76.default.createElement(SliderSwatch_default, {
           hsl,
           offset: ".35",
           active: Math.abs(hsl.l - 0.35) < epsilon && Math.abs(hsl.s - 0.5) < epsilon,
           onClick
         })
       ),
-      import_react77.default.createElement(
+      import_react76.default.createElement(
         "div",
         { style: styles.swatch },
-        import_react77.default.createElement(SliderSwatch_default, {
+        import_react76.default.createElement(SliderSwatch_default, {
           hsl,
           offset: ".20",
           active: Math.abs(hsl.l - 0.2) < epsilon && Math.abs(hsl.s - 0.5) < epsilon,
@@ -52925,13 +52582,13 @@ class InstrumentLogic extends BaseInstrument {
           last: true
         })
       ),
-      import_react77.default.createElement("div", { style: styles.clear })
+      import_react76.default.createElement("div", { style: styles.clear })
     );
   };
   var SliderSwatches_default = SliderSwatches;
 
   // node_modules/react-color/es/components/slider/SliderPointer.js
-  var import_react78 = __toESM(require_react());
+  var import_react77 = __toESM(require_react());
   var import_reactcss37 = __toESM(require_lib2());
   var SliderPointer3 = function SliderPointer4() {
     var styles = (0, import_reactcss37.default)({
@@ -52946,7 +52603,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react78.default.createElement("div", { style: styles.picker });
+    return import_react77.default.createElement("div", { style: styles.picker });
   };
   var SliderPointer_default = SliderPointer3;
 
@@ -52964,23 +52621,23 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles));
-    return import_react79.default.createElement(
+    return import_react78.default.createElement(
       "div",
       { style: styles.wrap || {}, className: "slider-picker " + className },
-      import_react79.default.createElement(
+      import_react78.default.createElement(
         "div",
         { style: styles.hue },
-        import_react79.default.createElement(Hue_default, {
+        import_react78.default.createElement(Hue_default, {
           style: styles.Hue,
           hsl,
           pointer,
           onChange
         })
       ),
-      import_react79.default.createElement(
+      import_react78.default.createElement(
         "div",
         { style: styles.swatches },
-        import_react79.default.createElement(SliderSwatches_default, { hsl, onClick: onChange })
+        import_react78.default.createElement(SliderSwatches_default, { hsl, onClick: onChange })
       )
     );
   };
@@ -52994,16 +52651,16 @@ class InstrumentLogic extends BaseInstrument {
   var Slider_default = ColorWrap_default(Slider);
 
   // node_modules/react-color/es/components/swatches/Swatches.js
-  var import_react82 = __toESM(require_react());
+  var import_react81 = __toESM(require_react());
   var import_prop_types12 = __toESM(require_prop_types());
   var import_reactcss41 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/swatches/SwatchesGroup.js
-  var import_react81 = __toESM(require_react());
+  var import_react80 = __toESM(require_react());
   var import_reactcss40 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/swatches/SwatchesColor.js
-  var import_react80 = __toESM(require_react());
+  var import_react79 = __toESM(require_react());
   var import_reactcss39 = __toESM(require_lib2());
   var import_CheckIcon = __toESM(require_CheckIcon());
   var SwatchesColor = function SwatchesColor2(_ref) {
@@ -53061,7 +52718,7 @@ class InstrumentLogic extends BaseInstrument {
       "color-#FFFFFF": color === "#FFFFFF",
       "transparent": color === "transparent"
     });
-    return import_react80.default.createElement(
+    return import_react79.default.createElement(
       Swatch_default,
       {
         color,
@@ -53070,10 +52727,10 @@ class InstrumentLogic extends BaseInstrument {
         onHover: onSwatchHover,
         focusStyle: { boxShadow: "0 0 4px " + color }
       },
-      import_react80.default.createElement(
+      import_react79.default.createElement(
         "div",
         { style: styles.check },
-        import_react80.default.createElement(import_CheckIcon.default, null)
+        import_react79.default.createElement(import_CheckIcon.default, null)
       )
     );
   };
@@ -53092,16 +52749,16 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react81.default.createElement(
+    return import_react80.default.createElement(
       "div",
       { style: styles.group },
-      map_default(group, function(color, i2) {
-        return import_react81.default.createElement(SwatchesColor_default, {
+      map_default(group, function(color, i) {
+        return import_react80.default.createElement(SwatchesColor_default, {
           key: color,
           color,
           active: color.toLowerCase() === active,
-          first: i2 === 0,
-          last: i2 === group.length - 1,
+          first: i === 0,
+          last: i === group.length - 1,
           onClick,
           onSwatchHover
         });
@@ -53131,23 +52788,23 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles));
-    var handleChange = function handleChange2(data, e2) {
-      return onChange({ hex: data, source: "hex" }, e2);
+    var handleChange = function handleChange2(data, e) {
+      return onChange({ hex: data, source: "hex" }, e);
     };
-    return import_react82.default.createElement(
+    return import_react81.default.createElement(
       "div",
       { style: styles.picker, className: "swatches-picker " + className },
-      import_react82.default.createElement(
+      import_react81.default.createElement(
         Raised_default,
         null,
-        import_react82.default.createElement(
+        import_react81.default.createElement(
           "div",
           { style: styles.overflow },
-          import_react82.default.createElement(
+          import_react81.default.createElement(
             "div",
             { style: styles.body },
             map_default(colors, function(group) {
-              return import_react82.default.createElement(SwatchesGroup_default, {
+              return import_react81.default.createElement(SwatchesGroup_default, {
                 key: group.toString(),
                 group,
                 active: hex,
@@ -53155,7 +52812,7 @@ class InstrumentLogic extends BaseInstrument {
                 onSwatchHover
               });
             }),
-            import_react82.default.createElement("div", { style: styles.clear })
+            import_react81.default.createElement("div", { style: styles.clear })
           )
         )
       )
@@ -53176,7 +52833,7 @@ class InstrumentLogic extends BaseInstrument {
   var Swatches_default = ColorWrap_default(Swatches);
 
   // node_modules/react-color/es/components/twitter/Twitter.js
-  var import_react83 = __toESM(require_react());
+  var import_react82 = __toESM(require_react());
   var import_prop_types13 = __toESM(require_prop_types());
   var import_reactcss42 = __toESM(require_lib2());
   var Twitter = function Twitter2(_ref) {
@@ -53282,23 +52939,23 @@ class InstrumentLogic extends BaseInstrument {
       "top-left-triangle": triangle === "top-left",
       "top-right-triangle": triangle === "top-right"
     });
-    var handleChange = function handleChange2(hexcode, e2) {
+    var handleChange = function handleChange2(hexcode, e) {
       isValidHex(hexcode) && onChange({
         hex: hexcode,
         source: "hex"
-      }, e2);
+      }, e);
     };
-    return import_react83.default.createElement(
+    return import_react82.default.createElement(
       "div",
       { style: styles.card, className: "twitter-picker " + className },
-      import_react83.default.createElement("div", { style: styles.triangleShadow }),
-      import_react83.default.createElement("div", { style: styles.triangle }),
-      import_react83.default.createElement(
+      import_react82.default.createElement("div", { style: styles.triangleShadow }),
+      import_react82.default.createElement("div", { style: styles.triangle }),
+      import_react82.default.createElement(
         "div",
         { style: styles.body },
-        map_default(colors, function(c, i2) {
-          return import_react83.default.createElement(Swatch_default, {
-            key: i2,
+        map_default(colors, function(c, i) {
+          return import_react82.default.createElement(Swatch_default, {
+            key: i,
             color: c,
             hex: c,
             style: styles.swatch,
@@ -53309,18 +52966,18 @@ class InstrumentLogic extends BaseInstrument {
             }
           });
         }),
-        import_react83.default.createElement(
+        import_react82.default.createElement(
           "div",
           { style: styles.hash },
           "#"
         ),
-        import_react83.default.createElement(EditableInput_default, {
+        import_react82.default.createElement(EditableInput_default, {
           label: null,
           style: { input: styles.input },
           value: hex.replace("#", ""),
           onChange: handleChange
         }),
-        import_react83.default.createElement("div", { style: styles.clear })
+        import_react82.default.createElement("div", { style: styles.clear })
       )
     );
   };
@@ -53339,12 +52996,12 @@ class InstrumentLogic extends BaseInstrument {
   var Twitter_default = ColorWrap_default(Twitter);
 
   // node_modules/react-color/es/components/google/Google.js
-  var import_react87 = __toESM(require_react());
+  var import_react86 = __toESM(require_react());
   var import_prop_types16 = __toESM(require_prop_types());
   var import_reactcss46 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/google/GooglePointerCircle.js
-  var import_react84 = __toESM(require_react());
+  var import_react83 = __toESM(require_react());
   var import_reactcss43 = __toESM(require_lib2());
   var import_prop_types14 = __toESM(require_prop_types());
   var GooglePointerCircle = function GooglePointerCircle2(props) {
@@ -53360,7 +53017,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react84.default.createElement("div", { style: styles.picker });
+    return import_react83.default.createElement("div", { style: styles.picker });
   };
   GooglePointerCircle.propTypes = {
     hsl: import_prop_types14.default.shape({
@@ -53376,7 +53033,7 @@ class InstrumentLogic extends BaseInstrument {
   var GooglePointerCircle_default = GooglePointerCircle;
 
   // node_modules/react-color/es/components/google/GooglePointer.js
-  var import_react85 = __toESM(require_react());
+  var import_react84 = __toESM(require_react());
   var import_reactcss44 = __toESM(require_lib2());
   var import_prop_types15 = __toESM(require_prop_types());
   var GooglePointer = function GooglePointer2(props) {
@@ -53392,7 +53049,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react85.default.createElement("div", { style: styles.picker });
+    return import_react84.default.createElement("div", { style: styles.picker });
   };
   GooglePointer.propTypes = {
     hsl: import_prop_types15.default.shape({
@@ -53408,16 +53065,16 @@ class InstrumentLogic extends BaseInstrument {
   var GooglePointer_default = GooglePointer;
 
   // node_modules/react-color/es/components/google/GoogleFields.js
-  var import_react86 = __toESM(require_react());
+  var import_react85 = __toESM(require_react());
   var import_reactcss45 = __toESM(require_lib2());
   var GoogleFields = function GoogleFields2(_ref) {
     var onChange = _ref.onChange, rgb = _ref.rgb, hsl = _ref.hsl, hex = _ref.hex, hsv = _ref.hsv;
-    var handleChange = function handleChange2(data, e2) {
+    var handleChange = function handleChange2(data, e) {
       if (data.hex) {
         isValidHex(data.hex) && onChange({
           hex: data.hex,
           source: "hex"
-        }, e2);
+        }, e);
       } else if (data.rgb) {
         var values = data.rgb.split(",");
         isvalidColorString(data.rgb, "rgb") && onChange({
@@ -53426,7 +53083,7 @@ class InstrumentLogic extends BaseInstrument {
           b: values[2],
           a: 1,
           source: "rgb"
-        }, e2);
+        }, e);
       } else if (data.hsv) {
         var _values = data.hsv.split(",");
         if (isvalidColorString(data.hsv, "hsv")) {
@@ -53443,7 +53100,7 @@ class InstrumentLogic extends BaseInstrument {
             s: Number(_values[1]),
             v: Number(_values[2]),
             source: "hsv"
-          }, e2);
+          }, e);
         }
       } else if (data.hsl) {
         var _values2 = data.hsl.split(",");
@@ -53461,7 +53118,7 @@ class InstrumentLogic extends BaseInstrument {
             s: Number(_values2[1]),
             v: Number(_values2[2]),
             source: "hsl"
-          }, e2);
+          }, e);
         }
       }
     };
@@ -53545,49 +53202,49 @@ class InstrumentLogic extends BaseInstrument {
     var rgbValue = rgb.r + ", " + rgb.g + ", " + rgb.b;
     var hslValue = Math.round(hsl.h) + "\xB0, " + Math.round(hsl.s * 100) + "%, " + Math.round(hsl.l * 100) + "%";
     var hsvValue = Math.round(hsv.h) + "\xB0, " + Math.round(hsv.s * 100) + "%, " + Math.round(hsv.v * 100) + "%";
-    return import_react86.default.createElement(
+    return import_react85.default.createElement(
       "div",
       { style: styles.wrap, className: "flexbox-fix" },
-      import_react86.default.createElement(
+      import_react85.default.createElement(
         "div",
         { style: styles.fields },
-        import_react86.default.createElement(
+        import_react85.default.createElement(
           "div",
           { style: styles.double },
-          import_react86.default.createElement(EditableInput_default, {
+          import_react85.default.createElement(EditableInput_default, {
             style: { input: styles.input, label: styles.label },
             label: "hex",
             value: hex,
             onChange: handleChange
           })
         ),
-        import_react86.default.createElement(
+        import_react85.default.createElement(
           "div",
           { style: styles.column },
-          import_react86.default.createElement(
+          import_react85.default.createElement(
             "div",
             { style: styles.single },
-            import_react86.default.createElement(EditableInput_default, {
+            import_react85.default.createElement(EditableInput_default, {
               style: { input: styles.input2, label: styles.label2 },
               label: "rgb",
               value: rgbValue,
               onChange: handleChange
             })
           ),
-          import_react86.default.createElement(
+          import_react85.default.createElement(
             "div",
             { style: styles.single },
-            import_react86.default.createElement(EditableInput_default, {
+            import_react85.default.createElement(EditableInput_default, {
               style: { input: styles.input2, label: styles.label2 },
               label: "hsv",
               value: hsvValue,
               onChange: handleChange
             })
           ),
-          import_react86.default.createElement(
+          import_react85.default.createElement(
             "div",
             { style: styles.single },
-            import_react86.default.createElement(EditableInput_default, {
+            import_react85.default.createElement(EditableInput_default, {
               style: { input: styles.input2, label: styles.label2 },
               label: "hsl",
               value: hslValue,
@@ -53662,35 +53319,35 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles));
-    return import_react87.default.createElement(
+    return import_react86.default.createElement(
       "div",
       { style: styles.picker, className: "google-picker " + className },
-      import_react87.default.createElement(
+      import_react86.default.createElement(
         "div",
         { style: styles.head },
         header
       ),
-      import_react87.default.createElement("div", { style: styles.swatch }),
-      import_react87.default.createElement(
+      import_react86.default.createElement("div", { style: styles.swatch }),
+      import_react86.default.createElement(
         "div",
         { style: styles.saturation },
-        import_react87.default.createElement(Saturation_default, {
+        import_react86.default.createElement(Saturation_default, {
           hsl,
           hsv,
           pointer: GooglePointerCircle_default,
           onChange
         })
       ),
-      import_react87.default.createElement(
+      import_react86.default.createElement(
         "div",
         { style: styles.body },
-        import_react87.default.createElement(
+        import_react86.default.createElement(
           "div",
           { style: styles.controls, className: "flexbox-fix" },
-          import_react87.default.createElement(
+          import_react86.default.createElement(
             "div",
             { style: styles.hue },
-            import_react87.default.createElement(Hue_default, {
+            import_react86.default.createElement(Hue_default, {
               style: styles.Hue,
               hsl,
               radius: "4px",
@@ -53699,7 +53356,7 @@ class InstrumentLogic extends BaseInstrument {
             })
           )
         ),
-        import_react87.default.createElement(GoogleFields_default, {
+        import_react86.default.createElement(GoogleFields_default, {
           rgb,
           hsl,
           hex,
@@ -53724,18 +53381,18 @@ class InstrumentLogic extends BaseInstrument {
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Scratchpads/Scratchpads.tsx
   var Scratchpads = () => {
     var _a;
-    const { state, updateState } = import_react88.default.useContext(AppContext);
-    const [editMode, setEditMode] = import_react88.default.useState(false);
-    const [addMenu, setAddMenu] = import_react88.default.useState(false);
-    const [showScratchpad, setShowScratchpad] = import_react88.default.useState(false);
-    const [confirmDeleteAll, setConfirmDeleteAll] = import_react88.default.useState(false);
-    const [popupPosition, setPopupPosition] = import_react88.default.useState({ x: 0, y: 0 });
-    const [activeScratchpad, setActiveScratchpad] = import_react88.default.useState(null);
-    const [activeSpNumber, setActiveSpNumber] = import_react88.default.useState(0);
-    const [penSettings, setPenSettings] = import_react88.default.useState({ color: "white", size: 5 });
-    const [penColorMenu, setPenColorMenu] = import_react88.default.useState(false);
-    const [penSizeMenu, setPenSizeMenu] = import_react88.default.useState(false);
-    const [addHovered, setAddHovered] = import_react88.default.useState(false);
+    const { state, updateState } = import_react87.default.useContext(AppContext);
+    const [editMode, setEditMode] = import_react87.default.useState(false);
+    const [addMenu, setAddMenu] = import_react87.default.useState(false);
+    const [showScratchpad, setShowScratchpad] = import_react87.default.useState(false);
+    const [confirmDeleteAll, setConfirmDeleteAll] = import_react87.default.useState(false);
+    const [popupPosition, setPopupPosition] = import_react87.default.useState({ x: 0, y: 0 });
+    const [activeScratchpad, setActiveScratchpad] = import_react87.default.useState(null);
+    const [activeSpNumber, setActiveSpNumber] = import_react87.default.useState(0);
+    const [penSettings, setPenSettings] = import_react87.default.useState({ color: "white", size: 5 });
+    const [penColorMenu, setPenColorMenu] = import_react87.default.useState(false);
+    const [penSizeMenu, setPenSizeMenu] = import_react87.default.useState(false);
+    const [addHovered, setAddHovered] = import_react87.default.useState(false);
     const maxScratchpads = 15;
     const scratchpads = (_a = state == null ? void 0 : state.ouroborosFlight.scratchpads) != null ? _a : [];
     const setScratchpads = (scratchpads2) => {
@@ -53758,7 +53415,7 @@ class InstrumentLogic extends BaseInstrument {
       }));
     };
     const useOutsidePopupAlerter = (ref, setTheState) => {
-      import_react88.default.useEffect(() => {
+      import_react87.default.useEffect(() => {
         const handleClickOutside = (event) => {
           if (ref.current !== null && !ref.current.contains(event.target)) {
             setTheState(false);
@@ -53794,11 +53451,11 @@ class InstrumentLogic extends BaseInstrument {
         setScratchpads(updatedScratchpads);
       }
     };
-    const canvasRef = (0, import_react88.useRef)(null);
-    const popupRef = import_react88.default.useRef(null);
-    const confirmRef = import_react88.default.useRef(null);
-    const colorPickerRef = import_react88.default.useRef(null);
-    const penSizeRef = import_react88.default.useRef(null);
+    const canvasRef = (0, import_react87.useRef)(null);
+    const popupRef = import_react87.default.useRef(null);
+    const confirmRef = import_react87.default.useRef(null);
+    const colorPickerRef = import_react87.default.useRef(null);
+    const penSizeRef = import_react87.default.useRef(null);
     useOutsidePopupAlerter(popupRef, setAddMenu);
     useOutsidePopupAlerter(confirmRef, setConfirmDeleteAll);
     useOutsidePopupAlerter(colorPickerRef, setPenColorMenu);
@@ -53854,8 +53511,8 @@ class InstrumentLogic extends BaseInstrument {
               console.error(error);
             });
           }
-        }).catch((e2) => {
-          console.error(e2);
+        }).catch((e) => {
+          console.error(e);
         });
       }
       setShowScratchpad(false);
@@ -53865,7 +53522,7 @@ class InstrumentLogic extends BaseInstrument {
     const onPenColorChange = (color) => {
       setPenSettings({ size: penSettings.size, color: color.hex });
     };
-    import_react88.default.useEffect(() => {
+    import_react87.default.useEffect(() => {
       var _a2, _b, _c, _d, _e;
       if (showScratchpad) {
         (_e = canvasRef.current) == null ? void 0 : _e.loadPaths((_d = (_c = (_b = (_a2 = state == null ? void 0 : state.ouroborosFlight) == null ? void 0 : _a2.scratchpads) == null ? void 0 : _b[activeSpNumber]) == null ? void 0 : _c.content) != null ? _d : []);
@@ -53897,7 +53554,7 @@ class InstrumentLogic extends BaseInstrument {
     const handleMouseLeaveAdd = () => {
       setAddHovered(false);
     };
-    return /* @__PURE__ */ import_react88.default.createElement("div", null, /* @__PURE__ */ import_react88.default.createElement(
+    return /* @__PURE__ */ import_react87.default.createElement("div", null, /* @__PURE__ */ import_react87.default.createElement(
       ScratchpadHeader,
       {
         DeleteAllClick: deleteAllScratchpadClick,
@@ -53907,23 +53564,23 @@ class InstrumentLogic extends BaseInstrument {
         DoneClicked: doneSpClicked,
         addAvailable: scratchpads.length < 15
       }
-    ), /* @__PURE__ */ import_react88.default.createElement("div", { className: "sp-content-container" }, scratchpads.length !== 0 ? /* @__PURE__ */ import_react88.default.createElement("div", { className: "sp-content-container-inner" }, scratchpads.map((s2, index) => {
+    ), /* @__PURE__ */ import_react87.default.createElement("div", { className: "sp-content-container" }, scratchpads.length !== 0 ? /* @__PURE__ */ import_react87.default.createElement("div", { className: "sp-content-container-inner" }, scratchpads.map((s, index) => {
       var _a2, _b;
-      return /* @__PURE__ */ import_react88.default.createElement(
+      return /* @__PURE__ */ import_react87.default.createElement(
         "div",
         {
           key: index,
           onClick: () => {
             if (!editMode) {
-              openScratchpad(s2, index);
+              openScratchpad(s, index);
             }
           },
           className: "sp-item-container"
         },
-        /* @__PURE__ */ import_react88.default.createElement("div", null, getFormattedUTC(s2.timestamp, true), "Z"),
-        /* @__PURE__ */ import_react88.default.createElement("div", { className: "mini-preset-positioner" }, getBackground(s2.type, 300)),
-        /* @__PURE__ */ import_react88.default.createElement("div", { className: "mini-content-positioner" }, /* @__PURE__ */ import_react88.default.createElement(RenderSvgFromString, { element: (_b = (_a2 = state == null ? void 0 : state.ouroborosFlight.scratchpads) == null ? void 0 : _a2[index].preview) != null ? _b : "" })),
-        editMode ? /* @__PURE__ */ import_react88.default.createElement(
+        /* @__PURE__ */ import_react87.default.createElement("div", null, getFormattedUTC(s.timestamp, true), "Z"),
+        /* @__PURE__ */ import_react87.default.createElement("div", { className: "mini-preset-positioner" }, getBackground(s.type, 300)),
+        /* @__PURE__ */ import_react87.default.createElement("div", { className: "mini-content-positioner" }, /* @__PURE__ */ import_react87.default.createElement(RenderSvgFromString, { element: (_b = (_a2 = state == null ? void 0 : state.ouroborosFlight.scratchpads) == null ? void 0 : _a2[index].preview) != null ? _b : "" })),
+        editMode ? /* @__PURE__ */ import_react87.default.createElement(
           "div",
           {
             className: "remove-button",
@@ -53934,7 +53591,7 @@ class InstrumentLogic extends BaseInstrument {
           "-"
         ) : ""
       );
-    }), scratchpads.length < maxScratchpads ? /* @__PURE__ */ import_react88.default.createElement(
+    }), scratchpads.length < maxScratchpads ? /* @__PURE__ */ import_react87.default.createElement(
       "div",
       {
         className: "add-scratchpad-content-button",
@@ -53942,7 +53599,7 @@ class InstrumentLogic extends BaseInstrument {
         onMouseEnter: handleMouseEnterAdd,
         onMouseLeave: handleMouseLeaveAdd
       },
-      /* @__PURE__ */ import_react88.default.createElement(
+      /* @__PURE__ */ import_react87.default.createElement(
         SpAddIcon,
         {
           hovered: addHovered,
@@ -53952,7 +53609,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       ),
       "Add Scratchpad"
-    ) : "") : /* @__PURE__ */ import_react88.default.createElement(
+    ) : "") : /* @__PURE__ */ import_react87.default.createElement(
       "div",
       {
         className: "add-scratchpad-content-button",
@@ -53960,7 +53617,7 @@ class InstrumentLogic extends BaseInstrument {
         onMouseEnter: handleMouseEnterAdd,
         onMouseLeave: handleMouseLeaveAdd
       },
-      /* @__PURE__ */ import_react88.default.createElement(
+      /* @__PURE__ */ import_react87.default.createElement(
         SpAddIcon,
         {
           hovered: addHovered,
@@ -53970,16 +53627,16 @@ class InstrumentLogic extends BaseInstrument {
         }
       ),
       "Add Scratchpad"
-    )), confirmDeleteAll && /* @__PURE__ */ import_react88.default.createElement("div", { className: "delete-all-container", ref: confirmRef }, /* @__PURE__ */ import_react88.default.createElement("div", { className: "delete-all-text" }, "Are you Sure you want to delete ALL scratchpads?"), /* @__PURE__ */ import_react88.default.createElement("div", { onClick: confirmDeleteAllClick }, "yes")), addMenu && /* @__PURE__ */ import_react88.default.createElement(
+    )), confirmDeleteAll && /* @__PURE__ */ import_react87.default.createElement("div", { className: "delete-all-container", ref: confirmRef }, /* @__PURE__ */ import_react87.default.createElement("div", { className: "delete-all-text" }, "Are you Sure you want to delete ALL scratchpads?"), /* @__PURE__ */ import_react87.default.createElement("div", { onClick: confirmDeleteAllClick }, "yes")), addMenu && /* @__PURE__ */ import_react87.default.createElement(
       "div",
       {
         ref: popupRef,
         className: "popup-container",
         style: { top: `${popupPosition.y + 20}px`, left: `${popupPosition.x}px` }
       },
-      /* @__PURE__ */ import_react88.default.createElement(SpPopoutIcon, { ref: popupRef, className: "popout-svg", width: 300 }),
-      /* @__PURE__ */ import_react88.default.createElement(ScratchpadPopup, { clickHandler: handlePopupClick })
-    ), showScratchpad && /* @__PURE__ */ import_react88.default.createElement("div", { className: "scratchpad-display-container" }, /* @__PURE__ */ import_react88.default.createElement("div", { className: "scratchpad-display-header" }, /* @__PURE__ */ import_react88.default.createElement(
+      /* @__PURE__ */ import_react87.default.createElement(SpPopoutIcon, { ref: popupRef, className: "popout-svg", width: 300 }),
+      /* @__PURE__ */ import_react87.default.createElement(ScratchpadPopup, { clickHandler: handlePopupClick })
+    ), showScratchpad && /* @__PURE__ */ import_react87.default.createElement("div", { className: "scratchpad-display-container" }, /* @__PURE__ */ import_react87.default.createElement("div", { className: "scratchpad-display-header" }, /* @__PURE__ */ import_react87.default.createElement(
       "div",
       {
         className: "clear-sp-button",
@@ -53989,7 +53646,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       },
       "Clear"
-    ), /* @__PURE__ */ import_react88.default.createElement("div", { className: "tool-container" }, /* @__PURE__ */ import_react88.default.createElement(
+    ), /* @__PURE__ */ import_react87.default.createElement("div", { className: "tool-container" }, /* @__PURE__ */ import_react87.default.createElement(
       "div",
       {
         onClick: () => {
@@ -53997,7 +53654,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       },
       "Color \u2193"
-    ), /* @__PURE__ */ import_react88.default.createElement(
+    ), /* @__PURE__ */ import_react87.default.createElement(
       "div",
       {
         onClick: () => {
@@ -54005,7 +53662,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       },
       "Size \u2193"
-    )), /* @__PURE__ */ import_react88.default.createElement("div", { className: "close-sp-button", onClick: closeScratchpad }, "close")), penColorMenu && /* @__PURE__ */ import_react88.default.createElement("div", { ref: colorPickerRef, className: "color-menu" }, /* @__PURE__ */ import_react88.default.createElement(Github_default, { color: penSettings.color, onChangeComplete: onPenColorChange })), penColorMenu && /* @__PURE__ */ import_react88.default.createElement("div", { className: "pen-size-menu", ref: penSizeRef }, "Set Size"), /* @__PURE__ */ import_react88.default.createElement("div", { className: "canvas-container" }, /* @__PURE__ */ import_react88.default.createElement("div", { className: "bg-positioner" }, activeScratchpad !== null ? getBackground(activeScratchpad.type, 1800) : ""), /* @__PURE__ */ import_react88.default.createElement("div", { className: "canvas-positioner" }, /* @__PURE__ */ import_react88.default.createElement(
+    )), /* @__PURE__ */ import_react87.default.createElement("div", { className: "close-sp-button", onClick: closeScratchpad }, "close")), penColorMenu && /* @__PURE__ */ import_react87.default.createElement("div", { ref: colorPickerRef, className: "color-menu" }, /* @__PURE__ */ import_react87.default.createElement(Github_default, { color: penSettings.color, onChangeComplete: onPenColorChange })), penColorMenu && /* @__PURE__ */ import_react87.default.createElement("div", { className: "pen-size-menu", ref: penSizeRef }, "Set Size"), /* @__PURE__ */ import_react87.default.createElement("div", { className: "canvas-container" }, /* @__PURE__ */ import_react87.default.createElement("div", { className: "bg-positioner" }, activeScratchpad !== null ? getBackground(activeScratchpad.type, 1800) : ""), /* @__PURE__ */ import_react87.default.createElement("div", { className: "canvas-positioner" }, /* @__PURE__ */ import_react87.default.createElement(
       ReactSketchCanvas,
       {
         canvasColor: "transparent",
@@ -54018,13 +53675,13 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/GroundService/GroundService.tsx
-  var import_react90 = __toESM(require_react());
+  var import_react89 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/GroundService/GroundSericeIcon.tsx
-  var import_react89 = __toESM(require_react());
+  var import_react88 = __toESM(require_react());
   var GroundServiceIcon = (props) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G, _H, _I, _J, _K, _L, _M, _N, _O, _P;
-    return /* @__PURE__ */ import_react89.default.createElement("svg", { width: props.width, height: props.width * 1.3, viewBox: "0 0 2069 2377" }, /* @__PURE__ */ import_react89.default.createElement(
+    return /* @__PURE__ */ import_react88.default.createElement("svg", { width: props.width, height: props.width * 1.3, viewBox: "0 0 2069 2377" }, /* @__PURE__ */ import_react88.default.createElement(
       "path",
       {
         fill: (_a = props.color) != null ? _a : "white",
@@ -54032,7 +53689,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         d: "M2068,1472.99988c0,0-32.03845-110.92566-39.00012-132.99988\r\n			c-6.96155-22.07446-21.99988-30.00012-21.99988-30.00012l-621-313L1396,951h4c8.8938-0.55853,10-10.00006,10-10.00006\r\n			s7-48.21521,7-86.00006c0-79.73535-15.17725-77.99994-20-77.99994c-4.82288,0-37.92383-0.35309-87.00012,0\r\n			c-24.1897,0-21.99988,78.79419-21.99988,81c0,17.82141,4.50891,61.56189,6,76.99994c1.33276,13.85608,8,15,8,15L1309,951\r\n			l2,8.99994l-94-46c0,0-26.8894-18.78766-42.00012-28S1157,866.99988,1157,866.99988s0-429.01611,0-494\r\n			C1157,308.01587,1125,143,1125,143l-17-53c0,0-4.49414-8.68042-22.00012-41C1063.97876,17.51636,1040.96082,2,1035,2\r\n			c-5.96094,0-35.77722,22.16528-50.00012,46c-63.50464,103.47913-71.99994,329-71.99994,329s0,487.79224,0,490.99988\r\n			c0,3.20776-11.99994,14-11.99994,14l-47,31.00006l-97.00006,48L759,951c0,0,4.16541,0,7,0\r\n			c6.73694,0,8.99988-8.00012,8.99988-8.00012s7.00006-53.5918,7.00006-89c0-81.12408-19-76.99994-19-76.99994\r\n			s-74.79999,0-91.99994,0s-18.00006,54.53558-18.00006,81c0,26.46448,5.65515,74.28906,7,83c1.34491,8.71094,7,8.99994,7,8.99994\r\n			l7,1.00012L684,995.99988c0,0-596.7674,301.2467-617,312.00012c-20.2326,10.7533-26.00012,31-26.00012,31\r\n			S3.65143,1466.16943,1.99994,1471.99988c-1.65143,5.83057,1,18.00012,1,18.00012S18.1698,1464.25708,27,1445.99988\r\n			C35.83014,1427.7428,43.99994,1422,43.99994,1422s3.10413-0.55029,16.00006-4.00012\r\n			C72.89575,1414.55029,349.99994,1340,349.99994,1340s7.45483,54,9.99994,54c2.54529,0,10.00006-59,10.00006-59l197-52.00012\r\n			c0,6.83289,7.88818,50.00012,9.99994,50.00012c2.11188,0,9.00006-56,9.00006-56l85.99994-23l84.00006,0.99988\r\n			c0,0,6.87225,55,10.99994,55c4.12787,0,11.00006-55,11.00006-55l135,1c0,0,1.24261,151.37329,2.99994,299\r\n			C915.99988,1851.14685,969,1990,969,1990c-3.9826,11.12012-15.00006,21-15.00006,21l-291,198\r\n			C653.64844,2215.40894,650,2231,650,2231c-6.22296,21.84473-11.00012,101-11.00012,101L996,2238l22.99988,138H1051l23-138l356,93\r\n			c0.7251-17.69775-5.87427-83.63135-10-100c-4.12573-16.3689-12-21-12-21s-272.93335-185.65576-285-194.00012\r\n			c-12.06689-8.34436-22-24.99988-22-24.99988c56.02271-165.43506,55-434,55-434l1-302.00012h135\r\n			c0.26318,6.55139,7.9043,55,10.99988,55s11.00012-55,11.00012-55L1398.99988,1254L1484,1277c0,11.3136,7.85889,56,9.99988,56\r\n			s9-51.00012,9-51.00012L1700,1335c0,0,6.21155,60,9.99988,60c3.78845,0,10.00012-55,10.00012-55s275.00806,73.61304,290,77\r\n			c14.99182,3.38696,24,11,24,11l33,62C2068.62988,1485.73853,2068,1472.99988,2068,1472.99988z"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "path",
       {
         fill: (_c = props.color) != null ? _c : "white",
@@ -54040,7 +53697,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         d: "M727.99994,827.99988L725,802.99994c0,0-4.9436-6-9.00006-6c-4.05652,0-7.57013,3.79706-9.00006,7\r\n				c-1.42987,3.20282-2.99988,183-2.99988,183s4.14398,0.20245,12.99994-3.00006c8.85602-3.20239,11-9.99994,11-9.99994\r\n				C725.90234,952.46637,727.99994,827.99988,727.99994,827.99988z"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "path",
       {
         fill: (_e = props.color) != null ? _e : "white",
@@ -54048,7 +53705,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         d: "M657,843.99994h5.99994l1.99994-38.00006C654.84912,809.79083,657,843.99994,657,843.99994z"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "path",
       {
         fill: (_g = props.color) != null ? _g : "white",
@@ -54056,7 +53713,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         d: "M769.99994,805.99988l1.95416,38.00006h5.86261\r\n				C777.81671,843.99994,779.91821,809.79083,769.99994,805.99988z"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "polygon",
       {
         fill: (_i = props.color) != null ? _i : "white",
@@ -54064,7 +53721,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         points: "74.99988,1305 77.99994,1312 692.99988,1013.99994 692.99988,993 			"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "path",
       {
         fill: (_k = props.color) != null ? _k : "white",
@@ -54072,7 +53729,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         d: "M888,891.99994l-32.00012,20l-123,62L742.99994,993l148-68C890.99994,925,890.60455,897.08075,888,891.99994\r\n				z"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "polygon",
       {
         fill: (_m = props.color) != null ? _m : "white",
@@ -54080,7 +53737,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         points: "393.99988,1267 407,1301.99988 267.99994,1347 270,1360 270,1350.99988 658,1238 \r\n				662.99994,1255.99988 671,1254 671.99988,1176 			"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "polygon",
       {
         fill: (_o = props.color) != null ? _o : "white",
@@ -54088,7 +53745,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         points: "671.99988,1187.99988 671,1254 755.99994,1254.99988 756.99994,1240.99988 906.99994,1243 \r\n				908,1254.99988 911.99994,1254.99988 911.99994,1194.99988 			"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "path",
       {
         fill: (_q = props.color) != null ? _q : "white",
@@ -54096,7 +53753,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         d: "M1362.93091,803.99609c-1.42944-3.20209-4.94189-6.99811-8.99695-6.99811\r\n				c-4.05518,0-8.99707,5.99841-8.99707,5.99841l-2.9989,24.9931c0,0,2.0968,124.43237,0,145.96002\r\n				c0,0,2.14331,6.79553,10.99622,9.99719c8.85303,3.20172,12.99573,2.99927,12.99573,2.99927\r\n				S1364.36035,807.19812,1362.93091,803.99609z"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "path",
       {
         fill: (_s = props.color) != null ? _s : "white",
@@ -54104,7 +53761,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         d: "M1404.91675,805.99548l1.99951,37.98962h5.99792\r\n				C1412.91418,843.98511,1415.06421,809.78546,1404.91675,805.99548z"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "path",
       {
         fill: (_u = props.color) != null ? _u : "white",
@@ -54112,7 +53769,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         d: "M1292.13782,843.98511h5.8606l1.95349-37.98962\r\n				C1290.03699,809.78546,1292.13782,843.98511,1292.13782,843.98511z"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "polygon",
       {
         fill: (_w = props.color) != null ? _w : "white",
@@ -54120,7 +53777,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         points: "1376.92627,992.94427 1376.92627,1013.9386 1991.72021,1311.85693 1994.71899,1304.85889 			"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "path",
       {
         fill: (_y = props.color) != null ? _y : "white",
@@ -54128,7 +53785,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         d: "M1213.98096,911.96655l-31.9895-19.99451c-2.60364,5.07935-2.9989,32.99097-2.9989,32.99097\r\n				l147.95044,67.98126l9.99658-18.99475L1213.98096,911.96655z"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "polygon",
       {
         fill: (_A = props.color) != null ? _A : "white",
@@ -54136,7 +53793,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         points: "1801.78369,1346.84717 1662.83032,1301.85962 1675.82593,1266.86914 1397.91919,1175.89417 \r\n				1398.91895,1253.8728 1406.91626,1255.87219 1411.91443,1237.8772 1799.78442,1350.84619 1799.78442,1359.84375 			"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "polygon",
       {
         fill: (_C = props.color) != null ? _C : "white",
@@ -54144,7 +53801,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         points: "1397.91919,1187.89087 1157.99951,1194.88892 1157.99951,1254.87256 1161.99829,1254.87256 \r\n				1162.99805,1242.87573 1312.94763,1240.87634 1314,1254.99988 1398.99988,1254 			"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "path",
       {
         fill: (_E = props.color) != null ? _E : "white",
@@ -54152,7 +53809,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         d: "M958.99994,193c0,0-6.98682-3.91772-9.99994,4c-3.01324,7.91748-16.34448,45.13452-18.00012,65h23.00006\r\n				c0,0,11.48254-28.80957,19-42L958.99994,193z"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "path",
       {
         fill: (_G = props.color) != null ? _G : "white",
@@ -54160,7 +53817,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         d: "M1122.00073,196.97119c-2.99841-7.9209-9.95068-4.00171-9.95068-4.00171l-13.93066,27.01172\r\n				c7.48035,13.19629,18.90601,42.01831,18.90601,42.01831h22.88623\r\n				C1138.26416,242.12549,1124.99878,204.89233,1122.00073,196.97119z"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "path",
       {
         fill: (_I = props.color) != null ? _I : "white",
@@ -54168,7 +53825,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         d: "M958.99994,180.99988l17.99994,35c0,0,27.70367-24.99988,57.00012-24.99988l1-55\r\n				C1035,136,995.65912,129.44434,958.99994,180.99988z"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "path",
       {
         fill: (_K = props.color) != null ? _K : "white",
@@ -54176,7 +53833,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         d: "M1034.99805,136.28271l0.9978,55.06213c29.23804,0,56.88623,25.0282,56.88623,25.0282l17.96387-35.03955\r\n				C1074.26001,129.7196,1034.99805,136.28271,1034.99805,136.28271z"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "polygon",
       {
         fill: (_M = props.color) != null ? _M : "white",
@@ -54184,7 +53841,7 @@ class InstrumentLogic extends BaseInstrument {
         strokeWidth: props.strokeWidth,
         points: "1040,136 1029,136 1030,191 1041,192 			"
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react88.default.createElement(
       "path",
       {
         fill: (_O = props.color) != null ? _O : "white",
@@ -54197,11 +53854,11 @@ class InstrumentLogic extends BaseInstrument {
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/GroundService/GroundService.tsx
   var GroundService = () => {
-    return /* @__PURE__ */ import_react90.default.createElement("div", { className: "ground-service-container" }, /* @__PURE__ */ import_react90.default.createElement("div", { className: "ground-service-header" }, "Ground Services"), /* @__PURE__ */ import_react90.default.createElement("div", { className: "ground-service-content" }, /* @__PURE__ */ import_react90.default.createElement(GroundServiceIcon, { width: 1e3, color: "transparent", stroke: "blue", strokeWidth: 10 })));
+    return /* @__PURE__ */ import_react89.default.createElement("div", { className: "ground-service-container" }, /* @__PURE__ */ import_react89.default.createElement("div", { className: "ground-service-header" }, "Ground Services"), /* @__PURE__ */ import_react89.default.createElement("div", { className: "ground-service-content" }, /* @__PURE__ */ import_react89.default.createElement(GroundServiceIcon, { width: 1e3, color: "transparent", stroke: "blue", strokeWidth: 10 })));
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/WeightBalance/WeightBalance.tsx
-  var import_react91 = __toESM(require_react());
+  var import_react90 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/WeightBalance/cg_limits.png
   var cg_limits_default = "data:image/png;base64,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";
@@ -54729,17 +54386,17 @@ class InstrumentLogic extends BaseInstrument {
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/WeightBalance/WeightBalance.tsx
   var WeightAndBalance = () => {
-    const [id, setId] = (0, import_react91.useState)(() => {
+    const [id, setId] = (0, import_react90.useState)(() => {
       const id2 = localStorage.getItem("simbriefId");
       const initialValue = JSON.parse(id2);
       return initialValue != null ? initialValue : "";
     });
-    const [simbriefData, setSimbriefData] = (0, import_react91.useState)(() => {
+    const [simbriefData, setSimbriefData] = (0, import_react90.useState)(() => {
       const data = localStorage.getItem("simbriefData");
       const initialValue = JSON.parse(data);
       return initialValue != null ? initialValue : "";
     });
-    (0, import_react91.useEffect)(() => {
+    (0, import_react90.useEffect)(() => {
       localStorage.setItem("simbriefId", JSON.stringify(id));
     }, [id]);
     const getSimbriefData = async () => {
@@ -54748,66 +54405,66 @@ class InstrumentLogic extends BaseInstrument {
         const json = await response.json();
         setSimbriefData(json);
         localStorage.setItem("simbriefData", simbriefData);
-      } catch (e2) {
-        console.error(e2);
+      } catch (e) {
+        console.error(e);
       }
     };
-    const [BEW] = (0, import_react91.useState)(() => {
+    const [BEW] = (0, import_react90.useState)(() => {
       var _a;
       const data = localStorage.getItem("simbriefData");
       const initialValue = JSON.parse(data);
       return (_a = Number(initialValue == null ? void 0 : initialValue.weights.oew)) != null ? _a : 46840.8;
     });
-    const [BEM] = (0, import_react91.useState)(2534735576e-2);
-    const [passangers] = (0, import_react91.useState)(() => {
+    const [BEM] = (0, import_react90.useState)(2534735576e-2);
+    const [passangers] = (0, import_react90.useState)(() => {
       var _a;
       const data = localStorage.getItem("simbriefData");
       const initialValue = JSON.parse(data);
       return (_a = Number(initialValue == null ? void 0 : initialValue.weights.pax_count)) != null ? _a : 0;
     });
-    const [fuel] = (0, import_react91.useState)(() => {
+    const [fuel] = (0, import_react90.useState)(() => {
       const data = localStorage.getItem("simbriefData");
       const initialValue = JSON.parse(data);
       return (initialValue == null ? void 0 : initialValue.fuel.plan_takeoff) / 6.767;
     });
-    const [fuelBurn] = (0, import_react91.useState)(() => {
+    const [fuelBurn] = (0, import_react90.useState)(() => {
       var _a;
       const data = localStorage.getItem("simbriefData");
       const initialValue = JSON.parse(data);
       return (_a = Number((initialValue == null ? void 0 : initialValue.fuel.enroute_burn) / 6.767)) != null ? _a : 0;
     });
-    const [fwdCargo] = (0, import_react91.useState)(() => {
+    const [fwdCargo] = (0, import_react90.useState)(() => {
       var _a;
       const data = localStorage.getItem("simbriefData");
       const initialValue = JSON.parse(data);
       return (_a = Number((initialValue == null ? void 0 : initialValue.weights.cargo) * 0.75)) != null ? _a : 0;
     });
-    const [aftCargo] = (0, import_react91.useState)(() => {
+    const [aftCargo] = (0, import_react90.useState)(() => {
       var _a;
       const data = localStorage.getItem("simbriefData");
       const initialValue = JSON.parse(data);
       return (_a = Number((initialValue == null ? void 0 : initialValue.weights.cargo) * 0.25)) != null ? _a : 0;
     });
-    return /* @__PURE__ */ import_react91.default.createElement("div", null, /* @__PURE__ */ import_react91.default.createElement("div", { className: "weightAndBalanceContainer" }, /* @__PURE__ */ import_react91.default.createElement("div", { className: "WBsliderContainer" }, /* @__PURE__ */ import_react91.default.createElement("div", null, "Passangers: ", passangers), /* @__PURE__ */ import_react91.default.createElement("div", null, "fuel: ", Math.round(fuel * 6.767), "lbs"), /* @__PURE__ */ import_react91.default.createElement("div", null, "cargo:", fwdCargo + aftCargo), /* @__PURE__ */ import_react91.default.createElement(
+    return /* @__PURE__ */ import_react90.default.createElement("div", null, /* @__PURE__ */ import_react90.default.createElement("div", { className: "weightAndBalanceContainer" }, /* @__PURE__ */ import_react90.default.createElement("div", { className: "WBsliderContainer" }, /* @__PURE__ */ import_react90.default.createElement("div", null, "Passangers: ", passangers), /* @__PURE__ */ import_react90.default.createElement("div", null, "fuel: ", Math.round(fuel * 6.767), "lbs"), /* @__PURE__ */ import_react90.default.createElement("div", null, "cargo:", fwdCargo + aftCargo), /* @__PURE__ */ import_react90.default.createElement(
       "div",
       {
         onClick: () => {
-          getSimbriefData().catch((e2) => {
-            console.error(e2);
+          getSimbriefData().catch((e) => {
+            console.error(e);
           });
         }
       },
       "Get simbrief Data"
-    ), /* @__PURE__ */ import_react91.default.createElement("form", null, /* @__PURE__ */ import_react91.default.createElement("label", null, "simbrief id", /* @__PURE__ */ import_react91.default.createElement(
+    ), /* @__PURE__ */ import_react90.default.createElement("form", null, /* @__PURE__ */ import_react90.default.createElement("label", null, "simbrief id", /* @__PURE__ */ import_react90.default.createElement(
       "input",
       {
         type: "text",
         value: id,
-        onChange: (e2) => {
-          setId(e2.target.value);
+        onChange: (e) => {
+          setId(e.target.value);
         }
       }
-    )))), /* @__PURE__ */ import_react91.default.createElement("img", { src: cg_limits_default, alt: "cgLimits" }), /* @__PURE__ */ import_react91.default.createElement(
+    )))), /* @__PURE__ */ import_react90.default.createElement("img", { src: cg_limits_default, alt: "cgLimits" }), /* @__PURE__ */ import_react90.default.createElement(
       "div",
       {
         style: {
@@ -54818,7 +54475,7 @@ class InstrumentLogic extends BaseInstrument {
           height: "860px"
         }
       },
-      /* @__PURE__ */ import_react91.default.createElement("svg", { viewBox: "0 0 200 200" }, /* @__PURE__ */ import_react91.default.createElement(
+      /* @__PURE__ */ import_react90.default.createElement("svg", { viewBox: "0 0 200 200" }, /* @__PURE__ */ import_react90.default.createElement(
         "circle",
         {
           cx: getTOCg(fuel, BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37,
@@ -54828,7 +54485,7 @@ class InstrumentLogic extends BaseInstrument {
           stroke: "#007BFA",
           strokeWidth: 2
         }
-      ), /* @__PURE__ */ import_react91.default.createElement(
+      ), /* @__PURE__ */ import_react90.default.createElement(
         "rect",
         {
           x: getLdgCg(fuel, fuelBurn, BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 34,
@@ -54839,12 +54496,12 @@ class InstrumentLogic extends BaseInstrument {
           stroke: "#007BFA",
           strokeWidth: 2
         }
-      ), /* @__PURE__ */ import_react91.default.createElement(
+      ), /* @__PURE__ */ import_react90.default.createElement(
         "g",
         {
           transform: `translate(${getZfCg(BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37},${-getZfw(BEW, passangers, fwdCargo, aftCargo) / 239 + 381 - 4})`
         },
-        /* @__PURE__ */ import_react91.default.createElement(
+        /* @__PURE__ */ import_react90.default.createElement(
           "rect",
           {
             x: 0,
@@ -54857,7 +54514,7 @@ class InstrumentLogic extends BaseInstrument {
             strokeWidth: 2
           }
         )
-      ), /* @__PURE__ */ import_react91.default.createElement(
+      ), /* @__PURE__ */ import_react90.default.createElement(
         "path",
         {
           d: `M${getTOCg(fuel, BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37},${-getTOW(fuel, BEW, passangers, fwdCargo, aftCargo) / 239 + 381} L ${getLdgCg(fuel, fuelBurn, BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37} ${-getLW(fuel, fuelBurn, BEW, passangers, fwdCargo, aftCargo) / 239 + 381}`,
@@ -54865,7 +54522,7 @@ class InstrumentLogic extends BaseInstrument {
           strokeWidth: 1,
           strokeLinecap: "round"
         }
-      ), /* @__PURE__ */ import_react91.default.createElement(
+      ), /* @__PURE__ */ import_react90.default.createElement(
         "path",
         {
           d: `M${getLdgCg(fuel, fuelBurn, BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37},${-getLW(fuel, fuelBurn, BEW, passangers, fwdCargo, aftCargo) / 239 + 381} L ${getZfCg(BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37} ${-getZfw(BEW, passangers, fwdCargo, aftCargo) / 239 + 381}`,
@@ -54879,24 +54536,24 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/checklists.tsx
-  var import_react100 = __toESM(require_react());
+  var import_react99 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistHeader/ChecklistHeader.tsx
-  var import_react92 = __toESM(require_react());
+  var import_react91 = __toESM(require_react());
   var ChecklistHeader = () => {
-    return /* @__PURE__ */ import_react92.default.createElement("div", { className: "checklist-header" });
+    return /* @__PURE__ */ import_react91.default.createElement("div", { className: "checklist-header" });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistSelector/ChecklistSelector.tsx
-  var import_react94 = __toESM(require_react());
+  var import_react93 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistSelecorButton/ChecklistSelectorButton.tsx
-  var import_react93 = __toESM(require_react());
+  var import_react92 = __toESM(require_react());
   var ChecklistSelectorButton = (props) => {
     const active = props.activeChecklist === props.to;
     const completed = props.completedChecklists[props.to];
-    const [showArrow, setShowArrow] = import_react93.default.useState(false);
-    (0, import_react93.useEffect)(() => {
+    const [showArrow, setShowArrow] = import_react92.default.useState(false);
+    (0, import_react92.useEffect)(() => {
       if (!active) {
         setShowArrow(false);
       } else {
@@ -54905,7 +54562,7 @@ class InstrumentLogic extends BaseInstrument {
         }, 100);
       }
     }, [active]);
-    return /* @__PURE__ */ import_react93.default.createElement(
+    return /* @__PURE__ */ import_react92.default.createElement(
       "div",
       {
         style: { top: props.to * 87 + 72 + "px" },
@@ -54914,20 +54571,20 @@ class InstrumentLogic extends BaseInstrument {
           props.activeChecklist !== props.to && props.onClick(props.to);
         }
       },
-      /* @__PURE__ */ import_react93.default.createElement("div", { className: "checklist-selector-left-text" }, /* @__PURE__ */ import_react93.default.createElement("svg", { width: 40, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react93.default.createElement(
+      /* @__PURE__ */ import_react92.default.createElement("div", { className: "checklist-selector-left-text" }, /* @__PURE__ */ import_react92.default.createElement("svg", { width: 40, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react92.default.createElement(
         "path",
         {
           fill: completed ? "#00ffb4" : "#150B26",
           d: "M230.24876,80.10179l3.56483,3.56483c6.71123,6.71123,6.71123,17.59228,0,24.30351L113.40904,228.37469\r\n	c-6.71123,6.71123-17.59229,6.71123-24.30351,0L6.99719,146.26636c-6.71123-6.71123-6.71123-17.59229,0-24.3035l3.56484-3.56484\r\n	c6.71123-6.71123,17.59228-6.71123,24.30351,0l54.24,54.24001c6.71123,6.71123,17.59229,6.71123,24.30351,0l92.53622-92.53622\r\n	C212.65649,73.39056,223.53754,73.39056,230.24876,80.10179z"
         }
       )), props.text),
-      showArrow ? /* @__PURE__ */ import_react93.default.createElement("svg", { className: `fade-in-anim ${active ? "" : "arrow-force-hide"}`, width: 20, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react93.default.createElement(
+      showArrow ? /* @__PURE__ */ import_react92.default.createElement("svg", { className: `fade-in-anim ${active ? "" : "arrow-force-hide"}`, width: 20, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react92.default.createElement(
         "path",
         {
           fill: "white",
           d: "M116.42586,119.52027v-3.15111c0-0.88866,0.96201-1.44408,1.73161-0.99975l2.72894,1.57555l2.72894,1.57556\r\n	c0.7696,0.44433,0.7696,1.55515,0,1.99948l-2.72894,1.57555l-2.72894,1.57556c-0.7696,0.44433-1.73161-0.11108-1.73161-0.99975\r\n	V119.52027z"
         }
-      ), /* @__PURE__ */ import_react93.default.createElement(
+      ), /* @__PURE__ */ import_react92.default.createElement(
         "path",
         {
           fill: "white",
@@ -54943,9 +54600,9 @@ class InstrumentLogic extends BaseInstrument {
       return arr.every((value) => value);
     };
     const isAllCompleted = allTrue(props.completedChecklists);
-    return /* @__PURE__ */ import_react94.default.createElement("div", { className: "checklist-selector" }, /* @__PURE__ */ import_react94.default.createElement("div", { className: "checklist-selector-title" }, "Checklists"), /* @__PURE__ */ import_react94.default.createElement("div", { className: "checklist-selector-button-bar" }, props.checklist.map((item, index) => {
+    return /* @__PURE__ */ import_react93.default.createElement("div", { className: "checklist-selector" }, /* @__PURE__ */ import_react93.default.createElement("div", { className: "checklist-selector-title" }, "Checklists"), /* @__PURE__ */ import_react93.default.createElement("div", { className: "checklist-selector-button-bar" }, props.checklist.map((item, index) => {
       if (index === 0 || index === 2 || index === 4 || index === 6 || index === 8) {
-        return /* @__PURE__ */ import_react94.default.createElement(
+        return /* @__PURE__ */ import_react93.default.createElement(
           ChecklistSelectorButton,
           {
             activeChecklist: props.activeChecklist,
@@ -54958,7 +54615,7 @@ class InstrumentLogic extends BaseInstrument {
           }
         );
       } else {
-        return /* @__PURE__ */ import_react94.default.createElement(
+        return /* @__PURE__ */ import_react93.default.createElement(
           ChecklistSelectorButton,
           {
             activeChecklist: props.activeChecklist,
@@ -54970,7 +54627,7 @@ class InstrumentLogic extends BaseInstrument {
           }
         );
       }
-    })), isAllCompleted && /* @__PURE__ */ import_react94.default.createElement("div", { onClick: props.resetAllChecklists, className: "reset-all-checklists-button" }, "Reset All"));
+    })), isAllCompleted && /* @__PURE__ */ import_react93.default.createElement("div", { onClick: props.resetAllChecklists, className: "reset-all-checklists-button" }, "Reset All"));
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistContent/ChecklistContent.ts
@@ -55911,15 +55568,15 @@ class InstrumentLogic extends BaseInstrument {
   ];
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistContentDisplay/ChecklistContentDisplay.tsx
-  var import_react99 = __toESM(require_react());
+  var import_react98 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistItemDisplay/ChecklistItemDisplay.tsx
-  var import_react96 = __toESM(require_react());
+  var import_react95 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistItemDisplay/ChecklistItemDisplayDetails.tsx
-  var import_react95 = __toESM(require_react());
+  var import_react94 = __toESM(require_react());
   var ActionIconDetails = () => {
-    return /* @__PURE__ */ import_react95.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: 30, viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react95.default.createElement("ellipse", { fill: "white", cx: "17", cy: "12", rx: "5", ry: "5" }), /* @__PURE__ */ import_react95.default.createElement("path", { fill: "white", d: "M 5.723 10 H 16.281 V 14 H 5.723 A 2 2 0 0 1 3.723 12 V 12 A 2 2 0 0 1 5.723 10 Z" }));
+    return /* @__PURE__ */ import_react94.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: 30, viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react94.default.createElement("ellipse", { fill: "white", cx: "17", cy: "12", rx: "5", ry: "5" }), /* @__PURE__ */ import_react94.default.createElement("path", { fill: "white", d: "M 5.723 10 H 16.281 V 14 H 5.723 A 2 2 0 0 1 3.723 12 V 12 A 2 2 0 0 1 5.723 10 Z" }));
   };
   var ChecklistItemDisplayDetails = ({
     details
@@ -55934,15 +55591,15 @@ class InstrumentLogic extends BaseInstrument {
           challenge,
           response: details.detailsResponse[index]
         }));
-        return /* @__PURE__ */ import_react95.default.createElement("div", { className: "info-dropdown" }, combinedArray.map((item, index) => {
-          return /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-subchecklist-wrapper", key: index }, /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-subchecklist-chal" }, item.challenge), /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-subchecklist-res" }, /* @__PURE__ */ import_react95.default.createElement(ActionIconDetails, null), " ", " " + item.response));
+        return /* @__PURE__ */ import_react94.default.createElement("div", { className: "info-dropdown" }, combinedArray.map((item, index) => {
+          return /* @__PURE__ */ import_react94.default.createElement("div", { className: "checklist-item-subchecklist-wrapper", key: index }, /* @__PURE__ */ import_react94.default.createElement("div", { className: "checklist-item-subchecklist-chal" }, item.challenge), /* @__PURE__ */ import_react94.default.createElement("div", { className: "checklist-item-subchecklist-res" }, /* @__PURE__ */ import_react94.default.createElement(ActionIconDetails, null), " ", " " + item.response));
         }));
       case "ChallengeTitleBullets":
-        return /* @__PURE__ */ import_react95.default.createElement("div", { className: "info-dropdown" }, /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-subarray-title" }, details.title), /* @__PURE__ */ import_react95.default.createElement("ul", { className: "checklist-item-subarray-ul" }, details.bullets.map((bullet, index) => /* @__PURE__ */ import_react95.default.createElement("li", { className: "checklist-item-subarray-li", key: index }, bullet))));
+        return /* @__PURE__ */ import_react94.default.createElement("div", { className: "info-dropdown" }, /* @__PURE__ */ import_react94.default.createElement("div", { className: "checklist-item-subarray-title" }, details.title), /* @__PURE__ */ import_react94.default.createElement("ul", { className: "checklist-item-subarray-ul" }, details.bullets.map((bullet, index) => /* @__PURE__ */ import_react94.default.createElement("li", { className: "checklist-item-subarray-li", key: index }, bullet))));
       case "StringArray":
-        return /* @__PURE__ */ import_react95.default.createElement("ul", { className: "info-dropdown" }, details.items.map((item, index) => /* @__PURE__ */ import_react95.default.createElement("li", { className: "checklist-item-subarray-li", key: index }, item)));
+        return /* @__PURE__ */ import_react94.default.createElement("ul", { className: "info-dropdown" }, details.items.map((item, index) => /* @__PURE__ */ import_react94.default.createElement("li", { className: "checklist-item-subarray-li", key: index }, item)));
       case "String":
-        return /* @__PURE__ */ import_react95.default.createElement("div", { className: "info-dropdown" }, details.value);
+        return /* @__PURE__ */ import_react94.default.createElement("div", { className: "info-dropdown" }, details.value);
       default:
         return null;
     }
@@ -55951,10 +55608,10 @@ class InstrumentLogic extends BaseInstrument {
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistItemDisplay/ChecklistItemDisplay.tsx
   var ActionIcon = () => {
-    return /* @__PURE__ */ import_react96.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: 30, viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react96.default.createElement("ellipse", { fill: "white", cx: "17", cy: "12", rx: "5", ry: "5" }), /* @__PURE__ */ import_react96.default.createElement("path", { fill: "white", d: "M 5.723 10 H 16.281 V 14 H 5.723 A 2 2 0 0 1 3.723 12 V 12 A 2 2 0 0 1 5.723 10 Z" }));
+    return /* @__PURE__ */ import_react95.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: 30, viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react95.default.createElement("ellipse", { fill: "white", cx: "17", cy: "12", rx: "5", ry: "5" }), /* @__PURE__ */ import_react95.default.createElement("path", { fill: "white", d: "M 5.723 10 H 16.281 V 14 H 5.723 A 2 2 0 0 1 3.723 12 V 12 A 2 2 0 0 1 5.723 10 Z" }));
   };
   var InformationIcon = (props) => {
-    return /* @__PURE__ */ import_react96.default.createElement(
+    return /* @__PURE__ */ import_react95.default.createElement(
       "svg",
       {
         version: "1.1",
@@ -55965,16 +55622,16 @@ class InstrumentLogic extends BaseInstrument {
         height: props.height,
         viewBox: "0 0 240 240"
       },
-      /* @__PURE__ */ import_react96.default.createElement("rect", { y: 45, rx: 20, strokeWidth: 10, x: 10, width: 220, height: 150, fill: props.bgFill, stroke: props.stroke }),
-      /* @__PURE__ */ import_react96.default.createElement(
+      /* @__PURE__ */ import_react95.default.createElement("rect", { y: 45, rx: 20, strokeWidth: 10, x: 10, width: 220, height: 150, fill: props.bgFill, stroke: props.stroke }),
+      /* @__PURE__ */ import_react95.default.createElement(
         "polygon",
         {
           fill: "white",
           points: "86.9,149 86.9,161.3 39.1,161.3 39.1,149 62.1,149 62.1,116.7 43,116.7 43,104.4 74.4,104.4 \r\n			74.4,149 		"
         }
       ),
-      /* @__PURE__ */ import_react96.default.createElement("circle", { fill: "white", cx: "63", cy: "88.2", r: "10.1" }),
-      /* @__PURE__ */ import_react96.default.createElement(
+      /* @__PURE__ */ import_react95.default.createElement("circle", { fill: "white", cx: "63", cy: "88.2", r: "10.1" }),
+      /* @__PURE__ */ import_react95.default.createElement(
         "path",
         {
           transform: `rotate(${props.active ? "90" : "0"} 170 120)`,
@@ -55986,7 +55643,7 @@ class InstrumentLogic extends BaseInstrument {
     );
   };
   var ExpandedChecklistIcon = (props) => {
-    return /* @__PURE__ */ import_react96.default.createElement(
+    return /* @__PURE__ */ import_react95.default.createElement(
       "svg",
       {
         version: "1.1",
@@ -55998,7 +55655,7 @@ class InstrumentLogic extends BaseInstrument {
         height: props.height,
         viewBox: "0 0 240 240"
       },
-      /* @__PURE__ */ import_react96.default.createElement("g", null, /* @__PURE__ */ import_react96.default.createElement("g", null, /* @__PURE__ */ import_react96.default.createElement("circle", { cx: 120, cy: "120.1", r: "110", strokeWidth: 10, fill: props.bgFill, stroke: props.stroke })), /* @__PURE__ */ import_react96.default.createElement(
+      /* @__PURE__ */ import_react95.default.createElement("g", null, /* @__PURE__ */ import_react95.default.createElement("g", null, /* @__PURE__ */ import_react95.default.createElement("circle", { cx: 120, cy: "120.1", r: "110", strokeWidth: 10, fill: props.bgFill, stroke: props.stroke })), /* @__PURE__ */ import_react95.default.createElement(
         "path",
         {
           fill: props.fill,
@@ -56008,13 +55665,13 @@ class InstrumentLogic extends BaseInstrument {
     );
   };
   var ChecklistItemDisplay = (props) => {
-    const [details, setDetails] = import_react96.default.useState(false);
+    const [details, setDetails] = import_react95.default.useState(false);
     if (props.isCaution !== null && props.isCaution !== void 0 && props.isCaution) {
-      return /* @__PURE__ */ import_react96.default.createElement("div", { className: "checklist-item-display-caution" }, /* @__PURE__ */ import_react96.default.createElement("u", null, "CAUTION:"), " ", props.Challenge);
+      return /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-display-caution" }, /* @__PURE__ */ import_react95.default.createElement("u", null, "CAUTION:"), " ", props.Challenge);
     } else if (props.isNote !== null && props.isNote !== void 0 && props.isNote) {
-      return /* @__PURE__ */ import_react96.default.createElement("div", { className: "checklist-item-display-note" }, /* @__PURE__ */ import_react96.default.createElement("u", null, "NOTE:"), " ", props.Challenge);
+      return /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-display-note" }, /* @__PURE__ */ import_react95.default.createElement("u", null, "NOTE:"), " ", props.Challenge);
     } else if (props.isDivider !== null && props.isDivider !== void 0 && props.isDivider) {
-      return /* @__PURE__ */ import_react96.default.createElement("div", { className: "checklist-item-display" }, /* @__PURE__ */ import_react96.default.createElement("div", { className: "checklist-item-display-divider" }));
+      return /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-display" }, /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-display-divider" }));
     } else {
       const getIconType = () => {
         if (props.details === null || props.details === void 0)
@@ -56023,7 +55680,7 @@ class InstrumentLogic extends BaseInstrument {
           case "ChallengeDetails":
           case "ChallengeTitleBullets":
           case "StringArray":
-            return /* @__PURE__ */ import_react96.default.createElement(
+            return /* @__PURE__ */ import_react95.default.createElement(
               ExpandedChecklistIcon,
               {
                 width: 50,
@@ -56036,7 +55693,7 @@ class InstrumentLogic extends BaseInstrument {
               }
             );
           case "String":
-            return /* @__PURE__ */ import_react96.default.createElement(
+            return /* @__PURE__ */ import_react95.default.createElement(
               InformationIcon,
               {
                 width: 70,
@@ -56052,7 +55709,7 @@ class InstrumentLogic extends BaseInstrument {
             return null;
         }
       };
-      return /* @__PURE__ */ import_react96.default.createElement(
+      return /* @__PURE__ */ import_react95.default.createElement(
         "div",
         {
           onClick: () => {
@@ -56060,31 +55717,31 @@ class InstrumentLogic extends BaseInstrument {
           },
           className: props.details !== null && props.details !== void 0 ? "checklist-item-display-hasdetails" : "checklist-item-display"
         },
-        /* @__PURE__ */ import_react96.default.createElement(
+        /* @__PURE__ */ import_react95.default.createElement(
           "div",
           {
             className: props.details !== null && props.details !== void 0 ? "checklist-item-display-inner-wrapper-details" : "checklist-item-display-inner-wrapper"
           },
-          /* @__PURE__ */ import_react96.default.createElement("div", { className: "checklist-item-display-challenge" }, props.details !== null && props.details !== void 0 ? /* @__PURE__ */ import_react96.default.createElement("div", { className: "item-icon-container" }, getIconType()) : /* @__PURE__ */ import_react96.default.createElement("div", { className: "item-icon-container-filler" }), /* @__PURE__ */ import_react96.default.createElement("div", { className: "text-bounding-box" }, props.Challenge)),
-          /* @__PURE__ */ import_react96.default.createElement("div", { className: "checklist-item-display-action" }, /* @__PURE__ */ import_react96.default.createElement(ActionIcon, null), props.action),
-          /* @__PURE__ */ import_react96.default.createElement("div", { className: "checklist-item-display-performedBy" }, props.performedBy)
+          /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-display-challenge" }, props.details !== null && props.details !== void 0 ? /* @__PURE__ */ import_react95.default.createElement("div", { className: "item-icon-container" }, getIconType()) : /* @__PURE__ */ import_react95.default.createElement("div", { className: "item-icon-container-filler" }), /* @__PURE__ */ import_react95.default.createElement("div", { className: "text-bounding-box" }, props.Challenge)),
+          /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-display-action" }, /* @__PURE__ */ import_react95.default.createElement(ActionIcon, null), props.action),
+          /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-display-performedBy" }, props.performedBy)
         ),
-        details && /* @__PURE__ */ import_react96.default.createElement(ChecklistItemDisplayDetails_default, { details: props.details })
+        details && /* @__PURE__ */ import_react95.default.createElement(ChecklistItemDisplayDetails_default, { details: props.details })
       );
     }
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistContentHeader/ChecklistContentHeader.tsx
-  var import_react97 = __toESM(require_react());
+  var import_react96 = __toESM(require_react());
   var ChecklistContentHeader = (props) => {
-    return /* @__PURE__ */ import_react97.default.createElement("div", { className: "checklist-content-header" }, /* @__PURE__ */ import_react97.default.createElement("div", null, props.field1), /* @__PURE__ */ import_react97.default.createElement("div", { className: "cl-content-header-sep" }), /* @__PURE__ */ import_react97.default.createElement("div", null, props.field2), /* @__PURE__ */ import_react97.default.createElement("div", { className: "cl-content-header-sep" }), /* @__PURE__ */ import_react97.default.createElement("div", null, props.field3));
+    return /* @__PURE__ */ import_react96.default.createElement("div", { className: "checklist-content-header" }, /* @__PURE__ */ import_react96.default.createElement("div", null, props.field1), /* @__PURE__ */ import_react96.default.createElement("div", { className: "cl-content-header-sep" }), /* @__PURE__ */ import_react96.default.createElement("div", null, props.field2), /* @__PURE__ */ import_react96.default.createElement("div", { className: "cl-content-header-sep" }), /* @__PURE__ */ import_react96.default.createElement("div", null, props.field3));
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/CompleteChecklistButton/CompleteChecklistButton.tsx
-  var import_react98 = __toESM(require_react());
+  var import_react97 = __toESM(require_react());
   var CompleteChecklistButton = (props) => {
     const className = props.checklistCompleted ? "checklist-content-completeButton-complete" : "checklist-content-completeButton-incomplete";
-    return /* @__PURE__ */ import_react98.default.createElement("div", { style: { position: "relative" } }, !props.checklistCompleted ? /* @__PURE__ */ import_react98.default.createElement(
+    return /* @__PURE__ */ import_react97.default.createElement("div", { style: { position: "relative" } }, !props.checklistCompleted ? /* @__PURE__ */ import_react97.default.createElement(
       "div",
       {
         className,
@@ -56094,7 +55751,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       },
       "Complete Checklist"
-    ) : /* @__PURE__ */ import_react98.default.createElement(
+    ) : /* @__PURE__ */ import_react97.default.createElement(
       "div",
       {
         className,
@@ -56110,23 +55767,23 @@ class InstrumentLogic extends BaseInstrument {
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistContentDisplay/ChecklistContentDisplay.tsx
   var ChecklistContentDisplay = (props) => {
     if (props.currentChecklist === null || props.currentChecklist === void 0) {
-      return /* @__PURE__ */ import_react99.default.createElement("div", { className: "checklist-select-a-checklist" }, "Select a Checklist");
+      return /* @__PURE__ */ import_react98.default.createElement("div", { className: "checklist-select-a-checklist" }, "Select a Checklist");
     }
     const currentChecklist = props.checklist[props.currentChecklist];
     const checklistCompleted = props.completedChecklists[props.currentChecklist];
     const getChecklistItem = () => {
       const checklistItems = [];
-      for (let i2 = 0; i2 < currentChecklist.Challenge.length; i2++) {
-        const challenge = currentChecklist.Challenge[i2].content;
-        const action = currentChecklist.action[i2];
-        const performedBy = currentChecklist.performedBy[i2];
-        if (currentChecklist.Challenge[i2].isCaution) {
+      for (let i = 0; i < currentChecklist.Challenge.length; i++) {
+        const challenge = currentChecklist.Challenge[i].content;
+        const action = currentChecklist.action[i];
+        const performedBy = currentChecklist.performedBy[i];
+        if (currentChecklist.Challenge[i].isCaution) {
           checklistItems.push(
-            /* @__PURE__ */ import_react99.default.createElement(
+            /* @__PURE__ */ import_react98.default.createElement(
               ChecklistItemDisplay,
               {
                 details: null,
-                key: i2,
+                key: i,
                 Challenge: challenge,
                 action,
                 performedBy,
@@ -56136,13 +55793,13 @@ class InstrumentLogic extends BaseInstrument {
               }
             )
           );
-        } else if (currentChecklist.Challenge[i2].isNote) {
+        } else if (currentChecklist.Challenge[i].isNote) {
           checklistItems.push(
-            /* @__PURE__ */ import_react99.default.createElement(
+            /* @__PURE__ */ import_react98.default.createElement(
               ChecklistItemDisplay,
               {
                 details: null,
-                key: i2,
+                key: i,
                 Challenge: challenge,
                 action,
                 performedBy,
@@ -56152,13 +55809,13 @@ class InstrumentLogic extends BaseInstrument {
               }
             )
           );
-        } else if (currentChecklist.Challenge[i2].isDivider) {
+        } else if (currentChecklist.Challenge[i].isDivider) {
           checklistItems.push(
-            /* @__PURE__ */ import_react99.default.createElement(
+            /* @__PURE__ */ import_react98.default.createElement(
               ChecklistItemDisplay,
               {
                 details: null,
-                key: i2,
+                key: i,
                 Challenge: challenge,
                 action,
                 performedBy,
@@ -56170,11 +55827,11 @@ class InstrumentLogic extends BaseInstrument {
           );
         } else {
           checklistItems.push(
-            /* @__PURE__ */ import_react99.default.createElement(
+            /* @__PURE__ */ import_react98.default.createElement(
               ChecklistItemDisplay,
               {
-                details: currentChecklist.Challenge[i2].details,
-                key: i2,
+                details: currentChecklist.Challenge[i].details,
+                key: i,
                 Challenge: challenge,
                 action,
                 performedBy,
@@ -56187,14 +55844,14 @@ class InstrumentLogic extends BaseInstrument {
       }
       return checklistItems;
     };
-    return /* @__PURE__ */ import_react99.default.createElement("div", { className: "checklist-content-display-container" }, /* @__PURE__ */ import_react99.default.createElement(
+    return /* @__PURE__ */ import_react98.default.createElement("div", { className: "checklist-content-display-container" }, /* @__PURE__ */ import_react98.default.createElement(
       ChecklistContentHeader,
       {
         field1: "Challenge",
         field2: "Action",
         field3: props.checklist[props.currentChecklist].isAnsweredBy ? "Answered By" : "Performed By"
       }
-    ), getChecklistItem(), /* @__PURE__ */ import_react99.default.createElement(
+    ), getChecklistItem(), /* @__PURE__ */ import_react98.default.createElement(
       CompleteChecklistButton,
       {
         handleComplete: props.handleComplete,
@@ -56207,7 +55864,7 @@ class InstrumentLogic extends BaseInstrument {
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/checklists.tsx
   var Checklists = () => {
     var _a, _b, _c, _d;
-    const { state, updateState } = import_react100.default.useContext(AppContext);
+    const { state, updateState } = import_react99.default.useContext(AppContext);
     const updateCurrentChecklist = (current) => {
       updateState(__spreadProps(__spreadValues({}, state), {
         state: {
@@ -56263,7 +55920,7 @@ class InstrumentLogic extends BaseInstrument {
       newCompletedChecklists.fill(false);
       updateCompletedChecklists(newCompletedChecklists);
     };
-    return /* @__PURE__ */ import_react100.default.createElement("div", { className: "checklist-container" }, /* @__PURE__ */ import_react100.default.createElement(ChecklistHeader, null), /* @__PURE__ */ import_react100.default.createElement("div", { className: "checklist-content" }, /* @__PURE__ */ import_react100.default.createElement(
+    return /* @__PURE__ */ import_react99.default.createElement("div", { className: "checklist-container" }, /* @__PURE__ */ import_react99.default.createElement(ChecklistHeader, null), /* @__PURE__ */ import_react99.default.createElement("div", { className: "checklist-content" }, /* @__PURE__ */ import_react99.default.createElement(
       ChecklistSelector,
       {
         resetAllChecklists: handleResetAllChecklists,
@@ -56272,7 +55929,7 @@ class InstrumentLogic extends BaseInstrument {
         activeChecklist: (_b = state == null ? void 0 : state.checklists.currentChecklist) != null ? _b : 0,
         onClick: handleChecklistClick
       }
-    ), /* @__PURE__ */ import_react100.default.createElement(
+    ), /* @__PURE__ */ import_react99.default.createElement(
       ChecklistContentDisplay,
       {
         handleComplete,
@@ -56284,7 +55941,7 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/NavigraphApi/Map.tsx
-  var import_react101 = __toESM(require_react());
+  var import_react100 = __toESM(require_react());
 
   // node_modules/@navigraph/leaflet/dist/index.esm.js
   var import_leaflet = __toESM(require_leaflet_src());
@@ -56441,7 +56098,7 @@ class InstrumentLogic extends BaseInstrument {
     const handleSignInButtonClick = () => {
       auth.signInWithDeviceFlow((params) => window.open(params.verification_uri_complete, "_blank")).catch(console.error);
     };
-    (0, import_react101.useEffect)(() => {
+    (0, import_react100.useEffect)(() => {
       var _a2;
       if (((_a2 = auth.getUser()) == null ? void 0 : _a2.preferred_username) === null)
         return;
@@ -56451,7 +56108,7 @@ class InstrumentLogic extends BaseInstrument {
         cleanupMap();
       };
     }, [(_a = auth.getUser()) == null ? void 0 : _a.preferred_username]);
-    return /* @__PURE__ */ import_react101.default.createElement("div", null, /* @__PURE__ */ import_react101.default.createElement("div", { id: "map", style: { height: "900px" } }), /* @__PURE__ */ import_react101.default.createElement("div", null, (_b = auth.getUser()) == null ? void 0 : _b.preferred_username), /* @__PURE__ */ import_react101.default.createElement("div", { className: "sources" }, /* @__PURE__ */ import_react101.default.createElement(
+    return /* @__PURE__ */ import_react100.default.createElement("div", null, /* @__PURE__ */ import_react100.default.createElement("div", { id: "map", style: { height: "900px" } }), /* @__PURE__ */ import_react100.default.createElement("div", null, (_b = auth.getUser()) == null ? void 0 : _b.preferred_username), /* @__PURE__ */ import_react100.default.createElement("div", { className: "sources" }, /* @__PURE__ */ import_react100.default.createElement(
       "button",
       {
         onClick: () => {
@@ -56459,7 +56116,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       },
       "VFR"
-    ), /* @__PURE__ */ import_react101.default.createElement(
+    ), /* @__PURE__ */ import_react100.default.createElement(
       "button",
       {
         onClick: () => {
@@ -56467,7 +56124,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       },
       "Source 2"
-    )), /* @__PURE__ */ import_react101.default.createElement("div", { className: "faa-sources" }, /* @__PURE__ */ import_react101.default.createElement(
+    )), /* @__PURE__ */ import_react100.default.createElement("div", { className: "faa-sources" }, /* @__PURE__ */ import_react100.default.createElement(
       "button",
       {
         onClick: () => {
@@ -56475,7 +56132,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       },
       "FAA Source 1"
-    ), /* @__PURE__ */ import_react101.default.createElement(
+    ), /* @__PURE__ */ import_react100.default.createElement(
       "button",
       {
         onClick: () => {
@@ -56483,7 +56140,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       },
       "FAA Source 2"
-    )), /* @__PURE__ */ import_react101.default.createElement("div", { className: "themes" }, /* @__PURE__ */ import_react101.default.createElement(
+    )), /* @__PURE__ */ import_react100.default.createElement("div", { className: "themes" }, /* @__PURE__ */ import_react100.default.createElement(
       "button",
       {
         onClick: () => {
@@ -56491,7 +56148,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       },
       "day"
-    ), /* @__PURE__ */ import_react101.default.createElement(
+    ), /* @__PURE__ */ import_react100.default.createElement(
       "button",
       {
         onClick: () => {
@@ -56499,36 +56156,36 @@ class InstrumentLogic extends BaseInstrument {
         }
       },
       "night"
-    )), auth.getUser() !== null ? "" : /* @__PURE__ */ import_react101.default.createElement("div", { id: "signin", onClick: handleSignInButtonClick }, "Sign In"));
+    )), auth.getUser() !== null ? "" : /* @__PURE__ */ import_react100.default.createElement("div", { id: "signin", onClick: handleSignInButtonClick }, "Sign In"));
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/OuroborosFlight.tsx
   var OuroborosFlight = () => {
-    const { state } = import_react102.default.useContext(AppContext);
+    const { state } = import_react101.default.useContext(AppContext);
     const HandlePage = () => {
       switch (state == null ? void 0 : state.ouroborosFlight.page) {
         case 0:
-          return /* @__PURE__ */ import_react102.default.createElement(Airports, null);
+          return /* @__PURE__ */ import_react101.default.createElement(Airports, null);
         case 1:
-          return /* @__PURE__ */ import_react102.default.createElement(NgMap, null);
+          return /* @__PURE__ */ import_react101.default.createElement(NgMap, null);
         case 4:
-          return /* @__PURE__ */ import_react102.default.createElement(Scratchpads, null);
+          return /* @__PURE__ */ import_react101.default.createElement(Scratchpads, null);
         case 5:
-          return /* @__PURE__ */ import_react102.default.createElement(Checklists, null);
+          return /* @__PURE__ */ import_react101.default.createElement(Checklists, null);
         case 6:
-          return /* @__PURE__ */ import_react102.default.createElement(WeightAndBalance, null);
+          return /* @__PURE__ */ import_react101.default.createElement(WeightAndBalance, null);
         case 7:
-          return /* @__PURE__ */ import_react102.default.createElement(GroundService, null);
+          return /* @__PURE__ */ import_react101.default.createElement(GroundService, null);
         case 8:
-          return /* @__PURE__ */ import_react102.default.createElement("div", null, "Flight Plan");
+          return /* @__PURE__ */ import_react101.default.createElement("div", null, "Flight Plan");
         case 9:
-          return /* @__PURE__ */ import_react102.default.createElement("div", null, "Cabin Config");
+          return /* @__PURE__ */ import_react101.default.createElement("div", null, "Cabin Config");
         default:
-          return /* @__PURE__ */ import_react102.default.createElement(import_react102.default.Fragment, null);
+          return /* @__PURE__ */ import_react101.default.createElement(import_react101.default.Fragment, null);
       }
     };
-    const [loading, setLoading] = (0, import_react102.useState)(true);
-    (0, import_react102.useEffect)(() => {
+    const [loading, setLoading] = (0, import_react101.useState)(true);
+    (0, import_react101.useEffect)(() => {
       const loadDelay = setTimeout(() => {
         setLoading(false);
       }, 2e3);
@@ -56537,7 +56194,7 @@ class InstrumentLogic extends BaseInstrument {
       };
     });
     const Watermark = (props) => {
-      return /* @__PURE__ */ import_react102.default.createElement("svg", { width: `${props.width}px`, viewBox: "0 0 2560 2560" }, /* @__PURE__ */ import_react102.default.createElement("g", { id: "svgPath" }, /* @__PURE__ */ import_react102.default.createElement(
+      return /* @__PURE__ */ import_react101.default.createElement("svg", { width: `${props.width}px`, viewBox: "0 0 2560 2560" }, /* @__PURE__ */ import_react101.default.createElement("g", { id: "svgPath" }, /* @__PURE__ */ import_react101.default.createElement(
         "path",
         {
           d: "M 1028.714 282.604 C 1028.597 282.714, 1023.550 283.106, 1017.500 283.475 C 1011.450 283.844, 1004.250 284.312, 1001.500 284.513 C 998.750 284.715, 992.450 285.175, 987.500 285.534 C 976.871 286.307, 976.040 286.417, 965 288.506 C 960.325 289.390, 955.600 290.269, 954.500 290.458 C 953.400 290.647, 948.900 291.546, 944.500 292.454 C 940.100 293.362, 935.375 294.278, 934 294.490 C 932.625 294.702, 926.325 296.565, 920 298.632 C 913.675 300.698, 908.275 302.418, 908 302.456 C 906 302.726, 898.608 306.055, 874 317.769 C 869.325 319.994, 865.050 321.901, 864.500 322.006 C 862.487 322.391, 860 324.097, 860 325.094 C 860 325.657, 860.412 325.864, 860.915 325.552 C 862.140 324.795, 877.246 327.009, 878.450 328.122 C 878.973 328.605, 880.633 329, 882.141 329 C 883.649 329, 885.127 329.396, 885.425 329.879 C 885.724 330.363, 875.319 340.235, 862.304 351.818 C 844.305 367.835, 838.263 372.676, 837.069 372.038 C 836.206 371.576, 830.325 370.427, 824 369.485 C 817.675 368.542, 811.600 367.391, 810.500 366.926 C 807.773 365.774, 787.838 362.982, 786.823 363.609 C 786.374 363.887, 785.201 364.269, 784.214 364.459 C 782.208 364.845, 768.904 370.152, 762 373.320 C 759.525 374.456, 757.275 375.411, 757 375.443 C 756.380 375.515, 745.605 380.241, 737.247 384.108 C 733.808 385.698, 730.658 387.003, 730.247 387.006 C 729.492 387.013, 708.522 397.504, 699.750 402.264 C 697.138 403.682, 695 404.638, 695 404.390 C 695 404.142, 692.637 405.442, 689.750 407.280 C 686.862 409.118, 683.825 410.937, 683 411.322 C 682.175 411.707, 680.150 412.912, 678.500 414 C 676.850 415.088, 674.825 416.283, 674 416.655 C 673.175 417.028, 670.860 418.608, 668.856 420.166 C 666.852 421.725, 664.942 423, 664.611 423 C 662.631 423, 645.642 437.263, 634.883 447.958 C 615.169 467.556, 609.599 477.412, 611.973 488.500 C 613.646 496.315, 613.965 497.365, 614.977 498.377 C 615.539 498.939, 616 500.227, 616 501.237 C 616 502.898, 624.521 512.232, 629.500 516.023 C 635.540 520.623, 660.232 531.987, 664.228 532.006 C 664.928 532.010, 666.715 532.646, 668.199 533.420 C 669.683 534.195, 673.508 535.585, 676.699 536.509 C 679.890 537.433, 682.950 538.542, 683.500 538.974 C 684.050 539.405, 687.200 540.530, 690.500 541.474 C 693.800 542.417, 696.950 543.532, 697.500 543.951 C 700.473 546.218, 720.405 551.283, 743 555.513 C 747.125 556.285, 753.200 557.434, 756.500 558.067 C 759.800 558.700, 765.200 559.622, 768.500 560.115 C 771.800 560.608, 775.805 561.459, 777.399 562.006 C 778.994 562.552, 781.806 563, 783.649 563 C 785.492 563, 787 563.369, 787 563.819 C 787 564.270, 779.913 569.398, 771.250 575.214 C 754.693 586.331, 732.473 602.691, 716.213 615.738 C 555.397 744.761, 445.269 926.234, 405.951 1127 C 403.635 1138.825, 401.577 1148.685, 401.377 1148.910 C 400.931 1149.413, 389.628 1146.254, 385.500 1144.473 C 383.850 1143.762, 379.913 1142.464, 376.750 1141.590 C 365.137 1138.379, 359.476 1136.617, 358.500 1135.909 C 357.950 1135.510, 354.800 1134.425, 351.500 1133.498 C 348.200 1132.570, 343.609 1131.275, 341.298 1130.621 C 338.988 1129.966, 336.775 1129.108, 336.382 1128.715 C 335.988 1128.322, 334.814 1128, 333.771 1128 C 332.009 1128, 321.057 1124.734, 316.500 1122.849 C 312.468 1121.181, 301.443 1118.025, 299.500 1117.981 C 298.400 1117.957, 296.626 1117.276, 295.559 1116.468 C 294.491 1115.661, 292.788 1115, 291.774 1115 C 290.759 1115, 288.933 1114.374, 287.715 1113.608 C 286.497 1112.843, 283.373 1111.917, 280.773 1111.551 C 278.174 1111.184, 275.785 1110.460, 275.464 1109.942 C 275.144 1109.424, 273.754 1109, 272.375 1109 C 270.997 1109, 268.906 1108.485, 267.730 1107.856 C 266.554 1107.226, 263.546 1106.139, 261.046 1105.440 C 258.546 1104.741, 255.150 1103.718, 253.500 1103.167 C 243.103 1099.694, 233.959 1097.014, 230.500 1096.426 C 228.300 1096.052, 225.825 1095.183, 225 1094.495 C 224.175 1093.807, 222.150 1092.996, 220.500 1092.694 C 215.738 1091.822, 208.762 1089.894, 205.500 1088.548 C 192.399 1083.146, 183.343 1081.663, 179.816 1084.344 C 177.909 1085.794, 177.322 1087.952, 176.513 1096.500 C 175.966 1102.285, 175.665 1105.079, 174.500 1115.192 C 173.012 1128.113, 172.256 1143.959, 172.949 1147.733 C 173.827 1152.521, 178.822 1158.650, 193.950 1173.500 C 240.349 1219.046, 353.128 1332.990, 353.833 1335.034 C 354.017 1335.565, 354.570 1336, 355.064 1336 C 356.369 1336, 369.907 1350.185, 370.571 1352.250 C 370.881 1353.213, 371.516 1354, 371.982 1354 C 372.448 1354, 374.549 1356.363, 376.650 1359.250 C 378.751 1362.138, 381.231 1365.337, 382.161 1366.360 C 383.092 1367.383, 383.613 1368.845, 383.320 1369.610 C 383.026 1370.374, 383.281 1371, 383.887 1371 C 384.492 1371, 387.050 1375.162, 389.571 1380.250 C 393.972 1389.131, 394.253 1390.238, 396.606 1408 C 414.578 1543.651, 461.384 1668.234, 536.609 1780.643 C 673.887 1985.777, 892.859 2123.771, 1136.104 2158.438 C 1181.098 2164.851, 1212.500 2166.993, 1261.500 2166.993 C 1310.500 2166.993, 1341.902 2164.851, 1386.896 2158.438 C 1614.438 2126.009, 1820.351 2003.762, 1959.508 1818.488 C 2059.254 1685.687, 2119.960 1523.728, 2130.986 1361 C 2131.564 1352.475, 2132.693 1338.750, 2133.496 1330.500 C 2135.123 1313.780, 2137.330 1289.152, 2139.232 1266.500 C 2140.978 1245.710, 2140.940 1154.647, 2139.176 1134 C 2135.800 1094.462, 2132.739 1068.418, 2128.588 1043.900 C 2113.620 955.491, 2087.047 876.812, 2047.228 803 C 1980.852 679.961, 1877.124 575.290, 1741.570 494.562 C 1714.561 478.476, 1698.740 469.950, 1664.500 453.025 C 1594.795 418.570, 1533.530 394.718, 1440 365.623 C 1393.278 351.089, 1386.324 349, 1384.663 349 C 1383.679 349, 1364.115 344.079, 1341.187 338.065 C 1293.042 325.435, 1286.946 323.945, 1281.500 323.478 C 1279.300 323.289, 1261.525 319.545, 1242 315.158 C 1209.951 307.956, 1127.002 291.464, 1103 287.521 C 1085.270 284.608, 1074.425 283.810, 1036.714 282.645 C 1032.432 282.513, 1028.832 282.494, 1028.714 282.604 M 895.911 335.729 C 894.035 337.780, 889.876 342.590, 886.669 346.417 C 883.461 350.245, 878.209 356.104, 874.996 359.438 C 871.783 362.772, 867.143 367.727, 864.685 370.450 L 860.216 375.399 862.517 376.593 C 863.783 377.250, 867.204 378.115, 870.120 378.516 C 873.035 378.917, 876.113 379.629, 876.960 380.097 C 877.807 380.565, 881.200 381.383, 884.500 381.914 C 887.800 382.444, 894.550 383.797, 899.500 384.920 C 904.450 386.042, 911.200 387.457, 914.500 388.064 C 917.800 388.671, 921.918 389.805, 923.651 390.584 C 925.384 391.363, 927.475 392, 928.298 392 C 929.997 392, 935.993 385.562, 936.013 383.715 C 936.020 383.047, 937.329 372.600, 938.923 360.500 C 940.516 348.400, 941.641 338.318, 941.422 338.096 C 940.939 337.604, 904.350 332.048, 901.411 332.020 C 900.257 332.009, 897.794 333.670, 895.911 335.729 M 1018.500 605.032 C 1017.400 605.526, 1010.875 607.999, 1004 610.529 C 951.377 629.893, 891.967 661.153, 843.493 694.983 C 737.899 768.678, 652.173 870.204, 598.118 985.582 C 576.966 1030.731, 558.999 1082.289, 548.488 1128 C 545.695 1140.144, 540 1167.743, 540 1169.131 C 540 1170.189, 545.671 1169.055, 548.956 1167.340 C 550.355 1166.610, 552.331 1166.010, 553.346 1166.006 C 555.737 1165.998, 565.643 1163.248, 569.500 1161.522 C 571.150 1160.784, 575.200 1159.426, 578.500 1158.505 C 590.845 1155.059, 595.528 1153.615, 596.500 1152.955 C 597.050 1152.581, 598.850 1151.977, 600.500 1151.611 C 603.534 1150.939, 620.975 1145.735, 626.500 1143.853 C 631.182 1142.258, 637.678 1140.319, 648 1137.435 C 653.225 1135.975, 658.694 1134.155, 660.154 1133.390 C 661.614 1132.626, 663.475 1132, 664.290 1132 C 665.105 1132, 667.060 1131.328, 668.636 1130.506 C 670.211 1129.685, 672.625 1129.007, 674 1129 C 675.375 1128.993, 677.789 1128.315, 679.364 1127.494 C 680.940 1126.672, 683.415 1125.986, 684.864 1125.968 C 686.314 1125.951, 688.329 1125.308, 689.342 1124.541 C 690.355 1123.773, 692.941 1122.848, 695.087 1122.485 C 697.233 1122.123, 699.219 1121.454, 699.500 1121 C 699.781 1120.546, 701.812 1119.870, 704.014 1119.498 C 706.216 1119.126, 710.376 1117.918, 713.259 1116.813 C 716.141 1115.708, 720.750 1114.381, 723.500 1113.862 C 726.250 1113.344, 729.850 1112.300, 731.500 1111.542 C 735.390 1109.757, 744.750 1107, 746.924 1107 C 747.855 1107, 749.491 1106.339, 750.559 1105.532 C 751.626 1104.724, 753.310 1104.049, 754.300 1104.032 C 755.289 1104.014, 757.416 1103.319, 759.025 1102.487 C 760.633 1101.655, 764.667 1100.691, 767.987 1100.344 C 776.733 1099.429, 778.035 1100.871, 779.420 1113 C 780.902 1125.967, 783.401 1157.525, 783.262 1161.500 C 783.028 1168.149, 779.018 1173.921, 765.548 1187 C 762.433 1190.025, 736.397 1215.787, 707.692 1244.250 C 678.986 1272.712, 648.975 1302.285, 641 1309.968 C 628.072 1322.421, 622.280 1327.899, 606 1343.071 C 603.525 1345.377, 597.371 1350.816, 592.325 1355.156 C 587.279 1359.497, 583.004 1363.474, 582.825 1363.993 C 582.646 1364.512, 579.095 1368.439, 574.934 1372.718 C 570.772 1376.998, 566.497 1382.035, 565.434 1383.911 C 564.370 1385.787, 562.600 1388.327, 561.500 1389.556 C 560.400 1390.786, 558.150 1394.426, 556.500 1397.646 C 554.850 1400.866, 553.225 1403.725, 552.890 1404 C 552.006 1404.724, 548.867 1411, 549.388 1411 C 549.630 1411, 548.480 1413.784, 546.831 1417.187 C 542.348 1426.442, 541.702 1432.334, 543.966 1443.336 C 569.815 1568.963, 628.505 1685.936, 713.887 1782 C 726.133 1795.778, 755.457 1825.262, 770 1838.419 C 905.515 1961.021, 1079.163 2028, 1261.500 2028 C 1443.861 2028, 1617.229 1961.125, 1753 1838.407 C 1767.518 1825.285, 1796.830 1795.819, 1809.113 1782 C 1846.537 1739.893, 1880.721 1690.866, 1907.915 1640.297 C 1914.015 1628.952, 1916.719 1622.583, 1919.502 1613 C 1921.499 1606.125, 1924.401 1596.225, 1925.952 1591 C 1937.211 1553.071, 1949.693 1495.794, 1954.936 1458 C 1956.269 1448.393, 1959.622 1417.416, 1961.214 1400 C 1962.873 1381.853, 1962.861 1311.572, 1961.196 1294.500 C 1955.624 1237.377, 1947.472 1195.654, 1933.256 1151.500 C 1904.239 1061.380, 1852.579 978.413, 1781.018 907 C 1766.085 892.097, 1747.815 874.959, 1744.050 872.323 C 1742.881 871.504, 1740.910 869.859, 1739.669 868.667 C 1734.817 864.007, 1710.292 844.437, 1700 837.012 C 1696.975 834.830, 1691.125 830.558, 1687 827.518 C 1676.373 819.687, 1644.093 798.212, 1630.500 789.931 C 1612.143 778.749, 1605.037 774.729, 1579 760.799 C 1556.648 748.842, 1507.508 725.499, 1491.017 719.005 C 1488.002 717.817, 1483.151 715.755, 1480.238 714.423 C 1477.324 713.090, 1474.551 712, 1474.075 712 C 1473.599 712, 1469.900 710.587, 1465.855 708.860 C 1461.810 707.133, 1454.225 704.162, 1449 702.257 C 1432.313 696.175, 1408.662 687.863, 1403.500 686.266 C 1400.750 685.415, 1392.425 682.798, 1385 680.451 C 1362.732 673.411, 1347.201 669.371, 1312 661.462 C 1293.575 657.322, 1277.600 653.495, 1276.500 652.957 C 1273.852 651.662, 1181.609 632.281, 1153 627.009 C 1140.625 624.729, 1129.600 622.457, 1128.500 621.961 C 1124.039 619.949, 1029.486 603.919, 1023 604.075 C 1021.625 604.108, 1019.600 604.539, 1018.500 605.032",
@@ -56547,20 +56204,20 @@ class InstrumentLogic extends BaseInstrument {
         }
       )));
     };
-    return loading ? /* @__PURE__ */ import_react102.default.createElement("div", { className: `ouroboros-flight-root loading-container ` }, /* @__PURE__ */ import_react102.default.createElement("div", { className: "loading-watermark " }, /* @__PURE__ */ import_react102.default.createElement(Watermark, { width: 800, className: "loading-watermark" }))) : /* @__PURE__ */ import_react102.default.createElement("div", { className: `ouroboros-flight-root` }, /* @__PURE__ */ import_react102.default.createElement("div", { className: "ouroboros-flight-container" }, HandlePage()), /* @__PURE__ */ import_react102.default.createElement("div", null), /* @__PURE__ */ import_react102.default.createElement(ButtonBar, { recentButton: { to: 8, text: "" } }));
+    return loading ? /* @__PURE__ */ import_react101.default.createElement("div", { className: `ouroboros-flight-root loading-container ` }, /* @__PURE__ */ import_react101.default.createElement("div", { className: "loading-watermark " }, /* @__PURE__ */ import_react101.default.createElement(Watermark, { width: 800, className: "loading-watermark" }))) : /* @__PURE__ */ import_react101.default.createElement("div", { className: `ouroboros-flight-root` }, /* @__PURE__ */ import_react101.default.createElement("div", { className: "ouroboros-flight-container" }, HandlePage()), /* @__PURE__ */ import_react101.default.createElement("div", null), /* @__PURE__ */ import_react101.default.createElement(ButtonBar, { recentButton: { to: 8, text: "" } }));
   };
 
   // instruments/src/ElectronicFlightBag/NavigraphApi/NavigraphApp.tsx
-  var import_react105 = __toESM(require_react());
+  var import_react104 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/NavigraphApi/components/auth.tsx
+  var import_react102 = __toESM(require_react());
   var import_react103 = __toESM(require_react());
-  var import_react104 = __toESM(require_react());
   function Auth() {
-    const [error, setError] = (0, import_react104.useState)(null);
-    const [params, setParams] = (0, import_react104.useState)(null);
+    const [error, setError] = (0, import_react103.useState)(null);
+    const [params, setParams] = (0, import_react103.useState)(null);
     const { user, isInitialized, signIn, signOut: signOut2 } = useNavigraphAuth();
-    const handleSignIn = (0, import_react104.useCallback)(
+    const handleSignIn = (0, import_react103.useCallback)(
       () => signIn((params2) => {
         setParams(params2);
         setError(null);
@@ -56568,14 +56225,14 @@ class InstrumentLogic extends BaseInstrument {
       [signIn]
     );
     const isLoginInProgress = !!params;
-    return /* @__PURE__ */ import_react103.default.createElement(import_react103.default.Fragment, null, !isInitialized && /* @__PURE__ */ import_react103.default.createElement("div", null, "Loading..."), isInitialized && /* @__PURE__ */ import_react103.default.createElement(
+    return /* @__PURE__ */ import_react102.default.createElement(import_react102.default.Fragment, null, !isInitialized && /* @__PURE__ */ import_react102.default.createElement("div", null, "Loading..."), isInitialized && /* @__PURE__ */ import_react102.default.createElement(
       "button",
       {
         className: "py-2 px-4 font-semibold rounded-md bg-black text-white dark:bg-white dark:text-black",
         onClick: () => !isLoginInProgress && (user ? signOut2() : handleSignIn())
       },
       user ? "Sign out" : !isLoginInProgress ? "Sign in" : "Signing in..."
-    ), error && /* @__PURE__ */ import_react103.default.createElement("div", { className: "text-red-500" }, error instanceof DeviceFlowTokenExpiredError ? "Session expired, try again!" : error.message), (params == null ? void 0 : params.verification_uri_complete) && !user && /* @__PURE__ */ import_react103.default.createElement("div", { className: "flex flex-col items-center gap-2" }, /* @__PURE__ */ import_react103.default.createElement(
+    ), error && /* @__PURE__ */ import_react102.default.createElement("div", { className: "text-red-500" }, error instanceof DeviceFlowTokenExpiredError ? "Session expired, try again!" : error.message), (params == null ? void 0 : params.verification_uri_complete) && !user && /* @__PURE__ */ import_react102.default.createElement("div", { className: "flex flex-col items-center gap-2" }, /* @__PURE__ */ import_react102.default.createElement(
       "a",
       {
         href: params.verification_uri_complete,
@@ -56584,7 +56241,7 @@ class InstrumentLogic extends BaseInstrument {
         rel: "noreferrer"
       },
       "Open sign in page"
-    ), /* @__PURE__ */ import_react103.default.createElement("span", { className: "opacity-50" }, "or scan this QR code:"), /* @__PURE__ */ import_react103.default.createElement("div", { className: "p-2 rounded-lg bg-white mt-1" }, /* @__PURE__ */ import_react103.default.createElement(
+    ), /* @__PURE__ */ import_react102.default.createElement("span", { className: "opacity-50" }, "or scan this QR code:"), /* @__PURE__ */ import_react102.default.createElement("div", { className: "p-2 rounded-lg bg-white mt-1" }, /* @__PURE__ */ import_react102.default.createElement(
       "img",
       {
         src: `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${params.verification_uri_complete}`,
@@ -56597,13 +56254,13 @@ class InstrumentLogic extends BaseInstrument {
   var AIRPORT_ICAO = "KPHX";
   var NavigraphAppPage = () => {
     var _a;
-    const [output, setOutput] = (0, import_react105.useState)(void 0);
-    const [packageDetails, setPackageDetails] = (0, import_react105.useState)(void 0);
-    const [errorMessage, setErrorMessage] = (0, import_react105.useState)(void 0);
-    const [chartIndex, setChartIndex] = (0, import_react105.useState)([]);
-    const [chartBlob, setChartBlob] = (0, import_react105.useState)(null);
+    const [output, setOutput] = (0, import_react104.useState)(void 0);
+    const [packageDetails, setPackageDetails] = (0, import_react104.useState)(void 0);
+    const [errorMessage, setErrorMessage] = (0, import_react104.useState)(void 0);
+    const [chartIndex, setChartIndex] = (0, import_react104.useState)([]);
+    const [chartBlob, setChartBlob] = (0, import_react104.useState)(null);
     const { user } = useNavigraphAuth();
-    const handleNavigraphError = (0, import_react105.useCallback)(
+    const handleNavigraphError = (0, import_react104.useCallback)(
       (error) => {
         if (error instanceof NoPackagesFoundError)
           setErrorMessage("No packages found");
@@ -56617,13 +56274,13 @@ class InstrumentLogic extends BaseInstrument {
       [setErrorMessage]
     );
     const fetchChartsIndex = () => {
-      charts.getChartsIndex({ icao: AIRPORT_ICAO }).then((d2) => {
-        d2 !== null && setChartIndex(d2);
+      charts.getChartsIndex({ icao: AIRPORT_ICAO }).then((d) => {
+        d !== null && setChartIndex(d);
       });
     };
     const loadChart = (chart) => {
-      charts.getChartImage({ chart }).then((b2) => {
-        setChartBlob(b2);
+      charts.getChartImage({ chart }).then((b) => {
+        setChartBlob(b);
       });
     };
     const fetchPackage = async () => packages.getPackage().then((pkg) => {
@@ -56636,7 +56293,7 @@ class InstrumentLogic extends BaseInstrument {
     }).catch((err) => {
       handleNavigraphError(err);
     });
-    return /* @__PURE__ */ import_react105.default.createElement("div", null, /* @__PURE__ */ import_react105.default.createElement("h1", null, "Navigraph charts"), /* @__PURE__ */ import_react105.default.createElement(Auth, null), user && /* @__PURE__ */ import_react105.default.createElement(import_react105.default.Fragment, null, /* @__PURE__ */ import_react105.default.createElement("div", null, /* @__PURE__ */ import_react105.default.createElement("h2", null, "Welcome, ", user.preferred_username), /* @__PURE__ */ import_react105.default.createElement(
+    return /* @__PURE__ */ import_react104.default.createElement("div", null, /* @__PURE__ */ import_react104.default.createElement("h1", null, "Navigraph charts"), /* @__PURE__ */ import_react104.default.createElement(Auth, null), user && /* @__PURE__ */ import_react104.default.createElement(import_react104.default.Fragment, null, /* @__PURE__ */ import_react104.default.createElement("div", null, /* @__PURE__ */ import_react104.default.createElement("h2", null, "Welcome, ", user.preferred_username), /* @__PURE__ */ import_react104.default.createElement(
       "button",
       {
         onClick: () => {
@@ -56646,14 +56303,14 @@ class InstrumentLogic extends BaseInstrument {
       "list ",
       AIRPORT_ICAO,
       " charts"
-    ), /* @__PURE__ */ import_react105.default.createElement("button", { onClick: listPackages2 }, "List available packages"), /* @__PURE__ */ import_react105.default.createElement("button", { onClick: fetchPackage }, "Fetch default package"), packageDetails && /* @__PURE__ */ import_react105.default.createElement("a", { href: (_a = packageDetails.file) == null ? void 0 : _a.url, className: "text-blue-500 hover:text-blue-700" }, "Download ", packageDetails.format), errorMessage && /* @__PURE__ */ import_react105.default.createElement("span", { className: "text-red-500 hover:text-red-700" }, errorMessage))), output && /* @__PURE__ */ import_react105.default.createElement("pre", { className: "text-sm max-h-[40vh] max-w-[90vw] overflow-auto" }, chartBlob ? /* @__PURE__ */ import_react105.default.createElement("img", { className: "w-full h-full object-contain", src: URL.createObjectURL(chartBlob), alt: "chart" }) : "no chart loaded", /* @__PURE__ */ import_react105.default.createElement("div", null, chartIndex.length ? chartIndex.map((c) => /* @__PURE__ */ import_react105.default.createElement("button", { key: c.id, className: "p-2 bg-black w-full", onClick: () => loadChart(c) }, /* @__PURE__ */ import_react105.default.createElement("span", { className: "text-xs" }, c.name))) : "No index loaded")));
+    ), /* @__PURE__ */ import_react104.default.createElement("button", { onClick: listPackages2 }, "List available packages"), /* @__PURE__ */ import_react104.default.createElement("button", { onClick: fetchPackage }, "Fetch default package"), packageDetails && /* @__PURE__ */ import_react104.default.createElement("a", { href: (_a = packageDetails.file) == null ? void 0 : _a.url, className: "text-blue-500 hover:text-blue-700" }, "Download ", packageDetails.format), errorMessage && /* @__PURE__ */ import_react104.default.createElement("span", { className: "text-red-500 hover:text-red-700" }, errorMessage))), output && /* @__PURE__ */ import_react104.default.createElement("pre", { className: "text-sm max-h-[40vh] max-w-[90vw] overflow-auto" }, chartBlob ? /* @__PURE__ */ import_react104.default.createElement("img", { className: "w-full h-full object-contain", src: URL.createObjectURL(chartBlob), alt: "chart" }) : "no chart loaded", /* @__PURE__ */ import_react104.default.createElement("div", null, chartIndex.length ? chartIndex.map((c) => /* @__PURE__ */ import_react104.default.createElement("button", { key: c.id, className: "p-2 bg-black w-full", onClick: () => loadChart(c) }, /* @__PURE__ */ import_react104.default.createElement("span", { className: "text-xs" }, c.name))) : "No index loaded")));
   };
 
   // instruments/src/ElectronicFlightBag/components/OS/DisplayProvider/DisplayProvider.tsx
   var DisplayProvider = () => {
     const OSContext = LoadContext(OsRouterContext);
-    const { state, updateState } = import_react106.default.useContext(AppContext);
-    import_react106.default.useEffect(() => {
+    const { state, updateState } = import_react105.default.useContext(AppContext);
+    import_react105.default.useEffect(() => {
       if (state === void 0) {
         updateState({
           state: {
@@ -56677,54 +56334,40 @@ class InstrumentLogic extends BaseInstrument {
     const OsAppSwitch = () => {
       switch (OSContext.page) {
         case 0:
-          return /* @__PURE__ */ import_react106.default.createElement(OsHome, null);
+          return /* @__PURE__ */ import_react105.default.createElement(OsHome, null);
         case 1:
-          return /* @__PURE__ */ import_react106.default.createElement(OuroborosFlight, null);
+          return /* @__PURE__ */ import_react105.default.createElement(OuroborosFlight, null);
         case 2:
-          return /* @__PURE__ */ import_react106.default.createElement(NavigraphAppPage, null);
+          return /* @__PURE__ */ import_react105.default.createElement(NavigraphAppPage, null);
         case 3:
-          return /* @__PURE__ */ import_react106.default.createElement("div", null, "Configurator");
+          return /* @__PURE__ */ import_react105.default.createElement("div", null, "Configurator");
         default:
-          return /* @__PURE__ */ import_react106.default.createElement(OsHome, null);
+          return /* @__PURE__ */ import_react105.default.createElement(OsHome, null);
       }
     };
     return OsAppSwitch();
   };
 
   // instruments/src/ElectronicFlightBag/components/OS/HomeButton/HomeButton.tsx
-  var import_react107 = __toESM(require_react());
+  var import_react106 = __toESM(require_react());
   var HomeButton = () => {
     const OSRouter = LoadContext(OsRouterContext);
-    return /* @__PURE__ */ import_react107.default.createElement(
+    return /* @__PURE__ */ import_react106.default.createElement(
       "div",
       {
         className: "home-button-debug",
         onClick: () => {
           UseNaigate(OSRouter, 0);
         }
-      },
-      /* @__PURE__ */ import_react107.default.createElement("div", null, "HOME")
+      }
     );
   };
 
   // instruments/src/ElectronicFlightBag/index.tsx
   var ElectronicFlightBag = () => {
-    return /* @__PURE__ */ import_react108.default.createElement(NavigraphAuthProvider, null, /* @__PURE__ */ import_react108.default.createElement(AppRouter, null, /* @__PURE__ */ import_react108.default.createElement(EFBRouter, null, /* @__PURE__ */ import_react108.default.createElement("div", { className: "ipadContainer" }, /* @__PURE__ */ import_react108.default.createElement(DisplayProvider, null), /* @__PURE__ */ import_react108.default.createElement(
-      k,
-      {
-        position: "top-left",
-        autoClose: 3e3,
-        hideProgressBar: false,
-        newestOnTop: false,
-        closeOnClick: true,
-        rtl: false,
-        draggable: true,
-        pauseOnHover: true,
-        theme: "dark"
-      }
-    ), /* @__PURE__ */ import_react108.default.createElement(HomeButton, null)))));
+    return /* @__PURE__ */ import_react107.default.createElement(NavigraphAuthProvider, null, /* @__PURE__ */ import_react107.default.createElement(AppRouter, null, /* @__PURE__ */ import_react107.default.createElement(EFBRouter, null, /* @__PURE__ */ import_react107.default.createElement("div", { className: "ipadContainer" }, /* @__PURE__ */ import_react107.default.createElement(DisplayProvider, null), /* @__PURE__ */ import_react107.default.createElement(HomeButton, null)))));
   };
-  render(/* @__PURE__ */ import_react108.default.createElement(ElectronicFlightBag, null));
+  render(/* @__PURE__ */ import_react107.default.createElement(ElectronicFlightBag, null));
 })();
 /*
 object-assign

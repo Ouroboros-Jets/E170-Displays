@@ -53,4 +53,4 @@ const MFD = (): JSX.Element => {
   }
 }
 
-render(MfdState ? <></> : <MFD />)
+render(<MFD />)
