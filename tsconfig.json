@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "incremental": true,
-    "target": "ESNext",
+    "target": "ES2017",
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "resolveJsonModule": true,

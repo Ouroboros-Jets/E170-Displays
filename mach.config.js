@@ -21,17 +21,16 @@ module.exports = {
     sassPlugin()
   ],
   instruments: [
-    reactInstrument('PrimaryFlightDisplay', undefined, false),
-    reactInstrument('RadioSelector', undefined, false),
-    reactInstrument('Clock', undefined, false),
-    reactInstrument('IntegratedElectronicStandby', undefined, false),
-    reactInstrument('EngineIndicatingAndCrewAlertingSystem', undefined, true),
-    reactInstrument('MultifunctionControlDisplay', undefined, false),
+    msfsAvionicsInstrument('PFD'),
+    msfsAvionicsInstrument('RadioSelector'),
+    msfsAvionicsInstrument('Clock'),
+    msfsAvionicsInstrument('IES'),
+    msfsAvionicsInstrument('EICAS'),
+    // reactInstrument('MultifunctionControlDisplay', undefined, false), most likely needs to me in MSFS framework too
     reactInstrument('MultifunctionDisplay', undefined, true),
-    reactInstrument('ElectronicFlightBag', undefined, true),
-    reactInstrument('DU-1310-2-PFD', undefined, true),
-    reactInstrument('DU-1310-2-MFD', undefined, true),
-    reactInstrument('Systems', undefined)
+    reactInstrument('ElectronicFlightBag', undefined, true) // only react instrument hopefully
+    // reactInstrument('DU-1310-2-PFD', undefined, true),
+    // reactInstrument('DU-1310-2-MFD', undefined, true),
   ]
 }
 
@@ -48,15 +47,16 @@ function reactInstrument(name, additionalImports, isInteractive) {
   }
 }
 
-function reactSystem(name, additionalImports) {
+function msfsAvionicsInstrument(name, folder = name) {
   return {
     name,
-    index: `Systems/src/${name}/index.tsx`,
+    index: `instruments/src/${folder}/instrument.tsx`,
     simulatorPackage: {
-      type: 'react',
-      isInteractive: false,
+      type: 'baseInstrument',
+      templateId: `E170_${name}`,
+      mountElementId: `${name}_CONTENT`,
       fileName: name.toLowerCase(),
-      imports: ['/JS/dataStorage.js', ...(additionalImports ?? [])]
+      imports: ['/JS/dataStorage.js']
     }
   }
 }
