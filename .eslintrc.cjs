@@ -33,6 +33,7 @@ module.exports = {
     '@typescript-eslint/strict-boolean-expressions': 'off',
     '@typescript-eslint/prefer-nullish-coalescing': 'off',
     'react/react-in-jsx-scope': 'off',
-    '@typescript-eslint/class-literal-property-style': 'off'
+    '@typescript-eslint/class-literal-property-style': 'off',
+    '@typescript-eslint/triple-slash-reference': 'off'
   }
 }
