@@ -1,24 +1,11 @@
 /// <reference types="@microsoft/msfs-types/Pages/VCockpit/Core/VCockpit" />
-import { FSComponent, DisplayComponent, type VNode } from '@microsoft/msfs-sdk'
-
+import { FSComponent } from '@microsoft/msfs-sdk'
+import { ClockRoot } from './ClockRoot/ClockRoot'
 import './index.scss'
 
-class ClockRoot extends DisplayComponent<any> {
-  public render(): VNode {
-    return (
-      <div>
-        <div>Primary Flight Display</div>
-        <div>Attitude Indicator</div>
-        <div>Heading Indicator</div>
-        <div>Altimeter</div>
-      </div>
-    )
-  }
-}
-
-class Clock extends BaseInstrument {
+class E170_Clock extends BaseInstrument {
   get templateID(): string {
-    return 'Clock'
+    return 'E170_Clock'
   }
 
   get IsGlassCockpit(): boolean {
@@ -32,8 +19,8 @@ class Clock extends BaseInstrument {
   public connectedCallback(): void {
     super.connectedCallback()
 
-    FSComponent.render(<ClockRoot />, document.getElementById('Clock-Root'))
+    FSComponent.render(<ClockRoot />, document.getElementById('Clock_CONTENT'))
   }
 }
 
-registerInstrument('clock-element', Clock)
+registerInstrument('clock-element', E170_Clock)

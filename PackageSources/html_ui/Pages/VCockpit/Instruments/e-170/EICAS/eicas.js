@@ -28593,15 +28593,17 @@
     }
   };
 
-  // instruments/src/EICAS/instrument.tsx
+  // instruments/src/EICAS/EICASRoot/EICASRoot.tsx
   var EICASRoot = class extends DisplayComponent {
     render() {
       return /* @__PURE__ */ FSComponent.buildComponent("div", null, /* @__PURE__ */ FSComponent.buildComponent("div", null, "Primary Flight Display"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Attitude Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Heading Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Altimeter"));
     }
   };
-  var EICAS = class extends BaseInstrument {
+
+  // instruments/src/EICAS/instrument.tsx
+  var E170_EICAS = class extends BaseInstrument {
     get templateID() {
-      return "EICAS";
+      return "E170_EICAS";
     }
     get IsGlassCockpit() {
       return true;
@@ -28610,9 +28612,11 @@
       return false;
     }
     connectedCallback() {
+      var _a, _b;
       super.connectedCallback();
-      FSComponent.render(/* @__PURE__ */ FSComponent.buildComponent(EICASRoot, null), document.getElementById("EICAS-Root"));
+      FSComponent.render(/* @__PURE__ */ FSComponent.buildComponent(EICASRoot, null), document.getElementById("EICAS_CONTENT"));
+      (_b = (_a = document.getElementById("EICAS_CONTENT")) == null ? void 0 : _a.querySelector(":scope > h1")) == null ? void 0 : _b.remove();
     }
   };
-  registerInstrument("eicas-element", EICAS);
+  registerInstrument("eicas-element", E170_EICAS);
 })();

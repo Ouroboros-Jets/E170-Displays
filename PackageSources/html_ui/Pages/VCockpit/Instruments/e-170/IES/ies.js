@@ -28593,15 +28593,17 @@
     }
   };
 
-  // instruments/src/IES/instrument.tsx
+  // instruments/src/IES/IESRoot/IESRoot.tsx
   var IESRoot = class extends DisplayComponent {
     render() {
       return /* @__PURE__ */ FSComponent.buildComponent("div", null, /* @__PURE__ */ FSComponent.buildComponent("div", null, "Primary Flight Display"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Attitude Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Heading Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Altimeter"));
     }
   };
-  var IES = class extends BaseInstrument {
+
+  // instruments/src/IES/instrument.tsx
+  var E170_IES = class extends BaseInstrument {
     get templateID() {
-      return "IES";
+      return "E170_IES";
     }
     get IsGlassCockpit() {
       return true;
@@ -28611,8 +28613,8 @@
     }
     connectedCallback() {
       super.connectedCallback();
-      FSComponent.render(/* @__PURE__ */ FSComponent.buildComponent(IESRoot, null), document.getElementById("IES-Root"));
+      FSComponent.render(/* @__PURE__ */ FSComponent.buildComponent(IESRoot, null), document.getElementById("IES_CONTENT"));
     }
   };
-  registerInstrument("ies-element", IES);
+  registerInstrument("ies-element", E170_IES);
 })();

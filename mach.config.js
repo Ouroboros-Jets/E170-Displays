@@ -56,7 +56,7 @@ function msfsAvionicsInstrument(name, folder = name) {
       templateId: `E170_${name}`,
       mountElementId: `${name}_CONTENT`,
       fileName: name.toLowerCase(),
-      imports: ['/JS/dataStorage.js']
+      imports: []
     }
   }
 }

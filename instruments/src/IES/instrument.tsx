@@ -1,23 +1,10 @@
 /// <reference types="@microsoft/msfs-types/Pages/VCockpit/Core/VCockpit" />
-import { FSComponent, DisplayComponent, type VNode } from '@microsoft/msfs-sdk'
-import './index.scss'
+import { FSComponent } from '@microsoft/msfs-sdk'
+import { IESRoot } from './IESRoot/IESRoot'
 
-class IESRoot extends DisplayComponent<any> {
-  public render(): VNode {
-    return (
-      <div>
-        <div>Primary Flight Display</div>
-        <div>Attitude Indicator</div>
-        <div>Heading Indicator</div>
-        <div>Altimeter</div>
-      </div>
-    )
-  }
-}
-
-class IES extends BaseInstrument {
+class E170_IES extends BaseInstrument {
   get templateID(): string {
-    return 'IES'
+    return 'E170_IES'
   }
 
   get IsGlassCockpit(): boolean {
@@ -31,8 +18,8 @@ class IES extends BaseInstrument {
   public connectedCallback(): void {
     super.connectedCallback()
 
-    FSComponent.render(<IESRoot />, document.getElementById('IES-Root'))
+    FSComponent.render(<IESRoot />, document.getElementById('IES_CONTENT'))
   }
 }
 
-registerInstrument('ies-element', IES)
+registerInstrument('ies-element', E170_IES)

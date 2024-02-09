@@ -1,24 +1,11 @@
 /// <reference types="@microsoft/msfs-types/Pages/VCockpit/Core/VCockpit" />
-import { FSComponent, DisplayComponent, type VNode } from '@microsoft/msfs-sdk'
-
+import { FSComponent } from '@microsoft/msfs-sdk'
+import { EICASRoot } from './EICASRoot/EICASRoot'
 import './index.scss'
 
-class EICASRoot extends DisplayComponent<any> {
-  public render(): VNode {
-    return (
-      <div>
-        <div>Primary Flight Display</div>
-        <div>Attitude Indicator</div>
-        <div>Heading Indicator</div>
-        <div>Altimeter</div>
-      </div>
-    )
-  }
-}
-
-class EICAS extends BaseInstrument {
+class E170_EICAS extends BaseInstrument {
   get templateID(): string {
-    return 'EICAS'
+    return 'E170_EICAS'
   }
 
   get IsGlassCockpit(): boolean {
@@ -32,8 +19,10 @@ class EICAS extends BaseInstrument {
   public connectedCallback(): void {
     super.connectedCallback()
 
-    FSComponent.render(<EICASRoot />, document.getElementById('EICAS-Root'))
+    FSComponent.render(<EICASRoot />, document.getElementById('EICAS_CONTENT'))
+
+    document.getElementById('EICAS_CONTENT')?.querySelector(':scope > h1')?.remove()
   }
 }
 
-registerInstrument('eicas-element', EICAS)
+registerInstrument('eicas-element', E170_EICAS)

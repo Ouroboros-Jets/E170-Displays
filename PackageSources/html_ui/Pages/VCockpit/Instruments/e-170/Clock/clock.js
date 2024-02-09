@@ -28593,15 +28593,17 @@
     }
   };
 
-  // instruments/src/Clock/instrument.tsx
+  // instruments/src/Clock/ClockRoot/ClockRoot.tsx
   var ClockRoot = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", null, /* @__PURE__ */ FSComponent.buildComponent("div", null, "Primary Flight Display"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Attitude Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Heading Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Altimeter"));
+      return /* @__PURE__ */ FSComponent.buildComponent("div", null, "the clock");
     }
   };
-  var Clock = class extends BaseInstrument {
+
+  // instruments/src/Clock/instrument.tsx
+  var E170_Clock = class extends BaseInstrument {
     get templateID() {
-      return "Clock";
+      return "E170_Clock";
     }
     get IsGlassCockpit() {
       return true;
@@ -28611,8 +28613,8 @@
     }
     connectedCallback() {
       super.connectedCallback();
-      FSComponent.render(/* @__PURE__ */ FSComponent.buildComponent(ClockRoot, null), document.getElementById("Clock-Root"));
+      FSComponent.render(/* @__PURE__ */ FSComponent.buildComponent(ClockRoot, null), document.getElementById("Clock_CONTENT"));
     }
   };
-  registerInstrument("clock-element", Clock);
+  registerInstrument("clock-element", E170_Clock);
 })();

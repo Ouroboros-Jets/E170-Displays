@@ -1,38 +1,20 @@
 /// <reference types="@microsoft/msfs-types/Pages/VCockpit/Core/VCockpit" />
-import { FSComponent, DisplayComponent, type VNode } from '@microsoft/msfs-sdk'
+import { FSComponent } from '@microsoft/msfs-sdk'
+import { PFDRoot } from './PFDRoot/PFDRoot'
 import './index.scss'
 
-class PFDRoot extends DisplayComponent<any> {
-  public render(): VNode {
-    return (
-      <div>
-        <div>Primary Flight Display</div>
-        <div>Attitude Indicator</div>
-        <div>Heading Indicator</div>
-        <div>Altimeter</div>
-      </div>
-    )
-  }
-}
-
-class PFD extends BaseInstrument {
+class E170_PFD extends BaseInstrument {
   get templateID(): string {
-    return 'PFD'
-  }
-
-  get IsGlassCockpit(): boolean {
-    return true
-  }
-
-  get IsInteractive(): boolean {
-    return false
+    return 'E170_PFD'
   }
 
   public connectedCallback(): void {
     super.connectedCallback()
 
-    FSComponent.render(<PFDRoot />, document.getElementById('PFD-Root'))
+    FSComponent.render(<PFDRoot />, document.getElementById('PFD_CONTENT'))
+
+    document.getElementById('PFD_CONTENT')?.querySelector(':scope > h1')?.remove()
   }
 }
 
-registerInstrument('pfd-element', PFD)
+registerInstrument('pfd-element', E170_PFD)

@@ -28593,26 +28593,24 @@
     }
   };
 
-  // instruments/src/PFD/instrument.tsx
+  // instruments/src/PFD/PFDRoot/PFDRoot.tsx
   var PFDRoot = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", null, /* @__PURE__ */ FSComponent.buildComponent("div", null, "Primary Flight Display"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Attitude Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Heading Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Altimeter"));
+      return /* @__PURE__ */ FSComponent.buildComponent("div", { id: "PFD-ROOT" }, /* @__PURE__ */ FSComponent.buildComponent("div", null, "Primary Flight Display"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Attitude Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Heading Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Altimeter"));
     }
   };
-  var PFD = class extends BaseInstrument {
+
+  // instruments/src/PFD/instrument.tsx
+  var E170_PFD = class extends BaseInstrument {
     get templateID() {
-      return "PFD";
-    }
-    get IsGlassCockpit() {
-      return true;
-    }
-    get IsInteractive() {
-      return false;
+      return "E170_PFD";
     }
     connectedCallback() {
+      var _a, _b;
       super.connectedCallback();
-      FSComponent.render(/* @__PURE__ */ FSComponent.buildComponent(PFDRoot, null), document.getElementById("PFD-Root"));
+      FSComponent.render(/* @__PURE__ */ FSComponent.buildComponent(PFDRoot, null), document.getElementById("PFD_CONTENT"));
+      (_b = (_a = document.getElementById("PFD_CONTENT")) == null ? void 0 : _a.querySelector(":scope > h1")) == null ? void 0 : _b.remove();
     }
   };
-  registerInstrument("pfd-element", PFD);
+  registerInstrument("pfd-element", E170_PFD);
 })();
