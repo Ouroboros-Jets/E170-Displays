@@ -3,6 +3,9 @@ import { FSComponent } from '@microsoft/msfs-sdk'
 import { PFDRoot } from './PFDRoot/PFDRoot'
 import './index.scss'
 
+const IsAce = Object.prototype.hasOwnProperty.call(window, 'ACE_ENGINE_HANDLE')
+const PFD_ID = 'PFD_CONTENT'
+
 class E170_PFD extends BaseInstrument {
   get templateID(): string {
     return 'E170_PFD'
@@ -11,10 +14,27 @@ class E170_PFD extends BaseInstrument {
   public connectedCallback(): void {
     super.connectedCallback()
 
-    FSComponent.render(<PFDRoot />, document.getElementById('PFD_CONTENT'))
+    FSComponent.render(<PFDRoot />, document.getElementById(PFD_ID))
 
-    document.getElementById('PFD_CONTENT')?.querySelector(':scope > h1')?.remove()
+    !IsAce && document.getElementById(PFD_ID)?.querySelector(':scope > h1')?.remove()
+  }
+
+  public Update(): void {
+    super.Update()
   }
 }
 
-registerInstrument('pfd-element', E170_PFD)
+if (IsAce) {
+  const instrument = new E170_PFD()
+
+  const msfsReactMountDiv = document.getElementById('MSFS_REACT_MOUNT')
+  if (msfsReactMountDiv) {
+    msfsReactMountDiv.id = PFD_ID
+  }
+  instrument.connectedCallback()
+  document.getElementById('ROOT_ELEMENT')?.addEventListener('update', () => {
+    instrument.Update()
+  })
+} else {
+  registerInstrument('pfd-element', E170_PFD)
+}

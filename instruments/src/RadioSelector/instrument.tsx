@@ -1,38 +1,40 @@
 /// <reference types="@microsoft/msfs-types/Pages/VCockpit/Core/VCockpit" />
-import { FSComponent, DisplayComponent, type VNode } from '@microsoft/msfs-sdk'
+import { FSComponent } from '@microsoft/msfs-sdk'
+import { RadioSelectorRoot } from './RadioSelectorRoot/RadioSelectorRoot'
 import './index.scss'
 
-class RadioSelectorRoot extends DisplayComponent<any> {
-  public render(): VNode {
-    return (
-      <div>
-        <div>Primary Flight Display</div>
-        <div>Attitude Indicator</div>
-        <div>Heading Indicator</div>
-        <div>Altimeter</div>
-      </div>
-    )
-  }
-}
+const IsAce = Object.prototype.hasOwnProperty.call(window, 'ACE_ENGINE_HANDLE')
+const RADIO_SELECTOR_ID = 'RadioSelector-Root'
 
 class RadioSelector extends BaseInstrument {
   get templateID(): string {
     return 'RadioSelector'
   }
 
-  get IsGlassCockpit(): boolean {
-    return true
-  }
-
-  get IsInteractive(): boolean {
-    return false
-  }
-
   public connectedCallback(): void {
     super.connectedCallback()
 
-    FSComponent.render(<RadioSelectorRoot />, document.getElementById('RadioSelector-Root'))
+    FSComponent.render(<RadioSelectorRoot />, document.getElementById(RADIO_SELECTOR_ID))
+
+    !IsAce && document.getElementById(RADIO_SELECTOR_ID)?.querySelector(':scope > h1')?.remove()
+  }
+
+  public Update(): void {
+    super.Update()
   }
 }
 
-registerInstrument('radioSelector-element', RadioSelector)
+if (IsAce) {
+  const instrument = new RadioSelector()
+
+  const msfsReactMountDiv = document.getElementById('MSFS_REACT_MOUNT')
+  if (msfsReactMountDiv) {
+    msfsReactMountDiv.id = RADIO_SELECTOR_ID
+  }
+  instrument.connectedCallback()
+  document.getElementById('ROOT_ELEMENT')?.addEventListener('update', () => {
+    instrument.Update()
+  })
+} else {
+  registerInstrument('radioSelector-element', RadioSelector)
+}

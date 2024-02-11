@@ -662,14 +662,14 @@
       this.bus.getSubscriber().on("event_bus_topic_first_sub").handle(handleSubscribedTopic);
     }
     tryMatchIndexedSubscribedTopic(topic) {
-      var _a;
+      var _a2;
       if (this.indexedSimVars.size === 0) {
         return;
       }
       let entry = this.indexedSimVars.get(topic);
       if (entry) {
         if (entry.defaultIndex !== null) {
-          const resolved = this.resolveIndexedSimVar(topic, entry, (_a = entry.defaultIndex) !== null && _a !== void 0 ? _a : 1);
+          const resolved = this.resolveIndexedSimVar(topic, entry, (_a2 = entry.defaultIndex) !== null && _a2 !== void 0 ? _a2 : 1);
           if (resolved !== void 0) {
             this.onTopicSubscribed(resolved);
           }
@@ -4182,36 +4182,36 @@
       return this.value;
     }
     setConsumer(consumer) {
-      var _a;
+      var _a2;
       if (this.isDestroyed) {
         return this;
       }
-      (_a = this.sub) === null || _a === void 0 ? void 0 : _a.destroy();
+      (_a2 = this.sub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       this.sub = consumer === null || consumer === void 0 ? void 0 : consumer.handle(this.consumerHandler, this._isPaused);
       return this;
     }
     pause() {
-      var _a;
+      var _a2;
       if (this._isPaused) {
         return this;
       }
-      (_a = this.sub) === null || _a === void 0 ? void 0 : _a.pause();
+      (_a2 = this.sub) === null || _a2 === void 0 ? void 0 : _a2.pause();
       this._isPaused = true;
       return this;
     }
     resume() {
-      var _a;
+      var _a2;
       if (!this._isPaused) {
         return this;
       }
       this._isPaused = false;
-      (_a = this.sub) === null || _a === void 0 ? void 0 : _a.resume(true);
+      (_a2 = this.sub) === null || _a2 === void 0 ? void 0 : _a2.resume(true);
       return this;
     }
     destroy() {
-      var _a;
+      var _a2;
       this.isDestroyed = true;
-      (_a = this.sub) === null || _a === void 0 ? void 0 : _a.destroy();
+      (_a2 = this.sub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
     }
     static create(consumer, initialValue) {
       return new ConsumerValue(consumer, initialValue);
@@ -4245,38 +4245,38 @@
       }
     }
     setConsumer(consumer) {
-      var _a;
+      var _a2;
       if (this.isDestroyed) {
         return this;
       }
-      (_a = this.consumerSub) === null || _a === void 0 ? void 0 : _a.destroy();
+      (_a2 = this.consumerSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       this.consumerSub = consumer === null || consumer === void 0 ? void 0 : consumer.handle(this.consumerHandler, this._isPaused);
       return this;
     }
     pause() {
-      var _a;
+      var _a2;
       if (this._isPaused) {
         return this;
       }
-      (_a = this.consumerSub) === null || _a === void 0 ? void 0 : _a.pause();
+      (_a2 = this.consumerSub) === null || _a2 === void 0 ? void 0 : _a2.pause();
       this._isPaused = true;
       return this;
     }
     resume() {
-      var _a;
+      var _a2;
       if (!this._isPaused) {
         return this;
       }
       this._isPaused = false;
-      (_a = this.consumerSub) === null || _a === void 0 ? void 0 : _a.resume(true);
+      (_a2 = this.consumerSub) === null || _a2 === void 0 ? void 0 : _a2.resume(true);
       return this;
     }
     get() {
       return this.value;
     }
     destroy() {
-      var _a;
-      (_a = this.consumerSub) === null || _a === void 0 ? void 0 : _a.destroy();
+      var _a2;
+      (_a2 = this.consumerSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       this.isDestroyed = true;
     }
   };
@@ -4313,8 +4313,8 @@
       this.onAttributesChanged();
     }
     onAttributesChanged() {
-      var _a;
-      if ((_a = window.parent) === null || _a === void 0 ? void 0 : _a.document.body.hasAttribute("gamestate")) {
+      var _a2;
+      if ((_a2 = window.parent) === null || _a2 === void 0 ? void 0 : _a2.document.body.hasAttribute("gamestate")) {
         const attribute = window.parent.document.body.getAttribute("gamestate");
         if (attribute !== null) {
           const state = GameState[attribute];
@@ -4336,8 +4336,8 @@
       this.gameState.set(void 0);
     }
     static get() {
-      var _a;
-      return ((_a = GameStateProvider.INSTANCE) !== null && _a !== void 0 ? _a : GameStateProvider.INSTANCE = new GameStateProvider()).gameState;
+      var _a2;
+      return ((_a2 = GameStateProvider.INSTANCE) !== null && _a2 !== void 0 ? _a2 : GameStateProvider.INSTANCE = new GameStateProvider()).gameState;
     }
   };
   var KeyEventManager = class {
@@ -6732,7 +6732,7 @@
   LerpLookupTable.tempBreakpoint = { key: 0 };
   var LerpVectorLookupTable = class {
     constructor(arg1, arg2) {
-      var _a, _b;
+      var _a2, _b;
       this.table = new SortedArray(LerpVectorLookupTable.BREAKPOINT_COMPARATOR);
       if (typeof arg1 === "number") {
         this._dimensionCount = isFinite(arg1) ? 0 : Math.max(0, arg1);
@@ -6742,7 +6742,7 @@
         let leastVectorLength = Infinity;
         for (let i = 0; i < arg1.length; i++) {
           leastBreakpointDimension = Math.min(leastBreakpointDimension, Math.max(arg1[i].length - 1, 0));
-          leastVectorLength = Math.min(leastVectorLength, (_b = (_a = arg1[i][0]) === null || _a === void 0 ? void 0 : _a.length) !== null && _b !== void 0 ? _b : 0);
+          leastVectorLength = Math.min(leastVectorLength, (_b = (_a2 = arg1[i][0]) === null || _a2 === void 0 ? void 0 : _a2.length) !== null && _b !== void 0 ? _b : 0);
         }
         this._dimensionCount = isFinite(leastBreakpointDimension) ? leastBreakpointDimension : 0;
         this._vectorLength = isFinite(leastVectorLength) ? leastVectorLength : 0;
@@ -7366,7 +7366,7 @@
       });
     }
     size(types) {
-      var _a, _b;
+      var _a2, _b;
       let size = 0;
       if (types === void 0) {
         for (const repo of this.repos.values()) {
@@ -7374,17 +7374,17 @@
         }
       } else {
         for (let i = 0; i < types.length; i++) {
-          size += (_b = (_a = this.repos.get(types[i])) === null || _a === void 0 ? void 0 : _a.size) !== null && _b !== void 0 ? _b : 0;
+          size += (_b = (_a2 = this.repos.get(types[i])) === null || _a2 === void 0 ? void 0 : _a2.size) !== null && _b !== void 0 ? _b : 0;
         }
       }
       return size;
     }
     get(icao) {
-      var _a;
+      var _a2;
       if (!ICAO.isFacility(icao)) {
         return void 0;
       }
-      return (_a = this.repos.get(ICAO.getFacilityType(icao))) === null || _a === void 0 ? void 0 : _a.get(icao);
+      return (_a2 = this.repos.get(ICAO.getFacilityType(icao))) === null || _a2 === void 0 ? void 0 : _a2.get(icao);
     }
     search(type, lat, lon, radius, arg5, out, filter) {
       if (type !== FacilityType.USR && type !== FacilityType.VIS) {
@@ -7420,14 +7420,14 @@
       this.pubSyncEvent({ type: FacilityRepositorySyncType.Remove, facs: facs.map((fac) => typeof fac === "object" ? fac.icao : fac) });
     }
     forEach(fn, types) {
-      var _a;
+      var _a2;
       if (types === void 0) {
         for (const repo of this.repos.values()) {
           repo.forEach(fn);
         }
       } else {
         for (let i = 0; i < types.length; i++) {
-          (_a = this.repos.get(types[i])) === null || _a === void 0 ? void 0 : _a.forEach(fn);
+          (_a2 = this.repos.get(types[i])) === null || _a2 === void 0 ? void 0 : _a2.forEach(fn);
         }
       }
     }
@@ -7587,8 +7587,8 @@
       }
     }
     static getRepository(bus) {
-      var _a;
-      return (_a = FacilityRepository.INSTANCE) !== null && _a !== void 0 ? _a : FacilityRepository.INSTANCE = new FacilityRepository(bus);
+      var _a2;
+      return (_a2 = FacilityRepository.INSTANCE) !== null && _a2 !== void 0 ? _a2 : FacilityRepository.INSTANCE = new FacilityRepository(bus);
     }
   };
   FacilityRepository.SYNC_TOPIC = "facilityrepo_sync";
@@ -7978,7 +7978,7 @@
       this.lods = this.processLods();
     }
     processLods() {
-      var _a;
+      var _a2;
       const lodShapes = [];
       const originalShapes = this.processShapes(this.facility.vectors);
       if (Array.isArray(this.facility.lods)) {
@@ -7988,7 +7988,7 @@
         }
       } else {
         let startIndex = 0;
-        if (this.lodDistanceThresholds[0] === 0 && ((_a = this.lodVectorCountTargets[0]) !== null && _a !== void 0 ? _a : 0) <= 0) {
+        if (this.lodDistanceThresholds[0] === 0 && ((_a2 = this.lodVectorCountTargets[0]) !== null && _a2 !== void 0 ? _a2 : 0) <= 0) {
           lodShapes.push(originalShapes);
           startIndex = 1;
         }
@@ -8147,14 +8147,14 @@
       }
     }
     computeAndInsertEdgeToQueue(distanceThreshold, shape, startIndex, endIndex, queue, edgeIndex) {
-      var _a;
+      var _a2;
       var _b;
       const start = shape[startIndex].end;
       const end = shape[endIndex - 1].end;
       const reference = start.equals(end) ? start : LodBoundary.geoCircleCache[0].setAsGreatCircle(start, end);
       const farthest = this.findFarthestVector(shape, startIndex + 1, endIndex - 1, reference);
       if (farthest.distance >= distanceThreshold) {
-        const edge = (_a = (_b = LodBoundary.edgeCache)[edgeIndex]) !== null && _a !== void 0 ? _a : _b[edgeIndex] = LodBoundary.createEdge();
+        const edge = (_a2 = (_b = LodBoundary.edgeCache)[edgeIndex]) !== null && _a2 !== void 0 ? _a2 : _b[edgeIndex] = LodBoundary.createEdge();
         edge.startIndex = startIndex;
         edge.endIndex = endIndex;
         edge.farthestVectorIndex = farthest.index;
@@ -8199,7 +8199,7 @@
       }
     }
     rebuildSimplifiedVectors(shape, retain, simplified) {
-      var _a;
+      var _a2;
       let lastRetained;
       const len = shape.length;
       for (let i = 0; i < len; i++) {
@@ -8215,7 +8215,7 @@
               if (currentVector.circle && !currentVector.circle.isGreatCircle()) {
                 simplified.push({ circle: GeoCircle.createGreatCircle(lastRetained.end, prevVector.end), end: prevVector.end });
                 simplified.push(LodBoundary.copyVector(currentVector));
-              } else if ((_a = currentVector.circle) === null || _a === void 0 ? void 0 : _a.isGreatCircle()) {
+              } else if ((_a2 = currentVector.circle) === null || _a2 === void 0 ? void 0 : _a2.isGreatCircle()) {
                 simplified.push({ circle: GeoCircle.createGreatCircle(lastRetained.end, currentVector.end), end: currentVector.end });
               } else {
                 simplified.push(LodBoundary.copyVector(currentVector));
@@ -8618,7 +8618,7 @@
       return speed * sinTheta * sign;
     }
     static resolveIngressToEgress(legCalc) {
-      var _a, _b, _c, _d, _e, _f;
+      var _a2, _b, _c, _d, _e, _f;
       var _g, _h, _j, _k, _l, _m;
       const vectors = legCalc.ingressToEgress;
       let vectorIndex = 0;
@@ -8637,7 +8637,7 @@
         if (ingressEndAlongVectorDistance < 1 - normalizedTolerance) {
           if (ingressEndAlongVectorDistance > normalizedTolerance) {
             ingressJoinVectorCircle.closest(ingressEnd, ingressEnd);
-            FlightPathUtils.setCircleVector((_a = vectors[_g = vectorIndex++]) !== null && _a !== void 0 ? _a : vectors[_g] = FlightPathUtils.createEmptyCircleVector(), ingressJoinVectorCircle, ingressEnd, ingressJoinVectorEnd, ingressJoinVector.flags);
+            FlightPathUtils.setCircleVector((_a2 = vectors[_g = vectorIndex++]) !== null && _a2 !== void 0 ? _a2 : vectors[_g] = FlightPathUtils.createEmptyCircleVector(), ingressJoinVectorCircle, ingressEnd, ingressJoinVectorEnd, ingressJoinVector.flags);
           } else {
             Object.assign((_b = vectors[_h = vectorIndex++]) !== null && _b !== void 0 ? _b : vectors[_h] = FlightPathUtils.createEmptyCircleVector(), ingressJoinVector);
           }
@@ -8690,8 +8690,8 @@
       return this.setFromCircle(vectors, index, circle, start, end, flags);
     }
     setFromCircle(vectors, index, circle, start, end, flags = 0) {
-      var _a;
-      const vector = ((_a = vectors[index]) === null || _a === void 0 ? void 0 : _a.vectorType) === "circle" ? vectors[index] : vectors[index] = FlightPathUtils.createEmptyCircleVector();
+      var _a2;
+      const vector = ((_a2 = vectors[index]) === null || _a2 === void 0 ? void 0 : _a2.vectorType) === "circle" ? vectors[index] : vectors[index] = FlightPathUtils.createEmptyCircleVector();
       return FlightPathUtils.setCircleVector(vector, circle, start, end, flags);
     }
   };
@@ -9453,9 +9453,9 @@
       return MagVar.magneticToTrue(leg.course, this.getLegMagVar(leg, point));
     }
     calculate(legs, calculateIndex, activeLegIndex, state, resolveIngressToEgress = true) {
-      var _a, _b, _c;
+      var _a2, _b, _c;
       var _d;
-      const calcs = (_a = (_d = legs[calculateIndex]).calculated) !== null && _a !== void 0 ? _a : _d.calculated = {
+      const calcs = (_a2 = (_d = legs[calculateIndex]).calculated) !== null && _a2 !== void 0 ? _a2 : _d.calculated = {
         courseMagVar: 0,
         startLat: void 0,
         startLon: void 0,
@@ -9533,7 +9533,7 @@
       leg.calculated.courseMagVar = terminatorPos === void 0 ? 0 : this.getLegMagVar(leg.leg, terminatorPos);
     }
     calculateVectors(legs, calculateIndex, activeLegIndex, state) {
-      var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _j;
       const leg = legs[calculateIndex].leg;
       const prevLeg = legs[calculateIndex - 1];
       const vectors = legs[calculateIndex].calculated.flightPath;
@@ -9559,7 +9559,7 @@
           vectorIndex += this.greatCircleBuilder.build(vectors, vectorIndex, midPoint, endPoint);
         } else {
           const startVec = startPoint.toCartesian(this.vec3Cache[0]);
-          const currentCourse = (_a = state.currentCourse) !== null && _a !== void 0 ? _a : startPoint.bearingTo(endPoint);
+          const currentCourse = (_a2 = state.currentCourse) !== null && _a2 !== void 0 ? _a2 : startPoint.bearingTo(endPoint);
           const startPath = this.geoCircleCache[0].setAsGreatCircle(startPoint, currentCourse);
           const startToEndPath = this.geoCircleCache[3].setAsGreatCircle(startVec, endVec);
           const isStartEqualToEnd = startPoint.equals(endPoint);
@@ -9757,7 +9757,7 @@
       this.procTurnBuilder = new ProcedureTurnBuilder();
     }
     computeTurns(legs, startIndex, count, desiredTurnRadius, desiredCourseReversalTurnRadius, desiredTurnAnticipationTurnRadius) {
-      var _a, _b, _c, _d;
+      var _a2, _b, _c, _d;
       const end = startIndex + count;
       let currentIndex = startIndex;
       while (currentIndex < end) {
@@ -9781,7 +9781,7 @@
             }
           }
         }
-        if (fromLegCalc && BitFlags.isAll((_b = (_a = fromLegCalc.egress[0]) === null || _a === void 0 ? void 0 : _a.flags) !== null && _b !== void 0 ? _b : 0, FlightPathVectorFlags.LegToLegTurn)) {
+        if (fromLegCalc && BitFlags.isAll((_b = (_a2 = fromLegCalc.egress[0]) === null || _a2 === void 0 ? void 0 : _a2.flags) !== null && _b !== void 0 ? _b : 0, FlightPathVectorFlags.LegToLegTurn)) {
           fromLegCalc.egress.length = 0;
           fromLegCalc.egressJoinIndex = -1;
         }
@@ -9793,7 +9793,7 @@
       }
     }
     computeTrackTrackTurn(legs, fromIndex, toIndex, fromTrack, toTrack, desiredTurnAnticipationTurnRadius, desiredCourseReversalTurnRadius, isRestrictedByPrevTurn, previousTanTheta) {
-      var _a;
+      var _a2;
       let lastComputedIndex = toIndex;
       const fromLegCalc = legs[fromIndex].calculated;
       const toLegCalc = legs[toIndex].calculated;
@@ -9830,7 +9830,7 @@
         }
       }
       if (toLegCalc.flightPath.length === 1 && (toLegCalc.egress.length === 0 || BitFlags.isAll(toLegCalc.egress[0].flags, FlightPathVectorFlags.LegToLegTurn))) {
-        const nextLegCalc = (_a = legs[toIndex + 1]) === null || _a === void 0 ? void 0 : _a.calculated;
+        const nextLegCalc = (_a2 = legs[toIndex + 1]) === null || _a2 === void 0 ? void 0 : _a2.calculated;
         const nextVector = nextLegCalc === null || nextLegCalc === void 0 ? void 0 : nextLegCalc.flightPath[0];
         if (nextVector && (nextLegCalc.ingress.length === 0 || BitFlags.isAll(nextLegCalc.ingress[0].flags, FlightPathVectorFlags.LegToLegTurn))) {
           let nextTurnRestrictedD;
@@ -9864,7 +9864,7 @@
       return lastComputedIndex;
     }
     computeTrackTrackCourseReversal(legs, fromIndex, toIndex, fromTrack, toTrack, fromTrackBearing, toTrackBearing, desiredTurnAnticipationTurnRadius, desiredCourseReversalTurnRadius) {
-      var _a;
+      var _a2;
       let lastComputedIndex = toIndex;
       const fromLegCalc = legs[fromIndex].calculated;
       const toLegCalc = legs[toIndex].calculated;
@@ -9873,7 +9873,7 @@
       fromLegCalc.egressJoinIndex = -1;
       let courseReversalEndDistance = UnitType.METER.convertTo(toLegCalc.flightPath[0].distance, UnitType.GA_RADIAN);
       if (toLegCalc.flightPath.length === 1 && (toLegCalc.egress.length === 0 || BitFlags.isAll(toLegCalc.egress[0].flags, FlightPathVectorFlags.LegToLegTurn))) {
-        const nextLegCalc = (_a = legs[toIndex + 1]) === null || _a === void 0 ? void 0 : _a.calculated;
+        const nextLegCalc = (_a2 = legs[toIndex + 1]) === null || _a2 === void 0 ? void 0 : _a2.calculated;
         const nextVector = nextLegCalc === null || nextLegCalc === void 0 ? void 0 : nextLegCalc.flightPath[0];
         if (nextVector && (nextLegCalc.ingress.length === 0 || BitFlags.isAll(nextLegCalc.ingress[0].flags, FlightPathVectorFlags.LegToLegTurn))) {
           if (!FlightPathUtils.isVectorGreatCircle(nextVector)) {
@@ -9896,7 +9896,7 @@
       return lastComputedIndex;
     }
     computeArcTrackTurn(legs, fromIndex, toIndex, arc, track, isArcFirst, desiredTurnRadius) {
-      var _a, _b;
+      var _a2, _b;
       var _c, _d;
       const fromLeg = legs[fromIndex];
       const toLeg = legs[toIndex];
@@ -10151,7 +10151,7 @@
         const intersectionTurnStartOffset = FlightPathTurnCalculator.getAlongCircleOffset(fromVectorPath, turnStart, intersectionVec);
         const intersectionTurnEndOffset = FlightPathTurnCalculator.getAlongCircleOffset(toVectorPath, intersectionVec, turnEnd);
         if (intersectionTurnStartOffset > intersectionFromVectorEndOffset + 1e-5) {
-          Object.assign((_a = (_c = fromLegCalc.egress)[1]) !== null && _a !== void 0 ? _a : _c[1] = FlightPathUtils.createEmptyCircleVector(), fromLegCalc.egress[0]);
+          Object.assign((_a2 = (_c = fromLegCalc.egress)[1]) !== null && _a2 !== void 0 ? _a2 : _c[1] = FlightPathUtils.createEmptyCircleVector(), fromLegCalc.egress[0]);
           FlightPathUtils.setCircleVector(fromLegCalc.egress[0], fromVectorPath, fromVectorEndPoint, turnStart, fromLegCalc.egress[0].flags);
           fromLegCalc.egress.length = 2;
         } else {
@@ -10184,9 +10184,9 @@
       this.setAnticipatedTurnIngress(toLegCalc, circle, middle, end, setIngressEgressArrayLengths);
     }
     setAnticipatedTurnEgress(legCalc, circle, start, end, setEgressArrayLength = true) {
-      var _a;
+      var _a2;
       var _b;
-      const egress = (_a = (_b = legCalc.egress)[0]) !== null && _a !== void 0 ? _a : _b[0] = FlightPathUtils.createEmptyCircleVector();
+      const egress = (_a2 = (_b = legCalc.egress)[0]) !== null && _a2 !== void 0 ? _a2 : _b[0] = FlightPathUtils.createEmptyCircleVector();
       if (setEgressArrayLength) {
         legCalc.egress.length = 1;
       }
@@ -10195,9 +10195,9 @@
       FlightPathUtils.setCircleVector(egress, circle, start, end, egressFlags);
     }
     setAnticipatedTurnIngress(legCalc, circle, start, end, setIngressArrayLength = true) {
-      var _a;
+      var _a2;
       var _b;
-      const ingress = (_a = (_b = legCalc.ingress)[0]) !== null && _a !== void 0 ? _a : _b[0] = FlightPathUtils.createEmptyCircleVector();
+      const ingress = (_a2 = (_b = legCalc.ingress)[0]) !== null && _a2 !== void 0 ? _a2 : _b[0] = FlightPathUtils.createEmptyCircleVector();
       if (setIngressArrayLength) {
         legCalc.ingress.length = 1;
       }
@@ -10483,7 +10483,7 @@
       return this._tryGetLeg(arg1, arg2);
     }
     _tryGetLeg(arg1, arg2) {
-      var _a, _b;
+      var _a2, _b;
       if (arg2 === void 0) {
         const legIndex = arg1;
         for (const segment of this.segments()) {
@@ -10495,7 +10495,7 @@
       } else {
         const segmentIndex = arg1;
         const segmentLegIndex = arg2;
-        return (_b = (_a = this.planSegments[segmentIndex]) === null || _a === void 0 ? void 0 : _a.legs[segmentLegIndex]) !== null && _b !== void 0 ? _b : null;
+        return (_b = (_a2 = this.planSegments[segmentIndex]) === null || _a2 === void 0 ? void 0 : _a2.legs[segmentLegIndex]) !== null && _b !== void 0 ? _b : null;
       }
     }
     removeLeg(segmentIndex, segmentLegIndex, notify = true) {
@@ -10648,12 +10648,12 @@
       return globalLegIndex - this.getSegment(segmentIndex).offset;
     }
     getPrevLeg(segmentIndex, legIndex) {
-      var _a, _b;
+      var _a2, _b;
       if (segmentIndex < 0) {
         return null;
       }
       segmentIndex = Math.min(segmentIndex, this.planSegments.length);
-      legIndex = Math.min(legIndex, (_b = (_a = this.planSegments[segmentIndex]) === null || _a === void 0 ? void 0 : _a.legs.length) !== null && _b !== void 0 ? _b : 0);
+      legIndex = Math.min(legIndex, (_b = (_a2 = this.planSegments[segmentIndex]) === null || _a2 === void 0 ? void 0 : _a2.legs.length) !== null && _b !== void 0 ? _b : 0);
       let segment = this.planSegments[segmentIndex];
       let leg = segment === null || segment === void 0 ? void 0 : segment.legs[legIndex - 1];
       while (!leg && --segmentIndex >= 0) {
@@ -11072,7 +11072,7 @@
       this._location.set(this.getWaypointLocation(leg, distanceFromEnd, VNavWaypoint.geoPointCache[0]));
     }
     getWaypointLocation(leg, distanceFromEnd, out) {
-      var _a, _b;
+      var _a2, _b;
       if (leg.calculated !== void 0) {
         const vectors = [...leg.calculated.ingress, ...leg.calculated.ingressToEgress, ...leg.calculated.egress];
         let vectorIndex = vectors.length - 1;
@@ -11090,7 +11090,7 @@
         if (vectors.length > 0) {
           out.set(vectors[0].startLat, vectors[0].startLon);
         } else {
-          out.set((_a = leg.calculated.endLat) !== null && _a !== void 0 ? _a : 0, (_b = leg.calculated.endLon) !== null && _b !== void 0 ? _b : 0);
+          out.set((_a2 = leg.calculated.endLat) !== null && _a2 !== void 0 ? _a2 : 0, (_b = leg.calculated.endLon) !== null && _b !== void 0 ? _b : 0);
         }
       }
       return out;
@@ -11121,8 +11121,8 @@
       }
     }
     static getCache(bus) {
-      var _a;
-      return (_a = DefaultFacilityWaypointCache.INSTANCE) !== null && _a !== void 0 ? _a : DefaultFacilityWaypointCache.INSTANCE = new DefaultFacilityWaypointCache(bus, 1e3);
+      var _a2;
+      return (_a2 = DefaultFacilityWaypointCache.INSTANCE) !== null && _a2 !== void 0 ? _a2 : DefaultFacilityWaypointCache.INSTANCE = new DefaultFacilityWaypointCache(bus, 1e3);
     }
     static getFacilityKey(facility) {
       if (FacilityUtils.isFacilityType(facility, FacilityType.Intersection) && ICAO.getFacilityType(facility.icao) !== FacilityType.Intersection) {
@@ -11133,8 +11133,8 @@
   };
   var DefaultLodBoundaryCache = class {
     static getCache() {
-      var _a;
-      return (_a = DefaultLodBoundaryCache.INSTANCE) !== null && _a !== void 0 ? _a : DefaultLodBoundaryCache.INSTANCE = new LodBoundaryCache(DefaultLodBoundaryCache.SIZE, DefaultLodBoundaryCache.DISTANCE_THRESHOLDS, DefaultLodBoundaryCache.VECTOR_COUNT_TARGETS);
+      var _a2;
+      return (_a2 = DefaultLodBoundaryCache.INSTANCE) !== null && _a2 !== void 0 ? _a2 : DefaultLodBoundaryCache.INSTANCE = new LodBoundaryCache(DefaultLodBoundaryCache.SIZE, DefaultLodBoundaryCache.DISTANCE_THRESHOLDS, DefaultLodBoundaryCache.VECTOR_COUNT_TARGETS);
     }
   };
   DefaultLodBoundaryCache.SIZE = 500;
@@ -12604,7 +12604,7 @@
       return this.previousError;
     }
     getOutput(deltaTime, error) {
-      var _a;
+      var _a2;
       const p = this.kP * error;
       if (this.previousError !== void 0 && Math.sign(error) === Math.sign(this.previousError)) {
         this.integral += (error * deltaTime + deltaTime * (error - this.previousError) / 2) * this.kI;
@@ -12613,7 +12613,7 @@
         this.integral = 0;
       }
       const i = this.integral;
-      const d = deltaTime === 0 ? 0 : this.kD * ((error - ((_a = this.previousError) !== null && _a !== void 0 ? _a : error)) / deltaTime);
+      const d = deltaTime === 0 ? 0 : this.kD * ((error - ((_a2 = this.previousError) !== null && _a2 !== void 0 ? _a2 : error)) / deltaTime);
       const output = PidController.clamp(p + i + d, this.maxOut, this.minOut);
       this.previousError = error;
       this.previousOutput = output;
@@ -12636,8 +12636,8 @@
       this.queuedConsumers = new SortedArray((a, b) => a.priority - b.priority);
     }
     claim(consumer) {
-      var _a;
-      const consumerToDisplace = (_a = this.pendingConsumer) !== null && _a !== void 0 ? _a : this.assignedConsumer;
+      var _a2;
+      const consumerToDisplace = (_a2 = this.pendingConsumer) !== null && _a2 !== void 0 ? _a2 : this.assignedConsumer;
       if (consumerToDisplace === consumer) {
         return;
       }
@@ -12670,7 +12670,7 @@
       this.queuedConsumers.insert(consumer);
     }
     forfeit(consumer) {
-      var _a;
+      var _a2;
       if (this.pendingConsumer === consumer) {
         this.pendingConsumer = null;
         return;
@@ -12679,7 +12679,7 @@
         this.queuedConsumers.remove(consumer);
         return;
       }
-      const next = (_a = this.queuedConsumers.pop()) !== null && _a !== void 0 ? _a : null;
+      const next = (_a2 = this.queuedConsumers.pop()) !== null && _a2 !== void 0 ? _a2 : null;
       this.pendingConsumer = next;
       this.assignedConsumer = null;
       consumer.onCeded(this.resource);
@@ -12893,10 +12893,10 @@
       suffixedIds.add(suffixedId);
     }
     createQueuedAlert(definition, activation) {
-      var _a, _b, _c, _d, _e;
+      var _a2, _b, _c, _d, _e;
       return {
         definition,
-        id: (_a = activation === null || activation === void 0 ? void 0 : activation.alias) !== null && _a !== void 0 ? _a : definition.uuid,
+        id: (_a2 = activation === null || activation === void 0 ? void 0 : activation.alias) !== null && _a2 !== void 0 ? _a2 : definition.uuid,
         repeat: (_b = activation === null || activation === void 0 ? void 0 : activation.repeat) !== null && _b !== void 0 ? _b : definition.repeat,
         packet: {
           key: this.queueToPacketKeyMap.get(definition.queue),
@@ -12908,9 +12908,9 @@
       };
     }
     queueAlert(alert) {
-      var _a;
+      var _a2;
       const queueName = alert.definition.queue;
-      const queueEntry = (_a = this.queues.get(queueName)) !== null && _a !== void 0 ? _a : this.createQueue(queueName);
+      const queueEntry = (_a2 = this.queues.get(queueName)) !== null && _a2 !== void 0 ? _a2 : this.createQueue(queueName);
       queueEntry.queue.insert(alert);
       if (this.isSoundServerInit) {
         const playing = this.playing.get(queueName);
@@ -12941,12 +12941,12 @@
       }
     }
     deactivateAlert(id) {
-      var _a;
+      var _a2;
       const deactivatedId = this.deactivateSuffix(id);
       if (deactivatedId === void 0) {
         return;
       }
-      const deactivatedUuid = (_a = this.activeAliasToUuid.get(deactivatedId)) !== null && _a !== void 0 ? _a : deactivatedId;
+      const deactivatedUuid = (_a2 = this.activeAliasToUuid.get(deactivatedId)) !== null && _a2 !== void 0 ? _a2 : deactivatedId;
       if (deactivatedUuid !== deactivatedId) {
         this.activeAliasToUuid.delete(deactivatedId);
       }
@@ -12979,12 +12979,12 @@
       }
     }
     untriggerAlert(uuid) {
-      var _a;
+      var _a2;
       const untriggeredId = this.untriggerSuffix(uuid);
       if (untriggeredId === void 0) {
         return;
       }
-      const untriggeredUuid = (_a = this.triggeredAliasToUuid.get(untriggeredId)) !== null && _a !== void 0 ? _a : untriggeredId;
+      const untriggeredUuid = (_a2 = this.triggeredAliasToUuid.get(untriggeredId)) !== null && _a2 !== void 0 ? _a2 : untriggeredId;
       if (untriggeredUuid !== untriggeredId) {
         this.triggeredAliasToUuid.delete(untriggeredId);
       }
@@ -13017,13 +13017,13 @@
       }
     }
     killAlert(uuid) {
-      var _a, _b;
+      var _a2, _b;
       const deactivatedId = this.deactivateSuffix(uuid);
       const untriggeredId = this.untriggerSuffix(uuid);
       let deactivatedUuid = void 0;
       let untriggeredUuid = void 0;
       if (deactivatedId !== void 0) {
-        deactivatedUuid = (_a = this.activeAliasToUuid.get(deactivatedId)) !== null && _a !== void 0 ? _a : deactivatedId;
+        deactivatedUuid = (_a2 = this.activeAliasToUuid.get(deactivatedId)) !== null && _a2 !== void 0 ? _a2 : deactivatedId;
         if (deactivatedUuid !== deactivatedId) {
           this.activeAliasToUuid.delete(deactivatedId);
         }
@@ -13243,7 +13243,7 @@
       this.queuePacket(packet);
     }
     queuePacket(packet) {
-      var _a;
+      var _a2;
       if (!this.isAwake) {
         return;
       }
@@ -13253,7 +13253,7 @@
         sequence,
         continuous: packet.continuous,
         currentIndexPlaying: 0,
-        timeout: (_a = packet.timeout) !== null && _a !== void 0 ? _a : SoundServer.DEFAULT_TIMEOUT,
+        timeout: (_a2 = packet.timeout) !== null && _a2 !== void 0 ? _a2 : SoundServer.DEFAULT_TIMEOUT,
         alive: true,
         timer: new DebounceTimer(),
         timeoutCallback: () => {
@@ -13466,8 +13466,8 @@
       this.parent = parent;
     }
     render() {
-      var _a;
-      const children = (_a = this.props.children) !== null && _a !== void 0 ? _a : [];
+      var _a2;
+      const children = (_a2 = this.props.children) !== null && _a2 !== void 0 ? _a2 : [];
       return FSComponent.buildComponent(FSComponent.Fragment, this.props, ...children);
     }
   };
@@ -13597,7 +13597,7 @@
           const pluginSystem = window._pluginSystem;
           try {
             instance = type(props);
-          } catch (_a) {
+          } catch (_a2) {
             let pluginInstance = void 0;
             if (pluginSystem !== void 0) {
               pluginInstance = pluginSystem.onComponentCreating(type, props);
@@ -13730,12 +13730,12 @@
     }
     FSComponent2.render = render;
     function insertNode(node, position, element) {
-      var _a, _b, _c, _d, _e, _f;
+      var _a2, _b, _c, _d, _e, _f;
       if (node.instance instanceof HTMLElement || node.instance instanceof SVGElement) {
         switch (position) {
           case RenderPosition.In:
             element.appendChild(node.instance);
-            node.root = (_a = element.lastChild) !== null && _a !== void 0 ? _a : void 0;
+            node.root = (_a2 = element.lastChild) !== null && _a2 !== void 0 ? _a2 : void 0;
             break;
           case RenderPosition.Before:
             element.insertAdjacentElement("beforebegin", node.instance);
@@ -13924,7 +13924,7 @@
   var Fragment = FSComponent.Fragment;
   var BingComponent = class extends DisplayComponent {
     constructor() {
-      var _a, _b, _c, _d, _e, _f, _g, _h;
+      var _a2, _b, _c, _d, _e, _f, _g, _h;
       super(...arguments);
       this.modeFlags = this.props.mode === EBingMode.HORIZON ? 4 : 0;
       this.isListenerRegistered = false;
@@ -13935,7 +13935,7 @@
       this.isDestroyed = false;
       this.pos = new LatLong(0, 0);
       this.radius = 10;
-      this.resolution = (_a = this.props.resolution) !== null && _a !== void 0 ? _a : Vec2Subject.create(Vec2Math.create(BingComponent.DEFAULT_RESOLUTION, BingComponent.DEFAULT_RESOLUTION));
+      this.resolution = (_a2 = this.props.resolution) !== null && _a2 !== void 0 ? _a2 : Vec2Subject.create(Vec2Math.create(BingComponent.DEFAULT_RESOLUTION, BingComponent.DEFAULT_RESOLUTION));
       this.earthColors = (_b = this.props.earthColors) !== null && _b !== void 0 ? _b : ArraySubject.create(ArrayUtils.create(2, () => BingComponent.hexaToRGBColor("#000000")));
       this.earthColorsElevationRange = (_c = this.props.earthColorsElevationRange) !== null && _c !== void 0 ? _c : Vec2Subject.create(Vec2Math.create(0, 3e4));
       this.skyColor = (_d = this.props.skyColor) !== null && _d !== void 0 ? _d : Subject.create(BingComponent.hexaToRGBColor("#000000"));
@@ -14069,12 +14069,12 @@
         this.registerListener();
       } else {
         this.gameStateSub = gameStateSubscribable.sub((state) => {
-          var _a;
+          var _a2;
           if (this.isDestroyed) {
             return;
           }
           if (state === GameState.briefing || state === GameState.ingame) {
-            (_a = this.gameStateSub) === null || _a === void 0 ? void 0 : _a.destroy();
+            (_a2 = this.gameStateSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
             this.registerListener();
           }
         });
@@ -14082,8 +14082,8 @@
       window.addEventListener("OnDestroy", this.destroy.bind(this));
     }
     registerListener() {
-      var _a;
-      if (((_a = this.props.delay) !== null && _a !== void 0 ? _a : 0) > 0) {
+      var _a2;
+      if (((_a2 = this.props.delay) !== null && _a2 !== void 0 ? _a2 : 0) > 0) {
         setTimeout(() => {
           if (this.isDestroyed) {
             return;
@@ -14104,7 +14104,7 @@
       this.mapListener.trigger("JS_BIND_BINGMAP", this.props.id, this.modeFlags);
     }
     wake() {
-      var _a, _b, _c, _d, _e, _f, _g, _h;
+      var _a2, _b, _c, _d, _e, _f, _g, _h;
       this._isAwake = true;
       if (!this._isBound) {
         return;
@@ -14113,7 +14113,7 @@
       if (this.modeFlags !== 4) {
         this.setCurrentMapParamsTimer = setInterval(this.setCurrentMapParams, 200);
       }
-      (_a = this.earthColorsSub) === null || _a === void 0 ? void 0 : _a.resume(true);
+      (_a2 = this.earthColorsSub) === null || _a2 === void 0 ? void 0 : _a2.resume(true);
       (_b = this.earthColorsElevationRangeSub) === null || _b === void 0 ? void 0 : _b.resume(true);
       (_c = this.skyColorSub) === null || _c === void 0 ? void 0 : _c.resume(true);
       (_d = this.referenceSub) === null || _d === void 0 ? void 0 : _d.resume(true);
@@ -14123,7 +14123,7 @@
       (_h = this.isoLinesSub) === null || _h === void 0 ? void 0 : _h.resume(true);
     }
     sleep() {
-      var _a, _b, _c, _d, _e, _f, _g, _h;
+      var _a2, _b, _c, _d, _e, _f, _g, _h;
       this._isAwake = false;
       if (!this._isBound) {
         return;
@@ -14131,7 +14131,7 @@
       if (this.setCurrentMapParamsTimer !== null) {
         clearInterval(this.setCurrentMapParamsTimer);
       }
-      (_a = this.earthColorsSub) === null || _a === void 0 ? void 0 : _a.pause();
+      (_a2 = this.earthColorsSub) === null || _a2 === void 0 ? void 0 : _a2.pause();
       (_b = this.earthColorsElevationRangeSub) === null || _b === void 0 ? void 0 : _b.pause();
       (_c = this.skyColorSub) === null || _c === void 0 ? void 0 : _c.pause();
       (_d = this.referenceSub) === null || _d === void 0 ? void 0 : _d.pause();
@@ -14152,17 +14152,17 @@
       }
     }
     render() {
-      var _a;
-      return FSComponent.buildComponent("img", { ref: this.imgRef, src: "", style: "position: absolute; left: 0; top: 0; width: 100%; height: 100%;", class: (_a = this.props.class) !== null && _a !== void 0 ? _a : "" });
+      var _a2;
+      return FSComponent.buildComponent("img", { ref: this.imgRef, src: "", style: "position: absolute; left: 0; top: 0; width: 100%; height: 100%;", class: (_a2 = this.props.class) !== null && _a2 !== void 0 ? _a2 : "" });
     }
     destroy() {
-      var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
       this.isDestroyed = true;
       this._isBound = false;
       if (this.setCurrentMapParamsTimer !== null) {
         clearInterval(this.setCurrentMapParamsTimer);
       }
-      (_a = this.gameStateSub) === null || _a === void 0 ? void 0 : _a.destroy();
+      (_a2 = this.gameStateSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       (_b = this.earthColorsSub) === null || _b === void 0 ? void 0 : _b.destroy();
       (_c = this.earthColorsElevationRangeSub) === null || _c === void 0 ? void 0 : _c.destroy();
       (_d = this.skyColorSub) === null || _d === void 0 ? void 0 : _d.destroy();
@@ -14375,12 +14375,12 @@
       return str.padStart(decimalIndex < 0 ? maxLength : str.length - decimalIndex + maxLength, fillString);
     }
     render() {
-      var _a;
-      return FSComponent.buildComponent("div", { class: (_a = this.props.class) !== null && _a !== void 0 ? _a : "", style: "white-space: nowrap;" }, this.text);
+      var _a2;
+      return FSComponent.buildComponent("div", { class: (_a2 = this.props.class) !== null && _a2 !== void 0 ? _a2 : "", style: "white-space: nowrap;" }, this.text);
     }
     destroy() {
-      var _a;
-      (_a = this.valueSub) === null || _a === void 0 ? void 0 : _a.destroy();
+      var _a2;
+      (_a2 = this.valueSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
     }
   };
   DurationDisplay.DEFAULT_OPTIONS = {
@@ -14541,10 +14541,10 @@
       this.perspectiveTransform.setCameraRotation(this.planeTransform).setSurfacePosition(this.surfacePos);
     }
     set(parameters) {
-      var _a, _b, _c, _d, _e, _f, _g;
+      var _a2, _b, _c, _d, _e, _f, _g;
       this.storeParameters(this.oldParameters);
       parameters.position !== void 0 && this.position.set(parameters.position);
-      this.altitude = (_a = parameters.altitude) !== null && _a !== void 0 ? _a : this.altitude;
+      this.altitude = (_a2 = parameters.altitude) !== null && _a2 !== void 0 ? _a2 : this.altitude;
       this.heading = (_b = parameters.heading) !== null && _b !== void 0 ? _b : this.heading;
       this.pitch = (_c = parameters.pitch) !== null && _c !== void 0 ? _c : this.pitch;
       this.roll = (_d = parameters.roll) !== null && _d !== void 0 ? _d : this.roll;
@@ -15076,7 +15076,7 @@
   MapProjection.vec3Cache = [Vec3Math.create()];
   var MapComponent = class extends DisplayComponent {
     constructor(props) {
-      var _a;
+      var _a2;
       super(props);
       this.layerEntries = [];
       this.lastUpdateTime = 0;
@@ -15087,7 +15087,7 @@
       if (this.props.projection !== void 0) {
         this.props.projection.set({ projectedSize: new Float64Array(initialSize) });
       }
-      this.mapProjection = (_a = this.props.projection) !== null && _a !== void 0 ? _a : new MapProjection(initialSize[0], initialSize[1]);
+      this.mapProjection = (_a2 = this.props.projection) !== null && _a2 !== void 0 ? _a2 : new MapProjection(initialSize[0], initialSize[1]);
     }
     getProjectedSize() {
       return this.mapProjection.getProjectedSize();
@@ -15109,14 +15109,14 @@
       this._isAwake ? this.onWake() : this.onSleep();
     }
     onAfterRender(thisNode) {
-      var _a;
+      var _a2;
       this.mapProjection.addChangeListener(this.onMapProjectionChanged.bind(this));
       this.projectedSizeSub = this.projectedSize.sub((size) => {
         this.mapProjection.set({ projectedSize: size });
       });
-      (_a = this.props.updateFreq) === null || _a === void 0 ? void 0 : _a.sub((freq) => {
-        var _a2;
-        (_a2 = this.updateCycleSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
+      (_a2 = this.props.updateFreq) === null || _a2 === void 0 ? void 0 : _a2.sub((freq) => {
+        var _a3;
+        (_a3 = this.updateCycleSub) === null || _a3 === void 0 ? void 0 : _a3.destroy();
         this.updateCycleSub = this.props.bus.getSubscriber().on("realTime").whenChanged().atFrequency(freq).handle(this.updateCycleHandler);
       }, true);
       this.attachLayers(thisNode);
@@ -15193,9 +15193,9 @@
       }
     }
     destroy() {
-      var _a, _b;
+      var _a2, _b;
       super.destroy();
-      (_a = this.updateCycleSub) === null || _a === void 0 ? void 0 : _a.destroy();
+      (_a2 = this.updateCycleSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       (_b = this.projectedSizeSub) === null || _b === void 0 ? void 0 : _b.destroy();
       const len = this.layerEntries.length;
       for (let i = 0; i < len; i++) {
@@ -15210,8 +15210,8 @@
       this.lastUpdated = 0;
     }
     attach() {
-      var _a, _b;
-      (_a = this.updateFreqSub) === null || _a === void 0 ? void 0 : _a.destroy();
+      var _a2, _b;
+      (_a2 = this.updateFreqSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       this.updateFreqSub = (_b = this.layer.props.updateFreq) === null || _b === void 0 ? void 0 : _b.sub((freq) => {
         const clamped = Math.max(0, freq);
         this.updatePeriod = clamped === 0 ? 0 : 1e3 / clamped;
@@ -15225,8 +15225,8 @@
       }
     }
     detach() {
-      var _a;
-      (_a = this.updateFreqSub) === null || _a === void 0 ? void 0 : _a.destroy();
+      var _a2;
+      (_a2 = this.updateFreqSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       this.layer.onDetached();
     }
     destroy() {
@@ -15255,10 +15255,10 @@
   };
   var AbstractMapTextLabel = class {
     constructor(text, priority, options) {
-      var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
       this.text = SubscribableUtils.toSubscribable(text, true);
       this.priority = SubscribableUtils.toSubscribable(priority, true);
-      this.anchor = SubscribableUtils.toSubscribable((_a = options === null || options === void 0 ? void 0 : options.anchor) !== null && _a !== void 0 ? _a : Vec2Math.create(), true);
+      this.anchor = SubscribableUtils.toSubscribable((_a2 = options === null || options === void 0 ? void 0 : options.anchor) !== null && _a2 !== void 0 ? _a2 : Vec2Math.create(), true);
       this.font = SubscribableUtils.toSubscribable((_b = options === null || options === void 0 ? void 0 : options.font) !== null && _b !== void 0 ? _b : "", true);
       this.fontSize = SubscribableUtils.toSubscribable((_c = options === null || options === void 0 ? void 0 : options.fontSize) !== null && _c !== void 0 ? _c : 10, true);
       this.fontStr = MappedSubject.create(([s, f]) => {
@@ -15357,10 +15357,10 @@
   AbstractMapTextLabel.tempVec2 = new Float64Array(2);
   var MapLocationTextLabel = class extends AbstractMapTextLabel {
     constructor(text, priority, location, options) {
-      var _a;
+      var _a2;
       super(text, priority, options);
       this.location = SubscribableUtils.toSubscribable(location, true);
-      this.offset = SubscribableUtils.toSubscribable((_a = options === null || options === void 0 ? void 0 : options.offset) !== null && _a !== void 0 ? _a : Vec2Math.create(), true);
+      this.offset = SubscribableUtils.toSubscribable((_a2 = options === null || options === void 0 ? void 0 : options.offset) !== null && _a2 !== void 0 ? _a2 : Vec2Math.create(), true);
     }
     getPosition(mapProjection, out) {
       mapProjection.project(this.location.get(), out);
@@ -15529,11 +15529,11 @@
   };
   var AbstractMapWaypointIcon = class {
     constructor(waypoint, priority, size, options) {
-      var _a, _b;
+      var _a2, _b;
       this.waypoint = waypoint;
       this.priority = SubscribableUtils.toSubscribable(priority, true);
       this.size = SubscribableUtils.toSubscribable(size, true);
-      this.anchor = SubscribableUtils.toSubscribable((_a = options === null || options === void 0 ? void 0 : options.anchor) !== null && _a !== void 0 ? _a : Vec2Math.create(0.5, 0.5), true);
+      this.anchor = SubscribableUtils.toSubscribable((_a2 = options === null || options === void 0 ? void 0 : options.anchor) !== null && _a2 !== void 0 ? _a2 : Vec2Math.create(0.5, 0.5), true);
       this.offset = SubscribableUtils.toSubscribable((_b = options === null || options === void 0 ? void 0 : options.offset) !== null && _b !== void 0 ? _b : Vec2Math.create(), true);
     }
     draw(context, mapProjection) {
@@ -15665,7 +15665,7 @@
       this.toCleanUp.add(entry);
     }
     update(mapProjection) {
-      var _a;
+      var _a2;
       this.toCleanUp.forEach((entry) => {
         entry.destroy();
       });
@@ -15689,14 +15689,14 @@
       for (let i = 0; i < len2; i++) {
         const entry = entriesToDrawIcon[i];
         const icon = entry.icon;
-        const context = (_a = this.roleDefinitions.get(entry.lastRenderedRole)) === null || _a === void 0 ? void 0 : _a.canvasContext;
+        const context = (_a2 = this.roleDefinitions.get(entry.lastRenderedRole)) === null || _a2 === void 0 ? void 0 : _a2.canvasContext;
         if (context) {
           icon.draw(context, mapProjection);
         }
       }
     }
     getNearestWaypoint(pos, first) {
-      var _a, _b;
+      var _a2, _b;
       const ordered = [...this.registered.values()].sort((a, b) => this.orderByDistance(a.waypoint, b.waypoint, pos)).filter((w) => {
         const roleDef = this.getRenderRoleDefinition(w.lastRenderedRole);
         if (roleDef !== void 0) {
@@ -15705,7 +15705,7 @@
         return false;
       });
       if (first !== void 0) {
-        return (_a = ordered.find((entry) => first(entry.waypoint))) === null || _a === void 0 ? void 0 : _a.waypoint;
+        return (_a2 = ordered.find((entry) => first(entry.waypoint))) === null || _a2 === void 0 ? void 0 : _a2.waypoint;
       }
       return (_b = ordered[0]) === null || _b === void 0 ? void 0 : _b.waypoint;
     }
@@ -15785,9 +15785,9 @@
     }
     addRole(roles, sourceId) {
       BitFlags.forEach(roles, (value, index) => {
-        var _a;
+        var _a2;
         var _b, _c;
-        ((_a = (_b = this.registrations)[_c = 1 << index]) !== null && _a !== void 0 ? _a : _b[_c] = /* @__PURE__ */ new Set()).add(sourceId);
+        ((_a2 = (_b = this.registrations)[_c = 1 << index]) !== null && _a2 !== void 0 ? _a2 : _b[_c] = /* @__PURE__ */ new Set()).add(sourceId);
       }, true);
       this._roles = this._roles | roles;
     }
@@ -15804,11 +15804,11 @@
       }, true);
     }
     prepareRender(showRole, iconFactory, labelFactory) {
-      var _a, _b;
+      var _a2, _b;
       if (showRole === this._lastRenderedRole) {
         return;
       }
-      this._icon = (_a = iconFactory === null || iconFactory === void 0 ? void 0 : iconFactory.getIcon(showRole, this.waypoint)) !== null && _a !== void 0 ? _a : null;
+      this._icon = (_a2 = iconFactory === null || iconFactory === void 0 ? void 0 : iconFactory.getIcon(showRole, this.waypoint)) !== null && _a2 !== void 0 ? _a2 : null;
       const label = (_b = labelFactory === null || labelFactory === void 0 ? void 0 : labelFactory.getLabel(showRole, this.waypoint)) !== null && _b !== void 0 ? _b : null;
       if (this._label && this._label !== label) {
         this.textManager.deregister(this._label);
@@ -15820,10 +15820,10 @@
       this._lastRenderedRole = showRole;
     }
     update() {
-      var _a, _b;
+      var _a2, _b;
       const showRole = this.selectRoleToRender(this, this.roleDefinitions);
       const roleDef = this.roleDefinitions.get(showRole);
-      const iconFactory = (_a = roleDef === null || roleDef === void 0 ? void 0 : roleDef.iconFactory) !== null && _a !== void 0 ? _a : null;
+      const iconFactory = (_a2 = roleDef === null || roleDef === void 0 ? void 0 : roleDef.iconFactory) !== null && _a2 !== void 0 ? _a2 : null;
       const labelFactory = (_b = roleDef === null || roleDef === void 0 ? void 0 : roleDef.labelFactory) !== null && _b !== void 0 ? _b : null;
       this.prepareRender(showRole, iconFactory, labelFactory);
     }
@@ -16590,8 +16590,8 @@
       this.stack = [];
     }
     push(stream) {
-      var _a;
-      stream.setConsumer((_a = this.stack[this.stack.length - 1]) !== null && _a !== void 0 ? _a : this.consumer);
+      var _a2;
+      stream.setConsumer((_a2 = this.stack[this.stack.length - 1]) !== null && _a2 !== void 0 ? _a2 : this.consumer);
       this.stack.push(stream);
     }
     pop() {
@@ -16606,40 +16606,40 @@
       this.stack.unshift(stream);
     }
     shift() {
-      var _a;
+      var _a2;
       const removed = this.stack.shift();
       removed === null || removed === void 0 ? void 0 : removed.setConsumer(NullPathStream.INSTANCE);
-      (_a = this.stack[0]) === null || _a === void 0 ? void 0 : _a.setConsumer(this.consumer);
+      (_a2 = this.stack[0]) === null || _a2 === void 0 ? void 0 : _a2.setConsumer(this.consumer);
       return removed;
     }
     setConsumer(consumer) {
-      var _a;
-      (_a = this.stack[0]) === null || _a === void 0 ? void 0 : _a.setConsumer(consumer);
+      var _a2;
+      (_a2 = this.stack[0]) === null || _a2 === void 0 ? void 0 : _a2.setConsumer(consumer);
       super.setConsumer(consumer);
     }
     beginPath() {
-      var _a;
-      ((_a = this.stack[this.stack.length - 1]) !== null && _a !== void 0 ? _a : this.consumer).beginPath();
+      var _a2;
+      ((_a2 = this.stack[this.stack.length - 1]) !== null && _a2 !== void 0 ? _a2 : this.consumer).beginPath();
     }
     moveTo(x, y) {
-      var _a;
-      ((_a = this.stack[this.stack.length - 1]) !== null && _a !== void 0 ? _a : this.consumer).moveTo(x, y);
+      var _a2;
+      ((_a2 = this.stack[this.stack.length - 1]) !== null && _a2 !== void 0 ? _a2 : this.consumer).moveTo(x, y);
     }
     lineTo(x, y) {
-      var _a;
-      ((_a = this.stack[this.stack.length - 1]) !== null && _a !== void 0 ? _a : this.consumer).lineTo(x, y);
+      var _a2;
+      ((_a2 = this.stack[this.stack.length - 1]) !== null && _a2 !== void 0 ? _a2 : this.consumer).lineTo(x, y);
     }
     bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y) {
-      var _a;
-      ((_a = this.stack[this.stack.length - 1]) !== null && _a !== void 0 ? _a : this.consumer).bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
+      var _a2;
+      ((_a2 = this.stack[this.stack.length - 1]) !== null && _a2 !== void 0 ? _a2 : this.consumer).bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
     }
     quadraticCurveTo(cpx, cpy, x, y) {
-      var _a;
-      ((_a = this.stack[this.stack.length - 1]) !== null && _a !== void 0 ? _a : this.consumer).quadraticCurveTo(cpx, cpy, x, y);
+      var _a2;
+      ((_a2 = this.stack[this.stack.length - 1]) !== null && _a2 !== void 0 ? _a2 : this.consumer).quadraticCurveTo(cpx, cpy, x, y);
     }
     arc(x, y, radius, startAngle, endAngle, counterClockwise) {
-      var _a;
-      ((_a = this.stack[this.stack.length - 1]) !== null && _a !== void 0 ? _a : this.consumer).arc(x, y, radius, startAngle, endAngle, counterClockwise);
+      var _a2;
+      ((_a2 = this.stack[this.stack.length - 1]) !== null && _a2 !== void 0 ? _a2 : this.consumer).arc(x, y, radius, startAngle, endAngle, counterClockwise);
     }
     closePath() {
       this.stack[this.stack.length - 1].closePath();
@@ -16945,12 +16945,12 @@
       this.needStrokeLineAtLegEnd = true;
     }
     strokeLine(context, style) {
-      var _a, _b;
+      var _a2, _b;
       if (style.outlineWidth > 0) {
         const outlineWidth = style.strokeWidth + 2 * style.outlineWidth;
         context.lineWidth = outlineWidth;
         context.strokeStyle = style.outlineStyle;
-        context.setLineDash((_a = style.outlineDash) !== null && _a !== void 0 ? _a : FlightPathLegLineRenderer.EMPTY_DASH);
+        context.setLineDash((_a2 = style.outlineDash) !== null && _a2 !== void 0 ? _a2 : FlightPathLegLineRenderer.EMPTY_DASH);
         context.stroke();
       }
       if (style.strokeWidth > 0) {
@@ -17118,23 +17118,23 @@
       }
     }
     buildStartSegment(projection, index, vector) {
-      var _a;
+      var _a2;
       var _b;
-      const segment = (_a = (_b = this.segments)[index]) !== null && _a !== void 0 ? _a : _b[index] = Shape.createSegment();
+      const segment = (_a2 = (_b = this.segments)[index]) !== null && _a2 !== void 0 ? _a2 : _b[index] = Shape.createSegment();
       segment.type = "start";
       projection.project(vector.end, segment.end);
     }
     buildSegmentFromGreatCircle(projection, index, circle, start, end) {
-      var _a;
+      var _a2;
       var _b;
-      const segment = (_a = (_b = this.segments)[index]) !== null && _a !== void 0 ? _a : _b[index] = Shape.createSegment();
+      const segment = (_a2 = (_b = this.segments)[index]) !== null && _a2 !== void 0 ? _a2 : _b[index] = Shape.createSegment();
       segment.type = "line";
       projection.project(end, segment.end);
       const delta = Vec2Math.sub(segment.end, this.segments[index - 1].end, Shape.vec2Cache[0]);
       Vec2Math.normalize(Vec2Math.normal(delta, segment.endNormal), segment.endNormal);
     }
     buildSegmentFromSmallCircle(projection, index, circle, start, end) {
-      var _a;
+      var _a2;
       var _b;
       const isClockwise = circle.radius > Math.PI / 2;
       const center = Shape.geoPointCache[0].setFromCartesian(isClockwise ? Vec3Math.multScalar(circle.center, -1, Shape.vec3Cache[0]) : circle.center);
@@ -17146,7 +17146,7 @@
       const endRadial = Vec2Math.sub(endProjected, centerProjected, Shape.vec2Cache[3]);
       const endRadialMag = Vec2Math.abs(endRadial);
       const radius = (startRadialMag + endRadialMag) / 2;
-      const segment = (_a = (_b = this.segments)[index]) !== null && _a !== void 0 ? _a : _b[index] = Shape.createSegment();
+      const segment = (_a2 = (_b = this.segments)[index]) !== null && _a2 !== void 0 ? _a2 : _b[index] = Shape.createSegment();
       segment.type = "arc";
       segment.radius = radius;
       segment.isClockwise = isClockwise;
@@ -18292,8 +18292,8 @@
       this.display.canvas.style.display = this.isVisible() ? "block" : "none";
     }
     render() {
-      var _a;
-      return FSComponent.buildComponent("canvas", { ref: this.displayCanvasRef, class: (_a = this.props.class) !== null && _a !== void 0 ? _a : "", width: "0", height: "0", style: "position: absolute;" });
+      var _a2;
+      return FSComponent.buildComponent("canvas", { ref: this.displayCanvasRef, class: (_a2 = this.props.class) !== null && _a2 !== void 0 ? _a2 : "", width: "0", height: "0", style: "position: absolute;" });
     }
   };
   var MapSyncedCanvasLayer = class extends MapCanvasLayer {
@@ -18316,10 +18316,10 @@
   };
   var MapAltitudeArcLayer = class extends MapLayer {
     constructor() {
-      var _a, _b, _c, _d, _e, _f, _g, _h;
+      var _a2, _b, _c, _d, _e, _f, _g, _h;
       super(...arguments);
       this.layerRef = FSComponent.createRef();
-      this.arcAngularWidth = ((_a = this.props.arcAngularWidth) !== null && _a !== void 0 ? _a : MapAltitudeArcLayer.DEFAULT_ARC_ANGULAR_WIDTH) * Avionics.Utils.DEG2RAD;
+      this.arcAngularWidth = ((_a2 = this.props.arcAngularWidth) !== null && _a2 !== void 0 ? _a2 : MapAltitudeArcLayer.DEFAULT_ARC_ANGULAR_WIDTH) * Avionics.Utils.DEG2RAD;
       this.arcRadius = (_b = this.props.arcRadius) !== null && _b !== void 0 ? _b : MapAltitudeArcLayer.DEFAULT_ARC_RADIUS;
       this.strokeWidth = (_c = this.props.strokeWidth) !== null && _c !== void 0 ? _c : MapAltitudeArcLayer.DEFAULT_STROKE_WIDTH;
       this.strokeStyle = (_d = this.props.strokeStyle) !== null && _d !== void 0 ? _d : MapAltitudeArcLayer.DEFAULT_STROKE_STYLE;
@@ -18354,14 +18354,14 @@
       this.subscriptions = [];
     }
     onVisibilityChanged(isVisible) {
-      var _a;
-      (_a = this.layerRef.getOrDefault()) === null || _a === void 0 ? void 0 : _a.setVisible(isVisible);
+      var _a2;
+      (_a2 = this.layerRef.getOrDefault()) === null || _a2 === void 0 ? void 0 : _a2.setVisible(isVisible);
       if (isVisible) {
         this.needUpdate = true;
       }
     }
     onAttached() {
-      var _a, _b;
+      var _a2, _b;
       this.layerRef.instance.onAttached();
       this.subscriptions.push(this.ownAirplanePropsModule.position.sub(this.projectPlanePositionHandler));
       const scheduleUpdate = () => {
@@ -18371,7 +18371,7 @@
       const dataIntegrityModule = this.props.model.getModule(MapSystemKeys.DataIntegrity);
       this.isArcVisibleStatic = MappedSubject.create(([show, isGpsValid, isAdcValid]) => {
         return show && isGpsValid && isAdcValid;
-      }, altitudeArcModule.show, (_a = dataIntegrityModule === null || dataIntegrityModule === void 0 ? void 0 : dataIntegrityModule.gpsSignalValid) !== null && _a !== void 0 ? _a : Subject.create(true), (_b = dataIntegrityModule === null || dataIntegrityModule === void 0 ? void 0 : dataIntegrityModule.adcSignalValid) !== null && _b !== void 0 ? _b : Subject.create(true));
+      }, altitudeArcModule.show, (_a2 = dataIntegrityModule === null || dataIntegrityModule === void 0 ? void 0 : dataIntegrityModule.gpsSignalValid) !== null && _a2 !== void 0 ? _a2 : Subject.create(true), (_b = dataIntegrityModule === null || dataIntegrityModule === void 0 ? void 0 : dataIntegrityModule.adcSignalValid) !== null && _b !== void 0 ? _b : Subject.create(true));
       const isArcVisibleDynamicSub = this.isArcVisibleDynamic.sub((isVisible) => {
         this.setVisible(isVisible);
       }, false, true);
@@ -18435,8 +18435,8 @@
       return this.props.renderMethod === "canvas" ? FSComponent.buildComponent(MapAltitudeArcCanvasLayer, Object.assign({}, props)) : FSComponent.buildComponent(MapAltitudeArcSvgLayer, Object.assign({}, props));
     }
     destroy() {
-      var _a, _b, _c, _d, _e;
-      (_a = this.layerRef.getOrDefault()) === null || _a === void 0 ? void 0 : _a.destroy();
+      var _a2, _b, _c, _d, _e;
+      (_a2 = this.layerRef.getOrDefault()) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       (_b = this.vsPrecisionMap) === null || _b === void 0 ? void 0 : _b.destroy();
       (_c = this.vsThresholdMap) === null || _c === void 0 ? void 0 : _c.destroy();
       (_d = this.altDevThresholdMap) === null || _d === void 0 ? void 0 : _d.destroy();
@@ -18466,11 +18466,11 @@
       this.needUpdate = false;
     }
     onVisibilityChanged(isVisible) {
-      var _a, _b;
+      var _a2, _b;
       if (isVisible) {
         this.needUpdate = true;
       } else {
-        (_b = (_a = this.canvasLayerRef.getOrDefault()) === null || _a === void 0 ? void 0 : _a.tryGetDisplay()) === null || _b === void 0 ? void 0 : _b.clear();
+        (_b = (_a2 = this.canvasLayerRef.getOrDefault()) === null || _a2 === void 0 ? void 0 : _a2.tryGetDisplay()) === null || _b === void 0 ? void 0 : _b.clear();
       }
     }
     onAttached() {
@@ -18522,8 +18522,8 @@
       return FSComponent.buildComponent(MapSyncedCanvasLayer, { ref: this.canvasLayerRef, model: this.props.model, mapProjection: this.props.mapProjection, class: this.props.class });
     }
     destroy() {
-      var _a;
-      (_a = this.canvasLayerRef.getOrDefault()) === null || _a === void 0 ? void 0 : _a.destroy();
+      var _a2;
+      (_a2 = this.canvasLayerRef.getOrDefault()) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       this.subscriptions.forEach((sub) => sub.destroy());
       super.destroy();
     }
@@ -18625,9 +18625,9 @@
       this.wrapperStyle.set("display", isVisible ? "" : "none");
     }
     onAttached() {
-      var _a;
+      var _a2;
       this.updateFromProjectedSize(this.props.mapProjection.getProjectedSize());
-      (_a = this.props.opacity) === null || _a === void 0 ? void 0 : _a.sub((v) => {
+      (_a2 = this.props.opacity) === null || _a2 === void 0 ? void 0 : _a2.sub((v) => {
         this.wrapperStyle.set("opacity", v.toString());
       }, true);
       if (this.props.wxrMode !== void 0) {
@@ -18706,10 +18706,10 @@
       return UnitType.GA_RADIAN.convertTo(radiusGARad, UnitType.METER);
     }
     render() {
-      var _a, _b;
+      var _a2, _b;
       return FSComponent.buildComponent(
         "div",
-        { style: this.wrapperStyle, class: (_a = this.props.class) !== null && _a !== void 0 ? _a : "" },
+        { style: this.wrapperStyle, class: (_a2 = this.props.class) !== null && _a2 !== void 0 ? _a2 : "" },
         FSComponent.buildComponent(BingComponent, { ref: this.bingRef, id: this.props.bingId, onBoundCallback: this.onBingBound.bind(this), resolution: this.resolution, mode: (_b = this.props.mode) !== null && _b !== void 0 ? _b : EBingMode.PLANE, earthColors: this.props.earthColors, earthColorsElevationRange: this.props.earthColorsElevationRange, reference: this.props.reference, wxrMode: this.props.wxrMode, wxrColors: this.props.wxrColors, isoLines: this.props.isoLines, delay: this.props.delay })
       );
     }
@@ -18885,11 +18885,11 @@
       displayCanvas.style.top = `${posY}px`;
     }
     onMapProjectionChanged(mapProjection, changeFlags) {
-      var _a;
+      var _a2;
       if (BitFlags.isAll(changeFlags, MapProjectionChangeType.ProjectedSize)) {
         this.updateFromProjectedSize(mapProjection.getProjectedSize());
         this.display.invalidate();
-        (_a = this.tryGetBuffer()) === null || _a === void 0 ? void 0 : _a.invalidate();
+        (_a2 = this.tryGetBuffer()) === null || _a2 === void 0 ? void 0 : _a2.invalidate();
       }
       this.needUpdateTransforms = true;
     }
@@ -18901,10 +18901,10 @@
       this.updateTransforms();
     }
     updateTransforms() {
-      var _a;
+      var _a2;
       const mapProjection = this.props.mapProjection;
       this.display.updateTransform(mapProjection);
-      (_a = this.tryGetBuffer()) === null || _a === void 0 ? void 0 : _a.updateTransform(mapProjection);
+      (_a2 = this.tryGetBuffer()) === null || _a2 === void 0 ? void 0 : _a2.updateTransform(mapProjection);
       this.needUpdateTransforms = false;
     }
   };
@@ -19117,16 +19117,16 @@
       this.updateIconVisibility();
     }
     render() {
-      var _a;
-      return FSComponent.buildComponent("img", { src: this.imageFilePath, class: (_a = this.props.class) !== null && _a !== void 0 ? _a : "", style: this.style });
+      var _a2;
+      return FSComponent.buildComponent("img", { src: this.imageFilePath, class: (_a2 = this.props.class) !== null && _a2 !== void 0 ? _a2 : "", style: this.style });
     }
     destroy() {
-      var _a, _b, _c, _d, _e, _f, _g, _h;
+      var _a2, _b, _c, _d, _e, _f, _g, _h;
       if (SubscribableUtils.isSubscribable(this.imageFilePath)) {
         this.imageFilePath.destroy();
       }
       this.isGsAboveTrackThreshold.destroy();
-      (_a = this.showSub) === null || _a === void 0 ? void 0 : _a.destroy();
+      (_a2 = this.showSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       (_b = this.positionSub) === null || _b === void 0 ? void 0 : _b.destroy();
       (_c = this.headingSub) === null || _c === void 0 ? void 0 : _c.destroy();
       (_d = this.trackSub) === null || _d === void 0 ? void 0 : _d.destroy();
@@ -19155,7 +19155,7 @@
   };
   var MapAirspaceLayer = class extends MapLayer {
     constructor() {
-      var _a, _b;
+      var _a2, _b;
       super(...arguments);
       this.canvasLayerRef = FSComponent.createRef();
       this.clipBoundsSub = VecNSubject.createFromVector(new Float64Array(4));
@@ -19164,7 +19164,7 @@
         this.isAttached && this.scheduleSearch(0, true);
       });
       this.searchedAirspaces = /* @__PURE__ */ new Map();
-      this.searchDebounceDelay = (_a = this.props.searchDebounceDelay) !== null && _a !== void 0 ? _a : MapAirspaceLayer.DEFAULT_SEARCH_DEBOUNCE_DELAY;
+      this.searchDebounceDelay = (_a2 = this.props.searchDebounceDelay) !== null && _a2 !== void 0 ? _a2 : MapAirspaceLayer.DEFAULT_SEARCH_DEBOUNCE_DELAY;
       this.renderTimeBudget = (_b = this.props.renderTimeBudget) !== null && _b !== void 0 ? _b : MapAirspaceLayer.DEFAULT_RENDER_TIME_BUDGET;
       this.activeRenderProcess = null;
       this.renderTaskQueueHandler = {
@@ -19407,10 +19407,10 @@
   MapAirspaceLayer.vec2Cache = [new Float64Array(2)];
   var MapNearestWaypointsLayer = class extends MapLayer {
     constructor() {
-      var _a;
+      var _a2;
       super(...arguments);
       this.canvasLayerRef = FSComponent.createRef();
-      this.searchDebounceDelay = (_a = this.props.searchDebounceDelay) !== null && _a !== void 0 ? _a : 500;
+      this.searchDebounceDelay = (_a2 = this.props.searchDebounceDelay) !== null && _a2 !== void 0 ? _a2 : 500;
       this.facLoader = new FacilityLoader(FacilityRepository.getRepository(this.props.bus), this.onFacilityLoaderInitialized.bind(this));
       this.searchRadius = 0;
       this.searchMargin = 0;
@@ -19502,9 +19502,9 @@
       this.searchMargin = mapHalfDiagRange * (MapNearestWaypointsLayer.SEARCH_RADIUS_OVERDRAW_FACTOR - 1);
     }
     onUpdated(time, elapsed) {
-      var _a;
+      var _a2;
       if (this.userFacilityHasChanged) {
-        const search = (_a = this.facilitySearches) === null || _a === void 0 ? void 0 : _a[FacilitySearchType.User];
+        const search = (_a2 = this.facilitySearches) === null || _a2 === void 0 ? void 0 : _a2[FacilitySearchType.User];
         if (search !== void 0) {
           this.userFacilityHasChanged = false;
           this.scheduleSearchRefresh(FacilitySearchType.User, search, this.getSearchCenter(), this.searchRadius);
@@ -19588,7 +19588,7 @@
           return;
         }
         this.registerWaypointWithRenderer(this.props.waypointRenderer, facility);
-      } catch (_a) {
+      } catch (_a2) {
       }
     }
     registerWaypointWithRenderer(renderer, facility) {
@@ -19604,7 +19604,7 @@
           return;
         }
         this.deregisterWaypointWithRenderer(this.props.waypointRenderer, facility);
-      } catch (_a) {
+      } catch (_a2) {
         if (this.icaosToRender.has(icao)) {
           return;
         }
@@ -19625,12 +19625,12 @@
       this.canvasLayerRef.instance.setVisible(val);
     }
     render() {
-      var _a;
-      return FSComponent.buildComponent(MapSyncedCanvasLayer, { ref: this.canvasLayerRef, model: this.props.model, mapProjection: this.props.mapProjection, class: (_a = this.props.class) !== null && _a !== void 0 ? _a : "" });
+      var _a2;
+      return FSComponent.buildComponent(MapSyncedCanvasLayer, { ref: this.canvasLayerRef, model: this.props.model, mapProjection: this.props.mapProjection, class: (_a2 = this.props.class) !== null && _a2 !== void 0 ? _a2 : "" });
     }
     destroy() {
-      var _a;
-      (_a = this.canvasLayerRef.getOrDefault()) === null || _a === void 0 ? void 0 : _a.destroy();
+      var _a2;
+      (_a2 = this.canvasLayerRef.getOrDefault()) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       this.facilityRepoSubs.forEach((sub) => {
         sub.destroy();
       });
@@ -19680,9 +19680,9 @@
   };
   var MapLineLayer = class extends MapSyncedCanvasLayer {
     constructor() {
-      var _a, _b, _c, _d, _e, _f;
+      var _a2, _b, _c, _d, _e, _f;
       super(...arguments);
-      this.strokeWidth = (_a = this.props.strokeWidth) !== null && _a !== void 0 ? _a : MapLineLayer.DEFAULT_STROKE_WIDTH;
+      this.strokeWidth = (_a2 = this.props.strokeWidth) !== null && _a2 !== void 0 ? _a2 : MapLineLayer.DEFAULT_STROKE_WIDTH;
       this.strokeStyle = (_b = this.props.strokeStyle) !== null && _b !== void 0 ? _b : MapLineLayer.DEFAULT_STROKE_STYLE;
       this.strokeDash = (_c = this.props.strokeDash) !== null && _c !== void 0 ? _c : MapLineLayer.DEFAULT_STROKE_DASH;
       this.outlineWidth = (_d = this.props.outlineWidth) !== null && _d !== void 0 ? _d : MapLineLayer.DEFAULT_OUTLINE_WIDTH;
@@ -19831,8 +19831,8 @@
   var MapClockUpdateController = class extends MapSystemController {
     onAfterMapRender(ref) {
       this.freqSub = this.context.updateFreq.sub((freq) => {
-        var _a;
-        (_a = this.clockSub) === null || _a === void 0 ? void 0 : _a.destroy();
+        var _a2;
+        (_a2 = this.clockSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
         this.clockSub = this.context.bus.getSubscriber().on("realTime").atFrequency(freq).handle((realTime) => {
           ref.update(realTime);
         });
@@ -19842,9 +19842,9 @@
       this.destroy();
     }
     destroy() {
-      var _a, _b;
+      var _a2, _b;
       super.destroy();
-      (_a = this.clockSub) === null || _a === void 0 ? void 0 : _a.destroy();
+      (_a2 = this.clockSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       (_b = this.freqSub) === null || _b === void 0 ? void 0 : _b.destroy();
     }
   };
@@ -19893,9 +19893,9 @@
       this.destroy();
     }
     destroy() {
-      var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
       super.destroy();
-      (_a = this.fplCopiedSub) === null || _a === void 0 ? void 0 : _a.destroy();
+      (_a2 = this.fplCopiedSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       (_b = this.fplCreatedSub) === null || _b === void 0 ? void 0 : _b.destroy();
       (_c = this.fplDeletedSub) === null || _c === void 0 ? void 0 : _c.destroy();
       (_d = this.fplDirectToDataChangedSub) === null || _d === void 0 ? void 0 : _d.destroy();
@@ -19967,8 +19967,8 @@
       this.orientationState = MappedSubject.create(this.desiredIconOrientation, this.context.model.getModule(MapSystemKeys.Rotation).rotationType);
     }
     onAfterMapRender() {
-      var _a;
-      (_a = this.orientationState) === null || _a === void 0 ? void 0 : _a.sub(() => {
+      var _a2;
+      (_a2 = this.orientationState) === null || _a2 === void 0 ? void 0 : _a2.sub(() => {
         this.needUpdateIconOrientation = true;
       }, true);
     }
@@ -20002,9 +20002,9 @@
     onAfterMapRender() {
       const sub = this.context.bus.getSubscriber();
       this.updateFreqSub = this.updateFreq.sub((freq) => {
-        var _a;
+        var _a2;
         for (const property of this.properties) {
-          (_a = this.subs[property]) === null || _a === void 0 ? void 0 : _a.destroy();
+          (_a2 = this.subs[property]) === null || _a2 === void 0 ? void 0 : _a2.destroy();
           this.subs[property] = this.bindProperty(sub, property, freq);
         }
       }, true);
@@ -20053,9 +20053,9 @@
       this.destroy();
     }
     destroy() {
-      var _a, _b;
+      var _a2, _b;
       super.destroy();
-      (_a = this.updateFreqSub) === null || _a === void 0 ? void 0 : _a.destroy();
+      (_a2 = this.updateFreqSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       for (const property of this.properties) {
         (_b = this.subs[property]) === null || _b === void 0 ? void 0 : _b.destroy();
       }
@@ -20104,9 +20104,9 @@
       this.destroy();
     }
     destroy() {
-      var _a;
+      var _a2;
       super.destroy();
-      (_a = this.rotationSub) === null || _a === void 0 ? void 0 : _a.destroy();
+      (_a2 = this.rotationSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       this.rotationControl.forfeit(this.rotationControlConsumer);
     }
   };
@@ -20117,12 +20117,12 @@
   })(MapSystemWaypointRoles || (MapSystemWaypointRoles = {}));
   var MapSystemFlightPlanLayer = class extends MapLayer {
     constructor() {
-      var _a;
+      var _a2;
       super(...arguments);
       this.instanceId = MapSystemFlightPlanLayer.instanceId++;
       this.flightPathLayerRef = FSComponent.createRef();
       this.waypointLayerRef = FSComponent.createRef();
-      this.defaultRoleId = (_a = this.props.waypointRenderer.getRoleFromName(MapSystemWaypointRoles.FlightPlan)) !== null && _a !== void 0 ? _a : 0;
+      this.defaultRoleId = (_a2 = this.props.waypointRenderer.getRoleFromName(MapSystemWaypointRoles.FlightPlan)) !== null && _a2 !== void 0 ? _a2 : 0;
       this.planModule = this.props.model.getModule(MapSystemKeys.FlightPlan);
       this.waypointPrefix = `${MapSystemFlightPlanLayer.WAYPOINT_PREFIX}_${this.instanceId}`;
       this.legWaypoints = /* @__PURE__ */ new Map();
@@ -20271,11 +20271,11 @@
       }
     }
     async buildTerminatorWaypoint(leg, roleId) {
-      var _a, _b, _c, _d, _e, _f;
+      var _a2, _b, _c, _d, _e, _f;
       const currentLeg = this.legWaypoints.get(leg);
       if (currentLeg !== void 0) {
         const [waypoint, currentRoleId] = currentLeg;
-        const lastVector = (_a = leg.calculated) === null || _a === void 0 ? void 0 : _a.flightPath[((_b = leg.calculated) === null || _b === void 0 ? void 0 : _b.flightPath.length) - 1];
+        const lastVector = (_a2 = leg.calculated) === null || _a2 === void 0 ? void 0 : _a2.flightPath[((_b = leg.calculated) === null || _b === void 0 ? void 0 : _b.flightPath.length) - 1];
         if (lastVector !== void 0) {
           if (!waypoint.location.get().equals(lastVector.endLat, lastVector.endLon)) {
             this.props.waypointRenderer.deregister(waypoint, currentRoleId, MapSystemWaypointRoles.FlightPlan);
@@ -20302,7 +20302,7 @@
       }
     }
     async buildFixWaypoint(leg, roleId) {
-      var _a;
+      var _a2;
       const legWaypoint = this.legWaypoints.get(leg);
       if (legWaypoint === void 0) {
         const facIcao = leg.leg.fixIcao;
@@ -20313,7 +20313,7 @@
         }
         if (facility !== void 0) {
           const waypoint = this.facWaypointCache.get(facility);
-          const ident = (_a = leg.name) !== null && _a !== void 0 ? _a : "";
+          const ident = (_a2 = leg.name) !== null && _a2 !== void 0 ? _a2 : "";
           const newWaypoint = new FlightPathWaypoint(waypoint.location, leg, `${this.waypointPrefix}_${this.waypointId++}_${ident}`, ident);
           this.props.waypointRenderer.register(newWaypoint, roleId, MapSystemWaypointRoles.FlightPlan);
           this.legWaypoints.set(leg, [newWaypoint, roleId]);
@@ -20328,11 +20328,11 @@
       }
     }
     render() {
-      var _a, _b;
+      var _a2, _b;
       return FSComponent.buildComponent(
         FSComponent.Fragment,
         null,
-        FSComponent.buildComponent(MapCachedCanvasLayer, { ref: this.flightPathLayerRef, model: this.props.model, mapProjection: this.props.mapProjection, overdrawFactor: Math.SQRT2, class: (_a = this.props.class) !== null && _a !== void 0 ? _a : "" }),
+        FSComponent.buildComponent(MapCachedCanvasLayer, { ref: this.flightPathLayerRef, model: this.props.model, mapProjection: this.props.mapProjection, overdrawFactor: Math.SQRT2, class: (_a2 = this.props.class) !== null && _a2 !== void 0 ? _a2 : "" }),
         FSComponent.buildComponent(MapSyncedCanvasLayer, { ref: this.waypointLayerRef, model: this.props.model, mapProjection: this.props.mapProjection, class: (_b = this.props.class) !== null && _b !== void 0 ? _b : "" })
       );
     }
@@ -20407,7 +20407,7 @@
   })(TcasResolutionAdvisoryType || (TcasResolutionAdvisoryType = {}));
   var Tcas = class {
     constructor(bus, tfcInstrument, maxIntruderCount, realTimeUpdateFreq, simTimeUpdateFreq, raOptions) {
-      var _a, _b, _c, _d, _e, _f, _g, _h;
+      var _a2, _b, _c, _d, _e, _f, _g, _h;
       this.bus = bus;
       this.tfcInstrument = tfcInstrument;
       this.maxIntruderCount = maxIntruderCount;
@@ -20441,7 +20441,7 @@
       this.sensitivity = this.createSensitivity();
       this.ownAirplane = new OwnAirplane(this.ownAirplaneSubs);
       const fullRAOptions = {
-        initialResponseTime: ((_a = raOptions === null || raOptions === void 0 ? void 0 : raOptions.initialResponseTime) !== null && _a !== void 0 ? _a : Tcas.DEFAULT_RA_OPTIONS.initialResponseTime).copy(),
+        initialResponseTime: ((_a2 = raOptions === null || raOptions === void 0 ? void 0 : raOptions.initialResponseTime) !== null && _a2 !== void 0 ? _a2 : Tcas.DEFAULT_RA_OPTIONS.initialResponseTime).copy(),
         initialAcceleration: ((_b = raOptions === null || raOptions === void 0 ? void 0 : raOptions.initialAcceleration) !== null && _b !== void 0 ? _b : Tcas.DEFAULT_RA_OPTIONS.initialAcceleration).copy(),
         subsequentResponseTime: ((_c = raOptions === null || raOptions === void 0 ? void 0 : raOptions.subsequentResponseTime) !== null && _c !== void 0 ? _c : Tcas.DEFAULT_RA_OPTIONS.subsequentResponseTime).copy(),
         subsequentAcceleration: ((_d = raOptions === null || raOptions === void 0 ? void 0 : raOptions.subsequentAcceleration) !== null && _d !== void 0 ? _d : Tcas.DEFAULT_RA_OPTIONS.subsequentAcceleration).copy(),
@@ -20723,11 +20723,11 @@
       this.eventPublisher.pub("tcas_intruder_added", intruder, false, false);
     }
     cleanUpIntruder(intruder) {
-      var _a;
+      var _a2;
       if (intruder.alertLevel.get() === TcasAlertLevel.ResolutionAdvisory) {
         this.intrudersRA.delete(intruder);
       }
-      (_a = this.alertLevelSubs.get(intruder)) === null || _a === void 0 ? void 0 : _a.destroy();
+      (_a2 = this.alertLevelSubs.get(intruder)) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       this.eventPublisher.pub("tcas_intruder_removed", intruder, false, false);
     }
     onAlertLevelChanged(intruder) {
@@ -20921,9 +20921,9 @@
       return this._cpaNorm;
     }
     update(simTime, tau, dmod, zthr, hmd) {
-      var _a;
+      var _a2;
       this._time = simTime;
-      if (tau.isNaN() || dmod.isNaN() || zthr.isNaN() || ((_a = hmd === null || hmd === void 0 ? void 0 : hmd.isNaN()) !== null && _a !== void 0 ? _a : false)) {
+      if (tau.isNaN() || dmod.isNaN() || zthr.isNaN() || ((_a2 = hmd === null || hmd === void 0 ? void 0 : hmd.isNaN()) !== null && _a2 !== void 0 ? _a2 : false)) {
         this.invalidate();
         return;
       }
@@ -21101,7 +21101,7 @@
       this.intruderArray.sort(TcasResolutionAdvisoryHostClass.INTRUDER_SORT_FUNC);
     }
     updateVsConstraints(alimMeters, responseTimeSeconds, accelMps) {
-      var _a;
+      var _a2;
       var _b;
       const ownAirplaneVsMps = this.ownAirplane.verticalSpeed.asUnit(UnitType.MPS);
       for (let i = 0; i < this.intruderArray.length; i++) {
@@ -21136,7 +21136,7 @@
             below = tcpaSeconds > 0 ? (belowAltTargetMeters - ownAirplaneAltMeters) / tcpaSeconds : Infinity;
           }
         }
-        const constraint = (_a = (_b = this.vsConstraints)[i]) !== null && _a !== void 0 ? _a : _b[i] = { above: 0, below: 0 };
+        const constraint = (_a2 = (_b = this.vsConstraints)[i]) !== null && _a2 !== void 0 ? _a2 : _b[i] = { above: 0, below: 0 };
         constraint.above = above;
         constraint.below = below;
       }
@@ -21805,7 +21805,7 @@
   };
   var MapSystemTrafficLayer = class extends MapLayer {
     constructor() {
-      var _a;
+      var _a2;
       super(...arguments);
       this.iconLayerRef = FSComponent.createRef();
       this.trafficModule = this.props.model.getModule(MapSystemKeys.Traffic);
@@ -21816,17 +21816,17 @@
         [TcasAlertLevel.ResolutionAdvisory]: /* @__PURE__ */ new Map()
       };
       this.needHandleOffscaleOob = this.props.offScaleIntruders !== void 0 || this.props.oobIntruders !== void 0;
-      this.oobOffset = (_a = this.props.oobOffset) !== null && _a !== void 0 ? _a : Subject.create(VecNMath.create(4));
+      this.oobOffset = (_a2 = this.props.oobOffset) !== null && _a2 !== void 0 ? _a2 : Subject.create(VecNMath.create(4));
       this.oobBounds = VecNSubject.createFromVector(VecNMath.create(4));
       this.isInit = false;
     }
     onVisibilityChanged(isVisible) {
-      var _a, _b;
+      var _a2, _b;
       if (!isVisible) {
         if (this.isInit) {
           this.iconLayerRef.instance.display.clear();
         }
-        (_a = this.props.offScaleIntruders) === null || _a === void 0 ? void 0 : _a.clear();
+        (_a2 = this.props.offScaleIntruders) === null || _a2 === void 0 ? void 0 : _a2.clear();
         (_b = this.props.oobIntruders) === null || _b === void 0 ? void 0 : _b.clear();
       }
     }
@@ -21884,11 +21884,11 @@
         const group = MapSystemTrafficLayer.DRAW_GROUPS[i];
         if (BitFlags.isAll(alertLevelVisFlags, group.alertLevelVisFlag)) {
           this.intruderIcons[group.alertLevel].forEach((icon) => {
-            var _a, _b, _c, _d, _e, _f;
+            var _a2, _b, _c, _d, _e, _f;
             icon.draw(this.props.mapProjection, iconDisplay.context, offScaleRange);
             if (this.needHandleOffscaleOob) {
               if (icon.isOffScale) {
-                (_a = this.props.oobIntruders) === null || _a === void 0 ? void 0 : _a.delete(icon.intruder);
+                (_a2 = this.props.oobIntruders) === null || _a2 === void 0 ? void 0 : _a2.delete(icon.intruder);
                 (_b = this.props.offScaleIntruders) === null || _b === void 0 ? void 0 : _b.add(icon.intruder);
               } else if (!this.props.mapProjection.isInProjectedBounds(icon.projectedPos, oobBounds)) {
                 (_c = this.props.offScaleIntruders) === null || _c === void 0 ? void 0 : _c.delete(icon.intruder);
@@ -21901,8 +21901,8 @@
           });
         } else if (this.needHandleOffscaleOob) {
           this.intruderIcons[group.alertLevel].forEach((icon) => {
-            var _a, _b;
-            (_a = this.props.offScaleIntruders) === null || _a === void 0 ? void 0 : _a.delete(icon.intruder);
+            var _a2, _b;
+            (_a2 = this.props.offScaleIntruders) === null || _a2 === void 0 ? void 0 : _a2.delete(icon.intruder);
             (_b = this.props.oobIntruders) === null || _b === void 0 ? void 0 : _b.delete(icon.intruder);
           });
         }
@@ -21917,8 +21917,8 @@
       this.intruderIcons[intruder.alertLevel.get()].set(intruder, icon);
     }
     onIntruderRemoved(intruder) {
-      var _a, _b;
-      (_a = this.props.offScaleIntruders) === null || _a === void 0 ? void 0 : _a.delete(intruder);
+      var _a2, _b;
+      (_a2 = this.props.offScaleIntruders) === null || _a2 === void 0 ? void 0 : _a2.delete(intruder);
       (_b = this.props.oobIntruders) === null || _b === void 0 ? void 0 : _b.delete(intruder);
       this.intruderIcons[intruder.alertLevel.get()].delete(intruder);
     }
@@ -21934,8 +21934,8 @@
       }
     }
     render() {
-      var _a;
-      return FSComponent.buildComponent(MapSyncedCanvasLayer, { ref: this.iconLayerRef, model: this.props.model, mapProjection: this.props.mapProjection, class: (_a = this.props.class) !== null && _a !== void 0 ? _a : "" });
+      var _a2;
+      return FSComponent.buildComponent(MapSyncedCanvasLayer, { ref: this.iconLayerRef, model: this.props.model, mapProjection: this.props.mapProjection, class: (_a2 = this.props.class) !== null && _a2 !== void 0 ? _a2 : "" });
     }
   };
   MapSystemTrafficLayer.DRAW_GROUPS = [
@@ -21981,11 +21981,11 @@
   AbstractMapTrafficIntruderIcon.geoPointCache = [new GeoPoint(0, 0)];
   var MapSystemWaypointsLayer = class extends MapLayer {
     constructor() {
-      var _a;
+      var _a2;
       super(...arguments);
       this.waypointsLayer = FSComponent.createRef();
       this.displayModule = this.props.model.getModule(MapSystemKeys.NearestWaypoints);
-      this.waypointCache = (_a = this.props.waypointCache) !== null && _a !== void 0 ? _a : DefaultFacilityWaypointCache.getCache(this.props.bus);
+      this.waypointCache = (_a2 = this.props.waypointCache) !== null && _a2 !== void 0 ? _a2 : DefaultFacilityWaypointCache.getCache(this.props.bus);
       this.searchItemLimits = {
         [FacilitySearchType.Airport]: 500,
         [FacilitySearchType.Vor]: 250,
@@ -22072,8 +22072,8 @@
       return false;
     }
     render() {
-      var _a;
-      return FSComponent.buildComponent(MapNearestWaypointsLayer, { ref: this.waypointsLayer, model: this.props.model, mapProjection: this.props.mapProjection, bus: this.props.bus, waypointRenderer: this.props.waypointRenderer, waypointForFacility: (facility) => this.waypointCache.get(facility), initRenderer: this.initWaypointRenderer.bind(this), registerWaypoint: this.registerWaypoint.bind(this), deregisterWaypoint: this.deregisterWaypoint.bind(this), searchItemLimit: (type) => this.searchItemLimits[type], searchRadiusLimit: (type) => this.searchRadiusLimits[type], getSearchCenter: this.props.useMapTargetAsSearchCenter === true ? (mapProjection) => mapProjection.getTarget() : void 0, onSessionsStarted: this.onSessionsStarted.bind(this), class: (_a = this.props.class) !== null && _a !== void 0 ? _a : "" });
+      var _a2;
+      return FSComponent.buildComponent(MapNearestWaypointsLayer, { ref: this.waypointsLayer, model: this.props.model, mapProjection: this.props.mapProjection, bus: this.props.bus, waypointRenderer: this.props.waypointRenderer, waypointForFacility: (facility) => this.waypointCache.get(facility), initRenderer: this.initWaypointRenderer.bind(this), registerWaypoint: this.registerWaypoint.bind(this), deregisterWaypoint: this.deregisterWaypoint.bind(this), searchItemLimit: (type) => this.searchItemLimits[type], searchRadiusLimit: (type) => this.searchRadiusLimits[type], getSearchCenter: this.props.useMapTargetAsSearchCenter === true ? (mapProjection) => mapProjection.getTarget() : void 0, onSessionsStarted: this.onSessionsStarted.bind(this), class: (_a2 = this.props.class) !== null && _a2 !== void 0 ? _a2 : "" });
     }
     registerWaypoint(waypoint, renderer) {
       const selector = this.displayModule.waypointRoleSelector.get();
@@ -22357,9 +22357,9 @@
       const sub = this.context.bus.getSubscriber();
       if (this.updateFreq) {
         this.updateFreqSub = this.updateFreq.sub((freq) => {
-          var _a;
+          var _a2;
           for (const property of this.properties) {
-            (_a = this.subs[property]) === null || _a === void 0 ? void 0 : _a.destroy();
+            (_a2 = this.subs[property]) === null || _a2 === void 0 ? void 0 : _a2.destroy();
             this.subs[property] = this.bindProperty(sub, property, freq);
           }
         }, true);
@@ -22381,9 +22381,9 @@
       this.destroy();
     }
     destroy() {
-      var _a, _b;
+      var _a2, _b;
       super.destroy();
-      (_a = this.updateFreqSub) === null || _a === void 0 ? void 0 : _a.destroy();
+      (_a2 = this.updateFreqSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
       for (const property of this.properties) {
         (_b = this.subs[property]) === null || _b === void 0 ? void 0 : _b.destroy();
       }
@@ -22391,13 +22391,13 @@
   };
   var MapSystemComponent = class extends MapComponent {
     constructor(props) {
-      var _a;
+      var _a2;
       super(props);
       this.rootStyles = ObjectSubject.create({
         width: "0px",
         height: "0px"
       });
-      this.deadZone = (_a = this.props.deadZone) !== null && _a !== void 0 ? _a : VecNSubject.create(new Float64Array(4));
+      this.deadZone = (_a2 = this.props.deadZone) !== null && _a2 !== void 0 ? _a2 : VecNSubject.create(new Float64Array(4));
       this.deadZone.sub(this.onDeadZoneChanged.bind(this));
     }
     onAfterRender(thisNode) {
@@ -22433,8 +22433,8 @@
       this.props.onSleep();
     }
     render() {
-      var _a;
-      return FSComponent.buildComponent("div", { style: this.rootStyles, class: (_a = this.props.class) !== null && _a !== void 0 ? _a : "" }, this.props.children);
+      var _a2;
+      return FSComponent.buildComponent("div", { style: this.rootStyles, class: (_a2 = this.props.class) !== null && _a2 !== void 0 ? _a2 : "" }, this.props.children);
     }
     destroy() {
       super.destroy();
@@ -22561,10 +22561,10 @@
   var MapSystemWaypointsRenderer = class extends MapWaypointRenderer {
     constructor(textManager) {
       super(textManager, (entry, roleDefinitions) => {
-        var _a;
+        var _a2;
         for (let i = 0; i < this.rolePriorityOrder.length; i++) {
           const role = this.rolePriorityOrder[i];
-          if (entry.isAllRoles(role) && ((_a = roleDefinitions.get(role)) === null || _a === void 0 ? void 0 : _a.visibilityHandler(entry.waypoint))) {
+          if (entry.isAllRoles(role) && ((_a2 = roleDefinitions.get(role)) === null || _a2 === void 0 ? void 0 : _a2.visibilityHandler(entry.waypoint))) {
             return role;
           }
         }
@@ -22770,10 +22770,10 @@
       return this;
     }
     withContext(key, factory) {
-      var _a;
+      var _a2;
       if (!MapSystemBuilder.RESTRICTED_CONTEXT_KEYS.has(key)) {
         const existing = this.contextFactories.get(key);
-        const order = (_a = existing === null || existing === void 0 ? void 0 : existing.order) !== null && _a !== void 0 ? _a : this.contextFactories.size;
+        const order = (_a2 = existing === null || existing === void 0 ? void 0 : existing.order) !== null && _a2 !== void 0 ? _a2 : this.contextFactories.size;
         this.contextFactories.set(key, { key, factory, order });
       }
       return this;
@@ -22877,9 +22877,9 @@
     }
     withAirspaces(cache, showTypes, selectRenderer, renderOrder = () => 0, options, order) {
       return this.withModule(MapSystemKeys.Airspace, () => new MapAirspaceModule(showTypes)).withContext(MapSystemKeys.AirspaceManager, () => new GenericAirspaceRenderManager(renderOrder, selectRenderer)).withLayer(MapSystemKeys.Airspace, (context) => {
-        var _a, _b;
+        var _a2, _b;
         const optionsToUse = Object.assign({}, options);
-        (_a = optionsToUse.maxSearchRadius) !== null && _a !== void 0 ? _a : optionsToUse.maxSearchRadius = Subject.create(UnitType.NMILE.createNumber(10));
+        (_a2 = optionsToUse.maxSearchRadius) !== null && _a2 !== void 0 ? _a2 : optionsToUse.maxSearchRadius = Subject.create(UnitType.NMILE.createNumber(10));
         (_b = optionsToUse.maxSearchItemCount) !== null && _b !== void 0 ? _b : optionsToUse.maxSearchItemCount = Subject.create(100);
         return FSComponent.buildComponent(MapAirspaceLayer, Object.assign({ model: context.model, mapProjection: context.projection, bus: context.bus, lodBoundaryCache: cache, airspaceRenderManager: context[MapSystemKeys.AirspaceManager] }, optionsToUse));
       }, order);
@@ -23045,8 +23045,8 @@
       return { context, map, ref };
     }
     buildContext() {
-      var _a;
-      const context = new DefaultMapSystemContext(this.bus, new MapProjection(this.projectedSize.get()[0], this.projectedSize.get()[1]), this.projectedSize, (_a = this.deadZone) !== null && _a !== void 0 ? _a : VecNSubject.createFromVector(new Float64Array(4)));
+      var _a2;
+      const context = new DefaultMapSystemContext(this.bus, new MapProjection(this.projectedSize.get()[0], this.projectedSize.get()[1]), this.projectedSize, (_a2 = this.deadZone) !== null && _a2 !== void 0 ? _a2 : VecNSubject.createFromVector(new Float64Array(4)));
       context.projection.set({
         targetProjectedOffset: this.targetOffset,
         rangeEndpoints: this.nominalRangeEndpoints !== void 0 ? MapSystemUtils.nominalToTrueRelativeXY(this.nominalRangeEndpoints, context.projectedSize.get(), context.deadZone.get(), Vec2Math.create()) : void 0,
@@ -23284,8 +23284,8 @@
       return false;
     }
     static getConstraintLegIndexFromLegIndex(verticalPlan, globalLegIndex) {
-      var _a, _b;
-      return (_b = (_a = this.getConstraintFromLegIndex(verticalPlan, globalLegIndex)) === null || _a === void 0 ? void 0 : _a.index) !== null && _b !== void 0 ? _b : -1;
+      var _a2, _b;
+      return (_b = (_a2 = this.getConstraintFromLegIndex(verticalPlan, globalLegIndex)) === null || _a2 === void 0 ? void 0 : _a2.index) !== null && _b !== void 0 ? _b : -1;
     }
     static getConstraintDistanceFromConstraint(constraint) {
       let distance = 0;
@@ -23471,7 +23471,7 @@
       return void 0;
     }
     static getTodBodDetails(verticalPlan, activeLegIndex, distanceAlongLeg, currentAltitude, currentVS, out) {
-      var _a;
+      var _a2;
       out.todLegIndex = -1;
       out.bodLegIndex = -1;
       out.todLegDistance = 0;
@@ -23491,7 +23491,7 @@
         if (constraint.type === "climb" || constraint.type === "missed") {
           continue;
         }
-        if (constraint.fpa > 0 && ((_a = constraint.legs[0]) === null || _a === void 0 ? void 0 : _a.isBod) && constraint.targetAltitude <= altitude) {
+        if (constraint.fpa > 0 && ((_a2 = constraint.legs[0]) === null || _a2 === void 0 ? void 0 : _a2.isBod) && constraint.targetAltitude <= altitude) {
           bodConstraintIndex = i;
           bodConstraint = constraint;
           break;
@@ -23585,7 +23585,7 @@
       return out;
     }
     static getTocBocDetails(verticalPlan, activeLegIndex, distanceAlongLeg, currentGroundSpeed, currentAltitude, currentVS, out) {
-      var _a, _b;
+      var _a2, _b;
       out.bocLegIndex = -1;
       out.tocLegIndex = -1;
       out.tocLegDistance = 0;
@@ -23624,7 +23624,7 @@
       let currentConstraint;
       let currentConstraintLegIndex = activeConstraint.index - activeLegIndex;
       let currentLeg = activeLeg;
-      const activeLegDistanceRemaining = ((_a = activeLeg === null || activeLeg === void 0 ? void 0 : activeLeg.distance) !== null && _a !== void 0 ? _a : 0) - distanceAlongLeg;
+      const activeLegDistanceRemaining = ((_a2 = activeLeg === null || activeLeg === void 0 ? void 0 : activeLeg.distance) !== null && _a2 !== void 0 ? _a2 : 0) - distanceAlongLeg;
       if (distanceRemaining > activeLegDistanceRemaining) {
         distanceRemaining -= activeLegDistanceRemaining;
         if (currentConstraintLegIndex <= 0) {
@@ -23702,7 +23702,7 @@
       return out;
     }
     static getCruiseTocBocDetails(lateralPlan, verticalPlan, activeLegIndex, distanceAlongLeg, currentGroundSpeed, currentAltitude, currentVS, cruiseAltitude, out) {
-      var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _j;
       out.bocLegIndex = -1;
       out.tocLegIndex = -1;
       out.tocLegDistance = 0;
@@ -23718,7 +23718,7 @@
         return out;
       }
       const activeLeg = lateralPlan.tryGetLeg(activeLegIndex);
-      const activeLegDistanceRemaining = ((_b = (_a = activeLeg === null || activeLeg === void 0 ? void 0 : activeLeg.calculated) === null || _a === void 0 ? void 0 : _a.distanceWithTransitions) !== null && _b !== void 0 ? _b : 0) - distanceAlongLeg;
+      const activeLegDistanceRemaining = ((_b = (_a2 = activeLeg === null || activeLeg === void 0 ? void 0 : activeLeg.calculated) === null || _a2 === void 0 ? void 0 : _a2.distanceWithTransitions) !== null && _b !== void 0 ? _b : 0) - distanceAlongLeg;
       if (lastClimbConstraint && lastClimbConstraint.index < lateralPlan.length - 1 && activeLegIndex <= lastClimbConstraint.index) {
         const lastClimbConstraintLeg = lateralPlan.tryGetLeg(lastClimbConstraint.index);
         out.bocLegIndex = lastClimbConstraint.index + 1;
@@ -23894,7 +23894,7 @@
   };
   var AutopilotDriver = class {
     constructor(bus, apValues, apMasterOn, options) {
-      var _a, _b, _c;
+      var _a2, _b, _c;
       this.apValues = apValues;
       this.apMasterOn = apMasterOn;
       this.currentPitchRef = 0;
@@ -23910,7 +23910,7 @@
       if (options === null || options === void 0 ? void 0 : options.setInternalFlightDirector) {
         this.fdPublisher = bus.getPublisher();
       }
-      this.pitchServoRate = (_a = options === null || options === void 0 ? void 0 : options.pitchServoRate) !== null && _a !== void 0 ? _a : AutopilotDriver.PITCH_SERVO_RATE;
+      this.pitchServoRate = (_a2 = options === null || options === void 0 ? void 0 : options.pitchServoRate) !== null && _a2 !== void 0 ? _a2 : AutopilotDriver.PITCH_SERVO_RATE;
       this.pitchServo = new LinearServo(this.pitchServoRate);
       this.currentPitchRef = SimVar.GetSimVarValue("AUTOPILOT PITCH HOLD REF", SimVarValueType.Degree);
       this.bankServoRate = (_b = options === null || options === void 0 ? void 0 : options.bankServoRate) !== null && _b !== void 0 ? _b : AutopilotDriver.BANK_SERVO_RATE;
@@ -23980,7 +23980,7 @@
       }
     }
     setBank(bank, resetServo = true) {
-      var _a;
+      var _a2;
       if (this.zeroRollHeight !== void 0) {
         const raHeight = this.raHeight.get();
         if (raHeight !== null && raHeight < this.zeroRollHeight) {
@@ -23990,7 +23990,7 @@
       if (isFinite(bank)) {
         this.currentBankRef = bank;
         SimVar.SetSimVarValue("AUTOPILOT BANK HOLD REF", SimVarValueType.Degree, this.currentBankRef);
-        (_a = this.fdPublisher) === null || _a === void 0 ? void 0 : _a.pub("fd_target_bank", this.currentBankRef, true, true);
+        (_a2 = this.fdPublisher) === null || _a2 === void 0 ? void 0 : _a2.pub("fd_target_bank", this.currentBankRef, true, true);
       } else {
         console.warn("AutopilotDriver: Non-finite bank angle was attempted to be set.");
       }
@@ -24022,11 +24022,11 @@
       }
     }
     setPitch(pitch, resetServo = true) {
-      var _a;
+      var _a2;
       if (isFinite(pitch)) {
         this.currentPitchRef = pitch;
         SimVar.SetSimVarValue("AUTOPILOT PITCH HOLD REF", SimVarValueType.Degree, this.currentPitchRef);
-        (_a = this.fdPublisher) === null || _a === void 0 ? void 0 : _a.pub("fd_target_pitch", this.currentPitchRef, true, true);
+        (_a2 = this.fdPublisher) === null || _a2 === void 0 ? void 0 : _a2.pub("fd_target_pitch", this.currentPitchRef, true, true);
       } else {
         console.warn("AutopilotDriver: Non-finite pitch angle was attempted to be set.");
       }
@@ -24237,14 +24237,14 @@
   ]);
   var APHdgHoldDirector = class {
     constructor(bus, apValues, options) {
-      var _a;
+      var _a2;
       this.apValues = apValues;
       this.currentHeading = 0;
       this.currentBank = 0;
       this.capturedHeading = null;
       this.currentBankSub = bus.getSubscriber().on("roll_deg").withPrecision(1).handle((bank) => this.currentBank = bank);
       this.currentHeadingSub = bus.getSubscriber().on("hdg_deg").withPrecision(0).handle((h) => this.currentHeading = h);
-      const maxBankAngleOpt = (_a = options === null || options === void 0 ? void 0 : options.maxBankAngle) !== null && _a !== void 0 ? _a : void 0;
+      const maxBankAngleOpt = (_a2 = options === null || options === void 0 ? void 0 : options.maxBankAngle) !== null && _a2 !== void 0 ? _a2 : void 0;
       switch (typeof maxBankAngleOpt) {
         case "number":
           this.maxBankAngleFunc = () => maxBankAngleOpt;
@@ -24327,12 +24327,12 @@
   APHdgHoldDirector.MIN_BANK_THRESHOLD = 1;
   var APTrkHoldDirector = class {
     constructor(bus, apValues, options) {
-      var _a;
+      var _a2;
       this.bus = bus;
       this.apValues = apValues;
       this.magVar = ConsumerValue.create(null, 0);
       this.capturedTrack = null;
-      const maxBankAngleOpt = (_a = options === null || options === void 0 ? void 0 : options.maxBankAngle) !== null && _a !== void 0 ? _a : void 0;
+      const maxBankAngleOpt = (_a2 = options === null || options === void 0 ? void 0 : options.maxBankAngle) !== null && _a2 !== void 0 ? _a2 : void 0;
       switch (typeof maxBankAngleOpt) {
         case "number":
           this.maxBankAngleFunc = () => maxBankAngleOpt;
@@ -24427,13 +24427,13 @@
       this.filter = new ExpSmoother(500);
     }
     getOutput(radiusError) {
-      var _a;
+      var _a2;
       const currentTime = new Date().appTime();
       let bankAngle = 0;
       if (this.previousRadiusError !== void 0 && this.previousTime !== void 0) {
         const dTime = currentTime - this.previousTime;
         const input = (radiusError - this.previousRadiusError) / dTime * 1e3;
-        const precessionRate = isNaN((_a = this.filter.last()) !== null && _a !== void 0 ? _a : NaN) ? this.filter.reset(input) : this.filter.next(input, dTime);
+        const precessionRate = isNaN((_a2 = this.filter.last()) !== null && _a2 !== void 0 ? _a2 : NaN) ? this.filter.reset(input) : this.filter.next(input, dTime);
         const targetPrecessionRate = -this.precessionController.getOutput(dTime, radiusError);
         const precessionError = targetPrecessionRate - precessionRate;
         bankAngle = this.bankController.getOutput(dTime, precessionError);
@@ -24452,7 +24452,7 @@
   };
   var LNavDirector = class {
     constructor(bus, apValues, flightPlanner, obsDirector, options) {
-      var _a, _b, _c, _d, _e;
+      var _a2, _b, _c, _d, _e;
       this.bus = bus;
       this.apValues = apValues;
       this.flightPlanner = flightPlanner;
@@ -24590,7 +24590,7 @@
             break;
         }
       };
-      const maxBankAngleOpt = (_a = options === null || options === void 0 ? void 0 : options.maxBankAngle) !== null && _a !== void 0 ? _a : void 0;
+      const maxBankAngleOpt = (_a2 = options === null || options === void 0 ? void 0 : options.maxBankAngle) !== null && _a2 !== void 0 ? _a2 : void 0;
       switch (typeof maxBankAngleOpt) {
         case "number":
           this.maxBankAngleFunc = () => maxBankAngleOpt;
@@ -24733,7 +24733,7 @@
       this.isNavLock.set(newState);
     }
     update() {
-      var _a;
+      var _a2;
       if (this.isAwaitingCalculatePublished !== this.isAwaitingCalculate) {
         this.isAwaitingCalculatePublished = this.isAwaitingCalculate;
         this.publisher.pub("lnav_is_awaiting_calc", this.isAwaitingCalculate, true, true);
@@ -24849,7 +24849,7 @@
         this.lnavData.set("alongTrackSpeed", 0);
       }
       if (this.isObsDirectorTracking) {
-        (_a = this.obsDirector) === null || _a === void 0 ? void 0 : _a.stopTracking();
+        (_a2 = this.obsDirector) === null || _a2 === void 0 ? void 0 : _a2.stopTracking();
         this.lnavData.sub(this.lnavDataHandler, true);
         this.isObsDirectorTracking = false;
       }
@@ -24926,7 +24926,7 @@
       return bankAngleState;
     }
     calculateTracking(plan) {
-      var _a, _b;
+      var _a2, _b;
       let didAdvance;
       do {
         didAdvance = false;
@@ -24987,7 +24987,7 @@
           }
           didAdvance = transitionMode !== this.currentState.transitionMode || legIndex !== this.currentState.globalLegIndex || vectorIndex !== this.currentState.vectorIndex || isSuspended !== this.currentState.isSuspended;
           if (legIndex !== this.currentState.globalLegIndex) {
-            this.currentLeg = (_a = plan.tryGetLeg(this.currentState.globalLegIndex)) !== null && _a !== void 0 ? _a : void 0;
+            this.currentLeg = (_a2 = plan.tryGetLeg(this.currentState.globalLegIndex)) !== null && _a2 !== void 0 ? _a2 : void 0;
             plan.setCalculatingLeg(this.currentState.globalLegIndex);
             plan.setLateralLeg(this.currentState.globalLegIndex);
           }
@@ -24999,7 +24999,7 @@
       this.currentVector = ((_b = this.currentLeg) === null || _b === void 0 ? void 0 : _b.calculated) ? LNavUtils.getVectorsForTransitionMode(this.currentLeg.calculated, this.currentState.transitionMode, this.currentState.isSuspended)[this.currentState.vectorIndex] : void 0;
     }
     updateVectorAnticipation(plan) {
-      var _a;
+      var _a2;
       this.anticipationVector = void 0;
       this.vectorAnticipationDistance = 0;
       this.anticipationDtk = 0;
@@ -25009,7 +25009,7 @@
         return;
       }
       this.advanceToNextVector(plan, this.currentState, false, this.anticipationState);
-      const anticipationCalcs = (_a = plan.tryGetLeg(this.anticipationState.globalLegIndex)) === null || _a === void 0 ? void 0 : _a.calculated;
+      const anticipationCalcs = (_a2 = plan.tryGetLeg(this.anticipationState.globalLegIndex)) === null || _a2 === void 0 ? void 0 : _a2.calculated;
       if (!anticipationCalcs) {
         return;
       }
@@ -25068,7 +25068,7 @@
       return out;
     }
     advanceToNextVector(plan, state, awaitCalculateOnNextLeg, out) {
-      var _a, _b, _c, _d, _e, _f;
+      var _a2, _b, _c, _d, _e, _f;
       if (state !== out) {
         LNavDirector.copyStateInfo(state, out);
       }
@@ -25081,7 +25081,7 @@
       let isSuspended = state.isSuspended;
       let vectors = leg.calculated ? LNavUtils.getVectorsForTransitionMode(leg.calculated, transitionMode, isSuspended) : void 0;
       let vectorIndex = state.vectorIndex + 1;
-      let vectorEndIndex = (_a = vectors === null || vectors === void 0 ? void 0 : vectors.length) !== null && _a !== void 0 ? _a : 0;
+      let vectorEndIndex = (_a2 = vectors === null || vectors === void 0 ? void 0 : vectors.length) !== null && _a2 !== void 0 ? _a2 : 0;
       let didAdvance = false;
       let isDone = false;
       if (transitionMode === LNavTransitionMode.Unsuspend && leg.calculated) {
@@ -25161,12 +25161,12 @@
       return out;
     }
     advanceToNextLeg(plan, state, out) {
-      var _a, _b, _c;
+      var _a2, _b, _c;
       this.applyEndOfLegSuspends(plan, state, out);
       if (!out.isSuspended) {
         if (out.globalLegIndex + 1 >= plan.length) {
           out.transitionMode = LNavTransitionMode.None;
-          out.vectorIndex = Math.max(0, ((_c = (_b = (_a = plan.tryGetLeg(out.globalLegIndex)) === null || _a === void 0 ? void 0 : _a.calculated) === null || _b === void 0 ? void 0 : _b.flightPath.length) !== null && _c !== void 0 ? _c : 0) - 1);
+          out.vectorIndex = Math.max(0, ((_c = (_b = (_a2 = plan.tryGetLeg(out.globalLegIndex)) === null || _a2 === void 0 ? void 0 : _a2.calculated) === null || _b === void 0 ? void 0 : _b.flightPath.length) !== null && _c !== void 0 ? _c : 0) - 1);
           return out;
         }
         out.globalLegIndex++;
@@ -25178,7 +25178,7 @@
       return out;
     }
     trySetSuspended(plan, state, suspend, out, inhibitResuspend = false, resetVectorsOnSuspendEnd = false) {
-      var _a;
+      var _a2;
       if (state !== out) {
         LNavDirector.copyStateInfo(state, out);
       }
@@ -25239,7 +25239,7 @@
           }
           if (suspend && state.transitionMode === LNavTransitionMode.Egress) {
             out.transitionMode = LNavTransitionMode.None;
-            out.vectorIndex = Math.max(0, ((_a = legCalc === null || legCalc === void 0 ? void 0 : legCalc.flightPath.length) !== null && _a !== void 0 ? _a : 1) - 1);
+            out.vectorIndex = Math.max(0, ((_a2 = legCalc === null || legCalc === void 0 ? void 0 : legCalc.flightPath.length) !== null && _a2 !== void 0 ? _a2 : 1) - 1);
           }
         }
       }
@@ -25266,7 +25266,7 @@
       const plan = this.flightPlanner.getActiveFlightPlan();
       try {
         await plan.calculate();
-      } catch (_a) {
+      } catch (_a2) {
       }
       if (id !== this.awaitCalculateId) {
         return;
@@ -25274,8 +25274,8 @@
       this.isAwaitingCalculate = false;
     }
     getAlongLegDistance(plan, state, alongVectorDistance) {
-      var _a;
-      const calcs = (_a = plan.tryGetLeg(state.globalLegIndex)) === null || _a === void 0 ? void 0 : _a.calculated;
+      var _a2;
+      const calcs = (_a2 = plan.tryGetLeg(state.globalLegIndex)) === null || _a2 === void 0 ? void 0 : _a2.calculated;
       if (!calcs) {
         return 0;
       }
@@ -25319,8 +25319,8 @@
       return UnitType.METER.convertTo(distanceAlong, UnitType.NMILE) + alongVectorDistance;
     }
     getLegDistanceRemaining(plan, state, vectorDistanceRemaining) {
-      var _a;
-      const calcs = (_a = plan.tryGetLeg(state.globalLegIndex)) === null || _a === void 0 ? void 0 : _a.calculated;
+      var _a2;
+      const calcs = (_a2 = plan.tryGetLeg(state.globalLegIndex)) === null || _a2 === void 0 ? void 0 : _a2.calculated;
       if (!calcs) {
         return 0;
       }
@@ -25405,7 +25405,7 @@
   LNavDirector.ANGULAR_TOLERANCE_METERS = UnitType.GA_RADIAN.convertTo(GeoCircle.ANGULAR_TOLERANCE, UnitType.METER);
   var SmoothingPathCalculator = class {
     constructor(bus, flightPlanner, primaryPlanIndex, options) {
-      var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _j;
       this.bus = bus;
       this.flightPlanner = flightPlanner;
       this.primaryPlanIndex = primaryPlanIndex;
@@ -25414,7 +25414,7 @@
       this.vnavCalculated = new SubEvent();
       this.legAltitudes = [0, 0];
       this.applyPathValuesResult = [void 0, 0];
-      this.flightPathAngle = (_a = options === null || options === void 0 ? void 0 : options.defaultFpa) !== null && _a !== void 0 ? _a : SmoothingPathCalculator.DEFAULT_DEFAULT_FPA;
+      this.flightPathAngle = (_a2 = options === null || options === void 0 ? void 0 : options.defaultFpa) !== null && _a2 !== void 0 ? _a2 : SmoothingPathCalculator.DEFAULT_DEFAULT_FPA;
       this.minFlightPathAngle = (_b = options === null || options === void 0 ? void 0 : options.minFpa) !== null && _b !== void 0 ? _b : SmoothingPathCalculator.DEFAULT_MIN_FPA;
       this.maxFlightPathAngle = (_c = options === null || options === void 0 ? void 0 : options.maxFpa) !== null && _c !== void 0 ? _c : SmoothingPathCalculator.DEFAULT_MAX_FPA;
       this.forceFirstApproachAtConstraint = (_d = options === null || options === void 0 ? void 0 : options.forceFirstApproachAtConstraint) !== null && _d !== void 0 ? _d : false;
@@ -25441,9 +25441,9 @@
       });
     }
     getVerticalFlightPlan(planIndex) {
-      var _a;
+      var _a2;
       var _b;
-      return (_a = (_b = this.verticalFlightPlans)[planIndex]) !== null && _a !== void 0 ? _a : _b[planIndex] = this.createVerticalPlan(planIndex);
+      return (_a2 = (_b = this.verticalFlightPlans)[planIndex]) !== null && _a2 !== void 0 ? _a2 : _b[planIndex] = this.createVerticalPlan(planIndex);
     }
     createVerticalPlan(planIndex) {
       const verticalFlightPlan = {
@@ -25518,9 +25518,9 @@
       return verticalPlan.constraints[this.getTargetConstraintIndex(planIndex, globalLegIndex)];
     }
     getTargetAltitude(planIndex, globalLegIndex) {
-      var _a, _b;
+      var _a2, _b;
       if (this.getFlightPhase(planIndex) === VerticalFlightPhase.Descent) {
-        return (_a = this.getTargetConstraint(planIndex, globalLegIndex)) === null || _a === void 0 ? void 0 : _a.targetAltitude;
+        return (_a2 = this.getTargetConstraint(planIndex, globalLegIndex)) === null || _a2 === void 0 ? void 0 : _a2.targetAltitude;
       } else {
         return (_b = this.getTargetConstraint(planIndex, globalLegIndex)) === null || _b === void 0 ? void 0 : _b.maxAltitude;
       }
@@ -25705,7 +25705,7 @@
       verticalPlan.planChanged = false;
     }
     buildVerticalLegsAndConstraints(lateralPlan, verticalPlan) {
-      var _a, _b, _c, _d, _e, _f, _g;
+      var _a2, _b, _c, _d, _e, _f, _g;
       verticalPlan.constraints.length = 0;
       verticalPlan.segments.length = 0;
       verticalPlan.destLegIndex = void 0;
@@ -25726,7 +25726,7 @@
         for (let segmentLegIndex = 0; segmentLegIndex < segment.legs.length; segmentLegIndex++) {
           const globalLegIndex = segment.offset + segmentLegIndex;
           const lateralLeg = segment.legs[segmentLegIndex];
-          const verticalLeg = VNavUtils.createLeg(segment.segmentIndex, segmentLegIndex, (_a = lateralLeg.name) !== null && _a !== void 0 ? _a : "", (_c = (_b = lateralLeg.calculated) === null || _b === void 0 ? void 0 : _b.distanceWithTransitions) !== null && _c !== void 0 ? _c : void 0);
+          const verticalLeg = VNavUtils.createLeg(segment.segmentIndex, segmentLegIndex, (_a2 = lateralLeg.name) !== null && _a2 !== void 0 ? _a2 : "", (_c = (_b = lateralLeg.calculated) === null || _b === void 0 ? void 0 : _b.distanceWithTransitions) !== null && _c !== void 0 ? _c : void 0);
           if (verticalPlan.missedApproachStartIndex === void 0 && segment.segmentType === FlightPlanSegmentType.Approach && BitFlags.isAll(lateralLeg.flags, LegDefinitionFlags.MissedApproach)) {
             verticalPlan.missedApproachStartIndex = globalLegIndex;
           }
@@ -25754,11 +25754,11 @@
       verticalPlan.lastDescentConstraintLegIndex = (_g = verticalPlan.constraints[VNavUtils.getLastDescentConstraintIndex(verticalPlan)]) === null || _g === void 0 ? void 0 : _g.index;
     }
     buildConstraint(verticalPlan, globalLegIndex, lateralLeg, constraintAltitudes, name) {
-      var _a;
+      var _a2;
       const constraint = VNavUtils.createConstraint(globalLegIndex, constraintAltitudes[0], constraintAltitudes[1], name, BitFlags.isAll(lateralLeg.flags, LegDefinitionFlags.MissedApproach) ? "missed" : lateralLeg.verticalData.phase === VerticalFlightPhase.Descent ? "descent" : "climb");
       constraint.isBeyondFaf = verticalPlan.fafLegIndex === void 0 ? false : globalLegIndex > verticalPlan.fafLegIndex;
       if (verticalPlan.verticalDirectIndex === globalLegIndex) {
-        constraint.fpa = (_a = verticalPlan.verticalDirectFpa) !== null && _a !== void 0 ? _a : this.flightPathAngle;
+        constraint.fpa = (_a2 = verticalPlan.verticalDirectFpa) !== null && _a2 !== void 0 ? _a2 : this.flightPathAngle;
         constraint.type = "direct";
       }
       const userFpa = lateralLeg.verticalData.fpa;
@@ -25824,7 +25824,7 @@
       }
     }
     fillLegDistances(lateralPlan, verticalPlan) {
-      var _a, _b, _c;
+      var _a2, _b, _c;
       if (lateralPlan.length > 0) {
         for (const segment of lateralPlan.segments()) {
           if (segment) {
@@ -25836,7 +25836,7 @@
               } else if (leg && leg.calculated && leg.calculated.endLat !== void 0 && leg.calculated.endLon !== void 0) {
                 let prevLeg;
                 for (const checkLeg of lateralPlan.legs(true, segment.offset + l - 1)) {
-                  if (((_a = checkLeg.calculated) === null || _a === void 0 ? void 0 : _a.endLat) !== void 0 && ((_b = checkLeg.calculated) === null || _b === void 0 ? void 0 : _b.endLon) !== void 0) {
+                  if (((_a2 = checkLeg.calculated) === null || _a2 === void 0 ? void 0 : _a2.endLat) !== void 0 && ((_b = checkLeg.calculated) === null || _b === void 0 ? void 0 : _b.endLon) !== void 0) {
                     prevLeg = checkLeg;
                     break;
                   }
@@ -25853,9 +25853,9 @@
       }
     }
     findAndRemoveInvalidConstraints(verticalPlan) {
-      var _a, _b, _c;
+      var _a2, _b, _c;
       let firstDescentConstraintIndex = verticalPlan.firstDescentConstraintLegIndex === void 0 ? -1 : VNavUtils.getConstraintIndexFromLegIndex(verticalPlan, verticalPlan.firstDescentConstraintLegIndex);
-      const startIndex = ((_a = verticalPlan.constraints[firstDescentConstraintIndex]) === null || _a === void 0 ? void 0 : _a.type) === "direct" ? firstDescentConstraintIndex : verticalPlan.constraints.length - 1;
+      const startIndex = ((_a2 = verticalPlan.constraints[firstDescentConstraintIndex]) === null || _a2 === void 0 ? void 0 : _a2.type) === "direct" ? firstDescentConstraintIndex : verticalPlan.constraints.length - 1;
       let phase = "climb";
       let priorMinAltitude = -Infinity;
       let priorMaxAltitude = Infinity;
@@ -25921,9 +25921,9 @@
       verticalPlan.lastDescentConstraintLegIndex = (_c = verticalPlan.constraints[VNavUtils.getLastDescentConstraintIndex(verticalPlan)]) === null || _c === void 0 ? void 0 : _c.index;
     }
     reinsertInvalidConstraints(verticalPlan, lateralPlan) {
-      var _a;
+      var _a2;
       const firstDescentConstraintIndex = verticalPlan.firstDescentConstraintLegIndex === void 0 ? -1 : VNavUtils.getConstraintIndexFromLegIndex(verticalPlan, verticalPlan.firstDescentConstraintLegIndex);
-      const startIndex = ((_a = verticalPlan.constraints[firstDescentConstraintIndex]) === null || _a === void 0 ? void 0 : _a.type) === "direct" ? verticalPlan.firstDescentConstraintLegIndex + 1 : 0;
+      const startIndex = ((_a2 = verticalPlan.constraints[firstDescentConstraintIndex]) === null || _a2 === void 0 ? void 0 : _a2.type) === "direct" ? verticalPlan.firstDescentConstraintLegIndex + 1 : 0;
       let globalLegIndex = startIndex;
       for (const lateralLeg of lateralPlan.legs(false, startIndex)) {
         const verticalLeg = VNavUtils.getVerticalLegFromPlan(verticalPlan, globalLegIndex);
@@ -26309,7 +26309,7 @@
   ]);
   var AltitudeSelectManager = class {
     constructor(bus, settingsManager, options, stops) {
-      var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
       this.bus = bus;
       this.publisher = this.bus.getPublisher();
       this.stops = new SortedArray((a, b) => a - b);
@@ -26327,7 +26327,7 @@
           this.lockDebounceTimer.clear();
         });
       };
-      this.altitudeHoldSlotIndex = (_a = options.altitudeHoldSlotIndex) !== null && _a !== void 0 ? _a : 1;
+      this.altitudeHoldSlotIndex = (_a2 = options.altitudeHoldSlotIndex) !== null && _a2 !== void 0 ? _a2 : 1;
       this.altitudeHoldSlotSimVar = `AUTOPILOT ALTITUDE LOCK VAR:${this.altitudeHoldSlotIndex}`;
       this.minValue = Math.round(options.minValue.asUnit(UnitType.FOOT));
       this.maxValue = Math.round(options.maxValue.asUnit(UnitType.FOOT));
@@ -26476,8 +26476,8 @@
       }
     }
     setSelectedAltitude(altitudeFeet) {
-      var _a, _b;
-      const isMetric = (_b = (_a = this.altimeterMetricSetting) === null || _a === void 0 ? void 0 : _a.value) !== null && _b !== void 0 ? _b : false;
+      var _a2, _b;
+      const isMetric = (_b = (_a2 = this.altimeterMetricSetting) === null || _a2 === void 0 ? void 0 : _a2.value) !== null && _b !== void 0 ? _b : false;
       let min, max, unit;
       if (isMetric) {
         min = this.minValueMetric;
@@ -26494,9 +26494,9 @@
       }
     }
     changeSelectedAltitude(startValue, direction, useLargeIncrement = false) {
-      var _a, _b;
+      var _a2, _b;
       const roundFunc = direction === 1 ? Math.floor : Math.ceil;
-      const isMetric = (_b = (_a = this.altimeterMetricSetting) === null || _a === void 0 ? void 0 : _a.value) !== null && _b !== void 0 ? _b : false;
+      const isMetric = (_b = (_a2 = this.altimeterMetricSetting) === null || _a2 === void 0 ? void 0 : _a2.value) !== null && _b !== void 0 ? _b : false;
       let min, max, incrSmall, incrLarge, units, lockAlt;
       if (isMetric) {
         min = this.minValueMetric;
@@ -26583,7 +26583,7 @@
   })(AutothrottleTargetMode || (AutothrottleTargetMode = {}));
   var AbstractAutothrottle = class {
     constructor(bus, airspeedIndex, throttleInfos, options, throttleLeverManager) {
-      var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
       this.bus = bus;
       this.publisher = this.bus.getPublisher();
       this.isOverspeedProtActive = Subject.create(false);
@@ -26636,7 +26636,7 @@
       this.machToKiasSmoother = new ExpSmoother(options.speedSmoothingConstant);
       this.iasLookahead = SubscribableUtils.toSubscribable(options.speedLookahead, true);
       this.iasSmoother = new MultiExpSmoother(options.speedSmoothingConstant, options.speedSmoothingVelocityConstant);
-      this.lookaheadIasSmoother = new MultiExpSmoother((_a = options.speedLookaheadSmoothingConstant) !== null && _a !== void 0 ? _a : options.speedSmoothingConstant, (_b = options.speedLookaheadSmoothingVelocityConstant) !== null && _b !== void 0 ? _b : options.speedSmoothingVelocityConstant);
+      this.lookaheadIasSmoother = new MultiExpSmoother((_a2 = options.speedLookaheadSmoothingConstant) !== null && _a2 !== void 0 ? _a2 : options.speedSmoothingConstant, (_b = options.speedLookaheadSmoothingVelocityConstant) !== null && _b !== void 0 ? _b : options.speedSmoothingVelocityConstant);
       this.lastIasLookahead = this.iasLookahead.get();
       this.shouldTargetAccel = options.selectedSpeedAccelTarget !== void 0;
       this.selectedSpeedAccelTargetFunc = options.selectedSpeedAccelTarget;
@@ -26758,7 +26758,7 @@
       this.updateTimer = setInterval(this.updateHandler, 1e3 / frequency);
     }
     stop() {
-      var _a, _b, _c, _d;
+      var _a2, _b, _c, _d;
       if (!this.isAlive) {
         throw new Error("AbstractAutothrottle: cannot stop a dead autothrottle");
       }
@@ -26771,7 +26771,7 @@
       this.iasSmoother.reset();
       this.lookaheadIasSmoother.reset();
       this.lastSmoothedIas = void 0;
-      (_a = this.accelSmoother) === null || _a === void 0 ? void 0 : _a.reset();
+      (_a2 = this.accelSmoother) === null || _a2 === void 0 ? void 0 : _a2.reset();
       (_b = this.selectedSpeedAccelTargetSmoother) === null || _b === void 0 ? void 0 : _b.reset();
       (_c = this.overspeedProtAccelTargetSmoother) === null || _c === void 0 ? void 0 : _c.reset();
       (_d = this.underspeedProtAccelTargetSmoother) === null || _d === void 0 ? void 0 : _d.reset();
@@ -26846,7 +26846,7 @@
       }
     }
     calculateSpeedTargetPower(dt, out) {
-      var _a, _b, _c;
+      var _a2, _b, _c;
       out.selectedSpeedPowerTarget = void 0;
       out.overspeedProtPowerTarget = void 0;
       out.underspeedProtPowerTarget = void 0;
@@ -26892,7 +26892,7 @@
         this.lastOverspeedIas = maxIas;
       } else {
         this.overspeedPid.reset();
-        (_a = this.overspeedProtAccelTargetSmoother) === null || _a === void 0 ? void 0 : _a.reset();
+        (_a2 = this.overspeedProtAccelTargetSmoother) === null || _a2 === void 0 ? void 0 : _a2.reset();
         this.lastOverspeedIas = void 0;
       }
       if (isUnderspeedProtActive) {
@@ -27152,7 +27152,7 @@
       this.lastSmoothedPower = smoothedPower;
     }
     drive(targetNormPos, dt) {
-      var _a;
+      var _a2;
       const current = this.normPosition;
       const delta = targetNormPos - current;
       if (delta === 0) {
@@ -27167,7 +27167,7 @@
       if (this.throttleLeverManager !== void 0) {
         this.throttleLeverManager.setThrottleLeverPosRaw(this.index, finalPos * AutothrottleThrottle.RAW_AXIS_MAX);
       } else {
-        (_a = this.keyEventManager) === null || _a === void 0 ? void 0 : _a.triggerKey(this.throttleSetKVar, false, Math.round(finalPos * AutothrottleThrottle.RAW_AXIS_MAX));
+        (_a2 = this.keyEventManager) === null || _a2 === void 0 ? void 0 : _a2.triggerKey(this.throttleSetKVar, false, Math.round(finalPos * AutothrottleThrottle.RAW_AXIS_MAX));
       }
     }
     resetPowerSmoothing() {
@@ -27176,8 +27176,8 @@
       this.lastSmoothedPower = void 0;
     }
     destroy() {
-      var _a;
-      (_a = this.virtualPos) === null || _a === void 0 ? void 0 : _a.destroy();
+      var _a2;
+      (_a2 = this.virtualPos) === null || _a2 === void 0 ? void 0 : _a2.destroy();
     }
   };
   AutothrottleThrottle.RAW_AXIS_MAX = 16384;
@@ -27214,7 +27214,7 @@
       return this;
     }
     bindUpdate(predicate) {
-      var _a;
+      var _a2;
       if (!this.isAlive) {
         throw new Error("CasAlertTransporter: cannot bind an alert state using a dead transporter");
       }
@@ -27225,11 +27225,11 @@
       };
       this.updateEntries.push(entry);
       this.initUpdateFuncs();
-      (_a = CasAlertTransporter.updateEntries) === null || _a === void 0 ? void 0 : _a.push(entry);
+      (_a2 = CasAlertTransporter.updateEntries) === null || _a2 === void 0 ? void 0 : _a2.push(entry);
       return this;
     }
     bindStateUpdate(predicate, state) {
-      var _a;
+      var _a2;
       if (!this.isAlive) {
         throw new Error("CasAlertTransporter: cannot bind an alert state using a dead transporter");
       }
@@ -27241,7 +27241,7 @@
       };
       this.updateEntries.push(entry);
       this.initUpdateFuncs();
-      (_a = CasAlertTransporter.updateEntries) === null || _a === void 0 ? void 0 : _a.push(entry);
+      (_a2 = CasAlertTransporter.updateEntries) === null || _a2 === void 0 ? void 0 : _a2.push(entry);
       return this;
     }
     resume() {
@@ -27414,12 +27414,12 @@
       SimVar.SetSimVarValue(info.visiblePosSimVar, "number", MathUtils.clamp(visibleThrottlePos, -1, 1));
     }
     setMode(index, mode) {
-      var _a;
+      var _a2;
       if (mode === this.lastModes[index]) {
         return;
       }
       this.lastModes[index] = mode;
-      this.publisher.pub(this.throttleInfos[index].fadecModeTopic, (_a = mode === null || mode === void 0 ? void 0 : mode.name) !== null && _a !== void 0 ? _a : "", true, true);
+      this.publisher.pub(this.throttleInfos[index].fadecModeTopic, (_a2 = mode === null || mode === void 0 ? void 0 : mode.name) !== null && _a2 !== void 0 ? _a2 : "", true, true);
     }
   };
   JetFadec.MSFS_STANDARD_SEA_LEVEL_TEMP_RANKINE = 518.69;
@@ -27733,7 +27733,7 @@
       this.page.invalidate();
     }
     async handleSelectKey(event) {
-      var _a, _b;
+      var _a2, _b;
       if (this.isDisabled()) {
         return false;
       }
@@ -27741,7 +27741,7 @@
         if (this.options.onDelete) {
           const result = await this.options.onDelete();
           if (result === true || typeof result === "string") {
-            if ((_a = this.options.clearScratchpadOnSelectedHandled) !== null && _a !== void 0 ? _a : true) {
+            if ((_a2 = this.options.clearScratchpadOnSelectedHandled) !== null && _a2 !== void 0 ? _a2 : true) {
               this.page.screen.clearScratchpad();
             }
             return result;
@@ -27880,8 +27880,8 @@
       this.bindings.push(binding);
     }
     async handleLineSelectKey(event) {
-      var _a;
-      const componentAtSk = (_a = this.memorizedComponents[event.row]) === null || _a === void 0 ? void 0 : _a[event.col];
+      var _a2;
+      const componentAtSk = (_a2 = this.memorizedComponents[event.row]) === null || _a2 === void 0 ? void 0 : _a2[event.col];
       if (componentAtSk) {
         const selectKeyHandled = await componentAtSk.handleSelectKey(event);
         if (selectKeyHandled !== false) {
@@ -27982,10 +27982,10 @@
       }
     }
     static resolveOptions(options) {
-      var _a;
+      var _a2;
       const resolved = Object.assign({}, options);
       for (const key in DmsFormatter2.DEFAULT_OPTIONS) {
-        (_a = resolved[key]) !== null && _a !== void 0 ? _a : resolved[key] = DmsFormatter2.DEFAULT_OPTIONS[key];
+        (_a2 = resolved[key]) !== null && _a2 !== void 0 ? _a2 : resolved[key] = DmsFormatter2.DEFAULT_OPTIONS[key];
       }
       return resolved;
     }
@@ -28000,7 +28000,7 @@
       });
     }
     static parseFragment(fragment, precision, precisionUnit) {
-      var _a, _b;
+      var _a2, _b;
       const signMatch = fragment.match(DmsFormatter2.SIGN_FRAGMENT_REGEX);
       if (signMatch) {
         const [
@@ -28050,7 +28050,7 @@
             return `${formatLeftFunc(converted)}${decimal.toString().substring(1)}`;
           };
         }
-        const forcedDecimalPlaces = (_a = rightForcedMatch === null || rightForcedMatch === void 0 ? void 0 : rightForcedMatch.length) !== null && _a !== void 0 ? _a : 0;
+        const forcedDecimalPlaces = (_a2 = rightForcedMatch === null || rightForcedMatch === void 0 ? void 0 : rightForcedMatch.length) !== null && _a2 !== void 0 ? _a2 : 0;
         const unforcedDecimalPlaces = (_b = rightOptionalMatch === null || rightOptionalMatch === void 0 ? void 0 : rightOptionalMatch.length) !== null && _b !== void 0 ? _b : 0;
         const totalDecimalPlaces = forcedDecimalPlaces + unforcedDecimalPlaces;
         const factor = Math.pow(10, totalDecimalPlaces);
@@ -28152,10 +28152,10 @@
       }
     }
     static resolveOptions(options) {
-      var _a;
+      var _a2;
       const resolved = Object.assign({}, options);
       for (const key in DurationFormatter.DEFAULT_OPTIONS) {
-        (_a = resolved[key]) !== null && _a !== void 0 ? _a : resolved[key] = DurationFormatter.DEFAULT_OPTIONS[key];
+        (_a2 = resolved[key]) !== null && _a2 !== void 0 ? _a2 : resolved[key] = DurationFormatter.DEFAULT_OPTIONS[key];
       }
       return resolved;
     }
@@ -28170,7 +28170,7 @@
       });
     }
     static parseFragment(fragment, precision, precisionUnit) {
-      var _a, _b;
+      var _a2, _b;
       const signMatch = fragment.match(DurationFormatter.SIGN_FRAGMENT_REGEX);
       if (signMatch) {
         const [
@@ -28220,7 +28220,7 @@
             return `${formatLeftFunc(converted)}${decimal.toString().substring(1)}`;
           };
         }
-        const forcedDecimalPlaces = (_a = rightForcedMatch === null || rightForcedMatch === void 0 ? void 0 : rightForcedMatch.length) !== null && _a !== void 0 ? _a : 0;
+        const forcedDecimalPlaces = (_a2 = rightForcedMatch === null || rightForcedMatch === void 0 ? void 0 : rightForcedMatch.length) !== null && _a2 !== void 0 ? _a2 : 0;
         const unforcedDecimalPlaces = (_b = rightOptionalMatch === null || rightOptionalMatch === void 0 ? void 0 : rightOptionalMatch.length) !== null && _b !== void 0 ? _b : 0;
         const totalDecimalPlaces = forcedDecimalPlaces + unforcedDecimalPlaces;
         const factor = Math.pow(10, totalDecimalPlaces);
@@ -28292,10 +28292,10 @@
       }
     }
     static resolveOptions(options) {
-      var _a;
+      var _a2;
       const resolved = Object.assign({}, options);
       for (const key in DateTimeFormatter.DEFAULT_OPTIONS) {
-        (_a = resolved[key]) !== null && _a !== void 0 ? _a : resolved[key] = DateTimeFormatter.DEFAULT_OPTIONS[key];
+        (_a2 = resolved[key]) !== null && _a2 !== void 0 ? _a2 : resolved[key] = DateTimeFormatter.DEFAULT_OPTIONS[key];
       }
       return resolved;
     }
@@ -28342,7 +28342,7 @@
       };
     }
     static parseNumFragment(match) {
-      var _a, _b;
+      var _a2, _b;
       const [
         ,
         ,
@@ -28369,7 +28369,7 @@
             return `${formatLeftFunc(date)}${numFractionGetter(date).toString().substring(1)}`;
           };
         }
-        const forcedDecimalPlaces = (_a = rightForcedMatch === null || rightForcedMatch === void 0 ? void 0 : rightForcedMatch.length) !== null && _a !== void 0 ? _a : 0;
+        const forcedDecimalPlaces = (_a2 = rightForcedMatch === null || rightForcedMatch === void 0 ? void 0 : rightForcedMatch.length) !== null && _a2 !== void 0 ? _a2 : 0;
         const unforcedDecimalPlaces = (_b = rightOptionalMatch === null || rightOptionalMatch === void 0 ? void 0 : rightOptionalMatch.length) !== null && _b !== void 0 ? _b : 0;
         const totalDecimalPlaces = forcedDecimalPlaces + unforcedDecimalPlaces;
         const factor = Math.pow(10, totalDecimalPlaces);
@@ -28596,11 +28596,13 @@
   // instruments/src/IES/IESRoot/IESRoot.tsx
   var IESRoot = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", null, /* @__PURE__ */ FSComponent.buildComponent("div", null, "Primary Flight Display"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Attitude Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Heading Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Altimeter"));
+      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "IES" }, /* @__PURE__ */ FSComponent.buildComponent("div", null, "Primary Flight Display"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Attitude Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Heading Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Altimeter"));
     }
   };
 
   // instruments/src/IES/instrument.tsx
+  var IsAce = Object.prototype.hasOwnProperty.call(window, "ACE_ENGINE_HANDLE");
+  var IES_ID = "IES_CONTENT";
   var E170_IES = class extends BaseInstrument {
     get templateID() {
       return "E170_IES";
@@ -28612,9 +28614,27 @@
       return false;
     }
     connectedCallback() {
+      var _a2, _b;
       super.connectedCallback();
-      FSComponent.render(/* @__PURE__ */ FSComponent.buildComponent(IESRoot, null), document.getElementById("IES_CONTENT"));
+      FSComponent.render(/* @__PURE__ */ FSComponent.buildComponent(IESRoot, null), document.getElementById(IES_ID));
+      !IsAce && ((_b = (_a2 = document.getElementById(IES_ID)) == null ? void 0 : _a2.querySelector(":scope > h1")) == null ? void 0 : _b.remove());
+    }
+    Update() {
+      super.Update();
     }
   };
-  registerInstrument("ies-element", E170_IES);
+  var _a;
+  if (IsAce) {
+    const instrument = new E170_IES();
+    const msfsReactMountDiv = document.getElementById("MSFS_REACT_MOUNT");
+    if (msfsReactMountDiv) {
+      msfsReactMountDiv.id = IES_ID;
+    }
+    instrument.connectedCallback();
+    (_a = document.getElementById("ROOT_ELEMENT")) == null ? void 0 : _a.addEventListener("update", () => {
+      instrument.Update();
+    });
+  } else {
+    registerInstrument("ies-element", E170_IES);
+  }
 })();

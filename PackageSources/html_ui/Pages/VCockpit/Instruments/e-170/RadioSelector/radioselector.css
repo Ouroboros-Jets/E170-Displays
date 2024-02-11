@@ -1,4 +1,7 @@
 /* temp_stylePlugin:instruments\src\RadioSelector\index.scss */
+.radioSelector {
+  color: white;
+}
 .radio_text {
   font-family: arial;
   color: cyan;

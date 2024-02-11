@@ -1,7 +1,7 @@
 {
-  "index": "./index.tsx",
+  "index": "./instrument.tsx",
   "isInteractive": true,
-  "name": "EngineIndicatingAndCrewAlertingSystem",
+  "name": "EICAS",
   "dimensions": {
     "width": 600,
     "height": 800

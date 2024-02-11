@@ -1,7 +1,7 @@
 {
   "index": "./instrument.tsx",
   "isInteractive": false,
-  "name": "PrimaryFlightDisplay",
+  "name": "PFD",
   "dimensions": {
     "width": 600,
     "height": 800

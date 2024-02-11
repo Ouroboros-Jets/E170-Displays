@@ -1,9 +1,9 @@
 {
-	"index": "./index.tsx",
-	"isInteractive": true,
-	"name": "IntegratedElectronicStandby",
-	"dimensions": {
-		"width": 512,
-		"height": 512
-	}
+  "index": "./instrument.tsx",
+  "isInteractive": true,
+  "name": "IES",
+  "dimensions": {
+    "width": 512,
+    "height": 512
+  }
 }

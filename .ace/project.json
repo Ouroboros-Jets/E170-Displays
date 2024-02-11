@@ -7,49 +7,49 @@
   },
   "elements": [
     {
-      "uuid": "ceb1d8ad-408b-448b-90a3-550f8ee6ec9c",
-      "name": "EngineIndicatingAndCrewAlertingSystem",
+      "uuid": "116009de-8aef-4d98-96fd-85310f7abe71",
+      "name": "PFD",
       "element": "Instrument",
       "width": 600,
       "height": 800,
-      "x": 7060,
-      "y": 2500
+      "x": 5880,
+      "y": 2220
     },
     {
-      "uuid": "e8a02bfa-f2a5-4162-8735-2d7079b5de6f",
-      "name": "MultifunctionDisplay",
+      "uuid": "601ee61d-c51c-4649-bc14-75c754f5cbf9",
+      "name": "Clock",
+      "element": "Instrument",
+      "width": 500,
+      "height": 500,
+      "x": 6580,
+      "y": 2140
+    },
+    {
+      "uuid": "7eb9da57-8627-4667-be7f-3033ec1f1188",
+      "name": "EICAS",
       "element": "Instrument",
       "width": 600,
       "height": 800,
-      "x": 6440,
-      "y": 2500
+      "x": 5260,
+      "y": 2220
     },
     {
-      "uuid": "0f540aa6-ef8c-4e32-946a-a22d73f6bf35",
-      "name": "PrimaryFlightDisplay",
+      "uuid": "83410f76-121f-4cee-b99c-e8dd78370c17",
+      "name": "RadioSelector",
       "element": "Instrument",
-      "width": 600,
-      "height": 800,
-      "x": 5820,
-      "y": 2500
+      "width": 500,
+      "height": 500,
+      "x": 6340,
+      "y": 3120
     },
     {
-      "uuid": "1049efd5-a3c5-4dec-8209-76121d47e607",
-      "name": "Systems",
+      "uuid": "b4de785f-45a7-45ab-a466-9c81fe96d58e",
+      "name": "IES",
       "element": "Instrument",
-      "width": 550,
-      "height": 550,
-      "x": 8220,
-      "y": 2860
-    },
-    {
-      "uuid": "ec9f0165-900f-4c85-b714-8509adca769a",
-      "name": "ElectronicFlightBag",
-      "element": "Instrument",
-      "width": 2048,
-      "height": 1536,
-      "x": 5760,
-      "y": 3360
+      "width": 512,
+      "height": 512,
+      "x": 5020,
+      "y": 3160
     }
   ]
 }

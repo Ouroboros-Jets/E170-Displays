@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es2021: true
   },
-  extends: ['standard-with-typescript', 'plugin:react/recommended', 'prettier'],
+  extends: ['standard-with-typescript', 'prettier'],
   overrides: [
     {
       env: {
@@ -37,3 +37,4 @@ module.exports = {
     '@typescript-eslint/triple-slash-reference': 'off'
   }
 }
+// seethe, react config will be in the EFB repo, we dont need it here with no react displays (hopefully the MFD will be in the avionics framework)
