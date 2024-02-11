@@ -12,7 +12,8 @@
     "paths": {
       "@instruments/common/*": ["./instruments/src/Common/*"]
     },
-    "typeRoots": ["./typings/", "./node_modules/@types", "./node_modules/sass"]
+    "typeRoots": ["./typings/", "./node_modules/@types", "./node_modules"],
+    "types": ["sass"]
   },
   "include": [
     ".eslintrc.cjs",
