@@ -1,8 +1,19 @@
-/* temp_stylePlugin:instruments\src\PFD\index.scss */
+/* temp_stylePlugin:instruments\src\PFD\PFDRoot\pfdRoot.scss */
+.top-component {
+  height: 460px;
+  width: 600px;
+}
+.bottom-component {
+  height: 340px;
+  width: 600px;
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+/* temp_stylePlugin:instruments\src\PFD\index.css */
 div {
   color: white;
 }
-#PFD-ROOT {
+.PFD-ROOT {
   height: 800px;
   width: 600px;
   font-family:
@@ -10,10 +21,44 @@ div {
     Helvetica,
     sans-serif;
   color: white;
+  background-color: transparent !important;
 }
 .horizon {
   color: white;
   width: 100%;
   height: 100%;
   background-color: red;
+}
+text {
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+/* temp_stylePlugin:instruments\src\PFD\Components\AttitudeDisplay\Attitude.scss */
+:root {
+  --attitude-dark-brown: #794f00;
+  --attitude-light-brown: #8f5d00;
+  --attitude-blue: #0001d8;
+}
+.attitude-continer {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 460px;
+  width: 600px;
+}
+.attitude-sky {
+  fill: var(--attitude-blue);
+}
+.attitude-ground {
+  fill: var(--attitude-dark-brown);
+}
+.attitude-ground-inner {
+  fill: var(--attitude-light-brown);
+}
+.foreground-attitude {
+  z-index: 999;
+  position: absolute;
 }

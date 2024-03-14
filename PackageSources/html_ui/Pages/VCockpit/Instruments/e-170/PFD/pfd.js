@@ -3753,6 +3753,177 @@
     ["anti_ice_windshield_switch_on", { name: "WINDSHIELD DEICE SWITCH", type: SimVarValueType.Bool }],
     ["anti_ice_structural_ice_pct", { name: "STRUCTURAL ICE PCT", type: SimVarValueType.Percent }]
   ];
+  var BasicConsumer = class {
+    constructor(subscribe, state = {}, currentHandler) {
+      this.subscribe = subscribe;
+      this.state = state;
+      this.currentHandler = currentHandler;
+      this.isConsumer = true;
+      this.activeSubs = /* @__PURE__ */ new Map();
+    }
+    handle(handler, paused = false) {
+      let activeHandler;
+      if (this.currentHandler !== void 0) {
+        activeHandler = (data) => {
+          this.currentHandler(data, this.state, handler);
+        };
+      } else {
+        activeHandler = handler;
+      }
+      let activeSubArray = this.activeSubs.get(handler);
+      if (!activeSubArray) {
+        activeSubArray = [];
+        this.activeSubs.set(handler, activeSubArray);
+      }
+      const onDestroyed = (destroyed) => {
+        const activeSubsArray = this.activeSubs.get(handler);
+        if (activeSubsArray) {
+          activeSubsArray.splice(activeSubsArray.indexOf(destroyed), 1);
+          if (activeSubsArray.length === 0) {
+            this.activeSubs.delete(handler);
+          }
+        }
+      };
+      const sub = new ConsumerSubscription(this.subscribe(activeHandler, paused), onDestroyed);
+      if (sub.isAlive) {
+        activeSubArray.push(sub);
+      } else if (activeSubArray.length === 0) {
+        this.activeSubs.delete(handler);
+      }
+      return sub;
+    }
+    off(handler) {
+      var _a2;
+      const activeSubArray = this.activeSubs.get(handler);
+      if (activeSubArray) {
+        (_a2 = activeSubArray.shift()) === null || _a2 === void 0 ? void 0 : _a2.destroy();
+        if (activeSubArray.length === 0) {
+          this.activeSubs.delete(handler);
+        }
+      }
+    }
+    atFrequency(frequency, immediateFirstPublish = true) {
+      const initialState = {
+        previousTime: Date.now(),
+        firstRun: immediateFirstPublish
+      };
+      return new BasicConsumer(this.subscribe, initialState, this.getAtFrequencyHandler(frequency));
+    }
+    getAtFrequencyHandler(frequency) {
+      const deltaTimeTrigger = 1e3 / frequency;
+      return (data, state, next) => {
+        const currentTime = Date.now();
+        const deltaTime = currentTime - state.previousTime;
+        if (deltaTimeTrigger <= deltaTime || state.firstRun) {
+          while (state.previousTime + deltaTimeTrigger < currentTime) {
+            state.previousTime += deltaTimeTrigger;
+          }
+          if (state.firstRun) {
+            state.firstRun = false;
+          }
+          this.with(data, next);
+        }
+      };
+    }
+    withPrecision(precision) {
+      return new BasicConsumer(this.subscribe, { lastValue: 0, hasLastValue: false }, this.getWithPrecisionHandler(precision));
+    }
+    getWithPrecisionHandler(precision) {
+      return (data, state, next) => {
+        const dataValue = data;
+        const multiplier = Math.pow(10, precision);
+        const currentValueAtPrecision = Math.round(dataValue * multiplier) / multiplier;
+        if (!state.hasLastValue || currentValueAtPrecision !== state.lastValue) {
+          state.hasLastValue = true;
+          state.lastValue = currentValueAtPrecision;
+          this.with(currentValueAtPrecision, next);
+        }
+      };
+    }
+    whenChangedBy(amount) {
+      return new BasicConsumer(this.subscribe, { lastValue: 0, hasLastValue: false }, this.getWhenChangedByHandler(amount));
+    }
+    getWhenChangedByHandler(amount) {
+      return (data, state, next) => {
+        const dataValue = data;
+        const diff = Math.abs(dataValue - state.lastValue);
+        if (!state.hasLastValue || diff >= amount) {
+          state.hasLastValue = true;
+          state.lastValue = dataValue;
+          this.with(data, next);
+        }
+      };
+    }
+    whenChanged() {
+      return new BasicConsumer(this.subscribe, { lastValue: "", hasLastValue: false }, this.getWhenChangedHandler());
+    }
+    getWhenChangedHandler() {
+      return (data, state, next) => {
+        if (!state.hasLastValue || state.lastValue !== data) {
+          state.hasLastValue = true;
+          state.lastValue = data;
+          this.with(data, next);
+        }
+      };
+    }
+    onlyAfter(deltaTime) {
+      return new BasicConsumer(this.subscribe, { previousTime: Date.now() }, this.getOnlyAfterHandler(deltaTime));
+    }
+    getOnlyAfterHandler(deltaTime) {
+      return (data, state, next) => {
+        const currentTime = Date.now();
+        const timeDiff = currentTime - state.previousTime;
+        if (timeDiff > deltaTime) {
+          state.previousTime += deltaTime;
+          this.with(data, next);
+        }
+      };
+    }
+    with(data, handler) {
+      if (this.currentHandler !== void 0) {
+        this.currentHandler(data, this.state, handler);
+      } else {
+        handler(data);
+      }
+    }
+  };
+  var ConsumerSubscription = class {
+    constructor(sub, onDestroy) {
+      this.sub = sub;
+      this.onDestroy = onDestroy;
+    }
+    get isAlive() {
+      return this.sub.isAlive;
+    }
+    get isPaused() {
+      return this.sub.isPaused;
+    }
+    get canInitialNotify() {
+      return this.sub.canInitialNotify;
+    }
+    pause() {
+      this.sub.pause();
+      return this;
+    }
+    resume(initialNotify = false) {
+      this.sub.resume(initialNotify);
+      return this;
+    }
+    destroy() {
+      this.sub.destroy();
+      this.onDestroy(this);
+    }
+  };
+  var EventSubscriber = class {
+    constructor(bus) {
+      this.bus = bus;
+    }
+    on(topic) {
+      return new BasicConsumer((handler, paused) => {
+        return this.bus.on(topic, handler, paused);
+      });
+    }
+  };
   var APLockType;
   (function(APLockType2) {
     APLockType2[APLockType2["Heading"] = 0] = "Heading";
@@ -4046,6 +4217,151 @@
     NavSourceType2[NavSourceType2["Gps"] = 1] = "Gps";
     NavSourceType2[NavSourceType2["Adf"] = 2] = "Adf";
   })(NavSourceType || (NavSourceType = {}));
+  var EventBus = class {
+    constructor(useAlternativeEventSync = false, shouldResync = true) {
+      this._topicSubsMap = /* @__PURE__ */ new Map();
+      this._wildcardSubs = new Array();
+      this._notifyDepthMap = /* @__PURE__ */ new Map();
+      this._wildcardNotifyDepth = 0;
+      this._eventCache = /* @__PURE__ */ new Map();
+      this.onWildcardSubDestroyedFunc = this.onWildcardSubDestroyed.bind(this);
+      this._busId = Math.floor(Math.random() * 2147483647);
+      useAlternativeEventSync = typeof RegisterGenericDataListener === "undefined";
+      const syncFunc = useAlternativeEventSync ? EventBusFlowEventSync : EventBusListenerSync;
+      this._busSync = new syncFunc(this.pub.bind(this), this._busId);
+      if (shouldResync === true) {
+        this.syncEvent("event_bus", "resync_request", false);
+        this.on("event_bus", (data) => {
+          if (data == "resync_request") {
+            this.resyncEvents();
+          }
+        });
+      }
+    }
+    on(topic, handler, paused = false) {
+      let subs = this._topicSubsMap.get(topic);
+      if (subs === void 0) {
+        this._topicSubsMap.set(topic, subs = []);
+        this.pub("event_bus_topic_first_sub", topic, false, false);
+      }
+      const initialNotifyFunc = (sub2) => {
+        const lastState = this._eventCache.get(topic);
+        if (lastState !== void 0) {
+          sub2.handler(lastState.data);
+        }
+      };
+      const onDestroyFunc = (sub2) => {
+        var _a2;
+        if (((_a2 = this._notifyDepthMap.get(topic)) !== null && _a2 !== void 0 ? _a2 : 0) === 0) {
+          const subsToSplice = this._topicSubsMap.get(topic);
+          if (subsToSplice) {
+            subsToSplice.splice(subsToSplice.indexOf(sub2), 1);
+          }
+        }
+      };
+      const sub = new HandlerSubscription(handler, initialNotifyFunc, onDestroyFunc);
+      subs.push(sub);
+      if (paused) {
+        sub.pause();
+      } else {
+        sub.initialNotify();
+      }
+      return sub;
+    }
+    off(topic, handler) {
+      const handlers = this._topicSubsMap.get(topic);
+      const toDestroy = handlers === null || handlers === void 0 ? void 0 : handlers.find((sub) => sub.handler === handler);
+      toDestroy === null || toDestroy === void 0 ? void 0 : toDestroy.destroy();
+    }
+    onAll(handler) {
+      const sub = new HandlerSubscription(handler, void 0, this.onWildcardSubDestroyedFunc);
+      this._wildcardSubs.push(sub);
+      return sub;
+    }
+    offAll(handler) {
+      const toDestroy = this._wildcardSubs.find((sub) => sub.handler === handler);
+      toDestroy === null || toDestroy === void 0 ? void 0 : toDestroy.destroy();
+    }
+    pub(topic, data, sync = false, isCached = true) {
+      var _a2;
+      if (isCached) {
+        this._eventCache.set(topic, { data, synced: sync });
+      }
+      const subs = this._topicSubsMap.get(topic);
+      if (subs !== void 0) {
+        let needCleanUpSubs2 = false;
+        const notifyDepth = (_a2 = this._notifyDepthMap.get(topic)) !== null && _a2 !== void 0 ? _a2 : 0;
+        this._notifyDepthMap.set(topic, notifyDepth + 1);
+        const len = subs.length;
+        for (let i = 0; i < len; i++) {
+          try {
+            const sub = subs[i];
+            if (sub.isAlive && !sub.isPaused) {
+              sub.handler(data);
+            }
+            needCleanUpSubs2 || (needCleanUpSubs2 = !sub.isAlive);
+          } catch (error) {
+            console.error(`EventBus: error in handler: ${error}. topic: ${topic}. data: ${data}. sync: ${sync}. isCached: ${isCached}`, { error, topic, data, sync, isCached, subs });
+            if (error instanceof Error) {
+              console.error(error.stack);
+            }
+          }
+        }
+        this._notifyDepthMap.set(topic, notifyDepth);
+        if (needCleanUpSubs2 && notifyDepth === 0) {
+          const filteredSubs = subs.filter((sub) => sub.isAlive);
+          this._topicSubsMap.set(topic, filteredSubs);
+        }
+      }
+      if (sync) {
+        this.syncEvent(topic, data, isCached);
+      }
+      let needCleanUpSubs = false;
+      this._wildcardNotifyDepth++;
+      const wcLen = this._wildcardSubs.length;
+      for (let i = 0; i < wcLen; i++) {
+        const sub = this._wildcardSubs[i];
+        if (sub.isAlive && !sub.isPaused) {
+          sub.handler(topic, data);
+        }
+        needCleanUpSubs || (needCleanUpSubs = !sub.isAlive);
+      }
+      this._wildcardNotifyDepth--;
+      if (needCleanUpSubs && this._wildcardNotifyDepth === 0) {
+        this._wildcardSubs = this._wildcardSubs.filter((sub) => sub.isAlive);
+      }
+    }
+    onWildcardSubDestroyed(sub) {
+      if (this._wildcardNotifyDepth === 0) {
+        this._wildcardSubs.splice(this._wildcardSubs.indexOf(sub), 1);
+      }
+    }
+    resyncEvents() {
+      for (const [topic, event] of this._eventCache) {
+        if (event.synced) {
+          this.syncEvent(topic, event.data, true);
+        }
+      }
+    }
+    syncEvent(topic, data, isCached) {
+      this._busSync.sendEvent(topic, data, isCached);
+    }
+    getPublisher() {
+      return this;
+    }
+    getSubscriber() {
+      return new EventSubscriber(this);
+    }
+    getTopicSubscriberCount(topic) {
+      var _a2, _b;
+      return (_b = (_a2 = this._topicSubsMap.get(topic)) === null || _a2 === void 0 ? void 0 : _a2.length) !== null && _b !== void 0 ? _b : 0;
+    }
+    forEachSubscribedTopic(fn) {
+      this._topicSubsMap.forEach((subs, topic) => {
+        subs.length > 0 && fn(topic, subs.length);
+      });
+    }
+  };
   var EventBusSyncBase = class {
     constructor(recvEventCb, busId) {
       this.isPaused = false;
@@ -28593,28 +28909,454 @@
     }
   };
 
+  // instruments/common/util/createArray.ts
+  var createArray = (length) => {
+    const array = new Array(length);
+    for (let i = 0; i < length; i++) {
+      array[i] = i;
+    }
+    return array;
+  };
+
+  // instruments/src/PFD/Util/PathWithBlackBackground.tsx
+  var PathWithBlackBackground = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: this.props.d,
+          fill: this.props.forceTransparent !== null && this.props.forceTransparent === true ? "transparent" : "black",
+          "stroke-width": this.props.StrokeWidth,
+          stroke: this.props.fill,
+          "stroke-linecap": this.props.forceEndCap !== null && this.props.forceEndCap === true ? "butt" : "round",
+          "stroke-linejoin": "round"
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: this.props.d,
+          fill: this.props.fillTop2 !== null ? this.props.fillTop2 : this.props.fillTop,
+          "stroke-width": this.props.strokeWidthTop,
+          stroke: this.props.fillTop,
+          "stroke-linecap": this.props.forceEndCap !== null && this.props.forceEndCap === true ? "butt" : "round",
+          "stroke-linejoin": "round"
+        }
+      ));
+    }
+  };
+
+  // instruments/src/PFD/Components/AttitudeDisplay/AttitudeForeground.tsx
+  var DrawChevron = (y, direction) => {
+    const center = 275;
+    const color = "red";
+    const strokeWidth = 4;
+    const strokeWidthTop = 3;
+    const correctedY = -y * 8.6;
+    const offset = -252;
+    if (direction === 1) {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+        PathWithBlackBackground,
+        {
+          d: `M ${center} ${correctedY - offset - 8} L ${center - 45} ${correctedY - offset - 80} L ${center - 30} ${correctedY - offset - 80} L ${center} ${correctedY - offset - 35} L ${center + 30} ${correctedY - offset - 80} L ${center + 45} ${correctedY - offset - 80} L ${center} ${correctedY - offset - 8}`,
+          fill: "black",
+          fillTop: color,
+          StrokeWidth: strokeWidth,
+          strokeWidthTop,
+          fillTop2: "transparent",
+          forceTransparent: true
+        }
+      ));
+    } else {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+        PathWithBlackBackground,
+        {
+          d: `M ${center} ${correctedY - offset + 8} L ${center - 45} ${correctedY - offset + 60} L ${center - 30} ${correctedY - offset + 60} L ${center} ${correctedY - offset + 25} L ${center + 30} ${correctedY - offset + 60} L ${center + 45} ${correctedY - offset + 60} L ${center} ${correctedY - offset + 8}`,
+          fill: "black",
+          fillTop: color,
+          StrokeWidth: strokeWidth,
+          strokeWidthTop,
+          fillTop2: "transparent",
+          forceTransparent: true
+        }
+      ));
+    }
+  };
+  var pitchArray = createArray(180);
+  var drawTick = (type, y, value) => {
+    const OneTickWidth = 6;
+    const TwoFiveTickWidth = 10;
+    const FiveTickWidth = 25;
+    const SevenFiveTickWidth = 18;
+    const TenTickWidth = 52;
+    const FourtyTickWidth = 10;
+    const offset = -252;
+    const correctedY = -y * 8.6;
+    const center = 275;
+    const strokeWidth = 4.5;
+    const strokeWidthTop = 3;
+    switch (type) {
+      case 5 /* ONE */:
+        return /* @__PURE__ */ FSComponent.buildComponent(
+          PathWithBlackBackground,
+          {
+            d: `M ${center - 0.5 * OneTickWidth} ${correctedY - offset} L ${center - 0.5 * OneTickWidth + OneTickWidth} ${correctedY - offset}`,
+            fill: "black",
+            fillTop: "white",
+            StrokeWidth: strokeWidth,
+            strokeWidthTop
+          }
+        );
+      case 0 /* TWO_FIVE */:
+        return /* @__PURE__ */ FSComponent.buildComponent(
+          PathWithBlackBackground,
+          {
+            d: `M ${center - 0.5 * TwoFiveTickWidth} ${correctedY - offset} L ${center - 0.5 * TwoFiveTickWidth + TwoFiveTickWidth} ${correctedY - offset}`,
+            fill: "black",
+            fillTop: "white",
+            StrokeWidth: strokeWidth,
+            strokeWidthTop
+          }
+        );
+      case 1 /* FIVE */:
+        return /* @__PURE__ */ FSComponent.buildComponent(
+          PathWithBlackBackground,
+          {
+            d: `M ${center - 0.5 * FiveTickWidth} ${correctedY - offset} L ${center - 0.5 * FiveTickWidth + FiveTickWidth} ${correctedY - offset}`,
+            fill: "black",
+            fillTop: "white",
+            StrokeWidth: strokeWidth,
+            strokeWidthTop
+          }
+        );
+      case 2 /* SEVEN_FIVE */:
+        return /* @__PURE__ */ FSComponent.buildComponent(
+          PathWithBlackBackground,
+          {
+            d: `M ${center - 0.5 * SevenFiveTickWidth} ${correctedY - offset} L ${center - 0.5 * SevenFiveTickWidth + SevenFiveTickWidth} ${correctedY - offset}`,
+            fill: "black",
+            fillTop: "white",
+            StrokeWidth: strokeWidth,
+            strokeWidthTop
+          }
+        );
+      case 3 /* TEN */:
+        return /* @__PURE__ */ FSComponent.buildComponent(FSComponent.Fragment, null, /* @__PURE__ */ FSComponent.buildComponent(
+          "text",
+          {
+            x: center - 45,
+            y: correctedY - offset + 2,
+            fill: "white",
+            "font-size": "22px",
+            "text-anchor": "middle",
+            "dominant-baseline": "middle",
+            stroke: "black",
+            "stroke-width": 2,
+            "paint-order": "stroke"
+          },
+          value.toString()
+        ), /* @__PURE__ */ FSComponent.buildComponent(
+          PathWithBlackBackground,
+          {
+            d: `M ${center - 0.5 * TenTickWidth} ${correctedY - offset} L ${center - 0.5 * TenTickWidth + TenTickWidth} ${correctedY - offset}`,
+            fill: "black",
+            fillTop: "white",
+            StrokeWidth: strokeWidth,
+            strokeWidthTop
+          }
+        ), /* @__PURE__ */ FSComponent.buildComponent(
+          "text",
+          {
+            x: center + 45,
+            y: correctedY - offset + 2,
+            fill: "white",
+            "font-size": "22px",
+            "text-anchor": "middle",
+            "dominant-baseline": "middle",
+            stroke: "black",
+            "stroke-width": 2,
+            "paint-order": "stroke"
+          },
+          value.toString()
+        ));
+      case 4 /* FOURTY_SIXTY_NINETY */:
+        return /* @__PURE__ */ FSComponent.buildComponent(FSComponent.Fragment, null, /* @__PURE__ */ FSComponent.buildComponent(
+          PathWithBlackBackground,
+          {
+            d: `M ${center - FourtyTickWidth + 35} ${correctedY - offset} L ${center + 35 + FourtyTickWidth} ${correctedY - offset}`,
+            fill: "black",
+            fillTop: "white",
+            StrokeWidth: strokeWidth,
+            strokeWidthTop
+          }
+        ), /* @__PURE__ */ FSComponent.buildComponent(
+          "text",
+          {
+            x: "260",
+            y: correctedY - offset + 5,
+            fill: "white",
+            "font-size": "22px",
+            "text-anchor": "start",
+            "dominant-baseline": "middle",
+            stroke: "black",
+            "stroke-width": 2,
+            "paint-order": "stroke"
+          },
+          value.toString()
+        ), /* @__PURE__ */ FSComponent.buildComponent(
+          PathWithBlackBackground,
+          {
+            d: `M ${center - FourtyTickWidth - 35} ${correctedY - offset} L ${center - 35 + FourtyTickWidth} ${correctedY - offset}`,
+            fill: "black",
+            fillTop: "white",
+            StrokeWidth: strokeWidth,
+            strokeWidthTop
+          }
+        ));
+      default:
+        return /* @__PURE__ */ FSComponent.buildComponent(FSComponent.Fragment, null);
+    }
+  };
+  var createPitchMarkings = () => {
+    return pitchArray.map((pitch) => {
+      const pitchCorrected = pitch - 90;
+      switch (pitchCorrected) {
+        case -90:
+          return drawTick(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected, Math.abs(pitchCorrected));
+        case -65:
+          return DrawChevron(pitchCorrected, 0);
+        case -60:
+          return drawTick(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected, Math.abs(pitchCorrected));
+        case -46:
+          return DrawChevron(pitchCorrected, 0);
+        case -40:
+          return drawTick(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected, Math.abs(pitchCorrected));
+        case -31:
+          return DrawChevron(pitchCorrected, 0);
+        case -30:
+          return drawTick(3 /* TEN */, pitchCorrected, Math.abs(pitchCorrected));
+        case -25:
+          return drawTick(1 /* FIVE */, pitchCorrected, Math.abs(pitchCorrected));
+        case -20:
+          return drawTick(3 /* TEN */, pitchCorrected, Math.abs(pitchCorrected));
+        case -15:
+          return drawTick(1 /* FIVE */, pitchCorrected, Math.abs(pitchCorrected));
+        case -10:
+          return drawTick(3 /* TEN */, pitchCorrected, Math.abs(pitchCorrected));
+        case -7:
+          return drawTick(2 /* SEVEN_FIVE */, pitchCorrected - 0.5, Math.abs(pitchCorrected - 0.5));
+        case -5:
+          return drawTick(1 /* FIVE */, pitchCorrected, Math.abs(pitchCorrected));
+        case -4:
+          return drawTick(5 /* ONE */, pitchCorrected, Math.abs(pitchCorrected));
+        case -3:
+          return drawTick(5 /* ONE */, pitchCorrected, Math.abs(pitchCorrected));
+        case -2:
+          return drawTick(5 /* ONE */, pitchCorrected, Math.abs(pitchCorrected));
+        case -1:
+          return drawTick(5 /* ONE */, pitchCorrected, Math.abs(pitchCorrected));
+        case 2:
+          return drawTick(2 /* SEVEN_FIVE */, pitchCorrected + 0.5, pitchCorrected + 0.5);
+        case 5:
+          return drawTick(1 /* FIVE */, pitchCorrected, pitchCorrected);
+        case 7:
+          return drawTick(2 /* SEVEN_FIVE */, pitchCorrected + 0.5, pitchCorrected + 0.5);
+        case 10:
+          return drawTick(3 /* TEN */, pitchCorrected, pitchCorrected);
+        case 15:
+          return drawTick(1 /* FIVE */, pitchCorrected, pitchCorrected);
+        case 20:
+          return drawTick(3 /* TEN */, pitchCorrected, pitchCorrected);
+        case 25:
+          return drawTick(1 /* FIVE */, pitchCorrected, pitchCorrected);
+        case 30:
+          return drawTick(3 /* TEN */, pitchCorrected, pitchCorrected);
+        case 40:
+          return drawTick(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected, pitchCorrected);
+        case 45:
+          return DrawChevron(pitchCorrected, 1);
+        case 60:
+          return drawTick(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected, pitchCorrected);
+        case 65:
+          return DrawChevron(pitchCorrected, 1);
+        case 89:
+          return drawTick(4 /* FOURTY_SIXTY_NINETY */, pitchCorrected + 1, pitchCorrected + 1);
+        default:
+          return /* @__PURE__ */ FSComponent.buildComponent(FSComponent.Fragment, null);
+      }
+    });
+  };
+  var AttitudeForeground = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.pitch = Subject.create(0);
+      this.pitchRef = FSComponent.createRef();
+      this.bank = Subject.create(0);
+      this.bankRef = FSComponent.createRef();
+      this.markingRef = FSComponent.createRef();
+      this.pitchRefDup = FSComponent.createRef();
+      this.bankRefDup = FSComponent.createRef();
+      this.markerActiveRef = FSComponent.createRef();
+      this.markerActiveRefDup = FSComponent.createRef();
+      this.isHorizonMarkerActive = (val) => {
+        if (Math.abs(val) <= 17) {
+          return true;
+        } else
+          return false;
+      };
+      this.getTranslation = (val) => {
+        if (val > 17) {
+          return { negative: false, value: 17 };
+        } else if (val < -17) {
+          return { negative: true, value: -17 };
+        } else {
+          return { negative: false, value: val };
+        }
+      };
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("bank").whenChanged().handle((bank) => {
+        this.bank.set(bank);
+      });
+      sub.on("pitch").whenChanged().handle((pitch) => {
+        this.pitch.set(pitch);
+      });
+      this.bank.sub((newValue) => {
+        var _a2, _b;
+        (_a2 = this.bankRef.instance) == null ? void 0 : _a2.setAttribute("transform", `rotate(${newValue.toString()}, 275, 255)`);
+        (_b = this.bankRefDup.instance) == null ? void 0 : _b.setAttribute("transform", `rotate(${newValue.toString()}, 275, 255)`);
+      }, true);
+      this.pitch.sub((newValue) => {
+        var _a2, _b, _c, _d, _e;
+        (_a2 = this.pitchRef.instance) == null ? void 0 : _a2.setAttribute("transform", `translate(0,${this.getTranslation(newValue).value * 8.6})`);
+        (_b = this.pitchRefDup.instance) == null ? void 0 : _b.setAttribute("transform", `translate(0,${this.getTranslation(newValue).value * 8.6})`);
+        (_c = this.markingRef.instance) == null ? void 0 : _c.setAttribute("transform", `translate(0,${newValue * 8.6})`);
+        (_d = this.markerActiveRef.instance) == null ? void 0 : _d.setAttribute(
+          "visibility",
+          this.isHorizonMarkerActive(newValue) ? "visible" : "hidden"
+        );
+        (_e = this.markerActiveRefDup.instance) == null ? void 0 : _e.setAttribute(
+          "visibility",
+          this.isHorizonMarkerActive(newValue) ? "visible" : "hidden"
+        );
+      }, true);
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { class: "foreground-attitude" }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "attitude-clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" })), /* @__PURE__ */ FSComponent.buildComponent("linearGradient", { id: "SkyGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "0%", "stop-color": "#020383" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "88%", "stop-color": "#020383" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "100%", "stop-color": "#1717cf" })), /* @__PURE__ */ FSComponent.buildComponent("linearGradient", { id: "GroundGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "0%", "stop-color": "#674200" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "25%", "stop-color": "#352200" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "100%", "stop-color": "#352201" }))), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.bankRefDup }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.pitchRefDup }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", fill: "url(#SkyGradiant)" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-2000", y: "254", width: "4600", height: "2205", fill: "url(#GroundGradiant)" }), /* @__PURE__ */ FSComponent.buildComponent(
+        "rect",
+        {
+          ref: this.markerActiveRef,
+          x: "0",
+          y: "252",
+          width: "600",
+          height: "4",
+          fill: "white",
+          stroke: "black",
+          "stroke-width": 1
+        }
+      ))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#attitude-clip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.bankRef }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.pitchRef }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-500", y: "-2000", width: "1600", height: "2255", class: "attitude-sky" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-0", y: "254", width: "1600", height: "2205", class: "attitude-ground-inner" }), /* @__PURE__ */ FSComponent.buildComponent(
+        "rect",
+        {
+          ref: this.markerActiveRefDup,
+          x: "0",
+          y: "252",
+          width: "600",
+          height: "4",
+          fill: "white",
+          stroke: "black",
+          "stroke-width": 1
+        }
+      )), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.markingRef }, createPitchMarkings()))));
+    }
+  };
+
+  // instruments/src/PFD/Components/AttitudeDisplay/Markers.tsx
+  var AttitudeMarkers = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+        PathWithBlackBackground,
+        {
+          d: "M 166 249 L 217 249  L 217 268 L 209 268 L 209 258 L 166 258 L 166 249",
+          fill: "black",
+          fillTop: "white",
+          StrokeWidth: 3,
+          strokeWidthTop: 2,
+          fillTop2: "black"
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent(
+        PathWithBlackBackground,
+        {
+          d: "M 384 249 L 333 249 L 333 268 L 341 268 L 341 258 L 384 258 L 384 249",
+          fill: "black",
+          fillTop: "white",
+          StrokeWidth: 3,
+          strokeWidthTop: 2,
+          fillTop2: "black"
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent(
+        PathWithBlackBackground,
+        {
+          d: "M 280 249 L 270 249 L 270 258 L 280 258 L 280 258 L 280 249",
+          fill: "black",
+          fillTop: "white",
+          StrokeWidth: 3,
+          strokeWidthTop: 2,
+          fillTop2: "black"
+        }
+      ));
+    }
+  };
+
+  // instruments/src/PFD/Components/AttitudeDisplay/AttitudeDisplay.tsx
+  var Attitude = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "attitude-continer" }, /* @__PURE__ */ FSComponent.buildComponent("svg", { class: "attitude-svg", viewBox: "0 0 600 460", width: "100%", height: "100%" }, /* @__PURE__ */ FSComponent.buildComponent(AttitudeForeground, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(AttitudeMarkers, null), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "100", y: "100", "font-size": "20", fill: "white", "text-anchor": "middle" })));
+    }
+  };
+
   // instruments/src/PFD/PFDRoot/PFDRoot.tsx
   var PFDRoot = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "horizon" }, /* @__PURE__ */ FSComponent.buildComponent("div", null, "Primary Flight Display"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Attitude Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Heading Indicator"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "Altimeter"));
+      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "PFD-ROOT" }, /* @__PURE__ */ FSComponent.buildComponent("div", { class: "top-component" }, /* @__PURE__ */ FSComponent.buildComponent(Attitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent("div", null, "fma"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "airspeed"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "altitude")), /* @__PURE__ */ FSComponent.buildComponent("div", { class: "bottom-component" }, "bottom"));
     }
   };
+
+  // instruments/src/PFD/Components/PFDSimVarPublisher.tsx
+  var _PFDSimvarPublisher = class extends SimVarPublisher {
+    constructor(bus) {
+      super(_PFDSimvarPublisher.simvars, bus);
+    }
+  };
+  var PFDSimvarPublisher = _PFDSimvarPublisher;
+  PFDSimvarPublisher.simvars = /* @__PURE__ */ new Map([
+    ["pitch", { name: "PLANE PITCH DEGREES" /* pitch */, type: SimVarValueType.Degree }],
+    ["bank", { name: "PLANE BANK DEGREES" /* bank */, type: SimVarValueType.Degree }]
+  ]);
 
   // instruments/src/PFD/instrument.tsx
   var IsAce = Object.prototype.hasOwnProperty.call(window, "ACE_ENGINE_HANDLE");
   var PFD_ID = "PFD_CONTENT";
   var E170_PFD = class extends BaseInstrument {
+    constructor() {
+      super();
+      this.gameState = 0;
+      this.bus = new EventBus();
+      this.simVarPublisher = new PFDSimvarPublisher(this.bus);
+    }
     get templateID() {
       return "E170_PFD";
     }
     connectedCallback() {
       var _a2, _b;
       super.connectedCallback();
-      FSComponent.render(/* @__PURE__ */ FSComponent.buildComponent(PFDRoot, null), document.getElementById(PFD_ID));
+      this.simVarPublisher.startPublish();
+      FSComponent.render(/* @__PURE__ */ FSComponent.buildComponent(PFDRoot, { bus: this.bus }), document.getElementById(PFD_ID));
       !IsAce && ((_b = (_a2 = document.getElementById(PFD_ID)) == null ? void 0 : _a2.querySelector(":scope > h1")) == null ? void 0 : _b.remove());
     }
     Update() {
       super.Update();
+      this.simVarPublisher.onUpdate();
     }
   };
   var _a;

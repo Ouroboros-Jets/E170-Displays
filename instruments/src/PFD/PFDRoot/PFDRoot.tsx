@@ -1,14 +1,23 @@
-import { FSComponent, DisplayComponent, type VNode } from '@microsoft/msfs-sdk'
-import '../index.scss'
+import { FSComponent, DisplayComponent, type VNode, type EventBus, type ComponentProps } from '@microsoft/msfs-sdk'
+import './pfdRoot.scss'
+import '../index.css'
+import { Attitude } from '../Components/AttitudeDisplay/AttitudeDisplay'
 
-export class PFDRoot extends DisplayComponent<any> {
+type PFDProps = ComponentProps & {
+  bus: EventBus
+}
+
+export class PFDRoot extends DisplayComponent<PFDProps> {
   public render(): VNode {
     return (
-      <div class="horizon">
-        <div>Primary Flight Display</div>
-        <div>Attitude Indicator</div>
-        <div>Heading Indicator</div>
-        <div>Altimeter</div>
+      <div class="PFD-ROOT">
+        <div class="top-component">
+          <Attitude bus={this.props.bus} />
+          <div>fma</div>
+          <div>airspeed</div>
+          <div>altitude</div>
+        </div>
+        <div class="bottom-component">bottom</div>
       </div>
     )
   }
