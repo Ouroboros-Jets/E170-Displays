@@ -62,3 +62,33 @@ text {
   z-index: 999;
   position: absolute;
 }
+
+/* temp_stylePlugin:instruments\src\PFD\Components\Altitude\Altitude.scss */
+.altitude-continer {
+  position: absolute;
+  top: 28px;
+  right: 54px;
+  width: 120px;
+  height: 422px;
+}
+.altitude-svg {
+  position: absolute;
+  left: 0px;
+  width: 120px;
+  height: 100%;
+}
+
+/* temp_stylePlugin:instruments\src\PFD\Components\Airspeed\airspeed.scss */
+.airspeed-container {
+  position: absolute;
+  top: 54px;
+  left: 0px;
+  width: 140px;
+  height: 396px;
+}
+.airspeed-svg {
+  position: absolute;
+  left: 0px;
+  width: 81px;
+  height: 100%;
+}

@@ -50,6 +50,15 @@
       "height": 512,
       "x": 5020,
       "y": 3160
+    },
+    {
+      "uuid": "874714c6-caca-425a-870a-9331b6ba999c",
+      "name": "MultifunctionDisplay",
+      "element": "Instrument",
+      "width": 600,
+      "height": 800,
+      "x": 7120,
+      "y": 2240
     }
   ]
 }

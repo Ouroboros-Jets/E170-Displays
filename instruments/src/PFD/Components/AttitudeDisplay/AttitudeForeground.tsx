@@ -1,11 +1,4 @@
-import {
-  FSComponent,
-  DisplayComponent,
-  type VNode,
-  type ComponentProps,
-  type EventBus,
-  Subject
-} from '@microsoft/msfs-sdk'
+import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
 import { createArray } from '../../../../../instruments/common/util/createArray'
 import { PathWithBlackBackground } from '../../Util/PathWithBlackBackground'
 import { type PFDSimvars } from '../PFDSimVarPublisher'
@@ -288,9 +281,9 @@ type AttitudeForegroundProps = ComponentProps & {
 }
 
 export class AttitudeForeground extends DisplayComponent<AttitudeForegroundProps> {
-  private readonly pitch = Subject.create<number>(0)
+  // private readonly pitch = Subject.create<number>(0)
   private readonly pitchRef = FSComponent.createRef<SVGElement>()
-  private readonly bank = Subject.create<number>(0)
+  // private readonly bank = Subject.create<number>(0)
   private readonly bankRef = FSComponent.createRef<SVGElement>()
   private readonly markingRef = FSComponent.createRef<SVGElement>()
   private readonly pitchRefDup = FSComponent.createRef<SVGElement>()
@@ -323,33 +316,25 @@ export class AttitudeForeground extends DisplayComponent<AttitudeForegroundProps
       .on('bank')
       .whenChanged()
       .handle((bank) => {
-        this.bank.set(bank)
+        this.bankRef.instance?.setAttribute('transform', `rotate(${bank.toString()}, 275, 255)`)
+        this.bankRefDup.instance?.setAttribute('transform', `rotate(${bank.toString()}, 275, 255)`)
       })
     sub
       .on('pitch')
       .whenChanged()
       .handle((pitch) => {
-        this.pitch.set(pitch)
+        this.pitchRef.instance?.setAttribute('transform', `translate(0,${this.getTranslation(-pitch).value * 8.6})`)
+        this.pitchRefDup.instance?.setAttribute('transform', `translate(0,${this.getTranslation(-pitch).value * 8.6})`)
+        this.markingRef.instance?.setAttribute('transform', `translate(0,${-pitch * 8.6})`)
+        this.markerActiveRef.instance?.setAttribute(
+          'visibility',
+          this.isHorizonMarkerActive(-pitch) ? 'visible' : 'hidden'
+        )
+        this.markerActiveRefDup.instance?.setAttribute(
+          'visibility',
+          this.isHorizonMarkerActive(-pitch) ? 'visible' : 'hidden'
+        )
       })
-
-    this.bank.sub((newValue) => {
-      this.bankRef.instance?.setAttribute('transform', `rotate(${newValue.toString()}, 275, 255)`)
-      this.bankRefDup.instance?.setAttribute('transform', `rotate(${newValue.toString()}, 275, 255)`)
-    }, true)
-
-    this.pitch.sub((newValue) => {
-      this.pitchRef.instance?.setAttribute('transform', `translate(0,${this.getTranslation(newValue).value * 8.6})`)
-      this.pitchRefDup.instance?.setAttribute('transform', `translate(0,${this.getTranslation(newValue).value * 8.6})`)
-      this.markingRef.instance?.setAttribute('transform', `translate(0,${newValue * 8.6})`)
-      this.markerActiveRef.instance?.setAttribute(
-        'visibility',
-        this.isHorizonMarkerActive(newValue) ? 'visible' : 'hidden'
-      )
-      this.markerActiveRefDup.instance?.setAttribute(
-        'visibility',
-        this.isHorizonMarkerActive(newValue) ? 'visible' : 'hidden'
-      )
-    }, true)
   }
 
   public render(): VNode {

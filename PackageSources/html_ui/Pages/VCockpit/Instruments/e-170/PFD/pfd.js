@@ -1,11 +1,552 @@
 (() => {
   // node_modules/@microsoft/msfs-sdk/msfssdk.js
+  var HandlerSubscription = class {
+    constructor(handler, initialNotifyFunc, onDestroy) {
+      this.handler = handler;
+      this.initialNotifyFunc = initialNotifyFunc;
+      this.onDestroy = onDestroy;
+      this._isAlive = true;
+      this._isPaused = false;
+      this.canInitialNotify = initialNotifyFunc !== void 0;
+    }
+    get isAlive() {
+      return this._isAlive;
+    }
+    get isPaused() {
+      return this._isPaused;
+    }
+    initialNotify() {
+      if (!this._isAlive) {
+        throw new Error("HandlerSubscription: cannot notify a dead Subscription.");
+      }
+      this.initialNotifyFunc && this.initialNotifyFunc(this);
+    }
+    pause() {
+      if (!this._isAlive) {
+        throw new Error("Subscription: cannot pause a dead Subscription.");
+      }
+      this._isPaused = true;
+      return this;
+    }
+    resume(initialNotify = false) {
+      if (!this._isAlive) {
+        throw new Error("Subscription: cannot resume a dead Subscription.");
+      }
+      if (!this._isPaused) {
+        return this;
+      }
+      this._isPaused = false;
+      if (initialNotify) {
+        this.initialNotify();
+      }
+      return this;
+    }
+    destroy() {
+      if (!this._isAlive) {
+        return;
+      }
+      this._isAlive = false;
+      this.onDestroy && this.onDestroy(this);
+    }
+  };
+  var BasicConsumer = class {
+    constructor(subscribe, state = {}, currentHandler) {
+      this.subscribe = subscribe;
+      this.state = state;
+      this.currentHandler = currentHandler;
+      this.isConsumer = true;
+      this.activeSubs = /* @__PURE__ */ new Map();
+    }
+    handle(handler, paused = false) {
+      let activeHandler;
+      if (this.currentHandler !== void 0) {
+        activeHandler = (data) => {
+          this.currentHandler(data, this.state, handler);
+        };
+      } else {
+        activeHandler = handler;
+      }
+      let activeSubArray = this.activeSubs.get(handler);
+      if (!activeSubArray) {
+        activeSubArray = [];
+        this.activeSubs.set(handler, activeSubArray);
+      }
+      const onDestroyed = (destroyed) => {
+        const activeSubsArray = this.activeSubs.get(handler);
+        if (activeSubsArray) {
+          activeSubsArray.splice(activeSubsArray.indexOf(destroyed), 1);
+          if (activeSubsArray.length === 0) {
+            this.activeSubs.delete(handler);
+          }
+        }
+      };
+      const sub = new ConsumerSubscription(this.subscribe(activeHandler, paused), onDestroyed);
+      if (sub.isAlive) {
+        activeSubArray.push(sub);
+      } else if (activeSubArray.length === 0) {
+        this.activeSubs.delete(handler);
+      }
+      return sub;
+    }
+    off(handler) {
+      var _a2;
+      const activeSubArray = this.activeSubs.get(handler);
+      if (activeSubArray) {
+        (_a2 = activeSubArray.shift()) === null || _a2 === void 0 ? void 0 : _a2.destroy();
+        if (activeSubArray.length === 0) {
+          this.activeSubs.delete(handler);
+        }
+      }
+    }
+    atFrequency(frequency, immediateFirstPublish = true) {
+      const initialState = {
+        previousTime: Date.now(),
+        firstRun: immediateFirstPublish
+      };
+      return new BasicConsumer(this.subscribe, initialState, this.getAtFrequencyHandler(frequency));
+    }
+    getAtFrequencyHandler(frequency) {
+      const deltaTimeTrigger = 1e3 / frequency;
+      return (data, state, next) => {
+        const currentTime = Date.now();
+        const deltaTime = currentTime - state.previousTime;
+        if (deltaTimeTrigger <= deltaTime || state.firstRun) {
+          while (state.previousTime + deltaTimeTrigger < currentTime) {
+            state.previousTime += deltaTimeTrigger;
+          }
+          if (state.firstRun) {
+            state.firstRun = false;
+          }
+          this.with(data, next);
+        }
+      };
+    }
+    withPrecision(precision) {
+      return new BasicConsumer(this.subscribe, { lastValue: 0, hasLastValue: false }, this.getWithPrecisionHandler(precision));
+    }
+    getWithPrecisionHandler(precision) {
+      return (data, state, next) => {
+        const dataValue = data;
+        const multiplier = Math.pow(10, precision);
+        const currentValueAtPrecision = Math.round(dataValue * multiplier) / multiplier;
+        if (!state.hasLastValue || currentValueAtPrecision !== state.lastValue) {
+          state.hasLastValue = true;
+          state.lastValue = currentValueAtPrecision;
+          this.with(currentValueAtPrecision, next);
+        }
+      };
+    }
+    whenChangedBy(amount) {
+      return new BasicConsumer(this.subscribe, { lastValue: 0, hasLastValue: false }, this.getWhenChangedByHandler(amount));
+    }
+    getWhenChangedByHandler(amount) {
+      return (data, state, next) => {
+        const dataValue = data;
+        const diff = Math.abs(dataValue - state.lastValue);
+        if (!state.hasLastValue || diff >= amount) {
+          state.hasLastValue = true;
+          state.lastValue = dataValue;
+          this.with(data, next);
+        }
+      };
+    }
+    whenChanged() {
+      return new BasicConsumer(this.subscribe, { lastValue: "", hasLastValue: false }, this.getWhenChangedHandler());
+    }
+    getWhenChangedHandler() {
+      return (data, state, next) => {
+        if (!state.hasLastValue || state.lastValue !== data) {
+          state.hasLastValue = true;
+          state.lastValue = data;
+          this.with(data, next);
+        }
+      };
+    }
+    onlyAfter(deltaTime) {
+      return new BasicConsumer(this.subscribe, { previousTime: Date.now() }, this.getOnlyAfterHandler(deltaTime));
+    }
+    getOnlyAfterHandler(deltaTime) {
+      return (data, state, next) => {
+        const currentTime = Date.now();
+        const timeDiff = currentTime - state.previousTime;
+        if (timeDiff > deltaTime) {
+          state.previousTime += deltaTime;
+          this.with(data, next);
+        }
+      };
+    }
+    with(data, handler) {
+      if (this.currentHandler !== void 0) {
+        this.currentHandler(data, this.state, handler);
+      } else {
+        handler(data);
+      }
+    }
+  };
+  var ConsumerSubscription = class {
+    constructor(sub, onDestroy) {
+      this.sub = sub;
+      this.onDestroy = onDestroy;
+    }
+    get isAlive() {
+      return this.sub.isAlive;
+    }
+    get isPaused() {
+      return this.sub.isPaused;
+    }
+    get canInitialNotify() {
+      return this.sub.canInitialNotify;
+    }
+    pause() {
+      this.sub.pause();
+      return this;
+    }
+    resume(initialNotify = false) {
+      this.sub.resume(initialNotify);
+      return this;
+    }
+    destroy() {
+      this.sub.destroy();
+      this.onDestroy(this);
+    }
+  };
+  var EventSubscriber = class {
+    constructor(bus) {
+      this.bus = bus;
+    }
+    on(topic) {
+      return new BasicConsumer((handler, paused) => {
+        return this.bus.on(topic, handler, paused);
+      });
+    }
+  };
+  var EventBus = class {
+    constructor(useAlternativeEventSync = false, shouldResync = true) {
+      this._topicSubsMap = /* @__PURE__ */ new Map();
+      this._wildcardSubs = new Array();
+      this._notifyDepthMap = /* @__PURE__ */ new Map();
+      this._wildcardNotifyDepth = 0;
+      this._eventCache = /* @__PURE__ */ new Map();
+      this.onWildcardSubDestroyedFunc = this.onWildcardSubDestroyed.bind(this);
+      this._busId = Math.floor(Math.random() * 2147483647);
+      useAlternativeEventSync = typeof RegisterGenericDataListener === "undefined";
+      const syncFunc = useAlternativeEventSync ? EventBusFlowEventSync : EventBusListenerSync;
+      this._busSync = new syncFunc(this.pub.bind(this), this._busId);
+      if (shouldResync === true) {
+        this.syncEvent("event_bus", "resync_request", false);
+        this.on("event_bus", (data) => {
+          if (data == "resync_request") {
+            this.resyncEvents();
+          }
+        });
+      }
+    }
+    on(topic, handler, paused = false) {
+      let subs = this._topicSubsMap.get(topic);
+      if (subs === void 0) {
+        this._topicSubsMap.set(topic, subs = []);
+        this.pub("event_bus_topic_first_sub", topic, false, false);
+      }
+      const initialNotifyFunc = (sub2) => {
+        const lastState = this._eventCache.get(topic);
+        if (lastState !== void 0) {
+          sub2.handler(lastState.data);
+        }
+      };
+      const onDestroyFunc = (sub2) => {
+        var _a2;
+        if (((_a2 = this._notifyDepthMap.get(topic)) !== null && _a2 !== void 0 ? _a2 : 0) === 0) {
+          const subsToSplice = this._topicSubsMap.get(topic);
+          if (subsToSplice) {
+            subsToSplice.splice(subsToSplice.indexOf(sub2), 1);
+          }
+        }
+      };
+      const sub = new HandlerSubscription(handler, initialNotifyFunc, onDestroyFunc);
+      subs.push(sub);
+      if (paused) {
+        sub.pause();
+      } else {
+        sub.initialNotify();
+      }
+      return sub;
+    }
+    off(topic, handler) {
+      const handlers = this._topicSubsMap.get(topic);
+      const toDestroy = handlers === null || handlers === void 0 ? void 0 : handlers.find((sub) => sub.handler === handler);
+      toDestroy === null || toDestroy === void 0 ? void 0 : toDestroy.destroy();
+    }
+    onAll(handler) {
+      const sub = new HandlerSubscription(handler, void 0, this.onWildcardSubDestroyedFunc);
+      this._wildcardSubs.push(sub);
+      return sub;
+    }
+    offAll(handler) {
+      const toDestroy = this._wildcardSubs.find((sub) => sub.handler === handler);
+      toDestroy === null || toDestroy === void 0 ? void 0 : toDestroy.destroy();
+    }
+    pub(topic, data, sync = false, isCached = true) {
+      var _a2;
+      if (isCached) {
+        this._eventCache.set(topic, { data, synced: sync });
+      }
+      const subs = this._topicSubsMap.get(topic);
+      if (subs !== void 0) {
+        let needCleanUpSubs2 = false;
+        const notifyDepth = (_a2 = this._notifyDepthMap.get(topic)) !== null && _a2 !== void 0 ? _a2 : 0;
+        this._notifyDepthMap.set(topic, notifyDepth + 1);
+        const len = subs.length;
+        for (let i = 0; i < len; i++) {
+          try {
+            const sub = subs[i];
+            if (sub.isAlive && !sub.isPaused) {
+              sub.handler(data);
+            }
+            needCleanUpSubs2 || (needCleanUpSubs2 = !sub.isAlive);
+          } catch (error) {
+            console.error(`EventBus: error in handler: ${error}. topic: ${topic}. data: ${data}. sync: ${sync}. isCached: ${isCached}`, { error, topic, data, sync, isCached, subs });
+            if (error instanceof Error) {
+              console.error(error.stack);
+            }
+          }
+        }
+        this._notifyDepthMap.set(topic, notifyDepth);
+        if (needCleanUpSubs2 && notifyDepth === 0) {
+          const filteredSubs = subs.filter((sub) => sub.isAlive);
+          this._topicSubsMap.set(topic, filteredSubs);
+        }
+      }
+      if (sync) {
+        this.syncEvent(topic, data, isCached);
+      }
+      let needCleanUpSubs = false;
+      this._wildcardNotifyDepth++;
+      const wcLen = this._wildcardSubs.length;
+      for (let i = 0; i < wcLen; i++) {
+        const sub = this._wildcardSubs[i];
+        if (sub.isAlive && !sub.isPaused) {
+          sub.handler(topic, data);
+        }
+        needCleanUpSubs || (needCleanUpSubs = !sub.isAlive);
+      }
+      this._wildcardNotifyDepth--;
+      if (needCleanUpSubs && this._wildcardNotifyDepth === 0) {
+        this._wildcardSubs = this._wildcardSubs.filter((sub) => sub.isAlive);
+      }
+    }
+    onWildcardSubDestroyed(sub) {
+      if (this._wildcardNotifyDepth === 0) {
+        this._wildcardSubs.splice(this._wildcardSubs.indexOf(sub), 1);
+      }
+    }
+    resyncEvents() {
+      for (const [topic, event] of this._eventCache) {
+        if (event.synced) {
+          this.syncEvent(topic, event.data, true);
+        }
+      }
+    }
+    syncEvent(topic, data, isCached) {
+      this._busSync.sendEvent(topic, data, isCached);
+    }
+    getPublisher() {
+      return this;
+    }
+    getSubscriber() {
+      return new EventSubscriber(this);
+    }
+    getTopicSubscriberCount(topic) {
+      var _a2, _b;
+      return (_b = (_a2 = this._topicSubsMap.get(topic)) === null || _a2 === void 0 ? void 0 : _a2.length) !== null && _b !== void 0 ? _b : 0;
+    }
+    forEachSubscribedTopic(fn) {
+      this._topicSubsMap.forEach((subs, topic) => {
+        subs.length > 0 && fn(topic, subs.length);
+      });
+    }
+  };
+  var EventBusSyncBase = class {
+    constructor(recvEventCb, busId) {
+      this.isPaused = false;
+      this.lastEventSynced = -1;
+      this.dataPackageQueue = [];
+      this.recvEventCb = recvEventCb;
+      this.busId = busId;
+      this.hookReceiveEvent();
+      const sendFn = () => {
+        if (!this.isPaused && this.dataPackageQueue.length > 0) {
+          const syncDataPackage = {
+            busId: this.busId,
+            packagedId: Math.floor(Math.random() * 1e9),
+            data: this.dataPackageQueue
+          };
+          if (this.executeSync(syncDataPackage)) {
+            this.dataPackageQueue.length = 0;
+          } else {
+            console.warn("Failed to send sync data package");
+          }
+        }
+        requestAnimationFrame(sendFn);
+      };
+      requestAnimationFrame(sendFn);
+    }
+    processEventsReceived(syncData) {
+      if (this.busId !== syncData.busId) {
+        if (this.lastEventSynced !== syncData.packagedId) {
+          this.lastEventSynced = syncData.packagedId;
+          syncData.data.forEach((data) => {
+            try {
+              this.recvEventCb(data.topic, data.data !== void 0 ? data.data : void 0, false, data.isCached);
+            } catch (e) {
+              console.error(e);
+              if (e instanceof Error) {
+                console.error(e.stack);
+              }
+            }
+          });
+        }
+      }
+    }
+    sendEvent(topic, data, isCached) {
+      const dataObj = data;
+      const dataPackage = {
+        topic,
+        data: dataObj,
+        isCached
+      };
+      this.dataPackageQueue.push(dataPackage);
+    }
+  };
+  var EventBusCoherentSync = class extends EventBusSyncBase {
+    executeSync(syncDataPackage) {
+      try {
+        this.listener.triggerToAllSubscribers(EventBusCoherentSync.EB_KEY, JSON.stringify(syncDataPackage));
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+    hookReceiveEvent() {
+      this.listener = RegisterViewListener(EventBusCoherentSync.EB_LISTENER_KEY, void 0, true);
+      this.listener.on(EventBusCoherentSync.EB_KEY, (e) => {
+        try {
+          const evt = JSON.parse(e);
+          this.processEventsReceived(evt);
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    }
+  };
+  EventBusCoherentSync.EB_KEY = "eb.evt";
+  EventBusCoherentSync.EB_LISTENER_KEY = "JS_LISTENER_SIMVARS";
+  var EventBusFlowEventSync = class extends EventBusSyncBase {
+    executeSync(syncDataPackage) {
+      try {
+        LaunchFlowEvent("ON_MOUSERECT_HTMLEVENT", EventBusFlowEventSync.EB_LISTENER_KEY, this.busId.toString(), JSON.stringify(syncDataPackage));
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+    hookReceiveEvent() {
+      Coherent.on("OnInteractionEvent", (target, args) => {
+        if (args.length === 0 || args[0] !== EventBusFlowEventSync.EB_LISTENER_KEY || !args[2]) {
+          return;
+        }
+        this.processEventsReceived(JSON.parse(args[2]));
+      });
+    }
+  };
+  EventBusFlowEventSync.EB_LISTENER_KEY = "EB_EVENTS";
+  var EventBusListenerSync = class extends EventBusSyncBase {
+    executeSync(syncDataPackage) {
+      try {
+        this.listener.send(EventBusListenerSync.EB_KEY, syncDataPackage);
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+    hookReceiveEvent() {
+      this.isPaused = true;
+      this.listener = RegisterGenericDataListener(() => {
+        this.listener.onDataReceived(EventBusListenerSync.EB_KEY, (data) => {
+          try {
+            this.processEventsReceived(data);
+          } catch (error) {
+            console.error(error);
+          }
+        });
+        this.isPaused = false;
+      });
+    }
+  };
+  EventBusListenerSync.EB_KEY = "wt.eb.evt";
+  EventBusListenerSync.EB_LISTENER_KEY = "JS_LISTENER_GENERICDATA";
+  var ConsumerValue = class {
+    constructor(consumer, initialValue) {
+      this.canInitialNotify = true;
+      this.consumerHandler = (v) => {
+        this.value = v;
+      };
+      this._isAlive = true;
+      this._isPaused = false;
+      this.value = initialValue;
+      this.sub = consumer === null || consumer === void 0 ? void 0 : consumer.handle(this.consumerHandler);
+    }
+    get isAlive() {
+      return this._isAlive;
+    }
+    get isPaused() {
+      return this._isPaused;
+    }
+    get() {
+      return this.value;
+    }
+    setConsumer(consumer) {
+      var _a2;
+      if (!this._isAlive) {
+        return this;
+      }
+      (_a2 = this.sub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
+      this.sub = consumer === null || consumer === void 0 ? void 0 : consumer.handle(this.consumerHandler, this._isPaused);
+      return this;
+    }
+    pause() {
+      var _a2;
+      if (this._isPaused) {
+        return this;
+      }
+      (_a2 = this.sub) === null || _a2 === void 0 ? void 0 : _a2.pause();
+      this._isPaused = true;
+      return this;
+    }
+    resume() {
+      var _a2;
+      if (!this._isPaused) {
+        return this;
+      }
+      this._isPaused = false;
+      (_a2 = this.sub) === null || _a2 === void 0 ? void 0 : _a2.resume(true);
+      return this;
+    }
+    destroy() {
+      var _a2;
+      this._isAlive = false;
+      (_a2 = this.sub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
+    }
+    static create(consumer, initialValue) {
+      return new ConsumerValue(consumer, initialValue);
+    }
+  };
   var SimVarValueType;
   (function(SimVarValueType2) {
     SimVarValueType2["Amps"] = "Amperes";
     SimVarValueType2["Bool"] = "bool";
     SimVarValueType2["Celsius"] = "celsius";
     SimVarValueType2["Degree"] = "degrees";
+    SimVarValueType2["DegreesPerSecond"] = "degrees per second";
     SimVarValueType2["Enum"] = "enum";
     SimVarValueType2["Farenheit"] = "farenheit";
     SimVarValueType2["Feet"] = "feet";
@@ -34,12 +575,14 @@
     SimVarValueType2["PPH"] = "Pounds per hour";
     SimVarValueType2["PSI"] = "psi";
     SimVarValueType2["Radians"] = "radians";
+    SimVarValueType2["RadiansPerSecond"] = "radians per second";
     SimVarValueType2["Rankine"] = "rankine";
     SimVarValueType2["RPM"] = "Rpm";
     SimVarValueType2["Seconds"] = "seconds";
     SimVarValueType2["SlugsPerCubicFoot"] = "slug per cubic foot";
     SimVarValueType2["String"] = "string";
     SimVarValueType2["Volts"] = "Volts";
+    SimVarValueType2["FtLb"] = "Foot pounds";
   })(SimVarValueType || (SimVarValueType = {}));
   var latlonaltRegEx = new RegExp(/latlonalt/i);
   var latlonaltpbhRegex = new RegExp(/latlonaltpbh/i);
@@ -121,6 +664,623 @@
     }
     return Promise.resolve();
   };
+  var SimOvrd = {
+    GetSimVarValue: SimVar.GetSimVarValue,
+    SetSimVarValue: SimVar.SetSimVarValue
+  };
+  var BasePublisher = class {
+    constructor(bus, pacer = void 0) {
+      this.bus = bus;
+      this.publisher = this.bus.getPublisher();
+      this.publishActive = false;
+      this.pacer = pacer;
+    }
+    startPublish() {
+      this.publishActive = true;
+    }
+    stopPublish() {
+      this.publishActive = false;
+    }
+    isPublishing() {
+      return this.publishActive;
+    }
+    onUpdate() {
+      return;
+    }
+    publish(topic, data, sync = false, isCached = true) {
+      if (this.publishActive && (!this.pacer || this.pacer.canPublish(topic, data))) {
+        this.publisher.pub(topic, data, sync, isCached);
+      }
+    }
+  };
+  var SimVarPublisher = class extends BasePublisher {
+    constructor(simVarMap, bus, pacer) {
+      super(bus, pacer);
+      this.resolvedSimVars = /* @__PURE__ */ new Map();
+      this.indexedSimVars = /* @__PURE__ */ new Map();
+      this.subscribed = /* @__PURE__ */ new Set();
+      for (const [topic, entry] of simVarMap) {
+        if (entry.indexed) {
+          this.indexedSimVars.set(topic, {
+            name: entry.name,
+            type: entry.type,
+            map: entry.map,
+            indexes: entry.indexed === true ? void 0 : new Set(entry.indexed),
+            defaultIndex: entry.defaultIndex
+          });
+        } else {
+          this.resolvedSimVars.set(topic, Object.assign({}, entry));
+        }
+      }
+      const handleSubscribedTopic = this.handleSubscribedTopic.bind(this);
+      this.bus.forEachSubscribedTopic(handleSubscribedTopic);
+      this.bus.getSubscriber().on("event_bus_topic_first_sub").handle(handleSubscribedTopic);
+    }
+    handleSubscribedTopic(topic) {
+      if (this.resolvedSimVars.has(topic)) {
+        this.onTopicSubscribed(topic);
+      } else {
+        this.tryMatchIndexedSubscribedTopic(topic);
+      }
+    }
+    tryMatchIndexedSubscribedTopic(topic) {
+      var _a2;
+      if (this.indexedSimVars.size === 0) {
+        return;
+      }
+      let entry = this.indexedSimVars.get(topic);
+      if (entry) {
+        if (entry.defaultIndex !== null) {
+          const resolved = this.resolveIndexedSimVar(topic, entry, (_a2 = entry.defaultIndex) !== null && _a2 !== void 0 ? _a2 : 1);
+          if (resolved !== void 0) {
+            this.onTopicSubscribed(resolved);
+          }
+        }
+        return;
+      }
+      if (!SimVarPublisher.INDEXED_REGEX.test(topic)) {
+        return;
+      }
+      const match = topic.match(SimVarPublisher.INDEXED_REGEX);
+      const [, matchedTopic, index] = match;
+      entry = this.indexedSimVars.get(matchedTopic);
+      if (entry) {
+        const resolved = this.resolveIndexedSimVar(matchedTopic, entry, parseInt(index));
+        if (resolved !== void 0) {
+          this.onTopicSubscribed(resolved);
+        }
+      }
+    }
+    resolveIndexedSimVar(topic, entry, index) {
+      index !== null && index !== void 0 ? index : index = 1;
+      const resolvedTopic = `${topic}_${index}`;
+      if (this.resolvedSimVars.has(resolvedTopic)) {
+        return resolvedTopic;
+      }
+      const defaultIndex = entry.defaultIndex === void 0 ? 1 : entry.defaultIndex;
+      if (entry.indexes !== void 0 && !entry.indexes.has(index)) {
+        return void 0;
+      }
+      this.resolvedSimVars.set(resolvedTopic, {
+        name: entry.name.replace("#index#", `${index !== null && index !== void 0 ? index : 1}`),
+        type: entry.type,
+        map: entry.map,
+        unsuffixedTopic: defaultIndex === index ? topic : void 0
+      });
+      return resolvedTopic;
+    }
+    onTopicSubscribed(topic) {
+      if (this.subscribed.has(topic)) {
+        return;
+      }
+      this.subscribed.add(topic);
+      if (this.publishActive) {
+        this.publishTopic(topic);
+      }
+    }
+    subscribe(data) {
+      return;
+    }
+    unsubscribe(data) {
+      return;
+    }
+    onUpdate() {
+      for (const topic of this.subscribed.values()) {
+        this.publishTopic(topic);
+      }
+    }
+    publishTopic(topic) {
+      const entry = this.resolvedSimVars.get(topic);
+      if (entry !== void 0) {
+        const value = this.getValueFromEntry(entry);
+        this.publish(topic, value);
+        if (entry.unsuffixedTopic) {
+          this.publish(entry.unsuffixedTopic, value);
+        }
+      }
+    }
+    getValue(topic) {
+      const entry = this.resolvedSimVars.get(topic);
+      if (entry === void 0) {
+        return void 0;
+      }
+      return this.getValueFromEntry(entry);
+    }
+    getValueFromEntry(entry) {
+      return entry.map === void 0 ? this.getSimVarValue(entry) : entry.map(this.getSimVarValue(entry));
+    }
+    getSimVarValue(entry) {
+      const svValue = SimVar.GetSimVarValue(entry.name, entry.type);
+      if (entry.type === SimVarValueType.Bool) {
+        return svValue === 1;
+      }
+      return svValue;
+    }
+  };
+  SimVarPublisher.INDEXED_REGEX = /(.*)_(0|[1-9]\d*)$/;
+  var HEventPublisher = class extends BasePublisher {
+    dispatchHEvent(hEvent, sync = false) {
+      this.publish("hEvent", hEvent, sync, false);
+    }
+  };
+  var SubscribablePipe = class extends HandlerSubscription {
+    constructor(from, to, arg3, arg4) {
+      let handler;
+      let onDestroy;
+      if (typeof arg4 === "function") {
+        handler = (fromVal) => {
+          to.set(arg3(fromVal, to.get()));
+        };
+        onDestroy = arg4;
+      } else {
+        handler = (fromVal) => {
+          to.set(fromVal);
+        };
+        onDestroy = arg3;
+      }
+      super(handler, (sub) => {
+        sub.handler(from.get());
+      }, onDestroy);
+    }
+  };
+  var AbstractSubscribable = class {
+    constructor() {
+      this.isSubscribable = true;
+      this.notifyDepth = 0;
+      this.initialNotifyFunc = this.notifySubscription.bind(this);
+      this.onSubDestroyedFunc = this.onSubDestroyed.bind(this);
+    }
+    addSubscription(sub) {
+      if (this.subs) {
+        this.subs.push(sub);
+      } else if (this.singletonSub) {
+        this.subs = [this.singletonSub, sub];
+        delete this.singletonSub;
+      } else {
+        this.singletonSub = sub;
+      }
+    }
+    sub(handler, initialNotify = false, paused = false) {
+      const sub = new HandlerSubscription(handler, this.initialNotifyFunc, this.onSubDestroyedFunc);
+      this.addSubscription(sub);
+      if (paused) {
+        sub.pause();
+      } else if (initialNotify) {
+        sub.initialNotify();
+      }
+      return sub;
+    }
+    unsub(handler) {
+      let toDestroy = void 0;
+      if (this.singletonSub && this.singletonSub.handler === handler) {
+        toDestroy = this.singletonSub;
+      } else if (this.subs) {
+        toDestroy = this.subs.find((sub) => sub.handler === handler);
+      }
+      toDestroy === null || toDestroy === void 0 ? void 0 : toDestroy.destroy();
+    }
+    notify() {
+      const canCleanUpSubs = this.notifyDepth === 0;
+      let needCleanUpSubs = false;
+      this.notifyDepth++;
+      if (this.singletonSub) {
+        try {
+          if (this.singletonSub.isAlive && !this.singletonSub.isPaused) {
+            this.notifySubscription(this.singletonSub);
+          }
+        } catch (error) {
+          console.error(`AbstractSubscribable: error in handler: ${error}`);
+          if (error instanceof Error) {
+            console.error(error.stack);
+          }
+        }
+        if (canCleanUpSubs) {
+          if (this.singletonSub) {
+            needCleanUpSubs = !this.singletonSub.isAlive;
+          } else if (this.subs) {
+            for (let i = 0; i < this.subs.length; i++) {
+              if (!this.subs[i].isAlive) {
+                needCleanUpSubs = true;
+                break;
+              }
+            }
+          }
+        }
+      } else if (this.subs) {
+        const subLen = this.subs.length;
+        for (let i = 0; i < subLen; i++) {
+          try {
+            const sub = this.subs[i];
+            if (sub.isAlive && !sub.isPaused) {
+              this.notifySubscription(sub);
+            }
+            needCleanUpSubs || (needCleanUpSubs = !sub.isAlive);
+          } catch (error) {
+            console.error(`AbstractSubscribable: error in handler: ${error}`);
+            if (error instanceof Error) {
+              console.error(error.stack);
+            }
+          }
+        }
+        if (canCleanUpSubs && !needCleanUpSubs) {
+          for (let i = subLen; i < this.subs.length; i++) {
+            if (!this.subs[i].isAlive) {
+              needCleanUpSubs = true;
+              break;
+            }
+          }
+        }
+      }
+      this.notifyDepth--;
+      if (needCleanUpSubs) {
+        if (this.singletonSub) {
+          delete this.singletonSub;
+        } else if (this.subs) {
+          this.subs = this.subs.filter((sub) => sub.isAlive);
+        }
+      }
+    }
+    notifySubscription(sub) {
+      sub.handler(this.get());
+    }
+    onSubDestroyed(sub) {
+      if (this.notifyDepth === 0) {
+        if (this.singletonSub === sub) {
+          delete this.singletonSub;
+        } else if (this.subs) {
+          const index = this.subs.indexOf(sub);
+          if (index >= 0) {
+            this.subs.splice(index, 1);
+          }
+        }
+      }
+    }
+    map(fn, equalityFunc, mutateFunc, initialVal) {
+      return new MappedSubscribableClass(this, fn, equalityFunc !== null && equalityFunc !== void 0 ? equalityFunc : AbstractSubscribable.DEFAULT_EQUALITY_FUNC, mutateFunc, initialVal);
+    }
+    pipe(to, arg2, arg3) {
+      let sub;
+      let paused;
+      if (typeof arg2 === "function") {
+        sub = new SubscribablePipe(this, to, arg2, this.onSubDestroyedFunc);
+        paused = arg3 !== null && arg3 !== void 0 ? arg3 : false;
+      } else {
+        sub = new SubscribablePipe(this, to, this.onSubDestroyedFunc);
+        paused = arg2 !== null && arg2 !== void 0 ? arg2 : false;
+      }
+      this.addSubscription(sub);
+      if (paused) {
+        sub.pause();
+      } else {
+        sub.initialNotify();
+      }
+      return sub;
+    }
+  };
+  AbstractSubscribable.DEFAULT_EQUALITY_FUNC = (a, b) => a === b;
+  var MappedSubscribableClass = class extends AbstractSubscribable {
+    constructor(input, mapFunc, equalityFunc, mutateFunc, initialVal) {
+      super();
+      this.input = input;
+      this.mapFunc = mapFunc;
+      this.equalityFunc = equalityFunc;
+      this.canInitialNotify = true;
+      this._isAlive = true;
+      this._isPaused = false;
+      if (initialVal && mutateFunc) {
+        this.value = initialVal;
+        mutateFunc(this.value, this.mapFunc(this.input.get()));
+        this.mutateFunc = (newVal) => {
+          mutateFunc(this.value, newVal);
+        };
+      } else {
+        this.value = this.mapFunc(this.input.get());
+        this.mutateFunc = (newVal) => {
+          this.value = newVal;
+        };
+      }
+      this.inputSub = this.input.sub((inputValue) => {
+        this.updateValue(inputValue);
+      }, true);
+    }
+    get isAlive() {
+      return this._isAlive;
+    }
+    get isPaused() {
+      return this._isPaused;
+    }
+    updateValue(inputValue) {
+      const value = this.mapFunc(inputValue, this.value);
+      if (!this.equalityFunc(this.value, value)) {
+        this.mutateFunc(value);
+        this.notify();
+      }
+    }
+    get() {
+      return this.value;
+    }
+    pause() {
+      if (!this._isAlive) {
+        throw new Error("MappedSubscribable: cannot pause a dead subscribable");
+      }
+      if (this._isPaused) {
+        return this;
+      }
+      this.inputSub.pause();
+      this._isPaused = true;
+      return this;
+    }
+    resume() {
+      if (!this._isAlive) {
+        throw new Error("MappedSubscribable: cannot resume a dead subscribable");
+      }
+      if (!this._isPaused) {
+        return this;
+      }
+      this._isPaused = false;
+      this.inputSub.resume(true);
+      return this;
+    }
+    destroy() {
+      this._isAlive = false;
+      this.inputSub.destroy();
+    }
+  };
+  var ConsumerSubject = class extends AbstractSubscribable {
+    constructor(consumer, initialVal, equalityFunc, mutateFunc) {
+      super();
+      this.equalityFunc = equalityFunc;
+      this.mutateFunc = mutateFunc;
+      this.canInitialNotify = true;
+      this.consumerHandler = this.onEventConsumed.bind(this);
+      this._isAlive = true;
+      this._isPaused = false;
+      this.value = initialVal;
+      this.consumerSub = consumer === null || consumer === void 0 ? void 0 : consumer.handle(this.consumerHandler);
+    }
+    get isAlive() {
+      return this._isAlive;
+    }
+    get isPaused() {
+      return this._isPaused;
+    }
+    static create(consumer, initialVal, equalityFunc, mutateFunc) {
+      return new ConsumerSubject(consumer, initialVal, equalityFunc !== null && equalityFunc !== void 0 ? equalityFunc : AbstractSubscribable.DEFAULT_EQUALITY_FUNC, mutateFunc);
+    }
+    onEventConsumed(value) {
+      if (!this.equalityFunc(this.value, value)) {
+        if (this.mutateFunc) {
+          this.mutateFunc(this.value, value);
+        } else {
+          this.value = value;
+        }
+        this.notify();
+      }
+    }
+    setConsumer(consumer) {
+      var _a2;
+      if (!this._isAlive) {
+        return this;
+      }
+      (_a2 = this.consumerSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
+      this.consumerSub = consumer === null || consumer === void 0 ? void 0 : consumer.handle(this.consumerHandler, this._isPaused);
+      return this;
+    }
+    pause() {
+      var _a2;
+      if (this._isPaused) {
+        return this;
+      }
+      (_a2 = this.consumerSub) === null || _a2 === void 0 ? void 0 : _a2.pause();
+      this._isPaused = true;
+      return this;
+    }
+    resume() {
+      var _a2;
+      if (!this._isPaused) {
+        return this;
+      }
+      this._isPaused = false;
+      (_a2 = this.consumerSub) === null || _a2 === void 0 ? void 0 : _a2.resume(true);
+      return this;
+    }
+    get() {
+      return this.value;
+    }
+    destroy() {
+      var _a2;
+      this._isAlive = false;
+      (_a2 = this.consumerSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
+    }
+  };
+  var CompositeLogicXMLValueType;
+  (function(CompositeLogicXMLValueType2) {
+    CompositeLogicXMLValueType2[CompositeLogicXMLValueType2["Any"] = 0] = "Any";
+    CompositeLogicXMLValueType2[CompositeLogicXMLValueType2["Number"] = 1] = "Number";
+    CompositeLogicXMLValueType2[CompositeLogicXMLValueType2["String"] = 2] = "String";
+  })(CompositeLogicXMLValueType || (CompositeLogicXMLValueType = {}));
+  var DataStore;
+  (function(DataStore2) {
+    function set(key, value) {
+      SetStoredData(key, JSON.stringify(value));
+    }
+    DataStore2.set = set;
+    function get(key) {
+      try {
+        const string = GetStoredData(key);
+        return JSON.parse(string);
+      } catch (e) {
+        return void 0;
+      }
+    }
+    DataStore2.get = get;
+    function remove(key) {
+      DeleteStoredData(key);
+    }
+    DataStore2.remove = remove;
+  })(DataStore || (DataStore = {}));
+  var Subject = class extends AbstractSubscribable {
+    constructor(value, equalityFunc, mutateFunc) {
+      super();
+      this.value = value;
+      this.equalityFunc = equalityFunc;
+      this.mutateFunc = mutateFunc;
+      this.isMutableSubscribable = true;
+    }
+    static create(v, equalityFunc, mutateFunc) {
+      return new Subject(v, equalityFunc !== null && equalityFunc !== void 0 ? equalityFunc : Subject.DEFAULT_EQUALITY_FUNC, mutateFunc);
+    }
+    notifySub(sub) {
+      sub(this.value);
+    }
+    set(value) {
+      if (!this.equalityFunc(value, this.value)) {
+        if (this.mutateFunc) {
+          this.mutateFunc(this.value, value);
+        } else {
+          this.value = value;
+        }
+        this.notify();
+      }
+    }
+    apply(value) {
+      if (typeof this.value !== "object" || this.value === null) {
+        return;
+      }
+      let changed = false;
+      for (const prop in value) {
+        changed = value[prop] !== this.value[prop];
+        if (changed) {
+          break;
+        }
+      }
+      Object.assign(this.value, value);
+      changed && this.notify();
+    }
+    notify() {
+      super.notify();
+    }
+    get() {
+      return this.value;
+    }
+  };
+  var GameStateProvider = class {
+    constructor() {
+      this.gameState = Subject.create(void 0);
+      window.document.addEventListener("OnVCockpitPanelAttributesChanged", this.onAttributesChanged.bind(this));
+      this.onAttributesChanged();
+    }
+    onAttributesChanged() {
+      var _a2;
+      if ((_a2 = window.parent) === null || _a2 === void 0 ? void 0 : _a2.document.body.hasAttribute("gamestate")) {
+        const attribute = window.parent.document.body.getAttribute("gamestate");
+        if (attribute !== null) {
+          const state = GameState[attribute];
+          if (state === GameState.ingame && this.gameState.get() !== GameState.ingame) {
+            setTimeout(() => {
+              setTimeout(() => {
+                const newAttribute = window.parent.document.body.getAttribute("gamestate");
+                if (newAttribute !== null) {
+                  this.gameState.set(GameState[newAttribute]);
+                }
+              });
+            });
+          } else {
+            this.gameState.set(state);
+          }
+          return;
+        }
+      }
+      this.gameState.set(void 0);
+    }
+    static get() {
+      var _a2;
+      return ((_a2 = GameStateProvider.INSTANCE) !== null && _a2 !== void 0 ? _a2 : GameStateProvider.INSTANCE = new GameStateProvider()).gameState;
+    }
+  };
+  var KeyEventManager = class {
+    constructor(keyListener, bus) {
+      this.keyListener = keyListener;
+      this.bus = bus;
+      Coherent.on("keyIntercepted", this.onKeyIntercepted.bind(this));
+    }
+    onKeyIntercepted(key, value1, value0, value2) {
+      if (value0 !== void 0 && value0 >= 2147483648) {
+        value0 -= 4294967296;
+      }
+      this.bus.pub("key_intercept", { key, value0, value1, value2 }, false, false);
+    }
+    triggerKey(key, bypass, value0 = 0, value1 = 0, value2 = 0) {
+      return Coherent.call("TRIGGER_KEY_EVENT", key, bypass, value0, value1, value2);
+    }
+    interceptKey(key, passThrough) {
+      Coherent.call("INTERCEPT_KEY_EVENT", key, passThrough ? 0 : 1);
+    }
+    static getManager(bus) {
+      if (KeyEventManager.INSTANCE) {
+        return Promise.resolve(KeyEventManager.INSTANCE);
+      }
+      if (!KeyEventManager.isCreatingInstance) {
+        KeyEventManager.createInstance(bus);
+      }
+      return new Promise((resolve) => {
+        KeyEventManager.pendingPromiseResolves.push(resolve);
+      });
+    }
+    static async createInstance(bus) {
+      KeyEventManager.isCreatingInstance = true;
+      KeyEventManager.INSTANCE = await KeyEventManager.create(bus);
+      KeyEventManager.isCreatingInstance = false;
+      for (let i = 0; i < KeyEventManager.pendingPromiseResolves.length; i++) {
+        KeyEventManager.pendingPromiseResolves[i](KeyEventManager.INSTANCE);
+      }
+    }
+    static create(bus) {
+      return new Promise((resolve, reject) => {
+        const gameState = GameStateProvider.get();
+        const sub = gameState.sub((state) => {
+          if (window["IsDestroying"]) {
+            sub.destroy();
+            reject("KeyEventManager: cannot create a key intercept manager after the Coherent JS view has been destroyed");
+            return;
+          }
+          if (state === GameState.briefing || state === GameState.ingame) {
+            sub.destroy();
+            const keyListener = RegisterViewListener("JS_LISTENER_KEYEVENT", () => {
+              if (window["IsDestroying"]) {
+                reject("KeyEventManager: cannot create a key intercept manager after the Coherent JS view has been destroyed");
+                return;
+              }
+              resolve(new KeyEventManager(keyListener, bus));
+            });
+          }
+        }, false, true);
+        sub.resume(true);
+      });
+    }
+  };
+  KeyEventManager.isCreatingInstance = false;
+  KeyEventManager.pendingPromiseResolves = [];
   var AeroMath = class {
     static pressureAir(temperature, density) {
       return density * AeroMath.R_AIR * (temperature + 273.15) / 100;
@@ -247,6 +1407,44 @@
     static tasToCasIsa(tas, altitude, deltaIsa = 0) {
       return AeroMath.machToCasIsa(tas / AeroMath.soundSpeedIsa(altitude, deltaIsa), altitude);
     }
+    static tasToEas(tas, density) {
+      return tas * Math.sqrt(density / AeroMath.DENSITY_SEA_LEVEL_ISA);
+    }
+    static tasToEasIsa(tas, altitude, deltaIsa = 0) {
+      return AeroMath.tasToEas(tas, AeroMath.isaDensity(altitude, deltaIsa));
+    }
+    static easToTas(eas, density) {
+      return eas * Math.sqrt(AeroMath.DENSITY_SEA_LEVEL_ISA / density);
+    }
+    static easToTasIsa(eas, altitude, deltaIsa = 0) {
+      return AeroMath.easToTas(eas, AeroMath.isaDensity(altitude, deltaIsa));
+    }
+    static machToEas(mach, pressure) {
+      return AeroMath.SOUND_SPEED_SEA_LEVEL_ISA * mach * Math.sqrt(pressure / 1013.25);
+    }
+    static machToEasIsa(mach, altitude) {
+      return AeroMath.machToEas(mach, AeroMath.isaPressure(altitude));
+    }
+    static easToMach(eas, pressure) {
+      return eas * Math.sqrt(1013.25 / pressure) / AeroMath.SOUND_SPEED_SEA_LEVEL_ISA;
+    }
+    static easToMachIsa(eas, altitude) {
+      return AeroMath.easToMach(eas, AeroMath.isaPressure(altitude));
+    }
+    static casToEas(cas, pressure) {
+      const mach0 = cas / AeroMath.SOUND_SPEED_SEA_LEVEL_ISA;
+      const impactPressure = 1013.25 * (Math.pow(1 + 0.2 * mach0 * mach0, 3.5) - 1);
+      return AeroMath.SOUND_SPEED_SEA_LEVEL_ISA * Math.sqrt(5 * pressure / 1013.25 * (Math.pow(impactPressure / pressure + 1, 2 / 7) - 1));
+    }
+    static casToEasIsa(cas, altitude) {
+      return AeroMath.casToEas(cas, AeroMath.isaPressure(altitude));
+    }
+    static easToCas(eas, pressure) {
+      return AeroMath.machToCas(AeroMath.easToMach(eas, pressure), pressure);
+    }
+    static easToCasIsa(eas, altitude) {
+      return AeroMath.easToCas(eas, AeroMath.isaPressure(altitude));
+    }
     static flowCoefFromForce(force, area, arg3, arg4) {
       const dynamicPressure = arg4 === void 0 ? arg3 * 100 : 0.5 * arg3 * arg4 * arg4;
       return force / (dynamicPressure * area);
@@ -260,10 +1458,202 @@
   AeroMath.R_AIR = 287.057;
   AeroMath.GAMMA_AIR = 1.4;
   AeroMath.SOUND_SPEED_SEA_LEVEL_ISA = 340.2964;
+  AeroMath.DENSITY_SEA_LEVEL_ISA = AeroMath.isaDensity(0);
   AeroMath.liftCoefficient = AeroMath.flowCoefFromForce;
   AeroMath.lift = AeroMath.flowForceFromCoef;
   AeroMath.dragCoefficient = AeroMath.flowCoefFromForce;
   AeroMath.drag = AeroMath.flowForceFromCoef;
+  var BitFlags = class {
+    static createFlag(index) {
+      if (index < 0 || index > 32) {
+        throw new Error(`Invalid index ${index} for bit flag. Index must be between 0 and 32.`);
+      }
+      return 1 << index;
+    }
+    static not(flags, mask = ~0) {
+      return flags ^ mask;
+    }
+    static union(...flags) {
+      let result = 0;
+      const len = flags.length;
+      for (let i = 0; i < len; i++) {
+        result |= flags[i];
+      }
+      return result;
+    }
+    static intersection(...flags) {
+      const len = flags.length;
+      if (len === 0) {
+        return 0;
+      }
+      let result = flags[0];
+      for (let i = 1; i < len; i++) {
+        result &= flags[i];
+      }
+      return result;
+    }
+    static set(flags, valuesToSet, mask) {
+      return flags & ~mask | valuesToSet & mask;
+    }
+    static isAny(flags, conditions) {
+      return (flags & conditions) !== 0;
+    }
+    static isAll(flags, conditions) {
+      return (flags & conditions) === conditions;
+    }
+    static forEach(flags, callback, valueFilter, startIndex, endIndex) {
+      startIndex = Utils.Clamp(startIndex !== null && startIndex !== void 0 ? startIndex : startIndex = 0, 0, 32);
+      endIndex = Utils.Clamp(endIndex !== null && endIndex !== void 0 ? endIndex : endIndex = 32, 0, 32);
+      for (let i = startIndex; i < endIndex; i++) {
+        const value = (flags & 1 << i) !== 0;
+        if (valueFilter === void 0 || valueFilter === value) {
+          callback(value, i, flags);
+        }
+      }
+    }
+  };
+  var ExpSmoother = class {
+    constructor(tau, initial = null, dtThreshold = Infinity) {
+      this.tau = tau;
+      this.dtThreshold = dtThreshold;
+      this.lastValue = initial;
+    }
+    last() {
+      return this.lastValue;
+    }
+    next(raw, dt) {
+      let next;
+      if (this.tau > 0 && this.lastValue !== null) {
+        const factor = this.calculateFactor(dt);
+        next = ExpSmoother.smooth(raw, this.lastValue, factor);
+      } else {
+        next = raw;
+      }
+      this.lastValue = next;
+      return next;
+    }
+    calculateFactor(dt) {
+      if (dt > this.dtThreshold) {
+        return 0;
+      } else {
+        return Math.exp(-dt / this.tau);
+      }
+    }
+    reset(value) {
+      return this.lastValue = value !== null && value !== void 0 ? value : null;
+    }
+    static smooth(value, last, factor) {
+      return value * (1 - factor) + last * factor;
+    }
+  };
+  var MathUtils = class {
+    static clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+    static round(value, precision = 1) {
+      return Math.round(value / precision) * precision;
+    }
+    static ceil(value, precision = 1) {
+      return Math.ceil(value / precision) * precision;
+    }
+    static floor(value, precision = 1) {
+      return Math.floor(value / precision) * precision;
+    }
+    static diffAngle(start, end, directional = true) {
+      const diff = ((end - start) % MathUtils.TWO_PI + MathUtils.TWO_PI) % MathUtils.TWO_PI;
+      return directional ? diff : Math.min(diff, MathUtils.TWO_PI - diff);
+    }
+    static diffAngleDeg(start, end, directional = true) {
+      const diff = ((end - start) % 360 + 360) % 360;
+      return directional ? diff : Math.min(diff, 360 - diff);
+    }
+    static lerp(x, x0, x1, y0, y1, clampStart = false, clampEnd = false) {
+      if (x0 !== x1 && y0 !== y1) {
+        const fraction = MathUtils.clamp((x - x0) / (x1 - x0), clampStart ? 0 : -Infinity, clampEnd ? 1 : Infinity);
+        return fraction * (y1 - y0) + y0;
+      } else {
+        return y0;
+      }
+    }
+    static lerpVector(out, x, x0, x1, y0, y1, clampStart = false, clampEnd = false) {
+      const length = Math.min(y0.length, y1.length, out.length);
+      for (let i = 0; i < length; i++) {
+        out[i] = MathUtils.lerp(x, x0, x1, y0[i], y1[i], clampStart, clampEnd);
+      }
+      return out;
+    }
+  };
+  MathUtils.TWO_PI = Math.PI * 2;
+  MathUtils.HALF_PI = Math.PI / 2;
+  MathUtils.SQRT3 = Math.sqrt(3);
+  MathUtils.SQRT1_3 = 1 / Math.sqrt(3);
+  var MultiExpSmoother = class {
+    constructor(tau, tauVelocity, tauAccel, initial = null, initialVelocity = null, initialAccel = null, dtThreshold = Infinity) {
+      this.tau = tau;
+      this.tauVelocity = tauVelocity;
+      this.tauAccel = tauAccel;
+      this.dtThreshold = dtThreshold;
+      this.lastValue = this.lastRawValue = initial;
+      this.lastVel = this.lastRawVel = initialVelocity;
+      this.lastAccel = initialAccel;
+    }
+    last() {
+      return this.lastValue;
+    }
+    lastVelocity() {
+      return this.lastVel;
+    }
+    lastAcceleration() {
+      return this.lastAccel;
+    }
+    next(raw, dt) {
+      if (this.tau > 0 && this.lastValue !== null && this.lastRawValue !== null && dt <= this.dtThreshold) {
+        const alpha = Math.exp(-dt / this.tau);
+        const next = MultiExpSmoother.smooth(raw, this.lastValue + (this.lastVel === null ? 0 : this.lastVel * dt) + (this.lastAccel === null ? 0 : this.lastAccel * 0.5 * dt * dt), alpha);
+        if (dt !== 0 && this.tauVelocity !== void 0) {
+          let nextVelocity;
+          const velocity = (raw - this.lastRawValue) / dt;
+          if (this.tauVelocity > 0 && this.lastVel !== null && this.lastRawVel !== null) {
+            const beta = Math.exp(-dt / this.tauVelocity);
+            nextVelocity = MultiExpSmoother.smooth(velocity, this.lastVel + (this.lastAccel === null ? 0 : this.lastAccel * dt), beta);
+            if (this.tauAccel !== void 0) {
+              const acceleration = (velocity - this.lastRawVel) / dt;
+              if (this.tauAccel > 0 && this.lastAccel !== null) {
+                const gamma = Math.exp(-dt / this.tauAccel);
+                this.lastAccel = MultiExpSmoother.smooth(acceleration, this.lastAccel, gamma);
+              } else {
+                this.lastAccel = acceleration;
+              }
+            }
+          } else {
+            nextVelocity = velocity;
+          }
+          this.lastRawVel = velocity;
+          this.lastVel = nextVelocity;
+        }
+        this.lastRawValue = raw;
+        this.lastValue = next;
+        return next;
+      } else {
+        return this.reset(raw);
+      }
+    }
+    reset(value = null, velocity = null, accel = null) {
+      this.lastVel = this.lastRawVel = velocity;
+      this.lastAccel = accel;
+      return this.lastValue = this.lastRawValue = value;
+    }
+    forecast(t) {
+      if (this.lastValue === null) {
+        return null;
+      } else {
+        return this.lastValue + (this.lastVel === null ? 0 : this.lastVel * t) + (this.lastAccel === null ? 0 : this.lastAccel * 0.5 * t * t);
+      }
+    }
+    static smooth(value, last, factor) {
+      return value * (1 - factor) + last * factor;
+    }
+  };
   var NumberUnit = class {
     constructor(number, unit) {
       this._number = number;
@@ -546,6 +1936,8 @@
     UnitFamily2["VolumeFlux"] = "volume_flux";
     UnitFamily2["Density"] = "density";
     UnitFamily2["Force"] = "force";
+    UnitFamily2["DistancePerWeight"] = "distance_per_weight";
+    UnitFamily2["DistanceRatio"] = "distance_ratio";
   })(UnitFamily || (UnitFamily = {}));
   var UnitType = class {
   };
@@ -575,6 +1967,7 @@
   UnitType.LITER = new SimpleUnit(UnitFamily.Volume, "liter", 1);
   UnitType.GALLON = new SimpleUnit(UnitFamily.Volume, "gallon", 3.78541);
   UnitType.HPA = new SimpleUnit(UnitFamily.Pressure, "hectopascal", 1);
+  UnitType.MB = new SimpleUnit(UnitFamily.Pressure, "millibar", 1);
   UnitType.ATM = new SimpleUnit(UnitFamily.Pressure, "atmosphere", 1013.25);
   UnitType.IN_HG = new SimpleUnit(UnitFamily.Pressure, "inch of mercury", 33.8639);
   UnitType.MM_HG = new SimpleUnit(UnitFamily.Pressure, "millimeter of mercury", 1.33322);
@@ -607,640 +2000,9 @@
   UnitType.KG_PER_M3 = new CompoundUnit(UnitFamily.Density, [UnitType.KILOGRAM], [UnitType.METER, UnitType.METER, UnitType.METER]);
   UnitType.NEWTON = new CompoundUnit(UnitFamily.Force, [UnitType.KILOGRAM, UnitType.METER], [UnitType.SECOND, UnitType.SECOND]);
   UnitType.POUND_FORCE = new CompoundUnit(UnitFamily.Force, [UnitType.POUND, UnitType.G_METER], [UnitType.SECOND, UnitType.SECOND]);
-  var BasePublisher = class {
-    constructor(bus, pacer = void 0) {
-      this.bus = bus;
-      this.publisher = this.bus.getPublisher();
-      this.publishActive = false;
-      this.pacer = pacer;
-    }
-    startPublish() {
-      this.publishActive = true;
-    }
-    stopPublish() {
-      this.publishActive = false;
-    }
-    isPublishing() {
-      return this.publishActive;
-    }
-    onUpdate() {
-      return;
-    }
-    publish(topic, data, sync = false, isCached = true) {
-      if (this.publishActive && (!this.pacer || this.pacer.canPublish(topic, data))) {
-        this.publisher.pub(topic, data, sync, isCached);
-      }
-    }
-  };
-  var SimVarPublisher = class extends BasePublisher {
-    constructor(simVarMap, bus, pacer) {
-      super(bus, pacer);
-      this.resolvedSimVars = /* @__PURE__ */ new Map();
-      this.indexedSimVars = /* @__PURE__ */ new Map();
-      this.subscribed = /* @__PURE__ */ new Set();
-      for (const [topic, entry] of simVarMap) {
-        if (entry.indexed) {
-          this.indexedSimVars.set(topic, {
-            name: entry.name,
-            type: entry.type,
-            map: entry.map,
-            indexes: entry.indexed === true ? void 0 : new Set(entry.indexed),
-            defaultIndex: entry.defaultIndex
-          });
-        } else {
-          this.resolvedSimVars.set(topic, Object.assign({}, entry));
-        }
-      }
-      const handleSubscribedTopic = (topic) => {
-        if (this.resolvedSimVars.has(topic)) {
-          this.onTopicSubscribed(topic);
-        } else {
-          this.tryMatchIndexedSubscribedTopic(topic);
-        }
-      };
-      this.bus.forEachSubscribedTopic(handleSubscribedTopic);
-      this.bus.getSubscriber().on("event_bus_topic_first_sub").handle(handleSubscribedTopic);
-    }
-    tryMatchIndexedSubscribedTopic(topic) {
-      var _a2;
-      if (this.indexedSimVars.size === 0) {
-        return;
-      }
-      let entry = this.indexedSimVars.get(topic);
-      if (entry) {
-        if (entry.defaultIndex !== null) {
-          const resolved = this.resolveIndexedSimVar(topic, entry, (_a2 = entry.defaultIndex) !== null && _a2 !== void 0 ? _a2 : 1);
-          if (resolved !== void 0) {
-            this.onTopicSubscribed(resolved);
-          }
-        }
-        return;
-      }
-      if (!SimVarPublisher.INDEXED_REGEX.test(topic)) {
-        return;
-      }
-      const match = topic.match(SimVarPublisher.INDEXED_REGEX);
-      const [, matchedTopic, index] = match;
-      entry = this.indexedSimVars.get(matchedTopic);
-      if (entry) {
-        const resolved = this.resolveIndexedSimVar(matchedTopic, entry, parseInt(index));
-        if (resolved !== void 0) {
-          this.onTopicSubscribed(resolved);
-        }
-      }
-    }
-    resolveIndexedSimVar(topic, entry, index) {
-      index !== null && index !== void 0 ? index : index = 1;
-      const resolvedTopic = `${topic}_${index}`;
-      if (this.resolvedSimVars.has(resolvedTopic)) {
-        return resolvedTopic;
-      }
-      const defaultIndex = entry.defaultIndex === void 0 ? 1 : entry.defaultIndex;
-      if (entry.indexes !== void 0 && !entry.indexes.has(index)) {
-        return void 0;
-      }
-      this.resolvedSimVars.set(resolvedTopic, {
-        name: entry.name.replace("#index#", `${index !== null && index !== void 0 ? index : 1}`),
-        type: entry.type,
-        map: entry.map,
-        unsuffixedTopic: defaultIndex === index ? topic : void 0
-      });
-      return resolvedTopic;
-    }
-    onTopicSubscribed(topic) {
-      if (this.subscribed.has(topic)) {
-        return;
-      }
-      this.subscribed.add(topic);
-      if (this.publishActive) {
-        this.publishTopic(topic);
-      }
-    }
-    subscribe(data) {
-      return;
-    }
-    unsubscribe(data) {
-      return;
-    }
-    onUpdate() {
-      for (const topic of this.subscribed.values()) {
-        this.publishTopic(topic);
-      }
-    }
-    publishTopic(topic) {
-      const entry = this.resolvedSimVars.get(topic);
-      if (entry !== void 0) {
-        const value = this.getValueFromEntry(entry);
-        this.publish(topic, value);
-        if (entry.unsuffixedTopic) {
-          this.publish(entry.unsuffixedTopic, value);
-        }
-      }
-    }
-    getValue(topic) {
-      const entry = this.resolvedSimVars.get(topic);
-      if (entry === void 0) {
-        return void 0;
-      }
-      return this.getValueFromEntry(entry);
-    }
-    getValueFromEntry(entry) {
-      return entry.map === void 0 ? this.getSimVarValue(entry) : entry.map(this.getSimVarValue(entry));
-    }
-    getSimVarValue(entry) {
-      const svValue = SimVar.GetSimVarValue(entry.name, entry.type);
-      if (entry.type === SimVarValueType.Bool) {
-        return svValue === 1;
-      }
-      return svValue;
-    }
-  };
-  SimVarPublisher.INDEXED_REGEX = /(.*)_(0|[1-9]\d*)$/;
-  var BitFlags = class {
-    static createFlag(index) {
-      if (index < 0 || index > 32) {
-        throw new Error(`Invalid index ${index} for bit flag. Index must be between 0 and 32.`);
-      }
-      return 1 << index;
-    }
-    static not(flags, mask = ~0) {
-      return flags ^ mask;
-    }
-    static union(...flags) {
-      let result = 0;
-      const len = flags.length;
-      for (let i = 0; i < len; i++) {
-        result |= flags[i];
-      }
-      return result;
-    }
-    static intersection(...flags) {
-      const len = flags.length;
-      if (len === 0) {
-        return 0;
-      }
-      let result = flags[0];
-      for (let i = 1; i < len; i++) {
-        result &= flags[i];
-      }
-      return result;
-    }
-    static set(flags, valuesToSet, mask) {
-      return flags & ~mask | valuesToSet & mask;
-    }
-    static isAny(flags, conditions) {
-      return (flags & conditions) !== 0;
-    }
-    static isAll(flags, conditions) {
-      return (flags & conditions) === conditions;
-    }
-    static forEach(flags, callback, valueFilter, startIndex, endIndex) {
-      startIndex = Utils.Clamp(startIndex !== null && startIndex !== void 0 ? startIndex : startIndex = 0, 0, 32);
-      endIndex = Utils.Clamp(endIndex !== null && endIndex !== void 0 ? endIndex : endIndex = 32, 0, 32);
-      for (let i = startIndex; i < endIndex; i++) {
-        const value = (flags & 1 << i) !== 0;
-        if (valueFilter === void 0 || valueFilter === value) {
-          callback(value, i, flags);
-        }
-      }
-    }
-  };
-  var ExpSmoother = class {
-    constructor(tau, initial = null, dtThreshold = Infinity) {
-      this.tau = tau;
-      this.dtThreshold = dtThreshold;
-      this.lastValue = initial;
-    }
-    last() {
-      return this.lastValue;
-    }
-    next(raw, dt) {
-      let next;
-      if (this.tau > 0 && this.lastValue !== null) {
-        const factor = this.calculateFactor(dt);
-        next = ExpSmoother.smooth(raw, this.lastValue, factor);
-      } else {
-        next = raw;
-      }
-      this.lastValue = next;
-      return next;
-    }
-    calculateFactor(dt) {
-      if (dt > this.dtThreshold) {
-        return 0;
-      } else {
-        return Math.exp(-dt / this.tau);
-      }
-    }
-    reset(value) {
-      return this.lastValue = value !== null && value !== void 0 ? value : null;
-    }
-    static smooth(value, last, factor) {
-      return value * (1 - factor) + last * factor;
-    }
-  };
-  var MathUtils = class {
-    static clamp(value, min, max) {
-      return Math.max(min, Math.min(max, value));
-    }
-    static round(value, precision = 1) {
-      return Math.round(value / precision) * precision;
-    }
-    static ceil(value, precision = 1) {
-      return Math.ceil(value / precision) * precision;
-    }
-    static floor(value, precision = 1) {
-      return Math.floor(value / precision) * precision;
-    }
-    static diffAngle(start, end, directional = true) {
-      const diff = ((end - start) % MathUtils.TWO_PI + MathUtils.TWO_PI) % MathUtils.TWO_PI;
-      return directional ? diff : Math.min(diff, MathUtils.TWO_PI - diff);
-    }
-    static diffAngleDeg(start, end, directional = true) {
-      const diff = ((end - start) % 360 + 360) % 360;
-      return directional ? diff : Math.min(diff, 360 - diff);
-    }
-    static lerp(x, x0, x1, y0, y1, clampStart = false, clampEnd = false) {
-      if (x0 !== x1 && y0 !== y1) {
-        const fraction = MathUtils.clamp((x - x0) / (x1 - x0), clampStart ? 0 : -Infinity, clampEnd ? 1 : Infinity);
-        return fraction * (y1 - y0) + y0;
-      } else {
-        return y0;
-      }
-    }
-    static lerpVector(out, x, x0, x1, y0, y1, clampStart = false, clampEnd = false) {
-      const length = Math.min(y0.length, y1.length, out.length);
-      for (let i = 0; i < length; i++) {
-        out[i] = MathUtils.lerp(x, x0, x1, y0[i], y1[i], clampStart, clampEnd);
-      }
-      return out;
-    }
-  };
-  MathUtils.TWO_PI = Math.PI * 2;
-  MathUtils.HALF_PI = Math.PI / 2;
-  MathUtils.SQRT3 = Math.sqrt(3);
-  MathUtils.SQRT1_3 = 1 / Math.sqrt(3);
-  var MultiExpSmoother = class {
-    constructor(tau, tauVelocity, tauAccel, initial = null, initialVelocity = null, initialAccel = null, dtThreshold = Infinity) {
-      this.tau = tau;
-      this.tauVelocity = tauVelocity;
-      this.tauAccel = tauAccel;
-      this.dtThreshold = dtThreshold;
-      this.lastValue = this.lastRawValue = initial;
-      this.lastVel = this.lastRawVel = initialVelocity;
-      this.lastAccel = initialAccel;
-    }
-    last() {
-      return this.lastValue;
-    }
-    lastVelocity() {
-      return this.lastVel;
-    }
-    lastAcceleration() {
-      return this.lastAccel;
-    }
-    next(raw, dt) {
-      if (this.tau > 0 && this.lastValue !== null && this.lastRawValue !== null && dt <= this.dtThreshold) {
-        const alpha = Math.exp(-dt / this.tau);
-        const next = MultiExpSmoother.smooth(raw, this.lastValue + (this.lastVel === null ? 0 : this.lastVel * dt) + (this.lastAccel === null ? 0 : this.lastAccel * 0.5 * dt * dt), alpha);
-        if (dt !== 0 && this.tauVelocity !== void 0) {
-          let nextVelocity;
-          const velocity = (raw - this.lastRawValue) / dt;
-          if (this.tauVelocity > 0 && this.lastVel !== null && this.lastRawVel !== null) {
-            const beta = Math.exp(-dt / this.tauVelocity);
-            nextVelocity = MultiExpSmoother.smooth(velocity, this.lastVel + (this.lastAccel === null ? 0 : this.lastAccel * dt), beta);
-            if (this.tauAccel !== void 0) {
-              const acceleration = (velocity - this.lastRawVel) / dt;
-              if (this.tauAccel > 0 && this.lastAccel !== null) {
-                const gamma = Math.exp(-dt / this.tauAccel);
-                this.lastAccel = MultiExpSmoother.smooth(acceleration, this.lastAccel, gamma);
-              } else {
-                this.lastAccel = acceleration;
-              }
-            }
-          } else {
-            nextVelocity = velocity;
-          }
-          this.lastRawVel = velocity;
-          this.lastVel = nextVelocity;
-        }
-        this.lastRawValue = raw;
-        this.lastValue = next;
-        return next;
-      } else {
-        return this.reset(raw);
-      }
-    }
-    reset(value = null, velocity = null, accel = null) {
-      this.lastVel = this.lastRawVel = velocity;
-      this.lastAccel = accel;
-      return this.lastValue = this.lastRawValue = value;
-    }
-    forecast(t) {
-      if (this.lastValue === null) {
-        return null;
-      } else {
-        return this.lastValue + (this.lastVel === null ? 0 : this.lastVel * t) + (this.lastAccel === null ? 0 : this.lastAccel * 0.5 * t * t);
-      }
-    }
-    static smooth(value, last, factor) {
-      return value * (1 - factor) + last * factor;
-    }
-  };
-  var HandlerSubscription = class {
-    constructor(handler, initialNotifyFunc, onDestroy) {
-      this.handler = handler;
-      this.initialNotifyFunc = initialNotifyFunc;
-      this.onDestroy = onDestroy;
-      this._isAlive = true;
-      this._isPaused = false;
-      this.canInitialNotify = initialNotifyFunc !== void 0;
-    }
-    get isAlive() {
-      return this._isAlive;
-    }
-    get isPaused() {
-      return this._isPaused;
-    }
-    initialNotify() {
-      if (!this._isAlive) {
-        throw new Error("HandlerSubscription: cannot notify a dead Subscription.");
-      }
-      this.initialNotifyFunc && this.initialNotifyFunc(this);
-    }
-    pause() {
-      if (!this._isAlive) {
-        throw new Error("Subscription: cannot pause a dead Subscription.");
-      }
-      this._isPaused = true;
-      return this;
-    }
-    resume(initialNotify = false) {
-      if (!this._isAlive) {
-        throw new Error("Subscription: cannot resume a dead Subscription.");
-      }
-      if (!this._isPaused) {
-        return this;
-      }
-      this._isPaused = false;
-      if (initialNotify) {
-        this.initialNotify();
-      }
-      return this;
-    }
-    destroy() {
-      if (!this._isAlive) {
-        return;
-      }
-      this._isAlive = false;
-      this.onDestroy && this.onDestroy(this);
-    }
-  };
-  var SubscribablePipe = class extends HandlerSubscription {
-    constructor(from, to, arg3, arg4) {
-      let handler;
-      let onDestroy;
-      if (typeof arg4 === "function") {
-        handler = (fromVal) => {
-          to.set(arg3(fromVal, to.get()));
-        };
-        onDestroy = arg4;
-      } else {
-        handler = (fromVal) => {
-          to.set(fromVal);
-        };
-        onDestroy = arg3;
-      }
-      super(handler, (sub) => {
-        sub.handler(from.get());
-      }, onDestroy);
-    }
-  };
-  var AbstractSubscribable = class {
-    constructor() {
-      this.isSubscribable = true;
-      this.notifyDepth = 0;
-      this.initialNotifyFunc = this.notifySubscription.bind(this);
-      this.onSubDestroyedFunc = this.onSubDestroyed.bind(this);
-    }
-    addSubscription(sub) {
-      if (this.subs) {
-        this.subs.push(sub);
-      } else if (this.singletonSub) {
-        this.subs = [this.singletonSub, sub];
-        delete this.singletonSub;
-      } else {
-        this.singletonSub = sub;
-      }
-    }
-    sub(handler, initialNotify = false, paused = false) {
-      const sub = new HandlerSubscription(handler, this.initialNotifyFunc, this.onSubDestroyedFunc);
-      this.addSubscription(sub);
-      if (paused) {
-        sub.pause();
-      } else if (initialNotify) {
-        sub.initialNotify();
-      }
-      return sub;
-    }
-    unsub(handler) {
-      let toDestroy = void 0;
-      if (this.singletonSub && this.singletonSub.handler === handler) {
-        toDestroy = this.singletonSub;
-      } else if (this.subs) {
-        toDestroy = this.subs.find((sub) => sub.handler === handler);
-      }
-      toDestroy === null || toDestroy === void 0 ? void 0 : toDestroy.destroy();
-    }
-    notify() {
-      let needCleanUpSubs = false;
-      this.notifyDepth++;
-      if (this.singletonSub) {
-        try {
-          if (this.singletonSub.isAlive && !this.singletonSub.isPaused) {
-            this.notifySubscription(this.singletonSub);
-          }
-          needCleanUpSubs || (needCleanUpSubs = !this.singletonSub.isAlive);
-        } catch (error) {
-          console.error(`AbstractSubscribable: error in handler: ${error}`);
-          if (error instanceof Error) {
-            console.error(error.stack);
-          }
-        }
-      } else if (this.subs) {
-        const subLen = this.subs.length;
-        for (let i = 0; i < subLen; i++) {
-          try {
-            const sub = this.subs[i];
-            if (sub.isAlive && !sub.isPaused) {
-              this.notifySubscription(sub);
-            }
-            needCleanUpSubs || (needCleanUpSubs = !sub.isAlive);
-          } catch (error) {
-            console.error(`AbstractSubscribable: error in handler: ${error}`);
-            if (error instanceof Error) {
-              console.error(error.stack);
-            }
-          }
-        }
-      }
-      this.notifyDepth--;
-      if (needCleanUpSubs && this.notifyDepth === 0) {
-        if (this.singletonSub && !this.singletonSub.isAlive) {
-          delete this.singletonSub;
-        } else if (this.subs) {
-          this.subs = this.subs.filter((sub) => sub.isAlive);
-        }
-      }
-    }
-    notifySubscription(sub) {
-      sub.handler(this.get());
-    }
-    onSubDestroyed(sub) {
-      if (this.notifyDepth === 0) {
-        if (this.singletonSub === sub) {
-          delete this.singletonSub;
-        } else if (this.subs) {
-          const index = this.subs.indexOf(sub);
-          if (index >= 0) {
-            this.subs.splice(index, 1);
-          }
-        }
-      }
-    }
-    map(fn, equalityFunc, mutateFunc, initialVal) {
-      return new MappedSubscribableClass(this, fn, equalityFunc !== null && equalityFunc !== void 0 ? equalityFunc : AbstractSubscribable.DEFAULT_EQUALITY_FUNC, mutateFunc, initialVal);
-    }
-    pipe(to, arg2, arg3) {
-      let sub;
-      let paused;
-      if (typeof arg2 === "function") {
-        sub = new SubscribablePipe(this, to, arg2, this.onSubDestroyedFunc);
-        paused = arg3 !== null && arg3 !== void 0 ? arg3 : false;
-      } else {
-        sub = new SubscribablePipe(this, to, this.onSubDestroyedFunc);
-        paused = arg2 !== null && arg2 !== void 0 ? arg2 : false;
-      }
-      this.addSubscription(sub);
-      if (paused) {
-        sub.pause();
-      } else {
-        sub.initialNotify();
-      }
-      return sub;
-    }
-  };
-  AbstractSubscribable.DEFAULT_EQUALITY_FUNC = (a, b) => a === b;
-  var MappedSubscribableClass = class extends AbstractSubscribable {
-    constructor(input, mapFunc, equalityFunc, mutateFunc, initialVal) {
-      super();
-      this.input = input;
-      this.mapFunc = mapFunc;
-      this.equalityFunc = equalityFunc;
-      this.isSubscribable = true;
-      this._isAlive = true;
-      this._isPaused = false;
-      if (initialVal && mutateFunc) {
-        this.value = initialVal;
-        mutateFunc(this.value, this.mapFunc(this.input.get()));
-        this.mutateFunc = (newVal) => {
-          mutateFunc(this.value, newVal);
-        };
-      } else {
-        this.value = this.mapFunc(this.input.get());
-        this.mutateFunc = (newVal) => {
-          this.value = newVal;
-        };
-      }
-      this.inputSub = this.input.sub((inputValue) => {
-        this.updateValue(inputValue);
-      }, true);
-    }
-    get isAlive() {
-      return this._isAlive;
-    }
-    get isPaused() {
-      return this._isPaused;
-    }
-    updateValue(inputValue) {
-      const value = this.mapFunc(inputValue, this.value);
-      if (!this.equalityFunc(this.value, value)) {
-        this.mutateFunc(value);
-        this.notify();
-      }
-    }
-    get() {
-      return this.value;
-    }
-    pause() {
-      if (!this._isAlive) {
-        throw new Error("MappedSubscribable: cannot pause a dead subscribable");
-      }
-      if (this._isPaused) {
-        return this;
-      }
-      this.inputSub.pause();
-      this._isPaused = true;
-      return this;
-    }
-    resume() {
-      if (!this._isAlive) {
-        throw new Error("MappedSubscribable: cannot resume a dead subscribable");
-      }
-      if (!this._isPaused) {
-        return this;
-      }
-      this._isPaused = false;
-      this.inputSub.resume(true);
-      return this;
-    }
-    destroy() {
-      this._isAlive = false;
-      this.inputSub.destroy();
-    }
-  };
-  var Subject = class extends AbstractSubscribable {
-    constructor(value, equalityFunc, mutateFunc) {
-      super();
-      this.value = value;
-      this.equalityFunc = equalityFunc;
-      this.mutateFunc = mutateFunc;
-      this.isMutableSubscribable = true;
-    }
-    static create(v, equalityFunc, mutateFunc) {
-      return new Subject(v, equalityFunc !== null && equalityFunc !== void 0 ? equalityFunc : Subject.DEFAULT_EQUALITY_FUNC, mutateFunc);
-    }
-    notifySub(sub) {
-      sub(this.value);
-    }
-    set(value) {
-      if (!this.equalityFunc(value, this.value)) {
-        if (this.mutateFunc) {
-          this.mutateFunc(this.value, value);
-        } else {
-          this.value = value;
-        }
-        this.notify();
-      }
-    }
-    apply(value) {
-      let changed = false;
-      for (const prop in value) {
-        changed = value[prop] !== this.value[prop];
-        if (changed) {
-          break;
-        }
-      }
-      Object.assign(this.value, value);
-      changed && this.notify();
-    }
-    notify() {
-      super.notify();
-    }
-    get() {
-      return this.value;
-    }
-  };
+  UnitType.MILE_PER_GALLON_FUEL = new CompoundUnit(UnitFamily.DistancePerWeight, [UnitType.MILE], [UnitType.GALLON_FUEL]);
+  UnitType.NMILE_PER_GALLON_FUEL = new CompoundUnit(UnitFamily.DistancePerWeight, [UnitType.NMILE], [UnitType.GALLON_FUEL]);
+  UnitType.FOOT_PER_NMILE = new CompoundUnit(UnitFamily.DistanceRatio, [UnitType.FOOT], [UnitType.NMILE]);
   var SubscribableUtils = class {
     static isSubscribable(query) {
       return typeof query === "object" && query !== null && query.isSubscribable === true;
@@ -1281,6 +2043,16 @@
     }
     static abs() {
       return Math.abs;
+    }
+    static count(predicate) {
+      const reduceFunc = (sum, curr) => {
+        if (predicate(curr)) {
+          return sum + 1;
+        } else {
+          return sum;
+        }
+      };
+      return (input) => input.reduce(reduceFunc, 0);
     }
     static withPrecision(precision) {
       return SubscribableUtils.isSubscribable(precision) ? (input) => {
@@ -1332,7 +2104,7 @@
       super();
       this.mapFunc = mapFunc;
       this.equalityFunc = equalityFunc;
-      this.isSubscribable = true;
+      this.canInitialNotify = true;
       this._isAlive = true;
       this._isPaused = false;
       this.inputs = inputs;
@@ -2397,6 +3169,39 @@
       }
     }
   };
+  var Vec3Subject = class extends AbstractSubscribable {
+    constructor(value) {
+      super();
+      this.value = value;
+      this.isMutableSubscribable = true;
+    }
+    static create(initialVal) {
+      return new Vec3Subject(initialVal);
+    }
+    static createFromVector(initialVal) {
+      return new Vec3Subject(initialVal);
+    }
+    get() {
+      return this.value;
+    }
+    set(arg1, arg2, arg3) {
+      let x, y, z;
+      if (typeof arg1 === "number") {
+        x = arg1;
+        y = arg2;
+        z = arg3;
+      } else {
+        x = arg1[0];
+        y = arg1[1];
+        z = arg1[2];
+      }
+      const equals = SubscribableUtils.NUMERIC_NAN_EQUALITY(x, this.value[0]) && SubscribableUtils.NUMERIC_NAN_EQUALITY(y, this.value[1]) && SubscribableUtils.NUMERIC_NAN_EQUALITY(z, this.value[2]);
+      if (!equals) {
+        Vec3Math.set(x, y, z, this.value);
+        this.notify();
+      }
+    }
+  };
   var VecNSubject = class extends AbstractSubscribable {
     constructor(value) {
       super();
@@ -3231,1494 +4036,6 @@
       return Facilities.getMagVar(lat, lon);
     }
   };
-  var GeoPointSubject = class extends AbstractSubscribable {
-    constructor(value, tolerance) {
-      super();
-      this.value = value;
-      this.tolerance = tolerance;
-      this.isMutableSubscribable = true;
-    }
-    static create(initialVal, tolerance) {
-      return new GeoPointSubject(initialVal, tolerance);
-    }
-    static createFromGeoPoint(initialVal) {
-      return new GeoPointSubject(initialVal);
-    }
-    get() {
-      return this.value.readonly;
-    }
-    set(arg1, arg2) {
-      const isArg1Number = typeof arg1 === "number";
-      const equals = isArg1Number ? this.value.equals(arg1, arg2, this.tolerance) : this.value.equals(arg1, this.tolerance);
-      if (!equals) {
-        isArg1Number ? this.value.set(arg1, arg2) : this.value.set(arg1);
-        this.notify();
-      }
-    }
-  };
-  var AbstractGeoProjection = class {
-    constructor() {
-      this.center = new GeoPoint(0, 0);
-      this.centerTranslation = new Float64Array(2);
-      this.scaleFactor = UnitType.GA_RADIAN.convertTo(1, UnitType.NMILE);
-      this.preRotation = new Float64Array(3);
-      this.translation = new Float64Array(2);
-      this.postRotation = 0;
-      this.rotationSin = 0;
-      this.rotationCos = 1;
-      this.reflectY = 1;
-      this.preRotationForwardTransform = new Transform3D();
-      this.preRotationReverseTransform = new Transform3D();
-      this.rotationCache = [new Transform3D(), new Transform3D()];
-    }
-    getCenter() {
-      return this.center.readonly;
-    }
-    getScaleFactor() {
-      return this.scaleFactor;
-    }
-    getPreRotation() {
-      return this.preRotation;
-    }
-    getTranslation() {
-      return this.translation;
-    }
-    getPostRotation() {
-      return this.postRotation;
-    }
-    getReflectY() {
-      return this.reflectY === -1;
-    }
-    setCenter(point) {
-      this.center.set(point);
-      this.updateCenterTranslation();
-      return this;
-    }
-    setScaleFactor(factor) {
-      this.scaleFactor = factor;
-      return this;
-    }
-    setPreRotation(vec) {
-      this.preRotation.set(vec);
-      this.updatePreRotationTransforms();
-      this.updateCenterTranslation();
-      return this;
-    }
-    setTranslation(vec) {
-      this.translation.set(vec);
-      return this;
-    }
-    setPostRotation(rotation) {
-      this.postRotation = rotation;
-      this.rotationCos = Math.cos(rotation);
-      this.rotationSin = Math.sin(rotation);
-      return this;
-    }
-    setReflectY(val) {
-      this.reflectY = val ? -1 : 1;
-      return this;
-    }
-    copyParametersFrom(other) {
-      return this.setCenter(other.getCenter()).setPreRotation(other.getPreRotation()).setScaleFactor(other.getScaleFactor()).setTranslation(other.getTranslation()).setPostRotation(other.getPostRotation()).setReflectY(other.getReflectY());
-    }
-    updatePreRotationTransforms() {
-      const phi = this.preRotation[1];
-      const gamma = this.preRotation[2];
-      this.rotationCache[0].toRotationX(gamma);
-      this.rotationCache[1].toRotationY(-phi);
-      Transform3D.concat(this.preRotationForwardTransform, this.rotationCache);
-      this.preRotationReverseTransform.set(this.preRotationForwardTransform);
-      this.preRotationReverseTransform.invert();
-    }
-    updateCenterTranslation() {
-      const centerArray = AbstractGeoProjection.vec2Cache[0];
-      centerArray[0] = this.center.lon;
-      centerArray[1] = this.center.lat;
-      this.preRotateForward(centerArray, centerArray);
-      this.projectRaw(centerArray, this.centerTranslation);
-    }
-    preRotateForward(vec, out) {
-      const lambda = this.preRotation[0];
-      const phi = this.preRotation[1];
-      const gamma = this.preRotation[2];
-      if (lambda === 0 && phi === 0 && gamma === 0) {
-        out.set(vec);
-        return out;
-      }
-      const lat = vec[1];
-      const lon = vec[0];
-      const rotatedLon = ((lon + lambda * Avionics.Utils.RAD2DEG) % 360 + 540) % 360 - 180;
-      if (phi === 0 && gamma === 0) {
-        return Vec2Math.set(rotatedLon, lat, out);
-      }
-      const cartesianVec = GeoPoint.sphericalToCartesian(lat, rotatedLon, AbstractGeoProjection.vec3Cache[0]);
-      const rotatedCartesianVec = this.preRotationForwardTransform.apply(cartesianVec, cartesianVec);
-      const rotated = AbstractGeoProjection.geoPointCache[0].setFromCartesian(rotatedCartesianVec);
-      return Vec2Math.set(rotated.lon, rotated.lat, out);
-    }
-    preRotateReverse(vec, out) {
-      const lambda = this.preRotation[0];
-      const phi = this.preRotation[1];
-      const gamma = this.preRotation[2];
-      if (lambda === 0 && phi === 0 && gamma === 0) {
-        out.set(vec);
-        return out;
-      }
-      const lat = vec[1];
-      const lon = vec[0];
-      let rotatedLat = lat;
-      let rotatedLon = lon;
-      if (phi !== 0 || gamma !== 0) {
-        const rotatedCartesianVec = GeoPoint.sphericalToCartesian(rotatedLat, rotatedLon, AbstractGeoProjection.vec3Cache[0]);
-        const cartesianVec = this.preRotationReverseTransform.apply(rotatedCartesianVec, rotatedCartesianVec);
-        const unrotated = AbstractGeoProjection.geoPointCache[0].setFromCartesian(cartesianVec);
-        rotatedLat = unrotated.lat;
-        rotatedLon = unrotated.lon;
-      }
-      rotatedLon = ((rotatedLon - lambda * Avionics.Utils.RAD2DEG) % 360 + 540) % 360 - 180;
-      return Vec2Math.set(rotatedLon, rotatedLat, out);
-    }
-    project(point, out) {
-      if (point instanceof Float64Array) {
-        out.set(point);
-      } else {
-        out[0] = point.lon;
-        out[1] = point.lat;
-      }
-      this.preRotateForward(out, out);
-      this.projectRaw(out, out);
-      out[0] -= this.centerTranslation[0];
-      out[1] -= this.centerTranslation[1];
-      out[1] *= this.reflectY;
-      out[0] *= this.scaleFactor;
-      out[1] *= this.scaleFactor;
-      const x = out[0];
-      const y = out[1];
-      out[0] = x * this.rotationCos - y * this.rotationSin;
-      out[1] = x * this.rotationSin + y * this.rotationCos;
-      out[0] += this.translation[0];
-      out[1] += this.translation[1];
-      return out;
-    }
-    invert(vec, out) {
-      const projected = AbstractGeoProjection.vec2Cache[0];
-      projected.set(vec);
-      projected[0] -= this.translation[0];
-      projected[1] -= this.translation[1];
-      const x = projected[0];
-      const y = projected[1];
-      projected[0] = x * this.rotationCos + y * this.rotationSin;
-      projected[1] = -x * this.rotationSin + y * this.rotationCos;
-      projected[0] /= this.scaleFactor;
-      projected[1] /= this.scaleFactor;
-      projected[1] *= this.reflectY;
-      projected[0] += this.centerTranslation[0];
-      projected[1] += this.centerTranslation[1];
-      const inverted = this.invertRaw(projected, projected);
-      this.preRotateReverse(inverted, inverted);
-      if (out instanceof Float64Array) {
-        out.set(inverted);
-        return out;
-      } else {
-        return out.set(inverted[1], inverted[0]);
-      }
-    }
-  };
-  AbstractGeoProjection.vec2Cache = [new Float64Array(2)];
-  AbstractGeoProjection.vec3Cache = [new Float64Array(3)];
-  AbstractGeoProjection.geoPointCache = [new GeoPoint(0, 0)];
-  var MercatorProjection = class extends AbstractGeoProjection {
-    projectRaw(vec, out) {
-      out[0] = vec[0] * Avionics.Utils.DEG2RAD;
-      out[1] = Math.log(Math.tan((90 + vec[1]) * Avionics.Utils.DEG2RAD / 2));
-      return out;
-    }
-    invertRaw(vec, out) {
-      out[0] = vec[0] * Avionics.Utils.RAD2DEG;
-      out[1] = 2 * Math.atan(Math.exp(vec[1])) * Avionics.Utils.RAD2DEG - 90;
-      return out;
-    }
-  };
-  var GeoCircleResampler = class {
-    constructor(minDistance, dpTolerance, maxDepth) {
-      this.minDistance = minDistance;
-      this.dpTolerance = dpTolerance;
-      this.maxDepth = maxDepth;
-      this.geoPointCache = [new GeoPoint(0, 0), new GeoPoint(0, 0)];
-      this.vec2Cache = [new Float64Array(2), new Float64Array(2), new Float64Array(2)];
-      this.vec3Cache = [new Float64Array(3), new Float64Array(3), new Float64Array(3), new Float64Array(3), new Float64Array(3)];
-      this.startVector = {
-        type: "start",
-        point: new GeoPoint(0, 0),
-        projected: new Float64Array(2),
-        index: 0
-      };
-      this.lineVector = {
-        type: "line",
-        point: new GeoPoint(0, 0),
-        projected: new Float64Array(2),
-        index: 0
-      };
-      this.arcVector = {
-        type: "arc",
-        point: new GeoPoint(0, 0),
-        projected: new Float64Array(2),
-        projectedArcCenter: new Float64Array(2),
-        projectedArcRadius: 0,
-        projectedArcStartAngle: 0,
-        projectedArcEndAngle: 0,
-        index: 0
-      };
-      this.state = {
-        index: 0,
-        prevX: 0,
-        prevY: 0,
-        vectorType: "line",
-        arcCenterX: 0,
-        arcCenterY: 0,
-        arcRadius: 0,
-        isArcCounterClockwise: false
-      };
-      this.cosMinDistance = Math.cos(minDistance);
-      this.dpTolSq = dpTolerance * dpTolerance;
-    }
-    resample(projection, circle, start, end, handler) {
-      let startPoint, startVec, endPoint, endVec;
-      if (start instanceof Float64Array) {
-        startPoint = this.geoPointCache[0].setFromCartesian(start);
-        startVec = start;
-      } else {
-        startPoint = start;
-        startVec = GeoPoint.sphericalToCartesian(start, this.vec3Cache[0]);
-      }
-      if (end instanceof Float64Array) {
-        endPoint = this.geoPointCache[0].setFromCartesian(end);
-        endVec = end;
-      } else {
-        endPoint = end;
-        endVec = GeoPoint.sphericalToCartesian(end, this.vec3Cache[1]);
-      }
-      const startLat = startPoint.lat;
-      const startLon = startPoint.lon;
-      const endLat = endPoint.lat;
-      const endLon = endPoint.lon;
-      const startProjected = projection.project(start, this.vec2Cache[0]);
-      const endProjected = projection.project(end, this.vec2Cache[1]);
-      const startX = startProjected[0];
-      const startY = startProjected[1];
-      const endX = endProjected[0];
-      const endY = endProjected[1];
-      this.startVector.point.set(startLat, startLon);
-      Vec2Math.copy(startProjected, this.startVector.projected);
-      handler(this.startVector);
-      this.state.index = 1;
-      this.state.prevX = startX;
-      this.state.prevY = startY;
-      this.state.vectorType = "line";
-      const state = this.resampleHelper(projection, circle, startLat, startLon, startVec[0], startVec[1], startVec[2], startX, startY, endLat, endLon, endVec[0], endVec[1], endVec[2], endX, endY, handler, 0, this.state);
-      this.callHandler(handler, endLat, endLon, endX, endY, state);
-    }
-    resampleHelper(projection, circle, lat1, lon1, x1, y1, z1, projX1, projY1, lat2, lon2, x2, y2, z2, projX2, projY2, handler, depth, state) {
-      if (depth >= this.maxDepth) {
-        return state;
-      }
-      const startVec = Vec3Math.set(x1, y1, z1, this.vec3Cache[0]);
-      const endVec = Vec3Math.set(x2, y2, z2, this.vec3Cache[1]);
-      const angularWidth = circle.angleAlong(startVec, endVec, Math.PI);
-      if (angularWidth <= GeoCircle.ANGULAR_TOLERANCE) {
-        return state;
-      }
-      const midVec = circle.offsetAngleAlong(startVec, angularWidth / 2, this.vec3Cache[2]);
-      const startProjected = Vec2Math.set(projX1, projY1, this.vec2Cache[0]);
-      const endProjected = Vec2Math.set(projX2, projY2, this.vec2Cache[1]);
-      const deltaProjected = Vec2Math.sub(endProjected, startProjected, this.vec2Cache[2]);
-      const deltaProjectedDot = Vec2Math.dot(deltaProjected, deltaProjected);
-      const midPoint = this.geoPointCache[0].setFromCartesian(midVec);
-      const midProjected = projection.project(midPoint, this.vec2Cache[2]);
-      const lat0 = midPoint.lat;
-      const lon0 = midPoint.lon;
-      const x0 = midVec[0];
-      const y0 = midVec[1];
-      const z0 = midVec[2];
-      const projX0 = midProjected[0];
-      const projY0 = midProjected[1];
-      const A = projX2 - projX1;
-      const B = projY2 - projY1;
-      const C = projX1 * projX1 - projX2 * projX2 + projY1 * projY1 - projY2 * projY2;
-      const D = projX0 - projX1;
-      const E = projY0 - projY1;
-      const F = projX1 * projX1 - projX0 * projX0 + projY1 * projY1 - projY0 * projY0;
-      const det = 2 * (A * E - B * D);
-      const dpDisSq = det * det / 4 / deltaProjectedDot;
-      if (dpDisSq > this.dpTolSq) {
-        const arcCenterX = (B * F - C * E) / det;
-        const arcCenterY = (C * D - A * F) / det;
-        const arcRadius = Math.hypot(arcCenterX - projX1, arcCenterY - projY1);
-        const startToEndVec = Vec3Math.set(A, B, 0, this.vec3Cache[3]);
-        const centerToMidVec = Vec3Math.set(projX0 - arcCenterX, projY0 - arcCenterY, 0, this.vec3Cache[4]);
-        const cross = Vec3Math.cross(startToEndVec, centerToMidVec, this.vec3Cache[4]);
-        state.vectorType = "arc";
-        state.arcCenterX = arcCenterX;
-        state.arcCenterY = arcCenterY;
-        state.arcRadius = arcRadius;
-        state.isArcCounterClockwise = cross[2] > 0;
-      } else {
-        state.vectorType = "line";
-      }
-      const cosDistance = Vec3Math.dot(startVec, midVec);
-      if (cosDistance > this.cosMinDistance) {
-        if (state.vectorType === "line") {
-          return state;
-        }
-        const query = circle.offsetAngleAlong(startVec, angularWidth / 4, this.geoPointCache[0]);
-        const projectedQuery = projection.project(query, this.vec2Cache[0]);
-        let distance = Math.hypot(projectedQuery[0] - state.arcCenterX, projectedQuery[1] - state.arcCenterY);
-        if ((distance - state.arcRadius) * (distance - state.arcRadius) <= this.dpTolSq) {
-          circle.offsetAngleAlong(startVec, 3 * angularWidth / 4, query);
-          projection.project(query, projectedQuery);
-          distance = Math.hypot(projectedQuery[0] - state.arcCenterX, projectedQuery[1] - state.arcCenterY);
-          if ((distance - state.arcRadius) * (distance - state.arcRadius) <= this.dpTolSq) {
-            return state;
-          }
-        }
-      }
-      state = this.resampleHelper(projection, circle, lat1, lon1, x1, y1, z1, projX1, projY1, lat0, lon0, x0, y0, z0, projX0, projY0, handler, depth + 1, state);
-      this.callHandler(handler, lat0, lon0, projX0, projY0, state);
-      state.index++;
-      state.prevX = projX0;
-      state.prevY = projY0;
-      return this.resampleHelper(projection, circle, lat0, lon0, x0, y0, z0, projX0, projY0, lat2, lon2, x2, y2, z2, projX2, projY2, handler, depth + 1, state);
-    }
-    callHandler(handler, lat, lon, projX, projY, state) {
-      let vector;
-      if (state.vectorType === "line") {
-        vector = this.lineVector;
-      } else {
-        vector = this.arcVector;
-        Vec2Math.set(state.arcCenterX, state.arcCenterY, vector.projectedArcCenter);
-        vector.projectedArcRadius = state.arcRadius;
-        vector.projectedArcStartAngle = Math.atan2(state.prevY - state.arcCenterY, state.prevX - state.arcCenterX);
-        vector.projectedArcEndAngle = Math.atan2(projY - state.arcCenterY, projX - state.arcCenterX);
-        if (vector.projectedArcEndAngle < vector.projectedArcStartAngle !== state.isArcCounterClockwise) {
-          vector.projectedArcEndAngle += state.isArcCounterClockwise ? -MathUtils.TWO_PI : MathUtils.TWO_PI;
-        }
-      }
-      vector.point.set(lat, lon);
-      Vec2Math.set(projX, projY, vector.projected);
-      vector.index = state.index;
-      handler(vector);
-    }
-  };
-  var NavAngleUnitReferenceNorth;
-  (function(NavAngleUnitReferenceNorth2) {
-    NavAngleUnitReferenceNorth2["True"] = "true";
-    NavAngleUnitReferenceNorth2["Magnetic"] = "magnetic";
-  })(NavAngleUnitReferenceNorth || (NavAngleUnitReferenceNorth = {}));
-  var BasicNavAngleUnit = class extends AbstractUnit {
-    constructor(referenceNorth, magVar) {
-      super(referenceNorth === NavAngleUnitReferenceNorth.True ? "true bearing" : "magnetic bearing");
-      this.family = "navangle";
-      this._magVar = 0;
-      this._magVar = magVar;
-    }
-    get magVar() {
-      return this._magVar;
-    }
-    isMagnetic() {
-      return this.name === "magnetic bearing";
-    }
-    convertTo(value, toUnit) {
-      if (!this.canConvert(toUnit)) {
-        throw new Error(`Invalid conversion from ${this.name} to ${toUnit.name}.`);
-      }
-      if (!isFinite(value)) {
-        return NaN;
-      }
-      if (this.isMagnetic() === toUnit.isMagnetic()) {
-        return value;
-      }
-      return this.isMagnetic() ? MagVar.magneticToTrue(value, this.magVar) : MagVar.trueToMagnetic(value, this.magVar);
-    }
-    convertFrom(value, fromUnit) {
-      if (!this.canConvert(fromUnit)) {
-        throw new Error(`Invalid conversion from ${fromUnit.name} to ${this.name}.`);
-      }
-      if (!isFinite(value)) {
-        return NaN;
-      }
-      if (this.isMagnetic() === fromUnit.isMagnetic()) {
-        return value;
-      }
-      return this.isMagnetic() ? MagVar.trueToMagnetic(value, this.magVar) : MagVar.magneticToTrue(value, this.magVar);
-    }
-    setMagVar(magVar) {
-      this._magVar = magVar;
-    }
-    setMagVarFromLocation(arg1, arg2) {
-      if (typeof arg1 === "number") {
-        this._magVar = MagVar.get(arg1, arg2);
-      } else {
-        this._magVar = MagVar.get(arg1);
-      }
-    }
-    equals(other) {
-      return other instanceof BasicNavAngleUnit && this.name === other.name && this.magVar === other.magVar;
-    }
-    static create(isMagnetic, arg2, arg3) {
-      const referenceNorth = isMagnetic ? NavAngleUnitReferenceNorth.Magnetic : NavAngleUnitReferenceNorth.True;
-      let magVar = 0;
-      if (arg2 !== void 0) {
-        if (typeof arg2 === "number") {
-          if (arg3 === void 0) {
-            magVar = arg2;
-          } else {
-            magVar = MagVar.get(arg2, arg3);
-          }
-        } else {
-          magVar = MagVar.get(arg2);
-        }
-      }
-      return new BasicNavAngleUnit(referenceNorth, magVar);
-    }
-  };
-  var BasicNavAngleSubject = class extends AbstractSubscribable {
-    constructor(value) {
-      super();
-      this.value = value;
-      this.isMutableSubscribable = true;
-    }
-    static create(initialVal) {
-      return new BasicNavAngleSubject(initialVal);
-    }
-    get() {
-      return this.value.readonly;
-    }
-    set(arg1, arg2, arg3) {
-      const isArg1Number = typeof arg1 === "number";
-      const isArg2Number = typeof arg2 === "number";
-      const isArg2LatLon = typeof arg2 === "object" && "lat" in arg2 && "lon" in arg2;
-      const unit = isArg1Number ? isArg2Number || isArg2LatLon || arg2 === void 0 ? this.value.unit : arg2 : arg1.unit;
-      const oldMagVar = this.value.unit.magVar;
-      const oldValue = this.value.number;
-      if (isArg2LatLon) {
-        this.value.unit.setMagVarFromLocation(arg2);
-      } else if (isArg2Number) {
-        if (typeof arg3 === "number") {
-          this.value.unit.setMagVarFromLocation(arg2, arg3);
-        } else {
-          this.value.unit.setMagVar(arg2);
-        }
-      } else {
-        this.value.unit.setMagVar(unit.magVar);
-      }
-      if (isArg1Number) {
-        this.value.set(arg1, unit);
-      } else {
-        this.value.set(arg1);
-      }
-      if (!(isNaN(oldMagVar) && isNaN(this.value.unit.magVar)) && oldMagVar !== this.value.unit.magVar || !(isNaN(oldValue) && isNaN(this.value.number)) && oldValue !== this.value.number) {
-        this.notify();
-      }
-    }
-  };
-  BasicNavAngleSubject.TRUE_BEARING = BasicNavAngleUnit.create(false);
-  var AmbientPrecipState;
-  (function(AmbientPrecipState2) {
-    AmbientPrecipState2[AmbientPrecipState2["None"] = 2] = "None";
-    AmbientPrecipState2[AmbientPrecipState2["Rain"] = 4] = "Rain";
-    AmbientPrecipState2[AmbientPrecipState2["Snow"] = 8] = "Snow";
-  })(AmbientPrecipState || (AmbientPrecipState = {}));
-  var AntiIcePublisher = class extends SimVarPublisher {
-    constructor(bus, pacer) {
-      const engineIndexedSimVars = [
-        ["anti_ice_engine_switch_on", { name: "ENG ANTI ICE", type: SimVarValueType.Bool }],
-        ["anti_ice_prop_switch_on", { name: "PROP DEICE SWITCH", type: SimVarValueType.Bool }]
-      ];
-      const simvars = new Map(AntiIcePublisher.nonIndexedSimVars);
-      const engineCount = SimVar.GetSimVarValue("NUMBER OF ENGINES", SimVarValueType.Number);
-      for (const [topic, simvar2] of engineIndexedSimVars) {
-        for (let i = 1; i <= engineCount; i++) {
-          simvars.set(`${topic}_${i}`, {
-            name: `${simvar2.name}:${i}`,
-            type: simvar2.type,
-            map: simvar2.map
-          });
-        }
-      }
-      super(simvars, bus, pacer);
-    }
-  };
-  AntiIcePublisher.nonIndexedSimVars = [
-    ["anti_ice_structural_switch_on", { name: "STRUCTURAL DEICE SWITCH", type: SimVarValueType.Bool }],
-    ["anti_ice_windshield_switch_on", { name: "WINDSHIELD DEICE SWITCH", type: SimVarValueType.Bool }],
-    ["anti_ice_structural_ice_pct", { name: "STRUCTURAL ICE PCT", type: SimVarValueType.Percent }]
-  ];
-  var BasicConsumer = class {
-    constructor(subscribe, state = {}, currentHandler) {
-      this.subscribe = subscribe;
-      this.state = state;
-      this.currentHandler = currentHandler;
-      this.isConsumer = true;
-      this.activeSubs = /* @__PURE__ */ new Map();
-    }
-    handle(handler, paused = false) {
-      let activeHandler;
-      if (this.currentHandler !== void 0) {
-        activeHandler = (data) => {
-          this.currentHandler(data, this.state, handler);
-        };
-      } else {
-        activeHandler = handler;
-      }
-      let activeSubArray = this.activeSubs.get(handler);
-      if (!activeSubArray) {
-        activeSubArray = [];
-        this.activeSubs.set(handler, activeSubArray);
-      }
-      const onDestroyed = (destroyed) => {
-        const activeSubsArray = this.activeSubs.get(handler);
-        if (activeSubsArray) {
-          activeSubsArray.splice(activeSubsArray.indexOf(destroyed), 1);
-          if (activeSubsArray.length === 0) {
-            this.activeSubs.delete(handler);
-          }
-        }
-      };
-      const sub = new ConsumerSubscription(this.subscribe(activeHandler, paused), onDestroyed);
-      if (sub.isAlive) {
-        activeSubArray.push(sub);
-      } else if (activeSubArray.length === 0) {
-        this.activeSubs.delete(handler);
-      }
-      return sub;
-    }
-    off(handler) {
-      var _a2;
-      const activeSubArray = this.activeSubs.get(handler);
-      if (activeSubArray) {
-        (_a2 = activeSubArray.shift()) === null || _a2 === void 0 ? void 0 : _a2.destroy();
-        if (activeSubArray.length === 0) {
-          this.activeSubs.delete(handler);
-        }
-      }
-    }
-    atFrequency(frequency, immediateFirstPublish = true) {
-      const initialState = {
-        previousTime: Date.now(),
-        firstRun: immediateFirstPublish
-      };
-      return new BasicConsumer(this.subscribe, initialState, this.getAtFrequencyHandler(frequency));
-    }
-    getAtFrequencyHandler(frequency) {
-      const deltaTimeTrigger = 1e3 / frequency;
-      return (data, state, next) => {
-        const currentTime = Date.now();
-        const deltaTime = currentTime - state.previousTime;
-        if (deltaTimeTrigger <= deltaTime || state.firstRun) {
-          while (state.previousTime + deltaTimeTrigger < currentTime) {
-            state.previousTime += deltaTimeTrigger;
-          }
-          if (state.firstRun) {
-            state.firstRun = false;
-          }
-          this.with(data, next);
-        }
-      };
-    }
-    withPrecision(precision) {
-      return new BasicConsumer(this.subscribe, { lastValue: 0, hasLastValue: false }, this.getWithPrecisionHandler(precision));
-    }
-    getWithPrecisionHandler(precision) {
-      return (data, state, next) => {
-        const dataValue = data;
-        const multiplier = Math.pow(10, precision);
-        const currentValueAtPrecision = Math.round(dataValue * multiplier) / multiplier;
-        if (!state.hasLastValue || currentValueAtPrecision !== state.lastValue) {
-          state.hasLastValue = true;
-          state.lastValue = currentValueAtPrecision;
-          this.with(currentValueAtPrecision, next);
-        }
-      };
-    }
-    whenChangedBy(amount) {
-      return new BasicConsumer(this.subscribe, { lastValue: 0, hasLastValue: false }, this.getWhenChangedByHandler(amount));
-    }
-    getWhenChangedByHandler(amount) {
-      return (data, state, next) => {
-        const dataValue = data;
-        const diff = Math.abs(dataValue - state.lastValue);
-        if (!state.hasLastValue || diff >= amount) {
-          state.hasLastValue = true;
-          state.lastValue = dataValue;
-          this.with(data, next);
-        }
-      };
-    }
-    whenChanged() {
-      return new BasicConsumer(this.subscribe, { lastValue: "", hasLastValue: false }, this.getWhenChangedHandler());
-    }
-    getWhenChangedHandler() {
-      return (data, state, next) => {
-        if (!state.hasLastValue || state.lastValue !== data) {
-          state.hasLastValue = true;
-          state.lastValue = data;
-          this.with(data, next);
-        }
-      };
-    }
-    onlyAfter(deltaTime) {
-      return new BasicConsumer(this.subscribe, { previousTime: Date.now() }, this.getOnlyAfterHandler(deltaTime));
-    }
-    getOnlyAfterHandler(deltaTime) {
-      return (data, state, next) => {
-        const currentTime = Date.now();
-        const timeDiff = currentTime - state.previousTime;
-        if (timeDiff > deltaTime) {
-          state.previousTime += deltaTime;
-          this.with(data, next);
-        }
-      };
-    }
-    with(data, handler) {
-      if (this.currentHandler !== void 0) {
-        this.currentHandler(data, this.state, handler);
-      } else {
-        handler(data);
-      }
-    }
-  };
-  var ConsumerSubscription = class {
-    constructor(sub, onDestroy) {
-      this.sub = sub;
-      this.onDestroy = onDestroy;
-    }
-    get isAlive() {
-      return this.sub.isAlive;
-    }
-    get isPaused() {
-      return this.sub.isPaused;
-    }
-    get canInitialNotify() {
-      return this.sub.canInitialNotify;
-    }
-    pause() {
-      this.sub.pause();
-      return this;
-    }
-    resume(initialNotify = false) {
-      this.sub.resume(initialNotify);
-      return this;
-    }
-    destroy() {
-      this.sub.destroy();
-      this.onDestroy(this);
-    }
-  };
-  var EventSubscriber = class {
-    constructor(bus) {
-      this.bus = bus;
-    }
-    on(topic) {
-      return new BasicConsumer((handler, paused) => {
-        return this.bus.on(topic, handler, paused);
-      });
-    }
-  };
-  var APLockType;
-  (function(APLockType2) {
-    APLockType2[APLockType2["Heading"] = 0] = "Heading";
-    APLockType2[APLockType2["Nav"] = 1] = "Nav";
-    APLockType2[APLockType2["Alt"] = 2] = "Alt";
-    APLockType2[APLockType2["Bank"] = 3] = "Bank";
-    APLockType2[APLockType2["WingLevel"] = 4] = "WingLevel";
-    APLockType2[APLockType2["Vs"] = 5] = "Vs";
-    APLockType2[APLockType2["Flc"] = 6] = "Flc";
-    APLockType2[APLockType2["Pitch"] = 7] = "Pitch";
-    APLockType2[APLockType2["Approach"] = 8] = "Approach";
-    APLockType2[APLockType2["Backcourse"] = 9] = "Backcourse";
-    APLockType2[APLockType2["Glideslope"] = 10] = "Glideslope";
-    APLockType2[APLockType2["VNav"] = 11] = "VNav";
-  })(APLockType || (APLockType = {}));
-  var APSimVarPublisher = class extends SimVarPublisher {
-    constructor(bus, pacer = void 0) {
-      super(APSimVarPublisher.simvars, bus, pacer);
-    }
-  };
-  APSimVarPublisher.simvars = /* @__PURE__ */ new Map([
-    ["ap_master_status", { name: "AUTOPILOT MASTER", type: SimVarValueType.Bool }],
-    ["ap_yd_status", { name: "AUTOPILOT YAW DAMPER", type: SimVarValueType.Bool }],
-    ["ap_disengage_status", { name: "AUTOPILOT DISENGAGED", type: SimVarValueType.Bool }],
-    ["ap_heading_hold", { name: "AUTOPILOT HEADING LOCK", type: SimVarValueType.Bool }],
-    ["ap_nav_hold", { name: "AUTOPILOT NAV1 LOCK", type: SimVarValueType.Bool }],
-    ["ap_bank_hold", { name: "AUTOPILOT BANK HOLD", type: SimVarValueType.Bool }],
-    ["ap_max_bank_id", { name: "AUTOPILOT MAX BANK ID", type: SimVarValueType.Number }],
-    ["ap_max_bank_value", { name: "AUTOPILOT MAX BANK", type: SimVarValueType.Degree }],
-    ["ap_wing_lvl_hold", { name: "AUTOPILOT WING LEVELER", type: SimVarValueType.Bool }],
-    ["ap_approach_hold", { name: "AUTOPILOT APPROACH HOLD", type: SimVarValueType.Bool }],
-    ["ap_backcourse_hold", { name: "AUTOPILOT BACKCOURSE HOLD", type: SimVarValueType.Bool }],
-    ["ap_vs_hold", { name: "AUTOPILOT VERTICAL HOLD", type: SimVarValueType.Bool }],
-    ["ap_flc_hold", { name: "AUTOPILOT FLIGHT LEVEL CHANGE", type: SimVarValueType.Bool }],
-    ["ap_alt_hold", { name: "AUTOPILOT ALTITUDE LOCK", type: SimVarValueType.Bool }],
-    ["ap_glideslope_hold", { name: "AUTOPILOT GLIDESLOPE HOLD", type: SimVarValueType.Bool }],
-    ["ap_pitch_hold", { name: "AUTOPILOT PITCH HOLD", type: SimVarValueType.Bool }],
-    ["ap_toga_hold", { name: "AUTOPILOT TAKEOFF POWER ACTIVE", type: SimVarValueType.Bool }],
-    ["ap_heading_selected", { name: "AUTOPILOT HEADING LOCK DIR:#index#", type: SimVarValueType.Degree, indexed: true }],
-    ["ap_altitude_selected", { name: "AUTOPILOT ALTITUDE LOCK VAR:#index#", type: SimVarValueType.Feet, indexed: true }],
-    ["ap_pitch_selected", { name: "AUTOPILOT PITCH HOLD REF", type: SimVarValueType.Degree }],
-    ["ap_vs_selected", { name: "AUTOPILOT VERTICAL HOLD VAR:#index#", type: SimVarValueType.FPM, indexed: true }],
-    ["ap_fpa_selected", { name: "L:WT_AP_FPA_Target:#index#", type: SimVarValueType.Degree, indexed: true }],
-    ["ap_ias_selected", { name: "AUTOPILOT AIRSPEED HOLD VAR:#index#", type: SimVarValueType.Knots, indexed: true }],
-    ["ap_mach_selected", { name: "AUTOPILOT MACH HOLD VAR:#index#", type: SimVarValueType.Number, indexed: true }],
-    ["ap_selected_speed_is_mach", { name: "AUTOPILOT MANAGED SPEED IN MACH", type: SimVarValueType.Bool }],
-    ["ap_selected_speed_is_manual", { name: "L:XMLVAR_SpeedIsManuallySet", type: SimVarValueType.Bool }],
-    ["flight_director_bank", { name: "AUTOPILOT FLIGHT DIRECTOR BANK", type: SimVarValueType.Degree }],
-    ["flight_director_pitch", { name: "AUTOPILOT FLIGHT DIRECTOR PITCH", type: SimVarValueType.Degree }],
-    ["flight_director_is_active_1", { name: "AUTOPILOT FLIGHT DIRECTOR ACTIVE:1", type: SimVarValueType.Bool }],
-    ["flight_director_is_active_2", { name: "AUTOPILOT FLIGHT DIRECTOR ACTIVE:2", type: SimVarValueType.Bool }],
-    ["vnav_active", { name: "L:XMLVAR_VNAVButtonValue", type: SimVarValueType.Bool }]
-  ]);
-  var ArrayUtils = class {
-    static create(length, init) {
-      const newArray = [];
-      for (let i = 0; i < length; i++) {
-        newArray[i] = init(i);
-      }
-      return newArray;
-    }
-    static at(array, index) {
-      if (index < 0) {
-        index += array.length;
-      }
-      if (index < 0 || index >= array.length) {
-        throw new RangeError();
-      }
-      return array[index];
-    }
-    static peekAt(array, index) {
-      if (index < 0) {
-        index += array.length;
-      }
-      return array[index];
-    }
-    static first(array) {
-      if (array.length === 0) {
-        throw new RangeError();
-      }
-      return array[0];
-    }
-    static peekFirst(array) {
-      return array[0];
-    }
-    static last(array) {
-      if (array.length === 0) {
-        throw new RangeError();
-      }
-      return array[array.length - 1];
-    }
-    static peekLast(array) {
-      return array[array.length - 1];
-    }
-    static includes(array, searchElement, fromIndex) {
-      return array.includes(searchElement, fromIndex);
-    }
-    static equals(a, b, equalsFunc = ArrayUtils.STRICT_EQUALS) {
-      if (a.length !== b.length) {
-        return false;
-      }
-      for (let i = 0; i < a.length; i++) {
-        if (!equalsFunc(a[i], b[i])) {
-          return false;
-        }
-      }
-      return true;
-    }
-    static flatMap(array, map) {
-      const out = [];
-      for (let i = 0; i < array.length; i++) {
-        const mapped = map(array[i], i, array);
-        if (Array.isArray(mapped)) {
-          for (let j = 0; j < mapped.length; j++) {
-            out[out.length] = mapped[j];
-          }
-        } else {
-          out[out.length] = mapped;
-        }
-      }
-      return out;
-    }
-    static flat(array, depth = 1) {
-      const out = [];
-      this.flatHelper(array, depth, 0, out);
-      return out;
-    }
-    static flatHelper(array, maxDepth, depth, out) {
-      for (let i = 0; i < array.length; i++) {
-        const element = array[i];
-        if (Array.isArray(element) && depth < maxDepth) {
-          this.flatHelper(element, maxDepth, depth + 1, out);
-        } else {
-          out[out.length] = element;
-        }
-      }
-    }
-    static shallowCopy(source, target = []) {
-      target.length = source.length;
-      for (let i = 0; i < source.length; i++) {
-        target[i] = source[i];
-      }
-      return target;
-    }
-    static binarySearch(array, element, comparator, first = true) {
-      let min = 0;
-      let max = array.length;
-      let index = Math.floor((min + max) / 2);
-      while (min < max) {
-        const compare = comparator(element, array[index]);
-        if (compare < 0) {
-          max = index;
-        } else if (compare > 0) {
-          min = index + 1;
-        } else {
-          const delta = first ? -1 : 1;
-          while (index + delta >= 0 && index + delta < array.length && comparator(element, array[index + delta]) === 0) {
-            index += delta;
-          }
-          return index;
-        }
-        index = Math.floor((min + max) / 2);
-      }
-      return -(index + 1);
-    }
-    static getMaxStringLength(array) {
-      return array.reduce((accum, curr) => curr.length > accum ? curr.length : accum, 0);
-    }
-  };
-  ArrayUtils.STRICT_EQUALS = (a, b) => a === b;
-  var RadioUtils = class {
-    static isNavFrequency(freq) {
-      const freqKhz = Math.round(freq * 1e3);
-      if (freqKhz < 108e3 || freqKhz > 117950) {
-        return false;
-      }
-      return freqKhz % 50 === 0;
-    }
-    static isLocalizerFrequency(freq) {
-      return freq >= 108.1 && freq <= 111.95 && Math.trunc(freq * 10) % 2 === 1;
-    }
-    static isCom833Frequency(freq) {
-      const freqKhz = Math.round(freq * 1e3);
-      if (freqKhz < 118e3 || freqKhz > 136990) {
-        return false;
-      }
-      return RadioUtils.COM_833_ENDINGS.includes(freqKhz % 50);
-    }
-    static isCom25Frequency(freq) {
-      const freqKhz = Math.round(freq * 1e3);
-      if (freqKhz < 118e3 || freqKhz > 136975) {
-        return false;
-      }
-      return freqKhz % 25 === 0;
-    }
-    static isAdfFrequency(freq) {
-      const freqHz = Math.round(freq * 1e3);
-      if (freqHz < 19e4 || freqHz > 1799500) {
-        return false;
-      }
-      return freqHz % 500 === 0;
-    }
-  };
-  RadioUtils.COM_833_ENDINGS = [5, 10, 15, 30, 35, 40];
-  var VorToFrom;
-  (function(VorToFrom2) {
-    VorToFrom2[VorToFrom2["OFF"] = 0] = "OFF";
-    VorToFrom2[VorToFrom2["TO"] = 1] = "TO";
-    VorToFrom2[VorToFrom2["FROM"] = 2] = "FROM";
-  })(VorToFrom || (VorToFrom = {}));
-  var MarkerBeaconState;
-  (function(MarkerBeaconState2) {
-    MarkerBeaconState2[MarkerBeaconState2["Inactive"] = 0] = "Inactive";
-    MarkerBeaconState2[MarkerBeaconState2["Outer"] = 1] = "Outer";
-    MarkerBeaconState2[MarkerBeaconState2["Middle"] = 2] = "Middle";
-    MarkerBeaconState2[MarkerBeaconState2["Inner"] = 3] = "Inner";
-  })(MarkerBeaconState || (MarkerBeaconState = {}));
-  var RadioType;
-  (function(RadioType2) {
-    RadioType2["Com"] = "COM";
-    RadioType2["Nav"] = "NAV";
-    RadioType2["Adf"] = "ADF";
-  })(RadioType || (RadioType = {}));
-  var FrequencyBank;
-  (function(FrequencyBank2) {
-    FrequencyBank2[FrequencyBank2["Active"] = 0] = "Active";
-    FrequencyBank2[FrequencyBank2["Standby"] = 1] = "Standby";
-  })(FrequencyBank || (FrequencyBank = {}));
-  var ComSpacing;
-  (function(ComSpacing2) {
-    ComSpacing2[ComSpacing2["Spacing25Khz"] = 0] = "Spacing25Khz";
-    ComSpacing2[ComSpacing2["Spacing833Khz"] = 1] = "Spacing833Khz";
-  })(ComSpacing || (ComSpacing = {}));
-  var NavProcSimVarPublisher = class extends SimVarPublisher {
-    constructor(bus, pacer = void 0) {
-      super(NavProcSimVarPublisher.simvars, bus, pacer);
-    }
-    static createNavRadioDefinitions(index) {
-      return [
-        [`nav_signal_${index}`, { name: `NAV SIGNAL:${index}`, type: SimVarValueType.Number }],
-        [`nav_obs_${index}`, { name: `NAV OBS:${index}`, type: SimVarValueType.Degree }],
-        [`nav_has_dme_${index}`, { name: `NAV HAS DME:${index}`, type: SimVarValueType.Bool }],
-        [`nav_has_nav_${index}`, { name: `NAV HAS NAV:${index}`, type: SimVarValueType.Bool }],
-        [`nav_cdi_${index}`, { name: `NAV CDI:${index}`, type: SimVarValueType.Number }],
-        [`nav_dme_${index}`, { name: `NAV DME:${index}`, type: SimVarValueType.NM }],
-        [`nav_radial_${index}`, { name: `NAV RADIAL:${index}`, type: SimVarValueType.Degree }],
-        [`nav_radial_error_${index}`, { name: `NAV RADIAL ERROR:${index}`, type: SimVarValueType.Degree }],
-        [`nav_ident_${index}`, { name: `NAV IDENT:${index}`, type: SimVarValueType.String }],
-        [`nav_to_from_${index}`, { name: `NAV TOFROM:${index}`, type: SimVarValueType.Enum }],
-        [`nav_localizer_${index}`, { name: `NAV HAS LOCALIZER:${index}`, type: SimVarValueType.Bool }],
-        [`nav_localizer_crs_${index}`, { name: `NAV LOCALIZER:${index}`, type: SimVarValueType.Number }],
-        [`nav_loc_airport_ident_${index}`, { name: `NAV LOC AIRPORT IDENT:${index}`, type: SimVarValueType.String }],
-        [`nav_loc_runway_designator_${index}`, { name: `NAV LOC RUNWAY DESIGNATOR:${index}`, type: SimVarValueType.Number }],
-        [`nav_loc_runway_number_${index}`, { name: `NAV LOC RUNWAY NUMBER:${index}`, type: SimVarValueType.Number }],
-        [`nav_glideslope_${index}`, { name: `NAV HAS GLIDE SLOPE:${index}`, type: SimVarValueType.Bool }],
-        [`nav_gs_error_${index}`, { name: `NAV GLIDE SLOPE ERROR:${index}`, type: SimVarValueType.Degree }],
-        [`nav_raw_gs_${index}`, { name: `NAV RAW GLIDE SLOPE:${index}`, type: SimVarValueType.Degree }],
-        [`nav_lla_${index}`, { name: `NAV VOR LATLONALT:${index}`, type: SimVarValueType.LLA }],
-        [`nav_dme_lla_${index}`, { name: `NAV DME LATLONALT:${index}`, type: SimVarValueType.LLA }],
-        [`nav_gs_lla_${index}`, { name: `NAV GS LATLONALT:${index}`, type: SimVarValueType.LLA }],
-        [`nav_magvar_${index}`, { name: `NAV MAGVAR:${index}`, type: SimVarValueType.Degree }]
-      ];
-    }
-    static createAdfRadioDefinitions(index) {
-      return [
-        [`adf_signal_${index}`, { name: `ADF SIGNAL:${index}`, type: SimVarValueType.Number }],
-        [`adf_bearing_${index}`, { name: `ADF RADIAL:${index}`, type: SimVarValueType.Degree }],
-        [`adf_lla_${index}`, { name: `ADF LATLONALT:${index}`, type: SimVarValueType.LLA }]
-      ];
-    }
-  };
-  NavProcSimVarPublisher.simvars = new Map([
-    ...NavProcSimVarPublisher.createNavRadioDefinitions(1),
-    ...NavProcSimVarPublisher.createNavRadioDefinitions(2),
-    ...NavProcSimVarPublisher.createNavRadioDefinitions(3),
-    ...NavProcSimVarPublisher.createNavRadioDefinitions(4),
-    ...NavProcSimVarPublisher.createAdfRadioDefinitions(1),
-    ...NavProcSimVarPublisher.createAdfRadioDefinitions(2),
-    ["gps_dtk", { name: "GPS WP DESIRED TRACK", type: SimVarValueType.Degree }],
-    ["gps_xtk", { name: "GPS WP CROSS TRK", type: SimVarValueType.NM }],
-    ["gps_wp", { name: "GPS WP NEXT ID", type: SimVarValueType.NM }],
-    ["gps_wp_bearing", { name: "GPS WP BEARING", type: SimVarValueType.Degree }],
-    ["gps_wp_distance", { name: "GPS WP DISTANCE", type: SimVarValueType.NM }],
-    ["mkr_bcn_state_simvar", { name: "MARKER BEACON STATE", type: SimVarValueType.Number }],
-    ["gps_obs_active_simvar", { name: "GPS OBS ACTIVE", type: SimVarValueType.Bool }],
-    ["gps_obs_value_simvar", { name: "GPS OBS VALUE", type: SimVarValueType.Degree }]
-  ]);
-  var NavSourceType;
-  (function(NavSourceType2) {
-    NavSourceType2[NavSourceType2["Nav"] = 0] = "Nav";
-    NavSourceType2[NavSourceType2["Gps"] = 1] = "Gps";
-    NavSourceType2[NavSourceType2["Adf"] = 2] = "Adf";
-  })(NavSourceType || (NavSourceType = {}));
-  var EventBus = class {
-    constructor(useAlternativeEventSync = false, shouldResync = true) {
-      this._topicSubsMap = /* @__PURE__ */ new Map();
-      this._wildcardSubs = new Array();
-      this._notifyDepthMap = /* @__PURE__ */ new Map();
-      this._wildcardNotifyDepth = 0;
-      this._eventCache = /* @__PURE__ */ new Map();
-      this.onWildcardSubDestroyedFunc = this.onWildcardSubDestroyed.bind(this);
-      this._busId = Math.floor(Math.random() * 2147483647);
-      useAlternativeEventSync = typeof RegisterGenericDataListener === "undefined";
-      const syncFunc = useAlternativeEventSync ? EventBusFlowEventSync : EventBusListenerSync;
-      this._busSync = new syncFunc(this.pub.bind(this), this._busId);
-      if (shouldResync === true) {
-        this.syncEvent("event_bus", "resync_request", false);
-        this.on("event_bus", (data) => {
-          if (data == "resync_request") {
-            this.resyncEvents();
-          }
-        });
-      }
-    }
-    on(topic, handler, paused = false) {
-      let subs = this._topicSubsMap.get(topic);
-      if (subs === void 0) {
-        this._topicSubsMap.set(topic, subs = []);
-        this.pub("event_bus_topic_first_sub", topic, false, false);
-      }
-      const initialNotifyFunc = (sub2) => {
-        const lastState = this._eventCache.get(topic);
-        if (lastState !== void 0) {
-          sub2.handler(lastState.data);
-        }
-      };
-      const onDestroyFunc = (sub2) => {
-        var _a2;
-        if (((_a2 = this._notifyDepthMap.get(topic)) !== null && _a2 !== void 0 ? _a2 : 0) === 0) {
-          const subsToSplice = this._topicSubsMap.get(topic);
-          if (subsToSplice) {
-            subsToSplice.splice(subsToSplice.indexOf(sub2), 1);
-          }
-        }
-      };
-      const sub = new HandlerSubscription(handler, initialNotifyFunc, onDestroyFunc);
-      subs.push(sub);
-      if (paused) {
-        sub.pause();
-      } else {
-        sub.initialNotify();
-      }
-      return sub;
-    }
-    off(topic, handler) {
-      const handlers = this._topicSubsMap.get(topic);
-      const toDestroy = handlers === null || handlers === void 0 ? void 0 : handlers.find((sub) => sub.handler === handler);
-      toDestroy === null || toDestroy === void 0 ? void 0 : toDestroy.destroy();
-    }
-    onAll(handler) {
-      const sub = new HandlerSubscription(handler, void 0, this.onWildcardSubDestroyedFunc);
-      this._wildcardSubs.push(sub);
-      return sub;
-    }
-    offAll(handler) {
-      const toDestroy = this._wildcardSubs.find((sub) => sub.handler === handler);
-      toDestroy === null || toDestroy === void 0 ? void 0 : toDestroy.destroy();
-    }
-    pub(topic, data, sync = false, isCached = true) {
-      var _a2;
-      if (isCached) {
-        this._eventCache.set(topic, { data, synced: sync });
-      }
-      const subs = this._topicSubsMap.get(topic);
-      if (subs !== void 0) {
-        let needCleanUpSubs2 = false;
-        const notifyDepth = (_a2 = this._notifyDepthMap.get(topic)) !== null && _a2 !== void 0 ? _a2 : 0;
-        this._notifyDepthMap.set(topic, notifyDepth + 1);
-        const len = subs.length;
-        for (let i = 0; i < len; i++) {
-          try {
-            const sub = subs[i];
-            if (sub.isAlive && !sub.isPaused) {
-              sub.handler(data);
-            }
-            needCleanUpSubs2 || (needCleanUpSubs2 = !sub.isAlive);
-          } catch (error) {
-            console.error(`EventBus: error in handler: ${error}. topic: ${topic}. data: ${data}. sync: ${sync}. isCached: ${isCached}`, { error, topic, data, sync, isCached, subs });
-            if (error instanceof Error) {
-              console.error(error.stack);
-            }
-          }
-        }
-        this._notifyDepthMap.set(topic, notifyDepth);
-        if (needCleanUpSubs2 && notifyDepth === 0) {
-          const filteredSubs = subs.filter((sub) => sub.isAlive);
-          this._topicSubsMap.set(topic, filteredSubs);
-        }
-      }
-      if (sync) {
-        this.syncEvent(topic, data, isCached);
-      }
-      let needCleanUpSubs = false;
-      this._wildcardNotifyDepth++;
-      const wcLen = this._wildcardSubs.length;
-      for (let i = 0; i < wcLen; i++) {
-        const sub = this._wildcardSubs[i];
-        if (sub.isAlive && !sub.isPaused) {
-          sub.handler(topic, data);
-        }
-        needCleanUpSubs || (needCleanUpSubs = !sub.isAlive);
-      }
-      this._wildcardNotifyDepth--;
-      if (needCleanUpSubs && this._wildcardNotifyDepth === 0) {
-        this._wildcardSubs = this._wildcardSubs.filter((sub) => sub.isAlive);
-      }
-    }
-    onWildcardSubDestroyed(sub) {
-      if (this._wildcardNotifyDepth === 0) {
-        this._wildcardSubs.splice(this._wildcardSubs.indexOf(sub), 1);
-      }
-    }
-    resyncEvents() {
-      for (const [topic, event] of this._eventCache) {
-        if (event.synced) {
-          this.syncEvent(topic, event.data, true);
-        }
-      }
-    }
-    syncEvent(topic, data, isCached) {
-      this._busSync.sendEvent(topic, data, isCached);
-    }
-    getPublisher() {
-      return this;
-    }
-    getSubscriber() {
-      return new EventSubscriber(this);
-    }
-    getTopicSubscriberCount(topic) {
-      var _a2, _b;
-      return (_b = (_a2 = this._topicSubsMap.get(topic)) === null || _a2 === void 0 ? void 0 : _a2.length) !== null && _b !== void 0 ? _b : 0;
-    }
-    forEachSubscribedTopic(fn) {
-      this._topicSubsMap.forEach((subs, topic) => {
-        subs.length > 0 && fn(topic, subs.length);
-      });
-    }
-  };
-  var EventBusSyncBase = class {
-    constructor(recvEventCb, busId) {
-      this.isPaused = false;
-      this.lastEventSynced = -1;
-      this.dataPackageQueue = [];
-      this.recvEventCb = recvEventCb;
-      this.busId = busId;
-      this.hookReceiveEvent();
-      const sendFn = () => {
-        if (!this.isPaused && this.dataPackageQueue.length > 0) {
-          const syncDataPackage = {
-            busId: this.busId,
-            packagedId: Math.floor(Math.random() * 1e9),
-            data: this.dataPackageQueue
-          };
-          if (this.executeSync(syncDataPackage)) {
-            this.dataPackageQueue.length = 0;
-          } else {
-            console.warn("Failed to send sync data package");
-          }
-        }
-        requestAnimationFrame(sendFn);
-      };
-      requestAnimationFrame(sendFn);
-    }
-    processEventsReceived(syncData) {
-      if (this.busId !== syncData.busId) {
-        if (this.lastEventSynced !== syncData.packagedId) {
-          this.lastEventSynced = syncData.packagedId;
-          syncData.data.forEach((data) => {
-            try {
-              this.recvEventCb(data.topic, data.data !== void 0 ? data.data : void 0, false, data.isCached);
-            } catch (e) {
-              console.error(e);
-              if (e instanceof Error) {
-                console.error(e.stack);
-              }
-            }
-          });
-        }
-      }
-    }
-    sendEvent(topic, data, isCached) {
-      const dataObj = data;
-      const dataPackage = {
-        topic,
-        data: dataObj,
-        isCached
-      };
-      this.dataPackageQueue.push(dataPackage);
-    }
-  };
-  var EventBusCoherentSync = class extends EventBusSyncBase {
-    executeSync(syncDataPackage) {
-      try {
-        this.listener.triggerToAllSubscribers(EventBusCoherentSync.EB_KEY, JSON.stringify(syncDataPackage));
-        return true;
-      } catch (error) {
-        return false;
-      }
-    }
-    hookReceiveEvent() {
-      this.listener = RegisterViewListener(EventBusCoherentSync.EB_LISTENER_KEY, void 0, true);
-      this.listener.on(EventBusCoherentSync.EB_KEY, (e) => {
-        try {
-          const evt = JSON.parse(e);
-          this.processEventsReceived(evt);
-        } catch (error) {
-          console.error(error);
-        }
-      });
-    }
-  };
-  EventBusCoherentSync.EB_KEY = "eb.evt";
-  EventBusCoherentSync.EB_LISTENER_KEY = "JS_LISTENER_SIMVARS";
-  var EventBusFlowEventSync = class extends EventBusSyncBase {
-    executeSync(syncDataPackage) {
-      try {
-        LaunchFlowEvent("ON_MOUSERECT_HTMLEVENT", EventBusFlowEventSync.EB_LISTENER_KEY, this.busId.toString(), JSON.stringify(syncDataPackage));
-        return true;
-      } catch (error) {
-        return false;
-      }
-    }
-    hookReceiveEvent() {
-      Coherent.on("OnInteractionEvent", (target, args) => {
-        if (args.length === 0 || args[0] !== EventBusFlowEventSync.EB_LISTENER_KEY || !args[2]) {
-          return;
-        }
-        this.processEventsReceived(JSON.parse(args[2]));
-      });
-    }
-  };
-  EventBusFlowEventSync.EB_LISTENER_KEY = "EB_EVENTS";
-  var EventBusListenerSync = class extends EventBusSyncBase {
-    executeSync(syncDataPackage) {
-      try {
-        this.listener.send(EventBusListenerSync.EB_KEY, syncDataPackage);
-        return true;
-      } catch (error) {
-        return false;
-      }
-    }
-    hookReceiveEvent() {
-      this.isPaused = true;
-      this.listener = RegisterGenericDataListener(() => {
-        this.listener.onDataReceived(EventBusListenerSync.EB_KEY, (data) => {
-          try {
-            this.processEventsReceived(data);
-          } catch (error) {
-            console.error(error);
-          }
-        });
-        this.isPaused = false;
-      });
-    }
-  };
-  EventBusListenerSync.EB_KEY = "wt.eb.evt";
-  EventBusListenerSync.EB_LISTENER_KEY = "JS_LISTENER_GENERICDATA";
-  var ConsumerValue = class {
-    constructor(consumer, initialValue) {
-      this.consumerHandler = (v) => {
-        this.value = v;
-      };
-      this._isPaused = false;
-      this.isDestroyed = false;
-      this.value = initialValue;
-      this.sub = consumer === null || consumer === void 0 ? void 0 : consumer.handle(this.consumerHandler);
-    }
-    get isPaused() {
-      return this._isPaused;
-    }
-    get() {
-      return this.value;
-    }
-    setConsumer(consumer) {
-      var _a2;
-      if (this.isDestroyed) {
-        return this;
-      }
-      (_a2 = this.sub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
-      this.sub = consumer === null || consumer === void 0 ? void 0 : consumer.handle(this.consumerHandler, this._isPaused);
-      return this;
-    }
-    pause() {
-      var _a2;
-      if (this._isPaused) {
-        return this;
-      }
-      (_a2 = this.sub) === null || _a2 === void 0 ? void 0 : _a2.pause();
-      this._isPaused = true;
-      return this;
-    }
-    resume() {
-      var _a2;
-      if (!this._isPaused) {
-        return this;
-      }
-      this._isPaused = false;
-      (_a2 = this.sub) === null || _a2 === void 0 ? void 0 : _a2.resume(true);
-      return this;
-    }
-    destroy() {
-      var _a2;
-      this.isDestroyed = true;
-      (_a2 = this.sub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
-    }
-    static create(consumer, initialValue) {
-      return new ConsumerValue(consumer, initialValue);
-    }
-  };
-  var ConsumerSubject = class extends AbstractSubscribable {
-    constructor(consumer, initialVal, equalityFunc, mutateFunc) {
-      super();
-      this.equalityFunc = equalityFunc;
-      this.mutateFunc = mutateFunc;
-      this.consumerHandler = this.onEventConsumed.bind(this);
-      this._isPaused = false;
-      this.isDestroyed = false;
-      this.value = initialVal;
-      this.consumerSub = consumer === null || consumer === void 0 ? void 0 : consumer.handle(this.consumerHandler);
-    }
-    get isPaused() {
-      return this._isPaused;
-    }
-    static create(consumer, initialVal, equalityFunc, mutateFunc) {
-      return new ConsumerSubject(consumer, initialVal, equalityFunc !== null && equalityFunc !== void 0 ? equalityFunc : AbstractSubscribable.DEFAULT_EQUALITY_FUNC, mutateFunc);
-    }
-    onEventConsumed(value) {
-      if (!this.equalityFunc(this.value, value)) {
-        if (this.mutateFunc) {
-          this.mutateFunc(this.value, value);
-        } else {
-          this.value = value;
-        }
-        this.notify();
-      }
-    }
-    setConsumer(consumer) {
-      var _a2;
-      if (this.isDestroyed) {
-        return this;
-      }
-      (_a2 = this.consumerSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
-      this.consumerSub = consumer === null || consumer === void 0 ? void 0 : consumer.handle(this.consumerHandler, this._isPaused);
-      return this;
-    }
-    pause() {
-      var _a2;
-      if (this._isPaused) {
-        return this;
-      }
-      (_a2 = this.consumerSub) === null || _a2 === void 0 ? void 0 : _a2.pause();
-      this._isPaused = true;
-      return this;
-    }
-    resume() {
-      var _a2;
-      if (!this._isPaused) {
-        return this;
-      }
-      this._isPaused = false;
-      (_a2 = this.consumerSub) === null || _a2 === void 0 ? void 0 : _a2.resume(true);
-      return this;
-    }
-    get() {
-      return this.value;
-    }
-    destroy() {
-      var _a2;
-      (_a2 = this.consumerSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
-      this.isDestroyed = true;
-    }
-  };
-  var CompositeLogicXMLValueType;
-  (function(CompositeLogicXMLValueType2) {
-    CompositeLogicXMLValueType2[CompositeLogicXMLValueType2["Any"] = 0] = "Any";
-    CompositeLogicXMLValueType2[CompositeLogicXMLValueType2["Number"] = 1] = "Number";
-    CompositeLogicXMLValueType2[CompositeLogicXMLValueType2["String"] = 2] = "String";
-  })(CompositeLogicXMLValueType || (CompositeLogicXMLValueType = {}));
-  var DataStore;
-  (function(DataStore2) {
-    function set(key, value) {
-      SetStoredData(key, JSON.stringify(value));
-    }
-    DataStore2.set = set;
-    function get(key) {
-      try {
-        const string = GetStoredData(key);
-        return JSON.parse(string);
-      } catch (e) {
-        return void 0;
-      }
-    }
-    DataStore2.get = get;
-    function remove(key) {
-      DeleteStoredData(key);
-    }
-    DataStore2.remove = remove;
-  })(DataStore || (DataStore = {}));
-  var GameStateProvider = class {
-    constructor() {
-      this.gameState = Subject.create(void 0);
-      window.document.addEventListener("OnVCockpitPanelAttributesChanged", this.onAttributesChanged.bind(this));
-      this.onAttributesChanged();
-    }
-    onAttributesChanged() {
-      var _a2;
-      if ((_a2 = window.parent) === null || _a2 === void 0 ? void 0 : _a2.document.body.hasAttribute("gamestate")) {
-        const attribute = window.parent.document.body.getAttribute("gamestate");
-        if (attribute !== null) {
-          const state = GameState[attribute];
-          if (state === GameState.ingame && this.gameState.get() !== GameState.ingame) {
-            setTimeout(() => {
-              setTimeout(() => {
-                const newAttribute = window.parent.document.body.getAttribute("gamestate");
-                if (newAttribute !== null) {
-                  this.gameState.set(GameState[newAttribute]);
-                }
-              });
-            });
-          } else {
-            this.gameState.set(state);
-          }
-          return;
-        }
-      }
-      this.gameState.set(void 0);
-    }
-    static get() {
-      var _a2;
-      return ((_a2 = GameStateProvider.INSTANCE) !== null && _a2 !== void 0 ? _a2 : GameStateProvider.INSTANCE = new GameStateProvider()).gameState;
-    }
-  };
-  var KeyEventManager = class {
-    constructor(keyListener, bus) {
-      this.keyListener = keyListener;
-      this.bus = bus;
-      Coherent.on("keyIntercepted", this.onKeyIntercepted.bind(this));
-    }
-    onKeyIntercepted(key, value1, value0, value2) {
-      if (value0 !== void 0 && value0 >= 2147483648) {
-        value0 -= 4294967296;
-      }
-      this.bus.pub("key_intercept", { key, value0, value1, value2 }, false, false);
-    }
-    triggerKey(key, bypass, value0 = 0, value1 = 0, value2 = 0) {
-      return Coherent.call("TRIGGER_KEY_EVENT", key, bypass, value0, value1, value2);
-    }
-    interceptKey(key, passThrough) {
-      Coherent.call("INTERCEPT_KEY_EVENT", key, passThrough ? 0 : 1);
-    }
-    static getManager(bus) {
-      if (KeyEventManager.INSTANCE) {
-        return Promise.resolve(KeyEventManager.INSTANCE);
-      }
-      if (!KeyEventManager.isCreatingInstance) {
-        KeyEventManager.createInstance(bus);
-      }
-      return new Promise((resolve) => {
-        KeyEventManager.pendingPromiseResolves.push(resolve);
-      });
-    }
-    static async createInstance(bus) {
-      KeyEventManager.isCreatingInstance = true;
-      KeyEventManager.INSTANCE = await KeyEventManager.create(bus);
-      KeyEventManager.isCreatingInstance = false;
-      for (let i = 0; i < KeyEventManager.pendingPromiseResolves.length; i++) {
-        KeyEventManager.pendingPromiseResolves[i](KeyEventManager.INSTANCE);
-      }
-    }
-    static create(bus) {
-      return new Promise((resolve, reject) => {
-        const gameState = GameStateProvider.get();
-        const sub = gameState.sub((state) => {
-          if (window["IsDestroying"]) {
-            sub.destroy();
-            reject("KeyEventManager: cannot create a key intercept manager after the Coherent JS view has been destroyed");
-            return;
-          }
-          if (state === GameState.briefing || state === GameState.ingame) {
-            sub.destroy();
-            const keyListener = RegisterViewListener("JS_LISTENER_KEYEVENT", () => {
-              if (window["IsDestroying"]) {
-                reject("KeyEventManager: cannot create a key intercept manager after the Coherent JS view has been destroyed");
-                return;
-              }
-              resolve(new KeyEventManager(keyListener, bus));
-            });
-          }
-        }, false, true);
-        sub.resume(true);
-      });
-    }
-  };
-  KeyEventManager.isCreatingInstance = false;
-  KeyEventManager.pendingPromiseResolves = [];
   var FacilityFrequencyType;
   (function(FacilityFrequencyType2) {
     FacilityFrequencyType2[FacilityFrequencyType2["None"] = 0] = "None";
@@ -6199,6 +5516,497 @@
     MSFSAPStates2[MSFSAPStates2["AvionicsManaged"] = 33554432] = "AvionicsManaged";
     MSFSAPStates2[MSFSAPStates2["None"] = -2147483648] = "None";
   })(MSFSAPStates || (MSFSAPStates = {}));
+  var GeoPointSubject = class extends AbstractSubscribable {
+    constructor(value, tolerance) {
+      super();
+      this.value = value;
+      this.tolerance = tolerance;
+      this.isMutableSubscribable = true;
+    }
+    static create(initialVal, tolerance) {
+      return new GeoPointSubject(initialVal, tolerance);
+    }
+    static createFromGeoPoint(initialVal) {
+      return new GeoPointSubject(initialVal);
+    }
+    get() {
+      return this.value.readonly;
+    }
+    set(arg1, arg2) {
+      const isArg1Number = typeof arg1 === "number";
+      const equals = isArg1Number ? this.value.equals(arg1, arg2, this.tolerance) : this.value.equals(arg1, this.tolerance);
+      if (!equals) {
+        isArg1Number ? this.value.set(arg1, arg2) : this.value.set(arg1);
+        this.notify();
+      }
+    }
+  };
+  var AbstractGeoProjection = class {
+    constructor() {
+      this.center = new GeoPoint(0, 0);
+      this.centerTranslation = new Float64Array(2);
+      this.scaleFactor = UnitType.GA_RADIAN.convertTo(1, UnitType.NMILE);
+      this.preRotation = new Float64Array(3);
+      this.translation = new Float64Array(2);
+      this.postRotation = 0;
+      this.rotationSin = 0;
+      this.rotationCos = 1;
+      this.reflectY = 1;
+      this.preRotationForwardTransform = new Transform3D();
+      this.preRotationReverseTransform = new Transform3D();
+      this.rotationCache = [new Transform3D(), new Transform3D()];
+    }
+    getCenter() {
+      return this.center.readonly;
+    }
+    getScaleFactor() {
+      return this.scaleFactor;
+    }
+    getPreRotation() {
+      return this.preRotation;
+    }
+    getTranslation() {
+      return this.translation;
+    }
+    getPostRotation() {
+      return this.postRotation;
+    }
+    getReflectY() {
+      return this.reflectY === -1;
+    }
+    setCenter(point) {
+      this.center.set(point);
+      this.updateCenterTranslation();
+      return this;
+    }
+    setScaleFactor(factor) {
+      this.scaleFactor = factor;
+      return this;
+    }
+    setPreRotation(vec) {
+      this.preRotation.set(vec);
+      this.updatePreRotationTransforms();
+      this.updateCenterTranslation();
+      return this;
+    }
+    setTranslation(vec) {
+      this.translation.set(vec);
+      return this;
+    }
+    setPostRotation(rotation) {
+      this.postRotation = rotation;
+      this.rotationCos = Math.cos(rotation);
+      this.rotationSin = Math.sin(rotation);
+      return this;
+    }
+    setReflectY(val) {
+      this.reflectY = val ? -1 : 1;
+      return this;
+    }
+    copyParametersFrom(other) {
+      return this.setCenter(other.getCenter()).setPreRotation(other.getPreRotation()).setScaleFactor(other.getScaleFactor()).setTranslation(other.getTranslation()).setPostRotation(other.getPostRotation()).setReflectY(other.getReflectY());
+    }
+    updatePreRotationTransforms() {
+      const phi = this.preRotation[1];
+      const gamma = this.preRotation[2];
+      this.rotationCache[0].toRotationX(gamma);
+      this.rotationCache[1].toRotationY(-phi);
+      Transform3D.concat(this.preRotationForwardTransform, this.rotationCache);
+      this.preRotationReverseTransform.set(this.preRotationForwardTransform);
+      this.preRotationReverseTransform.invert();
+    }
+    updateCenterTranslation() {
+      const centerArray = AbstractGeoProjection.vec2Cache[0];
+      centerArray[0] = this.center.lon;
+      centerArray[1] = this.center.lat;
+      this.preRotateForward(centerArray, centerArray);
+      this.projectRaw(centerArray, this.centerTranslation);
+    }
+    preRotateForward(vec, out) {
+      const lambda = this.preRotation[0];
+      const phi = this.preRotation[1];
+      const gamma = this.preRotation[2];
+      if (lambda === 0 && phi === 0 && gamma === 0) {
+        out.set(vec);
+        return out;
+      }
+      const lat = vec[1];
+      const lon = vec[0];
+      const rotatedLon = ((lon + lambda * Avionics.Utils.RAD2DEG) % 360 + 540) % 360 - 180;
+      if (phi === 0 && gamma === 0) {
+        return Vec2Math.set(rotatedLon, lat, out);
+      }
+      const cartesianVec = GeoPoint.sphericalToCartesian(lat, rotatedLon, AbstractGeoProjection.vec3Cache[0]);
+      const rotatedCartesianVec = this.preRotationForwardTransform.apply(cartesianVec, cartesianVec);
+      const rotated = AbstractGeoProjection.geoPointCache[0].setFromCartesian(rotatedCartesianVec);
+      return Vec2Math.set(rotated.lon, rotated.lat, out);
+    }
+    preRotateReverse(vec, out) {
+      const lambda = this.preRotation[0];
+      const phi = this.preRotation[1];
+      const gamma = this.preRotation[2];
+      if (lambda === 0 && phi === 0 && gamma === 0) {
+        out.set(vec);
+        return out;
+      }
+      const lat = vec[1];
+      const lon = vec[0];
+      let rotatedLat = lat;
+      let rotatedLon = lon;
+      if (phi !== 0 || gamma !== 0) {
+        const rotatedCartesianVec = GeoPoint.sphericalToCartesian(rotatedLat, rotatedLon, AbstractGeoProjection.vec3Cache[0]);
+        const cartesianVec = this.preRotationReverseTransform.apply(rotatedCartesianVec, rotatedCartesianVec);
+        const unrotated = AbstractGeoProjection.geoPointCache[0].setFromCartesian(cartesianVec);
+        rotatedLat = unrotated.lat;
+        rotatedLon = unrotated.lon;
+      }
+      rotatedLon = ((rotatedLon - lambda * Avionics.Utils.RAD2DEG) % 360 + 540) % 360 - 180;
+      return Vec2Math.set(rotatedLon, rotatedLat, out);
+    }
+    project(point, out) {
+      if (point instanceof Float64Array) {
+        out.set(point);
+      } else {
+        out[0] = point.lon;
+        out[1] = point.lat;
+      }
+      this.preRotateForward(out, out);
+      this.projectRaw(out, out);
+      out[0] -= this.centerTranslation[0];
+      out[1] -= this.centerTranslation[1];
+      out[1] *= this.reflectY;
+      out[0] *= this.scaleFactor;
+      out[1] *= this.scaleFactor;
+      const x = out[0];
+      const y = out[1];
+      out[0] = x * this.rotationCos - y * this.rotationSin;
+      out[1] = x * this.rotationSin + y * this.rotationCos;
+      out[0] += this.translation[0];
+      out[1] += this.translation[1];
+      return out;
+    }
+    invert(vec, out) {
+      const projected = AbstractGeoProjection.vec2Cache[0];
+      projected.set(vec);
+      projected[0] -= this.translation[0];
+      projected[1] -= this.translation[1];
+      const x = projected[0];
+      const y = projected[1];
+      projected[0] = x * this.rotationCos + y * this.rotationSin;
+      projected[1] = -x * this.rotationSin + y * this.rotationCos;
+      projected[0] /= this.scaleFactor;
+      projected[1] /= this.scaleFactor;
+      projected[1] *= this.reflectY;
+      projected[0] += this.centerTranslation[0];
+      projected[1] += this.centerTranslation[1];
+      const inverted = this.invertRaw(projected, projected);
+      this.preRotateReverse(inverted, inverted);
+      if (out instanceof Float64Array) {
+        out.set(inverted);
+        return out;
+      } else {
+        return out.set(inverted[1], inverted[0]);
+      }
+    }
+  };
+  AbstractGeoProjection.vec2Cache = [new Float64Array(2)];
+  AbstractGeoProjection.vec3Cache = [new Float64Array(3)];
+  AbstractGeoProjection.geoPointCache = [new GeoPoint(0, 0)];
+  var MercatorProjection = class extends AbstractGeoProjection {
+    projectRaw(vec, out) {
+      out[0] = vec[0] * Avionics.Utils.DEG2RAD;
+      out[1] = Math.log(Math.tan((90 + vec[1]) * Avionics.Utils.DEG2RAD / 2));
+      return out;
+    }
+    invertRaw(vec, out) {
+      out[0] = vec[0] * Avionics.Utils.RAD2DEG;
+      out[1] = 2 * Math.atan(Math.exp(vec[1])) * Avionics.Utils.RAD2DEG - 90;
+      return out;
+    }
+  };
+  var GeoCircleResampler = class {
+    constructor(minDistance, dpTolerance, maxDepth) {
+      this.minDistance = minDistance;
+      this.dpTolerance = dpTolerance;
+      this.maxDepth = maxDepth;
+      this.geoPointCache = [new GeoPoint(0, 0), new GeoPoint(0, 0)];
+      this.vec2Cache = [new Float64Array(2), new Float64Array(2), new Float64Array(2)];
+      this.vec3Cache = [new Float64Array(3), new Float64Array(3), new Float64Array(3), new Float64Array(3), new Float64Array(3)];
+      this.startVector = {
+        type: "start",
+        point: new GeoPoint(0, 0),
+        projected: new Float64Array(2),
+        index: 0
+      };
+      this.lineVector = {
+        type: "line",
+        point: new GeoPoint(0, 0),
+        projected: new Float64Array(2),
+        index: 0
+      };
+      this.arcVector = {
+        type: "arc",
+        point: new GeoPoint(0, 0),
+        projected: new Float64Array(2),
+        projectedArcCenter: new Float64Array(2),
+        projectedArcRadius: 0,
+        projectedArcStartAngle: 0,
+        projectedArcEndAngle: 0,
+        index: 0
+      };
+      this.state = {
+        index: 0,
+        prevX: 0,
+        prevY: 0,
+        vectorType: "line",
+        arcCenterX: 0,
+        arcCenterY: 0,
+        arcRadius: 0,
+        isArcCounterClockwise: false
+      };
+      this.cosMinDistance = Math.cos(minDistance);
+      this.dpTolSq = dpTolerance * dpTolerance;
+    }
+    resample(projection, circle, start, end, handler) {
+      let startPoint, startVec, endPoint, endVec;
+      if (start instanceof Float64Array) {
+        startPoint = this.geoPointCache[0].setFromCartesian(start);
+        startVec = start;
+      } else {
+        startPoint = start;
+        startVec = GeoPoint.sphericalToCartesian(start, this.vec3Cache[0]);
+      }
+      if (end instanceof Float64Array) {
+        endPoint = this.geoPointCache[0].setFromCartesian(end);
+        endVec = end;
+      } else {
+        endPoint = end;
+        endVec = GeoPoint.sphericalToCartesian(end, this.vec3Cache[1]);
+      }
+      const startLat = startPoint.lat;
+      const startLon = startPoint.lon;
+      const endLat = endPoint.lat;
+      const endLon = endPoint.lon;
+      const startProjected = projection.project(start, this.vec2Cache[0]);
+      const endProjected = projection.project(end, this.vec2Cache[1]);
+      const startX = startProjected[0];
+      const startY = startProjected[1];
+      const endX = endProjected[0];
+      const endY = endProjected[1];
+      this.startVector.point.set(startLat, startLon);
+      Vec2Math.copy(startProjected, this.startVector.projected);
+      handler(this.startVector);
+      this.state.index = 1;
+      this.state.prevX = startX;
+      this.state.prevY = startY;
+      this.state.vectorType = "line";
+      const state = this.resampleHelper(projection, circle, startLat, startLon, startVec[0], startVec[1], startVec[2], startX, startY, endLat, endLon, endVec[0], endVec[1], endVec[2], endX, endY, handler, 0, this.state);
+      this.callHandler(handler, endLat, endLon, endX, endY, state);
+    }
+    resampleHelper(projection, circle, lat1, lon1, x1, y1, z1, projX1, projY1, lat2, lon2, x2, y2, z2, projX2, projY2, handler, depth, state) {
+      if (depth >= this.maxDepth) {
+        return state;
+      }
+      const startVec = Vec3Math.set(x1, y1, z1, this.vec3Cache[0]);
+      const endVec = Vec3Math.set(x2, y2, z2, this.vec3Cache[1]);
+      const angularWidth = circle.angleAlong(startVec, endVec, Math.PI);
+      if (angularWidth <= GeoCircle.ANGULAR_TOLERANCE) {
+        return state;
+      }
+      const midVec = circle.offsetAngleAlong(startVec, angularWidth / 2, this.vec3Cache[2]);
+      const startProjected = Vec2Math.set(projX1, projY1, this.vec2Cache[0]);
+      const endProjected = Vec2Math.set(projX2, projY2, this.vec2Cache[1]);
+      const deltaProjected = Vec2Math.sub(endProjected, startProjected, this.vec2Cache[2]);
+      const deltaProjectedDot = Vec2Math.dot(deltaProjected, deltaProjected);
+      const midPoint = this.geoPointCache[0].setFromCartesian(midVec);
+      const midProjected = projection.project(midPoint, this.vec2Cache[2]);
+      const lat0 = midPoint.lat;
+      const lon0 = midPoint.lon;
+      const x0 = midVec[0];
+      const y0 = midVec[1];
+      const z0 = midVec[2];
+      const projX0 = midProjected[0];
+      const projY0 = midProjected[1];
+      const A = projX2 - projX1;
+      const B = projY2 - projY1;
+      const C = projX1 * projX1 - projX2 * projX2 + projY1 * projY1 - projY2 * projY2;
+      const D = projX0 - projX1;
+      const E = projY0 - projY1;
+      const F = projX1 * projX1 - projX0 * projX0 + projY1 * projY1 - projY0 * projY0;
+      const det = 2 * (A * E - B * D);
+      const dpDisSq = det * det / 4 / deltaProjectedDot;
+      if (dpDisSq > this.dpTolSq) {
+        const arcCenterX = (B * F - C * E) / det;
+        const arcCenterY = (C * D - A * F) / det;
+        const arcRadius = Math.hypot(arcCenterX - projX1, arcCenterY - projY1);
+        const startToEndVec = Vec3Math.set(A, B, 0, this.vec3Cache[3]);
+        const centerToMidVec = Vec3Math.set(projX0 - arcCenterX, projY0 - arcCenterY, 0, this.vec3Cache[4]);
+        const cross = Vec3Math.cross(startToEndVec, centerToMidVec, this.vec3Cache[4]);
+        state.vectorType = "arc";
+        state.arcCenterX = arcCenterX;
+        state.arcCenterY = arcCenterY;
+        state.arcRadius = arcRadius;
+        state.isArcCounterClockwise = cross[2] > 0;
+      } else {
+        state.vectorType = "line";
+      }
+      const cosDistance = Vec3Math.dot(startVec, midVec);
+      if (cosDistance > this.cosMinDistance) {
+        if (state.vectorType === "line") {
+          return state;
+        }
+        const query = circle.offsetAngleAlong(startVec, angularWidth / 4, this.geoPointCache[0]);
+        const projectedQuery = projection.project(query, this.vec2Cache[0]);
+        let distance = Math.hypot(projectedQuery[0] - state.arcCenterX, projectedQuery[1] - state.arcCenterY);
+        if ((distance - state.arcRadius) * (distance - state.arcRadius) <= this.dpTolSq) {
+          circle.offsetAngleAlong(startVec, 3 * angularWidth / 4, query);
+          projection.project(query, projectedQuery);
+          distance = Math.hypot(projectedQuery[0] - state.arcCenterX, projectedQuery[1] - state.arcCenterY);
+          if ((distance - state.arcRadius) * (distance - state.arcRadius) <= this.dpTolSq) {
+            return state;
+          }
+        }
+      }
+      state = this.resampleHelper(projection, circle, lat1, lon1, x1, y1, z1, projX1, projY1, lat0, lon0, x0, y0, z0, projX0, projY0, handler, depth + 1, state);
+      this.callHandler(handler, lat0, lon0, projX0, projY0, state);
+      state.index++;
+      state.prevX = projX0;
+      state.prevY = projY0;
+      return this.resampleHelper(projection, circle, lat0, lon0, x0, y0, z0, projX0, projY0, lat2, lon2, x2, y2, z2, projX2, projY2, handler, depth + 1, state);
+    }
+    callHandler(handler, lat, lon, projX, projY, state) {
+      let vector;
+      if (state.vectorType === "line") {
+        vector = this.lineVector;
+      } else {
+        vector = this.arcVector;
+        Vec2Math.set(state.arcCenterX, state.arcCenterY, vector.projectedArcCenter);
+        vector.projectedArcRadius = state.arcRadius;
+        vector.projectedArcStartAngle = Math.atan2(state.prevY - state.arcCenterY, state.prevX - state.arcCenterX);
+        vector.projectedArcEndAngle = Math.atan2(projY - state.arcCenterY, projX - state.arcCenterX);
+        if (vector.projectedArcEndAngle < vector.projectedArcStartAngle !== state.isArcCounterClockwise) {
+          vector.projectedArcEndAngle += state.isArcCounterClockwise ? -MathUtils.TWO_PI : MathUtils.TWO_PI;
+        }
+      }
+      vector.point.set(lat, lon);
+      Vec2Math.set(projX, projY, vector.projected);
+      vector.index = state.index;
+      handler(vector);
+    }
+  };
+  var NavAngleUnitReferenceNorth;
+  (function(NavAngleUnitReferenceNorth2) {
+    NavAngleUnitReferenceNorth2["True"] = "true";
+    NavAngleUnitReferenceNorth2["Magnetic"] = "magnetic";
+  })(NavAngleUnitReferenceNorth || (NavAngleUnitReferenceNorth = {}));
+  var BasicNavAngleUnit = class extends AbstractUnit {
+    constructor(referenceNorth, magVar) {
+      super(referenceNorth === NavAngleUnitReferenceNorth.True ? "true bearing" : "magnetic bearing");
+      this.family = "navangle";
+      this._magVar = 0;
+      this._magVar = magVar;
+    }
+    get magVar() {
+      return this._magVar;
+    }
+    isMagnetic() {
+      return this.name === "magnetic bearing";
+    }
+    convertTo(value, toUnit) {
+      if (!this.canConvert(toUnit)) {
+        throw new Error(`Invalid conversion from ${this.name} to ${toUnit.name}.`);
+      }
+      if (!isFinite(value)) {
+        return NaN;
+      }
+      if (this.isMagnetic() === toUnit.isMagnetic()) {
+        return value;
+      }
+      return this.isMagnetic() ? MagVar.magneticToTrue(value, this.magVar) : MagVar.trueToMagnetic(value, this.magVar);
+    }
+    convertFrom(value, fromUnit) {
+      if (!this.canConvert(fromUnit)) {
+        throw new Error(`Invalid conversion from ${fromUnit.name} to ${this.name}.`);
+      }
+      if (!isFinite(value)) {
+        return NaN;
+      }
+      if (this.isMagnetic() === fromUnit.isMagnetic()) {
+        return value;
+      }
+      return this.isMagnetic() ? MagVar.trueToMagnetic(value, this.magVar) : MagVar.magneticToTrue(value, this.magVar);
+    }
+    setMagVar(magVar) {
+      this._magVar = magVar;
+    }
+    setMagVarFromLocation(arg1, arg2) {
+      if (typeof arg1 === "number") {
+        this._magVar = MagVar.get(arg1, arg2);
+      } else {
+        this._magVar = MagVar.get(arg1);
+      }
+    }
+    equals(other) {
+      return other instanceof BasicNavAngleUnit && this.name === other.name && this.magVar === other.magVar;
+    }
+    static create(isMagnetic, arg2, arg3) {
+      const referenceNorth = isMagnetic ? NavAngleUnitReferenceNorth.Magnetic : NavAngleUnitReferenceNorth.True;
+      let magVar = 0;
+      if (arg2 !== void 0) {
+        if (typeof arg2 === "number") {
+          if (arg3 === void 0) {
+            magVar = arg2;
+          } else {
+            magVar = MagVar.get(arg2, arg3);
+          }
+        } else {
+          magVar = MagVar.get(arg2);
+        }
+      }
+      return new BasicNavAngleUnit(referenceNorth, magVar);
+    }
+  };
+  var BasicNavAngleSubject = class extends AbstractSubscribable {
+    constructor(value) {
+      super();
+      this.value = value;
+      this.isMutableSubscribable = true;
+    }
+    static create(initialVal) {
+      return new BasicNavAngleSubject(initialVal);
+    }
+    get() {
+      return this.value.readonly;
+    }
+    set(arg1, arg2, arg3) {
+      const isArg1Number = typeof arg1 === "number";
+      const isArg2Number = typeof arg2 === "number";
+      const isArg2LatLon = typeof arg2 === "object" && "lat" in arg2 && "lon" in arg2;
+      const unit = isArg1Number ? isArg2Number || isArg2LatLon || arg2 === void 0 ? this.value.unit : arg2 : arg1.unit;
+      const oldMagVar = this.value.unit.magVar;
+      const oldValue = this.value.number;
+      if (isArg2LatLon) {
+        this.value.unit.setMagVarFromLocation(arg2);
+      } else if (isArg2Number) {
+        if (typeof arg3 === "number") {
+          this.value.unit.setMagVarFromLocation(arg2, arg3);
+        } else {
+          this.value.unit.setMagVar(arg2);
+        }
+      } else {
+        this.value.unit.setMagVar(unit.magVar);
+      }
+      if (isArg1Number) {
+        this.value.set(arg1, unit);
+      } else {
+        this.value.set(arg1);
+      }
+      if (!(isNaN(oldMagVar) && isNaN(this.value.unit.magVar)) && oldMagVar !== this.value.unit.magVar || !(isNaN(oldValue) && isNaN(this.value.number)) && oldValue !== this.value.number) {
+        this.notify();
+      }
+    }
+  };
+  BasicNavAngleSubject.TRUE_BEARING = BasicNavAngleUnit.create(false);
   var airportIcaoRegionPattern = new RegExp(/^A../);
   var FacilityTypeSearchType = {
     [FacilityType.Airport]: FacilitySearchType.Airport,
@@ -6698,6 +6506,133 @@
       });
     }
   };
+  var ArrayUtils = class {
+    static create(length, init) {
+      const newArray = [];
+      for (let i = 0; i < length; i++) {
+        newArray[i] = init(i);
+      }
+      return newArray;
+    }
+    static range(length, start = 0, increment = 1) {
+      return ArrayUtils.fillRange([], length, 0, start, increment);
+    }
+    static fillRange(array, length, startIndex = 0, start = startIndex, increment = 1) {
+      const endIndex = startIndex + length;
+      for (let i = startIndex; i < endIndex; i++) {
+        array[i] = start + i * increment;
+      }
+      return array;
+    }
+    static at(array, index) {
+      if (index < 0) {
+        index += array.length;
+      }
+      if (index < 0 || index >= array.length) {
+        throw new RangeError();
+      }
+      return array[index];
+    }
+    static peekAt(array, index) {
+      if (index < 0) {
+        index += array.length;
+      }
+      return array[index];
+    }
+    static first(array) {
+      if (array.length === 0) {
+        throw new RangeError();
+      }
+      return array[0];
+    }
+    static peekFirst(array) {
+      return array[0];
+    }
+    static last(array) {
+      if (array.length === 0) {
+        throw new RangeError();
+      }
+      return array[array.length - 1];
+    }
+    static peekLast(array) {
+      return array[array.length - 1];
+    }
+    static includes(array, searchElement, fromIndex) {
+      return array.includes(searchElement, fromIndex);
+    }
+    static equals(a, b, equalsFunc = ArrayUtils.STRICT_EQUALS) {
+      if (a.length !== b.length) {
+        return false;
+      }
+      for (let i = 0; i < a.length; i++) {
+        if (!equalsFunc(a[i], b[i])) {
+          return false;
+        }
+      }
+      return true;
+    }
+    static flatMap(array, map) {
+      const out = [];
+      for (let i = 0; i < array.length; i++) {
+        const mapped = map(array[i], i, array);
+        if (Array.isArray(mapped)) {
+          for (let j = 0; j < mapped.length; j++) {
+            out[out.length] = mapped[j];
+          }
+        } else {
+          out[out.length] = mapped;
+        }
+      }
+      return out;
+    }
+    static flat(array, depth = 1) {
+      const out = [];
+      this.flatHelper(array, depth, 0, out);
+      return out;
+    }
+    static flatHelper(array, maxDepth, depth, out) {
+      for (let i = 0; i < array.length; i++) {
+        const element = array[i];
+        if (Array.isArray(element) && depth < maxDepth) {
+          this.flatHelper(element, maxDepth, depth + 1, out);
+        } else {
+          out[out.length] = element;
+        }
+      }
+    }
+    static shallowCopy(source, target = []) {
+      target.length = source.length;
+      for (let i = 0; i < source.length; i++) {
+        target[i] = source[i];
+      }
+      return target;
+    }
+    static binarySearch(array, element, comparator, first = true) {
+      let min = 0;
+      let max = array.length;
+      let index = Math.floor((min + max) / 2);
+      while (min < max) {
+        const compare = comparator(element, array[index]);
+        if (compare < 0) {
+          max = index;
+        } else if (compare > 0) {
+          min = index + 1;
+        } else {
+          const delta = first ? -1 : 1;
+          while (index + delta >= 0 && index + delta < array.length && comparator(element, array[index + delta]) === 0) {
+            index += delta;
+          }
+          return index;
+        }
+        index = Math.floor((min + max) / 2);
+      }
+      return -(index + 1);
+    }
+    static getMaxStringLength(array) {
+      return array.reduce((accum, curr) => curr.length > accum ? curr.length : accum, 0);
+    }
+  };
+  ArrayUtils.STRICT_EQUALS = (a, b) => a === b;
   var BinaryHeap = class {
     constructor(comparator) {
       this.comparator = comparator;
@@ -6947,7 +6882,7 @@
     constructor(arg) {
       this.table = new SortedArray(LerpLookupTable.BREAKPOINT_COMPARATOR);
       if (typeof arg === "number") {
-        this._dimensionCount = isNaN(arg) ? 0 : Math.max(0, arg);
+        this._dimensionCount = isFinite(arg) ? Math.max(0, arg) : 0;
         return;
       }
       const leastDimension = arg.reduce((accum, current) => current.length < accum.length ? current : accum);
@@ -7051,8 +6986,8 @@
       var _a2, _b;
       this.table = new SortedArray(LerpVectorLookupTable.BREAKPOINT_COMPARATOR);
       if (typeof arg1 === "number") {
-        this._dimensionCount = isFinite(arg1) ? 0 : Math.max(0, arg1);
-        this._vectorLength = isFinite(arg2) ? 0 : Math.max(0, arg2);
+        this._dimensionCount = isFinite(arg1) ? Math.max(0, arg1) : 0;
+        this._vectorLength = isFinite(arg2) ? Math.max(0, arg2) : 0;
       } else {
         let leastBreakpointDimension = Infinity;
         let leastVectorLength = Infinity;
@@ -7601,6 +7536,7 @@
       return this.getArray()[index];
     }
     notify(index, type, modifiedItem) {
+      const canCleanUpSubs = this.notifyDepth === 0;
       let needCleanUpSubs = false;
       this.notifyDepth++;
       if (this.singletonSub) {
@@ -7608,11 +7544,22 @@
           if (this.singletonSub.isAlive && !this.singletonSub.isPaused) {
             this.singletonSub.handler(index, type, modifiedItem, this.getArray());
           }
-          needCleanUpSubs || (needCleanUpSubs = !this.singletonSub.isAlive);
         } catch (error) {
           console.error(`AbstractSubscribableArray: error in handler: ${error}`);
           if (error instanceof Error) {
             console.error(error.stack);
+          }
+        }
+        if (canCleanUpSubs) {
+          if (this.singletonSub) {
+            needCleanUpSubs = !this.singletonSub.isAlive;
+          } else if (this.subs) {
+            for (let i = 0; i < this.subs.length; i++) {
+              if (!this.subs[i].isAlive) {
+                needCleanUpSubs = true;
+                break;
+              }
+            }
           }
         }
       } else if (this.subs) {
@@ -7631,10 +7578,18 @@
             }
           }
         }
+        if (canCleanUpSubs && !needCleanUpSubs) {
+          for (let i = subLen; i < this.subs.length; i++) {
+            if (!this.subs[i].isAlive) {
+              needCleanUpSubs = true;
+              break;
+            }
+          }
+        }
       }
       this.notifyDepth--;
-      if (needCleanUpSubs && this.notifyDepth === 0) {
-        if (this.singletonSub && !this.singletonSub.isAlive) {
+      if (needCleanUpSubs) {
+        if (this.singletonSub) {
           delete this.singletonSub;
         } else if (this.subs) {
           this.subs = this.subs.filter((sub) => sub.isAlive);
@@ -10568,6 +10523,27 @@
     FlightPathAirplaneSpeedMode2["TrueAirspeed"] = "TrueAirspeed";
     FlightPathAirplaneSpeedMode2["TrueAirspeedPlusWind"] = "TrueAirspeedPlusWind";
   })(FlightPathAirplaneSpeedMode || (FlightPathAirplaneSpeedMode = {}));
+  var UUID = class {
+    static GenerateUuid() {
+      const scale = 2 ** 32;
+      const first = UUID.bytesToHexString(Math.random() * scale);
+      const fourth = UUID.bytesToHexString(Math.random() * scale);
+      let secondBits = Math.random() * scale;
+      let thirdBits = Math.random() * scale;
+      secondBits |= 16384;
+      secondBits &= 4294922239;
+      const second = UUID.bytesToHexString(secondBits);
+      thirdBits |= 2147483648;
+      thirdBits &= 3221225471;
+      const third = UUID.bytesToHexString(thirdBits);
+      return `${first}-${second.substring(0, 4)}-${second.substring(4)}-${third.substring(0, 4)}-${third.substring(4)}${fourth}`;
+    }
+    static bytesToHexString(bits) {
+      let string = (bits >>> 0).toString(16);
+      string = "00000000".substring(string.length) + string;
+      return string;
+    }
+  };
   var LegEventType;
   (function(LegEventType2) {
     LegEventType2["Added"] = "Added";
@@ -10607,6 +10583,8 @@
       this.procedureDetails = new ProcedureDetails();
       this.planSegments = [];
       this.userData = {};
+      this.batchEntryStack = [];
+      this.batchToCloseIndex = void 0;
     }
     get originAirport() {
       return this._originAirport;
@@ -10681,53 +10659,6 @@
         }
       }
     }
-    addSegment(segmentIndex, segmentType = FlightPlanSegmentType.Enroute, airway, notify = true) {
-      const segment = new FlightPlanSegment(segmentIndex, -1, [], segmentType, airway);
-      this.planSegments[segmentIndex] = segment;
-      this.reflowSegmentOffsets();
-      notify && this.events.onSegmentChanged && this.events.onSegmentChanged(segmentIndex, SegmentEventType.Added, segment);
-      return segment;
-    }
-    insertSegment(segmentIndex, segmentType = FlightPlanSegmentType.Enroute, airway, notify = true) {
-      const segment = this.planSegments[segmentIndex];
-      if (segment !== void 0) {
-        const newSegment = new FlightPlanSegment(segmentIndex, -1, [], segmentType, airway);
-        this.planSegments.splice(segmentIndex, 0, newSegment);
-        this.reflowSegments();
-        this.reflowSegmentOffsets();
-        notify && this.events.onSegmentChanged && this.events.onSegmentChanged(segmentIndex, SegmentEventType.Inserted, newSegment);
-        return newSegment;
-      } else {
-        return this.addSegment(segmentIndex, segmentType, airway, notify);
-      }
-    }
-    reflowSegments() {
-      for (let i = 0; i < this.planSegments.length; i++) {
-        const segment = this.planSegments[i];
-        if (segment !== void 0 && segment.segmentIndex !== i) {
-          segment.segmentIndex = i;
-        }
-      }
-    }
-    deleteSegment(segmentIndex, notify = true) {
-      const segment = this.planSegments[segmentIndex];
-      if (segmentIndex === this.planSegments.length - 1) {
-        this.planSegments.splice(segmentIndex, 1);
-      } else {
-        delete this.planSegments[segmentIndex];
-      }
-      if (this.directToData.segmentIndex === segmentIndex)
-        ;
-      this.reflowSegmentOffsets();
-      notify && this.events.onSegmentChanged && this.events.onSegmentChanged(segmentIndex, SegmentEventType.Removed, segment);
-    }
-    removeSegment(segmentIndex, notify = true) {
-      const segment = this.planSegments[segmentIndex];
-      this.planSegments.splice(segmentIndex, 1);
-      this.reflowSegments();
-      this.reflowSegmentOffsets();
-      notify && this.events.onSegmentChanged && this.events.onSegmentChanged(segmentIndex, SegmentEventType.Removed, segment);
-    }
     getSegment(segmentIndex) {
       const segment = this.tryGetSegment(segmentIndex);
       if (segment === null) {
@@ -10760,34 +10691,6 @@
       }
       return null;
     }
-    addLeg(segmentIndex, leg, segmentLegIndex, flags = 0, notify = true) {
-      const segment = this.getSegment(segmentIndex);
-      const legDefinition = {
-        name: this.onLegNameRequested(leg),
-        leg,
-        flags,
-        verticalData: {
-          phase: VerticalFlightPhase.Descent,
-          altDesc: AltitudeRestrictionType.Unused,
-          altitude1: 0,
-          altitude2: 0,
-          displayAltitude1AsFlightLevel: false,
-          displayAltitude2AsFlightLevel: false,
-          speedDesc: SpeedRestrictionType.Unused,
-          speed: 0,
-          speedUnit: SpeedUnit.IAS
-        }
-      };
-      if (segmentLegIndex === void 0) {
-        segment.legs.push(legDefinition);
-        segmentLegIndex = segment.legs.length - 1;
-      } else {
-        segment.legs.splice(segmentLegIndex, 0, legDefinition);
-      }
-      this.reflowSegmentOffsets();
-      notify && this.events.onLegChanged && this.events.onLegChanged(segmentIndex, segmentLegIndex, LegEventType.Added, legDefinition);
-      return legDefinition;
-    }
     getLeg(arg1, arg2) {
       const leg = this._tryGetLeg(arg1, arg2);
       if (leg) {
@@ -10813,122 +10716,6 @@
         const segmentLegIndex = arg2;
         return (_b = (_a2 = this.planSegments[segmentIndex]) === null || _a2 === void 0 ? void 0 : _a2.legs[segmentLegIndex]) !== null && _b !== void 0 ? _b : null;
       }
-    }
-    removeLeg(segmentIndex, segmentLegIndex, notify = true) {
-      const segment = this.getSegment(segmentIndex);
-      let legDefinition;
-      if (segmentLegIndex === void 0) {
-        legDefinition = segment.legs.pop();
-        segmentLegIndex = segment.legs.length;
-      } else {
-        const deleted = segment.legs.splice(segmentLegIndex, 1);
-        legDefinition = deleted[0];
-      }
-      if (this.directToData.segmentIndex === segmentIndex && this.directToData.segmentLegIndex === segmentLegIndex)
-        ;
-      this.reflowSegmentOffsets();
-      notify && legDefinition && this.events.onLegChanged && this.events.onLegChanged(segmentIndex, segmentLegIndex, LegEventType.Removed, legDefinition);
-      return legDefinition !== null && legDefinition !== void 0 ? legDefinition : null;
-    }
-    async calculate(globalLegIndex, notify = true) {
-      const legs = [...this.legs()];
-      await this.calculator.calculateFlightPath(legs, this.activeLateralLeg, globalLegIndex === void 0 ? this.activeCalculatingLeg : globalLegIndex);
-      notify && this.events.onCalculated && this.events.onCalculated(globalLegIndex);
-    }
-    setOriginAirport(facilityIcao, notify = true) {
-      this._originAirport = facilityIcao;
-      notify && this.events.onOriginDestChanged && this.events.onOriginDestChanged(OriginDestChangeType.OriginAdded, facilityIcao);
-    }
-    removeOriginAirport(notify = true) {
-      const facilityIcao = this._originAirport;
-      this._originAirport = void 0;
-      this.procedureDetails.departureIndex = -1;
-      this.procedureDetails.departureRunwayIndex = -1;
-      this.procedureDetails.departureTransitionIndex = -1;
-      this.procedureDetails.originRunway = void 0;
-      notify && this.events.onOriginDestChanged && this.events.onOriginDestChanged(OriginDestChangeType.OriginRemoved, facilityIcao);
-    }
-    setDestinationAirport(facilityIcao, notify = true) {
-      this._destinationAirport = facilityIcao;
-      notify && this.events.onOriginDestChanged && this.events.onOriginDestChanged(OriginDestChangeType.DestinationAdded, facilityIcao);
-    }
-    removeDestinationAirport(notify = true) {
-      const facilityIcao = this._destinationAirport;
-      this._destinationAirport = void 0;
-      this.procedureDetails.approachIndex = -1;
-      this.procedureDetails.approachTransitionIndex = -1;
-      this.procedureDetails.arrivalIndex = -1;
-      this.procedureDetails.arrivalRunwayTransitionIndex = -1;
-      this.procedureDetails.arrivalRunway = void 0;
-      this.procedureDetails.arrivalTransitionIndex = -1;
-      this.procedureDetails.destinationRunway = void 0;
-      notify && this.events.onOriginDestChanged && this.events.onOriginDestChanged(OriginDestChangeType.DestinationRemoved, facilityIcao);
-    }
-    setLateralLeg(globalLegIndex, notify = true) {
-      let previousLegIndex = -1;
-      let previousSegmentIndex = -1;
-      let segmentIndex = -1;
-      let segmentLegIndex = -1;
-      if (this.length > 0) {
-        previousSegmentIndex = this.getSegmentIndex(this._activeLateralLeg);
-        if (previousSegmentIndex > -1) {
-          previousLegIndex = this._activeLateralLeg - this.getSegment(previousSegmentIndex).offset;
-        }
-        this._activeLateralLeg = Utils.Clamp(globalLegIndex, 0, this.length - 1);
-        segmentIndex = this.getSegmentIndex(this._activeLateralLeg);
-        if (segmentIndex > -1) {
-          segmentLegIndex = this._activeLateralLeg - this.getSegment(segmentIndex).offset;
-        }
-      } else {
-        this._activeLateralLeg = 0;
-      }
-      notify && this.events.onActiveLegChanged && this.events.onActiveLegChanged(this._activeLateralLeg, segmentIndex, segmentLegIndex, previousSegmentIndex, previousLegIndex, ActiveLegType.Lateral);
-    }
-    setVerticalLeg(globalLegIndex, notify = true) {
-      let previousLegIndex = -1;
-      let previousSegmentIndex = -1;
-      let segmentIndex = -1;
-      let segmentLegIndex = -1;
-      if (this.length > 0) {
-        previousSegmentIndex = this.getSegmentIndex(this._activeVerticalLeg);
-        if (previousSegmentIndex > -1) {
-          previousLegIndex = this._activeVerticalLeg - this.getSegment(previousSegmentIndex).offset;
-        }
-        this._activeVerticalLeg = Utils.Clamp(globalLegIndex, 0, this.length - 1);
-        segmentIndex = this.getSegmentIndex(this._activeVerticalLeg);
-        if (segmentIndex > -1) {
-          segmentLegIndex = this._activeVerticalLeg - this.getSegment(segmentIndex).offset;
-        }
-      } else {
-        this._activeVerticalLeg = 0;
-      }
-      notify && this.events.onActiveLegChanged && this.events.onActiveLegChanged(this._activeVerticalLeg, segmentIndex, segmentLegIndex, previousSegmentIndex, previousLegIndex, ActiveLegType.Vertical);
-    }
-    setCalculatingLeg(globalLegIndex, notify = true) {
-      let previousLegIndex = -1;
-      let previousSegmentIndex = -1;
-      let segmentIndex = -1;
-      let segmentLegIndex = -1;
-      if (this.length > 0) {
-        previousSegmentIndex = this.getSegmentIndex(this._activeCalculatingLeg);
-        if (previousSegmentIndex > -1) {
-          previousLegIndex = this._activeCalculatingLeg - this.getSegment(previousSegmentIndex).offset;
-        }
-        this._activeCalculatingLeg = Utils.Clamp(globalLegIndex, 0, this.length - 1);
-        segmentIndex = this.getSegmentIndex(this._activeCalculatingLeg);
-        if (segmentIndex > -1) {
-          segmentLegIndex = this._activeCalculatingLeg - this.getSegment(segmentIndex).offset;
-        }
-      } else {
-        this._activeCalculatingLeg = 0;
-      }
-      notify && this.events.onActiveLegChanged && this.events.onActiveLegChanged(this._activeCalculatingLeg, segmentIndex, segmentLegIndex, previousSegmentIndex, previousLegIndex, ActiveLegType.Calculating);
-    }
-    setProcedureDetails(details, notify = true) {
-      for (const key of Object.keys(details)) {
-        this.procedureDetails[key] = details[key];
-      }
-      notify && this.events.onProcedureDetailsChanged && this.events.onProcedureDetailsChanged(this.procedureDetails);
     }
     getLegIndexFromLeg(leg) {
       let index = 0;
@@ -10996,6 +10783,266 @@
       }
       return leg !== null && leg !== void 0 ? leg : null;
     }
+    getUserData(key) {
+      return this.userData[key];
+    }
+    getBatchStack() {
+      return this.batchEntryStack.length > 0 ? this.batchEntryStack.map((entry) => entry.batch) : void 0;
+    }
+    openBatch(name) {
+      const parent = this.batchEntryStack[this.batchEntryStack.length - 1];
+      const uuid = UUID.GenerateUuid();
+      const batch = { uuid, name };
+      const entry = {
+        batch,
+        parent,
+        isClosed: false,
+        pendingCalculateCount: 0
+      };
+      this.batchEntryStack.push(entry);
+      this.events.onBatchOpened && this.events.onBatchOpened(batch);
+      return uuid;
+    }
+    closeBatch(uuid) {
+      let stopIndex = this.batchEntryStack.length;
+      if (uuid === void 0) {
+        if (this.batchEntryStack.length > 0) {
+          stopIndex = this.batchEntryStack.length - 1;
+        }
+      } else {
+        const index = this.batchEntryStack.findIndex((entry) => entry.batch.uuid === uuid);
+        if (index >= 0) {
+          stopIndex = index;
+        }
+      }
+      this.closeBatchIndex(stopIndex);
+    }
+    closeAllBatches() {
+      this.closeBatchIndex(0);
+    }
+    closeBatchIndex(index) {
+      index = Math.max(index, 0);
+      if (this.batchToCloseIndex === void 0) {
+        this.batchToCloseIndex = index;
+        while (this.batchEntryStack.length > this.batchToCloseIndex) {
+          const entry = this.batchEntryStack.pop();
+          const currentBatchToCloseIndex = this.batchToCloseIndex;
+          const isClosingLast = this.batchEntryStack.length === currentBatchToCloseIndex + 1;
+          entry.isClosed = true;
+          this.events.onBatchClosed && this.events.onBatchClosed(entry.batch);
+          if (entry.pendingCalculateCount === 0) {
+            this.events.onBatchAsyncClosed && this.events.onBatchAsyncClosed(entry.batch);
+          }
+          if (isClosingLast && this.batchToCloseIndex === currentBatchToCloseIndex) {
+            break;
+          }
+        }
+        this.batchToCloseIndex = void 0;
+      } else {
+        this.batchToCloseIndex = Math.min(this.batchToCloseIndex, index);
+      }
+    }
+    addSegment(segmentIndex, segmentType = FlightPlanSegmentType.Enroute, airway, notify = true) {
+      const segment = new FlightPlanSegment(segmentIndex, -1, [], segmentType, airway);
+      this.planSegments[segmentIndex] = segment;
+      this.reflowSegmentOffsets();
+      notify && this.events.onSegmentChanged && this.events.onSegmentChanged(segmentIndex, SegmentEventType.Added, segment, this.getBatchStack());
+      return segment;
+    }
+    insertSegment(segmentIndex, segmentType = FlightPlanSegmentType.Enroute, airway, notify = true) {
+      const segment = this.planSegments[segmentIndex];
+      if (segment !== void 0) {
+        const newSegment = new FlightPlanSegment(segmentIndex, -1, [], segmentType, airway);
+        this.planSegments.splice(segmentIndex, 0, newSegment);
+        this.reflowSegments();
+        this.reflowSegmentOffsets();
+        notify && this.events.onSegmentChanged && this.events.onSegmentChanged(segmentIndex, SegmentEventType.Inserted, newSegment, this.getBatchStack());
+        return newSegment;
+      } else {
+        return this.addSegment(segmentIndex, segmentType, airway, notify);
+      }
+    }
+    reflowSegments() {
+      for (let i = 0; i < this.planSegments.length; i++) {
+        const segment = this.planSegments[i];
+        if (segment !== void 0 && segment.segmentIndex !== i) {
+          segment.segmentIndex = i;
+        }
+      }
+    }
+    deleteSegment(segmentIndex, notify = true) {
+      const segment = this.planSegments[segmentIndex];
+      if (segmentIndex === this.planSegments.length - 1) {
+        this.planSegments.splice(segmentIndex, 1);
+      } else {
+        delete this.planSegments[segmentIndex];
+      }
+      if (this.directToData.segmentIndex === segmentIndex)
+        ;
+      this.reflowSegmentOffsets();
+      notify && this.events.onSegmentChanged && this.events.onSegmentChanged(segmentIndex, SegmentEventType.Removed, segment, this.getBatchStack());
+    }
+    removeSegment(segmentIndex, notify = true) {
+      const segment = this.planSegments[segmentIndex];
+      this.planSegments.splice(segmentIndex, 1);
+      this.reflowSegments();
+      this.reflowSegmentOffsets();
+      notify && this.events.onSegmentChanged && this.events.onSegmentChanged(segmentIndex, SegmentEventType.Removed, segment, this.getBatchStack());
+    }
+    addLeg(segmentIndex, leg, segmentLegIndex, flags = 0, notify = true) {
+      const segment = this.getSegment(segmentIndex);
+      const legDefinition = {
+        name: this.onLegNameRequested(leg),
+        leg,
+        flags,
+        verticalData: {
+          phase: VerticalFlightPhase.Descent,
+          altDesc: AltitudeRestrictionType.Unused,
+          altitude1: 0,
+          altitude2: 0,
+          displayAltitude1AsFlightLevel: false,
+          displayAltitude2AsFlightLevel: false,
+          speedDesc: SpeedRestrictionType.Unused,
+          speed: 0,
+          speedUnit: SpeedUnit.IAS
+        },
+        userData: {}
+      };
+      if (segmentLegIndex === void 0) {
+        segment.legs.push(legDefinition);
+        segmentLegIndex = segment.legs.length - 1;
+      } else {
+        segment.legs.splice(segmentLegIndex, 0, legDefinition);
+      }
+      this.reflowSegmentOffsets();
+      notify && this.events.onLegChanged && this.events.onLegChanged(segmentIndex, segmentLegIndex, LegEventType.Added, legDefinition, this.getBatchStack());
+      return legDefinition;
+    }
+    removeLeg(segmentIndex, segmentLegIndex, notify = true) {
+      const segment = this.getSegment(segmentIndex);
+      let legDefinition;
+      if (segmentLegIndex === void 0) {
+        legDefinition = segment.legs.pop();
+        segmentLegIndex = segment.legs.length;
+      } else {
+        const deleted = segment.legs.splice(segmentLegIndex, 1);
+        legDefinition = deleted[0];
+      }
+      if (this.directToData.segmentIndex === segmentIndex && this.directToData.segmentLegIndex === segmentLegIndex)
+        ;
+      this.reflowSegmentOffsets();
+      notify && legDefinition && this.events.onLegChanged && this.events.onLegChanged(segmentIndex, segmentLegIndex, LegEventType.Removed, legDefinition, this.getBatchStack());
+      return legDefinition !== null && legDefinition !== void 0 ? legDefinition : null;
+    }
+    reflowSegmentOffsets() {
+      let nextOffset = void 0;
+      for (let i = 0; i < this.planSegments.length; i++) {
+        const segment = this.planSegments[i];
+        if (segment) {
+          if (nextOffset === void 0) {
+            segment.offset = 0;
+          } else {
+            segment.offset = nextOffset;
+          }
+          nextOffset = segment.legs.length + segment.offset;
+        }
+      }
+    }
+    setOriginAirport(facilityIcao, notify = true) {
+      this._originAirport = facilityIcao;
+      notify && this.events.onOriginDestChanged && this.events.onOriginDestChanged(OriginDestChangeType.OriginAdded, facilityIcao, this.getBatchStack());
+    }
+    removeOriginAirport(notify = true) {
+      const facilityIcao = this._originAirport;
+      this._originAirport = void 0;
+      this.procedureDetails.departureIndex = -1;
+      this.procedureDetails.departureRunwayIndex = -1;
+      this.procedureDetails.departureTransitionIndex = -1;
+      this.procedureDetails.originRunway = void 0;
+      notify && this.events.onOriginDestChanged && this.events.onOriginDestChanged(OriginDestChangeType.OriginRemoved, facilityIcao, this.getBatchStack());
+    }
+    setDestinationAirport(facilityIcao, notify = true) {
+      this._destinationAirport = facilityIcao;
+      notify && this.events.onOriginDestChanged && this.events.onOriginDestChanged(OriginDestChangeType.DestinationAdded, facilityIcao, this.getBatchStack());
+    }
+    removeDestinationAirport(notify = true) {
+      const facilityIcao = this._destinationAirport;
+      this._destinationAirport = void 0;
+      this.procedureDetails.approachIndex = -1;
+      this.procedureDetails.approachTransitionIndex = -1;
+      this.procedureDetails.arrivalIndex = -1;
+      this.procedureDetails.arrivalRunwayTransitionIndex = -1;
+      this.procedureDetails.arrivalRunway = void 0;
+      this.procedureDetails.arrivalTransitionIndex = -1;
+      this.procedureDetails.destinationRunway = void 0;
+      notify && this.events.onOriginDestChanged && this.events.onOriginDestChanged(OriginDestChangeType.DestinationRemoved, facilityIcao, this.getBatchStack());
+    }
+    setLateralLeg(globalLegIndex, notify = true) {
+      let previousLegIndex = -1;
+      let previousSegmentIndex = -1;
+      let segmentIndex = -1;
+      let segmentLegIndex = -1;
+      if (this.length > 0) {
+        previousSegmentIndex = this.getSegmentIndex(this._activeLateralLeg);
+        if (previousSegmentIndex > -1) {
+          previousLegIndex = this._activeLateralLeg - this.getSegment(previousSegmentIndex).offset;
+        }
+        this._activeLateralLeg = Utils.Clamp(globalLegIndex, 0, this.length - 1);
+        segmentIndex = this.getSegmentIndex(this._activeLateralLeg);
+        if (segmentIndex > -1) {
+          segmentLegIndex = this._activeLateralLeg - this.getSegment(segmentIndex).offset;
+        }
+      } else {
+        this._activeLateralLeg = 0;
+      }
+      notify && this.events.onActiveLegChanged && this.events.onActiveLegChanged(this._activeLateralLeg, segmentIndex, segmentLegIndex, previousSegmentIndex, previousLegIndex, ActiveLegType.Lateral, this.getBatchStack());
+    }
+    setVerticalLeg(globalLegIndex, notify = true) {
+      let previousLegIndex = -1;
+      let previousSegmentIndex = -1;
+      let segmentIndex = -1;
+      let segmentLegIndex = -1;
+      if (this.length > 0) {
+        previousSegmentIndex = this.getSegmentIndex(this._activeVerticalLeg);
+        if (previousSegmentIndex > -1) {
+          previousLegIndex = this._activeVerticalLeg - this.getSegment(previousSegmentIndex).offset;
+        }
+        this._activeVerticalLeg = Utils.Clamp(globalLegIndex, 0, this.length - 1);
+        segmentIndex = this.getSegmentIndex(this._activeVerticalLeg);
+        if (segmentIndex > -1) {
+          segmentLegIndex = this._activeVerticalLeg - this.getSegment(segmentIndex).offset;
+        }
+      } else {
+        this._activeVerticalLeg = 0;
+      }
+      notify && this.events.onActiveLegChanged && this.events.onActiveLegChanged(this._activeVerticalLeg, segmentIndex, segmentLegIndex, previousSegmentIndex, previousLegIndex, ActiveLegType.Vertical, this.getBatchStack());
+    }
+    setCalculatingLeg(globalLegIndex, notify = true) {
+      let previousLegIndex = -1;
+      let previousSegmentIndex = -1;
+      let segmentIndex = -1;
+      let segmentLegIndex = -1;
+      if (this.length > 0) {
+        previousSegmentIndex = this.getSegmentIndex(this._activeCalculatingLeg);
+        if (previousSegmentIndex > -1) {
+          previousLegIndex = this._activeCalculatingLeg - this.getSegment(previousSegmentIndex).offset;
+        }
+        this._activeCalculatingLeg = Utils.Clamp(globalLegIndex, 0, this.length - 1);
+        segmentIndex = this.getSegmentIndex(this._activeCalculatingLeg);
+        if (segmentIndex > -1) {
+          segmentLegIndex = this._activeCalculatingLeg - this.getSegment(segmentIndex).offset;
+        }
+      } else {
+        this._activeCalculatingLeg = 0;
+      }
+      notify && this.events.onActiveLegChanged && this.events.onActiveLegChanged(this._activeCalculatingLeg, segmentIndex, segmentLegIndex, previousSegmentIndex, previousLegIndex, ActiveLegType.Calculating, this.getBatchStack());
+    }
+    setProcedureDetails(details, notify = true) {
+      for (const key of Object.keys(details)) {
+        this.procedureDetails[key] = details[key];
+      }
+      notify && this.events.onProcedureDetailsChanged && this.events.onProcedureDetailsChanged(this.procedureDetails, this.getBatchStack());
+    }
     setDirectToData(arg1, arg2, arg3) {
       if (typeof arg1 !== "number") {
         arg1 = arg1 ? this.getLegIndexFromLeg(arg1) : -1;
@@ -11019,7 +11066,7 @@
       }
       this.directToData.segmentIndex = segmentIndex;
       this.directToData.segmentLegIndex = segmentLegIndex;
-      notify && this.events.onDirectDataChanged && this.events.onDirectDataChanged(this.directToData);
+      notify && this.events.onDirectDataChanged && this.events.onDirectDataChanged(this.directToData, this.getBatchStack());
     }
     setLegVerticalData(arg1, arg2, arg3, arg4) {
       let notify = true;
@@ -11041,7 +11088,7 @@
       const leg = this.tryGetLeg(segmentIndex, segmentLegIndex);
       if (leg) {
         Object.assign(leg.verticalData, verticalData);
-        notify && this.events.onLegChanged && this.events.onLegChanged(segmentIndex, segmentLegIndex, LegEventType.Changed, leg);
+        notify && this.events.onLegChanged && this.events.onLegChanged(segmentIndex, segmentLegIndex, LegEventType.Changed, leg, this.getBatchStack());
       } else {
         console.warn(`Failed to set Leg Vertical Data for Segment ${segmentIndex} Leg ${segmentLegIndex}.`);
       }
@@ -11053,46 +11100,90 @@
       } else {
         segment.airway = airway;
       }
-      this.events.onSegmentChanged && notify && this.events.onSegmentChanged(segmentIndex, SegmentEventType.Changed, segment);
+      this.events.onSegmentChanged && notify && this.events.onSegmentChanged(segmentIndex, SegmentEventType.Changed, segment, this.getBatchStack());
     }
     setUserData(key, data, notify = true) {
+      if (data === void 0) {
+        this.deleteUserData(key, notify);
+        return;
+      }
       this.userData[key] = data;
-      this.events.onUserDataSet && notify && this.events.onUserDataSet(key, data);
+      this.events.onUserDataSet && notify && this.events.onUserDataSet(key, data, this.getBatchStack());
     }
     deleteUserData(key, notify = true) {
       if (this.userData[key] !== void 0) {
         delete this.userData[key];
       }
-      this.events.onUserDataDelete && notify && this.events.onUserDataDelete(key);
+      this.events.onUserDataDelete && notify && this.events.onUserDataDelete(key, this.getBatchStack());
     }
-    getUserData(key) {
-      return this.userData[key];
+    setLegUserData(arg1, arg2, arg3, arg4, arg5) {
+      let notify;
+      let segmentIndex = -1;
+      let segmentLegIndex = -1;
+      let key;
+      let data;
+      if (typeof arg2 !== "number") {
+        segmentIndex = this.getSegmentIndex(arg1);
+        const segment = this.getSegment(segmentIndex);
+        segmentLegIndex = arg1 - segment.offset;
+        key = arg2;
+        data = arg3;
+        notify = arg4 === void 0 ? true : arg4;
+      } else {
+        segmentIndex = arg1;
+        segmentLegIndex = arg2;
+        key = arg3;
+        data = arg4;
+        notify = arg5 === void 0 ? true : arg5;
+      }
+      if (data === void 0) {
+        this.deleteLegUserData(segmentIndex, segmentLegIndex, key, notify);
+        return;
+      }
+      const leg = this.tryGetLeg(segmentIndex, segmentLegIndex);
+      if (leg) {
+        leg.userData[key] = data;
+        notify && this.events.onLegUserDataSet && this.events.onLegUserDataSet(segmentIndex, segmentLegIndex, leg, key, data, this.getBatchStack());
+      } else {
+        console.warn(`FlightPlan: failed to set leg user data; leg does not exist at segment index ${segmentIndex}, segment leg index ${segmentLegIndex}.`);
+      }
     }
-    reflowSegmentOffsets() {
-      let nextOffset = void 0;
-      for (let i = 0; i < this.planSegments.length; i++) {
-        const segment = this.planSegments[i];
-        if (segment) {
-          if (nextOffset === void 0) {
-            segment.offset = 0;
-          } else {
-            segment.offset = nextOffset;
-          }
-          nextOffset = segment.legs.length + segment.offset;
-        }
+    deleteLegUserData(arg1, arg2, arg3, arg4) {
+      let notify;
+      let segmentIndex = -1;
+      let segmentLegIndex = -1;
+      let key;
+      if (typeof arg2 !== "number") {
+        segmentIndex = this.getSegmentIndex(arg1);
+        const segment = this.getSegment(segmentIndex);
+        segmentLegIndex = arg1 - segment.offset;
+        key = arg2;
+        notify = arg3 === void 0 ? true : arg3;
+      } else {
+        segmentIndex = arg1;
+        segmentLegIndex = arg2;
+        key = arg3;
+        notify = arg4 === void 0 ? true : arg4;
+      }
+      const leg = this.tryGetLeg(segmentIndex, segmentLegIndex);
+      if (leg) {
+        delete leg.userData[key];
+        notify && this.events.onLegUserDataDelete && this.events.onLegUserDataDelete(segmentIndex, segmentLegIndex, leg, key, this.getBatchStack());
+      } else {
+        console.warn(`FlightPlan: failed to delete leg user data; leg does not exist at segment index ${segmentIndex}, segment leg index ${segmentLegIndex}.`);
       }
     }
     setOriginRunway(runway = void 0, notify = true) {
       this.procedureDetails.originRunway = runway;
       const details = new ProcedureDetails();
       Object.assign(details, this.procedureDetails);
-      this.events.onProcedureDetailsChanged && notify && this.events.onProcedureDetailsChanged(details);
+      this.events.onProcedureDetailsChanged && notify && this.events.onProcedureDetailsChanged(details, this.getBatchStack());
     }
     setDestinationRunway(runway = void 0, notify = true) {
       this.procedureDetails.destinationRunway = runway;
       const details = new ProcedureDetails();
       Object.assign(details, this.procedureDetails);
-      this.events.onProcedureDetailsChanged && notify && this.events.onProcedureDetailsChanged(details);
+      this.events.onProcedureDetailsChanged && notify && this.events.onProcedureDetailsChanged(details, this.getBatchStack());
     }
     setDeparture(facilityIcao = void 0, departureIndex = -1, departureTransitionIndex = -1, departureRunwayIndex = -1, notify = true) {
       this.procedureDetails.departureIndex = departureIndex;
@@ -11101,7 +11192,7 @@
       this.procedureDetails.departureRunwayIndex = departureRunwayIndex;
       const details = new ProcedureDetails();
       Object.assign(details, this.procedureDetails);
-      this.events.onProcedureDetailsChanged && notify && this.events.onProcedureDetailsChanged(details);
+      this.events.onProcedureDetailsChanged && notify && this.events.onProcedureDetailsChanged(details, this.getBatchStack());
     }
     setArrival(facilityIcao = void 0, arrivalIndex = -1, arrivalTransitionIndex = -1, arrivalRunwayTransitionIndex = -1, arrivalRunway = void 0, notify = true) {
       this.procedureDetails.arrivalIndex = arrivalIndex;
@@ -11111,7 +11202,7 @@
       this.procedureDetails.arrivalRunway = arrivalRunway;
       const details = new ProcedureDetails();
       Object.assign(details, this.procedureDetails);
-      this.events.onProcedureDetailsChanged && notify && this.events.onProcedureDetailsChanged(details);
+      this.events.onProcedureDetailsChanged && notify && this.events.onProcedureDetailsChanged(details, this.getBatchStack());
     }
     setApproach(facilityIcao = void 0, approachIndex = -1, approachTransitionIndex = -1, notify = true) {
       this.procedureDetails.approachIndex = approachIndex;
@@ -11120,7 +11211,28 @@
       this.procedureDetails.approachTransitionIndex = approachTransitionIndex;
       const details = new ProcedureDetails();
       Object.assign(details, this.procedureDetails);
-      this.events.onProcedureDetailsChanged && notify && this.events.onProcedureDetailsChanged(details);
+      this.events.onProcedureDetailsChanged && notify && this.events.onProcedureDetailsChanged(details, this.getBatchStack());
+    }
+    async calculate(globalLegIndex, notify = true) {
+      const batchStack = this.getBatchStack();
+      const batchEntry = this.batchEntryStack[this.batchEntryStack.length - 1];
+      let currentBatchEntry = batchEntry;
+      while (currentBatchEntry) {
+        currentBatchEntry.pendingCalculateCount++;
+        currentBatchEntry = currentBatchEntry.parent;
+      }
+      notify && this.events.onCalculatePended && this.events.onCalculatePended(globalLegIndex, batchStack);
+      const legs = [...this.legs()];
+      await this.calculator.calculateFlightPath(legs, this.activeLateralLeg, globalLegIndex === void 0 ? this.activeCalculatingLeg : globalLegIndex);
+      notify && this.events.onCalculated && this.events.onCalculated(globalLegIndex, batchStack);
+      currentBatchEntry = batchEntry;
+      while (currentBatchEntry) {
+        currentBatchEntry.pendingCalculateCount--;
+        if (currentBatchEntry.isClosed && currentBatchEntry.pendingCalculateCount === 0) {
+          this.events.onBatchAsyncClosed && this.events.onBatchAsyncClosed(currentBatchEntry.batch);
+        }
+        currentBatchEntry = currentBatchEntry.parent;
+      }
     }
     copy(planIndex, copyCalcs = false) {
       if (planIndex === void 0) {
@@ -11134,14 +11246,18 @@
       if (sourcePlan._originAirport !== void 0) {
         this.setOriginAirport(sourcePlan._originAirport, false);
       } else {
-        this.removeOriginAirport();
+        this.removeOriginAirport(false);
       }
       if (sourcePlan._destinationAirport !== void 0) {
         this.setDestinationAirport(sourcePlan._destinationAirport, false);
       } else {
-        this.removeDestinationAirport();
+        this.removeDestinationAirport(false);
       }
       this.setProcedureDetails(Object.assign(new ProcedureDetails(), sourcePlan.procedureDetails), false);
+      const targetPlanSegmentsCount = this.planSegments.length;
+      for (let i = 0; i < targetPlanSegmentsCount; i++) {
+        this.removeSegment(0, false);
+      }
       for (let i = 0; i < sourcePlan.planSegments.length; i++) {
         const segment = sourcePlan.planSegments[i];
         if (segment !== void 0) {
@@ -11149,17 +11265,20 @@
           for (const leg of segment.legs) {
             const newLeg = this.addLeg(segment.segmentIndex, leg.leg, void 0, leg.flags, false);
             const legIndex = this.getLegIndexFromLeg(newLeg);
-            this.setLegVerticalData(legIndex, leg.verticalData);
+            this.setLegVerticalData(legIndex, leg.verticalData, false);
+            for (const key in leg.userData) {
+              this.setLegUserData(legIndex, key, leg.userData[key], false);
+            }
             copyCalcs && FlightPlan.copyLegCalculations(leg, newLeg);
           }
         }
       }
-      this.setDirectToData(sourcePlan.directToData.segmentIndex, sourcePlan.directToData.segmentLegIndex);
-      this.setLateralLeg(sourcePlan._activeLateralLeg);
-      this.setVerticalLeg(sourcePlan._activeVerticalLeg);
-      this.setCalculatingLeg(sourcePlan._activeCalculatingLeg);
+      this.setDirectToData(sourcePlan.directToData.segmentIndex, sourcePlan.directToData.segmentLegIndex, false);
+      this.setLateralLeg(sourcePlan._activeLateralLeg, false);
+      this.setVerticalLeg(sourcePlan._activeVerticalLeg, false);
+      this.setCalculatingLeg(sourcePlan._activeCalculatingLeg, false);
       for (const key in this.userData) {
-        this.deleteUserData(key);
+        this.deleteUserData(key, false);
       }
       for (const key in sourcePlan.userData) {
         this.setUserData(key, sourcePlan.userData[key], false);
@@ -11467,6 +11586,223 @@
     SubscribableSetEventType2["Added"] = "Added";
     SubscribableSetEventType2["Deleted"] = "Deleted";
   })(SubscribableSetEventType || (SubscribableSetEventType = {}));
+  var SubscribableSetPipe = class extends HandlerSubscription {
+    constructor(from, to, arg3, arg4) {
+      let handler;
+      let initialNotifyFunc;
+      let onDestroy;
+      if (typeof arg4 === "function") {
+        const toCast = to;
+        const map = arg3;
+        handler = (set, type, key) => {
+          if (type === SubscribableSetEventType.Added) {
+            toCast.add(map(key));
+          } else {
+            const mappedKey = map(key);
+            for (const inputKey of set) {
+              if (map(inputKey) === mappedKey) {
+                return;
+              }
+            }
+            toCast.delete(mappedKey);
+          }
+        };
+        initialNotifyFunc = () => {
+          const fromSet = from.get();
+          const toAdd = /* @__PURE__ */ new Set();
+          for (const key of fromSet) {
+            toAdd.add(map(key));
+          }
+          for (const key of toCast.get()) {
+            if (!toAdd.delete(key)) {
+              toCast.delete(key);
+            }
+          }
+          for (const key of toAdd) {
+            toCast.add(key);
+          }
+        };
+        onDestroy = arg4;
+      } else {
+        const toCast = to;
+        handler = (set, type, key) => {
+          if (type === SubscribableSetEventType.Added) {
+            toCast.add(key);
+          } else {
+            toCast.delete(key);
+          }
+        };
+        initialNotifyFunc = () => {
+          const fromSet = from.get();
+          const toAdd = new Set(fromSet);
+          for (const key of to.get()) {
+            if (!toAdd.delete(key)) {
+              toCast.delete(key);
+            }
+          }
+          for (const key of toAdd) {
+            toCast.add(key);
+          }
+        };
+        onDestroy = arg3;
+      }
+      super(handler, initialNotifyFunc, onDestroy);
+    }
+  };
+  var AbstractSubscribableSet = class {
+    constructor() {
+      this.isSubscribable = true;
+      this.isSubscribableSet = true;
+      this.notifyDepth = 0;
+      this.initialNotifyFunc = this.initialNotify.bind(this);
+      this.onSubDestroyedFunc = this.onSubDestroyed.bind(this);
+    }
+    get size() {
+      return this.get().size;
+    }
+    addSubscription(sub) {
+      if (this.subs) {
+        this.subs.push(sub);
+      } else if (this.singletonSub) {
+        this.subs = [this.singletonSub, sub];
+        delete this.singletonSub;
+      } else {
+        this.singletonSub = sub;
+      }
+    }
+    has(key) {
+      return this.get().has(key);
+    }
+    sub(handler, initialNotify = false, paused = false) {
+      const sub = new HandlerSubscription(handler, this.initialNotifyFunc, this.onSubDestroyedFunc);
+      this.addSubscription(sub);
+      if (paused) {
+        sub.pause();
+      } else if (initialNotify) {
+        sub.initialNotify();
+      }
+      return sub;
+    }
+    unsub(handler) {
+      let toDestroy = void 0;
+      if (this.singletonSub && this.singletonSub.handler === handler) {
+        toDestroy = this.singletonSub;
+      } else if (this.subs) {
+        toDestroy = this.subs.find((sub) => sub.handler === handler);
+      }
+      toDestroy === null || toDestroy === void 0 ? void 0 : toDestroy.destroy();
+    }
+    notify(type, key) {
+      const set = this.get();
+      const canCleanUpSubs = this.notifyDepth === 0;
+      let needCleanUpSubs = false;
+      this.notifyDepth++;
+      if (this.singletonSub) {
+        try {
+          if (this.singletonSub.isAlive && !this.singletonSub.isPaused) {
+            this.singletonSub.handler(set, type, key);
+          }
+        } catch (error) {
+          console.error(`AbstractSubscribableSet: error in handler: ${error}`);
+          if (error instanceof Error) {
+            console.error(error.stack);
+          }
+        }
+        if (canCleanUpSubs) {
+          if (this.singletonSub) {
+            needCleanUpSubs = !this.singletonSub.isAlive;
+          } else if (this.subs) {
+            for (let i = 0; i < this.subs.length; i++) {
+              if (!this.subs[i].isAlive) {
+                needCleanUpSubs = true;
+                break;
+              }
+            }
+          }
+        }
+      } else if (this.subs) {
+        const subLen = this.subs.length;
+        for (let i = 0; i < subLen; i++) {
+          try {
+            const sub = this.subs[i];
+            if (sub.isAlive && !sub.isPaused) {
+              sub.handler(set, type, key);
+            }
+            needCleanUpSubs || (needCleanUpSubs = canCleanUpSubs && !sub.isAlive);
+          } catch (error) {
+            console.error(`AbstractSubscribableSet: error in handler: ${error}`);
+            if (error instanceof Error) {
+              console.error(error.stack);
+            }
+          }
+        }
+        if (canCleanUpSubs && !needCleanUpSubs) {
+          for (let i = subLen; i < this.subs.length; i++) {
+            if (!this.subs[i].isAlive) {
+              needCleanUpSubs = true;
+              break;
+            }
+          }
+        }
+      }
+      this.notifyDepth--;
+      if (needCleanUpSubs) {
+        if (this.singletonSub) {
+          delete this.singletonSub;
+        } else if (this.subs) {
+          this.subs = this.subs.filter((sub) => sub.isAlive);
+        }
+      }
+    }
+    initialNotify(sub) {
+      const set = this.get();
+      for (const key of set) {
+        sub.handler(set, SubscribableSetEventType.Added, key);
+      }
+    }
+    onSubDestroyed(sub) {
+      if (this.notifyDepth === 0) {
+        if (this.singletonSub === sub) {
+          delete this.singletonSub;
+        } else if (this.subs) {
+          const index = this.subs.indexOf(sub);
+          if (index >= 0) {
+            this.subs.splice(index, 1);
+          }
+        }
+      }
+    }
+    map(fn, equalityFunc, mutateFunc, initialVal) {
+      const mapFunc = (inputs, previousVal) => fn(inputs[0], previousVal);
+      return mutateFunc ? MappedSubject.create(mapFunc, equalityFunc, mutateFunc, initialVal, this) : MappedSubject.create(mapFunc, equalityFunc !== null && equalityFunc !== void 0 ? equalityFunc : AbstractSubscribable.DEFAULT_EQUALITY_FUNC, this);
+    }
+    pipe(to, arg2, arg3) {
+      let sub;
+      let paused;
+      if (typeof arg2 === "function") {
+        if ("isSubscribableSet" in to) {
+          sub = new SubscribableSetPipe(this, to, arg2, this.onSubDestroyedFunc);
+        } else {
+          sub = new SubscribablePipe(this, to, arg2, this.onSubDestroyedFunc);
+        }
+        paused = arg3 !== null && arg3 !== void 0 ? arg3 : false;
+      } else {
+        if ("isSubscribableSet" in to) {
+          sub = new SubscribableSetPipe(this, to, this.onSubDestroyedFunc);
+        } else {
+          sub = new SubscribablePipe(this, to, this.onSubDestroyedFunc);
+        }
+        paused = arg2 !== null && arg2 !== void 0 ? arg2 : false;
+      }
+      this.addSubscription(sub);
+      if (paused) {
+        sub.pause();
+      } else {
+        sub.initialNotify();
+      }
+      return sub;
+    }
+  };
   var ArraySubject = class extends AbstractSubscribableArray {
     constructor(arr) {
       super();
@@ -11516,6 +11852,61 @@
       return this.array;
     }
   };
+  var SetSubject = class extends AbstractSubscribableSet {
+    constructor(initialKeys) {
+      super();
+      this.isMutableSubscribable = true;
+      this.isMutableSubscribableSet = true;
+      this.backingSet = new Set(initialKeys);
+    }
+    static create(initialKeys) {
+      return new SetSubject(initialKeys);
+    }
+    get() {
+      return this.backingSet;
+    }
+    set(keys) {
+      const toAdd = new Set(keys);
+      for (const key of this.backingSet) {
+        if (!toAdd.delete(key)) {
+          this.delete(key);
+        }
+      }
+      for (const key of toAdd) {
+        this.add(key);
+      }
+    }
+    add(key) {
+      const oldSize = this.backingSet.size;
+      this.backingSet.add(key);
+      if (oldSize !== this.backingSet.size) {
+        this.notify(SubscribableSetEventType.Added, key);
+      }
+      return this;
+    }
+    delete(key) {
+      const wasDeleted = this.backingSet.delete(key);
+      if (wasDeleted) {
+        this.notify(SubscribableSetEventType.Deleted, key);
+      }
+      return wasDeleted;
+    }
+    toggle(key, force) {
+      const shouldAdd = force !== null && force !== void 0 ? force : !this.backingSet.has(key);
+      if (shouldAdd) {
+        this.add(key);
+      } else {
+        this.delete(key);
+      }
+      return this.backingSet.has(key);
+    }
+    clear() {
+      for (const key of this.backingSet) {
+        this.backingSet.delete(key);
+        this.notify(SubscribableSetEventType.Deleted, key);
+      }
+    }
+  };
   var ObjectSubject = class {
     constructor(obj) {
       this.obj = obj;
@@ -11534,7 +11925,7 @@
     }
     sub(handler, initialNotify = false, paused = false) {
       const sub = new HandlerSubscription(handler, this.initialNotifyFunc, this.onSubDestroyedFunc);
-      this.subs.push(sub);
+      this.addSubscription(sub);
       if (paused) {
         sub.pause();
       } else if (initialNotify) {
@@ -11542,8 +11933,23 @@
       }
       return sub;
     }
+    addSubscription(sub) {
+      if (this.subs) {
+        this.subs.push(sub);
+      } else if (this.singletonSub) {
+        this.subs = [this.singletonSub, sub];
+        delete this.singletonSub;
+      } else {
+        this.singletonSub = sub;
+      }
+    }
     unsub(handler) {
-      const toDestroy = this.subs.find((sub) => sub.handler === handler);
+      let toDestroy = void 0;
+      if (this.singletonSub && this.singletonSub.handler === handler) {
+        toDestroy = this.singletonSub;
+      } else if (this.subs) {
+        toDestroy = this.subs.find((sub) => sub.handler === handler);
+      }
       toDestroy === null || toDestroy === void 0 ? void 0 : toDestroy.destroy();
     }
     set(arg1, value) {
@@ -11562,26 +11968,64 @@
       }
     }
     notify(key, oldValue) {
+      const canCleanUpSubs = this.notifyDepth === 0;
       let needCleanUpSubs = false;
       this.notifyDepth++;
-      const subLen = this.subs.length;
-      for (let i = 0; i < subLen; i++) {
+      if (this.singletonSub) {
         try {
-          const sub = this.subs[i];
-          if (sub.isAlive && !sub.isPaused) {
-            sub.handler(this.obj, key, this.obj[key], oldValue);
+          if (this.singletonSub.isAlive && !this.singletonSub.isPaused) {
+            this.singletonSub.handler(this.obj, key, this.obj[key], oldValue);
           }
-          needCleanUpSubs || (needCleanUpSubs = !sub.isAlive);
         } catch (error) {
           console.error(`ObjectSubject: error in handler: ${error}`);
           if (error instanceof Error) {
             console.error(error.stack);
           }
         }
+        if (canCleanUpSubs) {
+          if (this.singletonSub) {
+            needCleanUpSubs = !this.singletonSub.isAlive;
+          } else if (this.subs) {
+            for (let i = 0; i < this.subs.length; i++) {
+              if (!this.subs[i].isAlive) {
+                needCleanUpSubs = true;
+                break;
+              }
+            }
+          }
+        }
+      } else if (this.subs) {
+        const subLen = this.subs.length;
+        for (let i = 0; i < subLen; i++) {
+          try {
+            const sub = this.subs[i];
+            if (sub.isAlive && !sub.isPaused) {
+              sub.handler(this.obj, key, this.obj[key], oldValue);
+            }
+            needCleanUpSubs || (needCleanUpSubs = canCleanUpSubs && !sub.isAlive);
+          } catch (error) {
+            console.error(`ObjectSubject: error in handler: ${error}`);
+            if (error instanceof Error) {
+              console.error(error.stack);
+            }
+          }
+        }
+        if (canCleanUpSubs && !needCleanUpSubs) {
+          for (let i = subLen; i < this.subs.length; i++) {
+            if (!this.subs[i].isAlive) {
+              needCleanUpSubs = true;
+              break;
+            }
+          }
+        }
       }
       this.notifyDepth--;
-      if (needCleanUpSubs && this.notifyDepth === 0) {
-        this.subs = this.subs.filter((sub) => sub.isAlive);
+      if (needCleanUpSubs) {
+        if (this.singletonSub) {
+          delete this.singletonSub;
+        } else if (this.subs) {
+          this.subs = this.subs.filter((sub) => sub.isAlive);
+        }
       }
     }
     initialNotify(sub) {
@@ -11592,7 +12036,14 @@
     }
     onSubDestroyed(sub) {
       if (this.notifyDepth === 0) {
-        this.subs.splice(this.subs.indexOf(sub), 1);
+        if (this.singletonSub === sub) {
+          delete this.singletonSub;
+        } else if (this.subs) {
+          const index = this.subs.indexOf(sub);
+          if (index >= 0) {
+            this.subs.splice(index, 1);
+          }
+        }
       }
     }
     map(fn, equalityFunc, mutateFunc, initialVal) {
@@ -11901,6 +12352,502 @@
     IcaoSearchFilter2[IcaoSearchFilter2["INTERSECTION"] = 4] = "INTERSECTION";
     IcaoSearchFilter2[IcaoSearchFilter2["USR"] = 5] = "USR";
   })(IcaoSearchFilter || (IcaoSearchFilter = {}));
+  var AdcPublisher = class extends SimVarPublisher {
+    constructor(bus, pacer) {
+      var _a2, _b, _c, _d, _e, _f, _g, _h;
+      const simvars = /* @__PURE__ */ new Map([
+        ["indicated_alt", { name: "INDICATED ALTITUDE:#index#", type: SimVarValueType.Feet, indexed: true }],
+        ["altimeter_baro_setting_inhg", { name: "KOHLSMAN SETTING HG:#index#", type: SimVarValueType.InHG, indexed: true }],
+        ["altimeter_baro_setting_mb", { name: "KOHLSMAN SETTING MB:#index#", type: SimVarValueType.MB, indexed: true }],
+        ["altimeter_baro_preselect_raw", { name: "L:XMLVAR_Baro#index#_SavedPressure", type: SimVarValueType.Number, indexed: true }],
+        ["altimeter_baro_preselect_inhg", { name: "L:XMLVAR_Baro#index#_SavedPressure", type: SimVarValueType.Number, map: (raw) => UnitType.HPA.convertTo(raw / 16, UnitType.IN_HG), indexed: true }],
+        ["altimeter_baro_preselect_mb", { name: "L:XMLVAR_Baro#index#_SavedPressure", type: SimVarValueType.Number, map: (raw) => raw / 16, indexed: true }],
+        ["altimeter_baro_is_std", { name: "L:XMLVAR_Baro#index#_ForcedToSTD", type: SimVarValueType.Bool, indexed: true }],
+        ["radio_alt", { name: "RADIO HEIGHT", type: SimVarValueType.Feet }],
+        ["pressure_alt", { name: "PRESSURE ALTITUDE", type: SimVarValueType.Feet }],
+        ["vertical_speed", { name: "VERTICAL SPEED", type: SimVarValueType.FPM }],
+        ["ambient_density", { name: "AMBIENT DENSITY", type: SimVarValueType.SlugsPerCubicFoot }],
+        ["isa_temp_c", { name: "STANDARD ATM TEMPERATURE", type: SimVarValueType.Celsius }],
+        ["ram_air_temp_c", { name: "TOTAL AIR TEMPERATURE", type: SimVarValueType.Celsius }],
+        ["ambient_wind_velocity", { name: "AMBIENT WIND VELOCITY", type: SimVarValueType.Knots }],
+        ["ambient_wind_direction", { name: "AMBIENT WIND DIRECTION", type: SimVarValueType.Degree }],
+        ["on_ground", { name: "SIM ON GROUND", type: SimVarValueType.Bool }],
+        ["aoa", { name: "INCIDENCE ALPHA", type: SimVarValueType.Degree }],
+        ["stall_aoa", { name: "STALL ALPHA", type: SimVarValueType.Degree }],
+        ["zero_lift_aoa", { name: "ZERO LIFT ALPHA", type: SimVarValueType.Degree }],
+        ["density_alt", { name: "DENSITY ALTITUDE", type: SimVarValueType.Feet }]
+      ]);
+      super(simvars, bus, pacer);
+      (_a2 = this.needPublish) !== null && _a2 !== void 0 ? _a2 : this.needPublish = {
+        "mach_number": false,
+        "ambient_pressure_inhg": false,
+        "ambient_temp_c": false
+      };
+      (_b = this.needPublishIasTopics) !== null && _b !== void 0 ? _b : this.needPublishIasTopics = /* @__PURE__ */ new Map();
+      (_c = this.needRetrievePressure) !== null && _c !== void 0 ? _c : this.needRetrievePressure = false;
+      (_d = this.needRetrieveTemperature) !== null && _d !== void 0 ? _d : this.needRetrieveTemperature = false;
+      (_e = this.needRetrieveMach) !== null && _e !== void 0 ? _e : this.needRetrieveMach = false;
+      (_f = this.pressure) !== null && _f !== void 0 ? _f : this.pressure = 1013.25;
+      (_g = this.temperature) !== null && _g !== void 0 ? _g : this.temperature = 0;
+      (_h = this.mach) !== null && _h !== void 0 ? _h : this.mach = 0;
+    }
+    handleSubscribedTopic(topic) {
+      var _a2, _b;
+      (_a2 = this.needPublish) !== null && _a2 !== void 0 ? _a2 : this.needPublish = {
+        "mach_number": false,
+        "ambient_pressure_inhg": false,
+        "ambient_temp_c": false
+      };
+      (_b = this.needPublishIasTopics) !== null && _b !== void 0 ? _b : this.needPublishIasTopics = /* @__PURE__ */ new Map();
+      if (this.resolvedSimVars.has(topic) || topic in this.needPublish || AdcPublisher.TOPIC_REGEXES["ias"].test(topic) || AdcPublisher.TOPIC_REGEXES["tas"].test(topic) || AdcPublisher.TOPIC_REGEXES["indicated_mach_number"].test(topic) || AdcPublisher.TOPIC_REGEXES["indicated_tas"].test(topic) || AdcPublisher.TOPIC_REGEXES["mach_to_kias_factor"].test(topic) || AdcPublisher.TOPIC_REGEXES["tas_to_ias_factor"].test(topic) || AdcPublisher.TOPIC_REGEXES["indicated_mach_to_kias_factor"].test(topic) || AdcPublisher.TOPIC_REGEXES["indicated_tas_to_ias_factor"].test(topic)) {
+        this.onTopicSubscribed(topic);
+      } else {
+        this.tryMatchIndexedSubscribedTopic(topic);
+      }
+    }
+    onTopicSubscribed(topic) {
+      if (topic in this.needPublish) {
+        this.needPublish[topic] = true;
+        switch (topic) {
+          case "ambient_pressure_inhg":
+            this.needRetrievePressure = true;
+            if (this.publishActive) {
+              this.retrieveAmbientPressure(true);
+            }
+            break;
+          case "ambient_temp_c":
+            this.needRetrieveTemperature = true;
+            if (this.publishActive) {
+              this.retrieveAmbientTemperature(true);
+            }
+            break;
+          case "mach_number":
+            this.needRetrieveMach = true;
+            if (this.publishActive) {
+              this.retrieveMach(true);
+            }
+            break;
+        }
+      } else if (AdcPublisher.TOPIC_REGEXES["ias"].test(topic)) {
+        const indexMatch = topic.match(AdcPublisher.TOPIC_REGEXES["ias"])[1];
+        const index = indexMatch ? parseInt(indexMatch) : -1;
+        const entry = this.getOrCreateIasTopicEntry(index);
+        entry.iasTopic = index < 0 ? "ias" : `ias_${index}`;
+        if (this.publishActive) {
+          this.retrieveIas(entry, true);
+        }
+      } else if (AdcPublisher.TOPIC_REGEXES["tas"].test(topic)) {
+        const indexMatch = topic.match(AdcPublisher.TOPIC_REGEXES["tas"])[1];
+        const index = indexMatch ? parseInt(indexMatch) : -1;
+        const entry = this.getOrCreateIasTopicEntry(index);
+        entry.tasTopic = index < 0 ? "tas" : `tas_${index}`;
+        if (this.publishActive) {
+          this.retrieveTas(entry, true);
+        }
+      } else if (AdcPublisher.TOPIC_REGEXES["indicated_mach_number"].test(topic)) {
+        const indexMatch = topic.match(AdcPublisher.TOPIC_REGEXES["indicated_mach_number"])[1];
+        const index = indexMatch ? parseInt(indexMatch) : -1;
+        this.needRetrievePressure = true;
+        const entry = this.getOrCreateIasTopicEntry(index);
+        entry.indicatedMachTopic = index < 0 ? "indicated_mach_number" : `indicated_mach_number_${index}`;
+        if (this.publishActive) {
+          this.retrieveAmbientPressure(false);
+          this.retrieveIas(entry, false);
+          this.retrieveIndicatedMach(entry, true);
+        }
+      } else if (AdcPublisher.TOPIC_REGEXES["indicated_tas"].test(topic)) {
+        const indexMatch = topic.match(AdcPublisher.TOPIC_REGEXES["indicated_tas"])[1];
+        const index = indexMatch ? parseInt(indexMatch) : -1;
+        this.needRetrievePressure = true;
+        this.needRetrieveTemperature = true;
+        const entry = this.getOrCreateIasTopicEntry(index);
+        entry.indicatedTasTopic = index < 0 ? "indicated_tas" : `indicated_tas_${index}`;
+        if (this.publishActive) {
+          this.retrieveAmbientPressure(false);
+          this.retrieveAmbientTemperature(false);
+          this.retrieveIas(entry, false);
+          this.retrieveIndicatedTas(entry, true);
+        }
+      } else if (AdcPublisher.TOPIC_REGEXES["mach_to_kias_factor"].test(topic)) {
+        const indexMatch = topic.match(AdcPublisher.TOPIC_REGEXES["mach_to_kias_factor"])[1];
+        const index = indexMatch ? parseInt(indexMatch) : -1;
+        this.needRetrievePressure = true;
+        this.needRetrieveMach = true;
+        const entry = this.getOrCreateIasTopicEntry(index);
+        entry.machToKiasTopic = index < 0 ? "mach_to_kias_factor" : `mach_to_kias_factor_${index}`;
+        if (this.publishActive) {
+          this.retrieveAmbientPressure(false);
+          this.retrieveMach(false);
+          this.retrieveIas(entry, false);
+          this.publishMachToKias(entry);
+        }
+      } else if (AdcPublisher.TOPIC_REGEXES["tas_to_ias_factor"].test(topic)) {
+        const indexMatch = topic.match(AdcPublisher.TOPIC_REGEXES["tas_to_ias_factor"])[1];
+        const index = indexMatch ? parseInt(indexMatch) : -1;
+        this.needRetrievePressure = true;
+        this.needRetrieveTemperature = true;
+        const entry = this.getOrCreateIasTopicEntry(index);
+        entry.tasToIasTopic = index < 0 ? "tas_to_ias_factor" : `tas_to_ias_factor_${index}`;
+        if (this.publishActive) {
+          this.retrieveAmbientPressure(false);
+          this.retrieveAmbientTemperature(false);
+          this.retrieveIas(entry, false);
+          this.retrieveTas(entry, false);
+          this.publishTasToIas(entry);
+        }
+      } else if (AdcPublisher.TOPIC_REGEXES["indicated_mach_to_kias_factor"].test(topic)) {
+        const indexMatch = topic.match(AdcPublisher.TOPIC_REGEXES["indicated_mach_to_kias_factor"])[1];
+        const index = indexMatch ? parseInt(indexMatch) : -1;
+        this.needRetrievePressure = true;
+        const entry = this.getOrCreateIasTopicEntry(index);
+        entry.indicatedMachToKiasTopic = index < 0 ? "indicated_mach_to_kias_factor" : `indicated_mach_to_kias_factor_${index}`;
+        if (this.publishActive) {
+          this.retrieveAmbientPressure(false);
+          this.retrieveIas(entry, false);
+          this.retrieveIndicatedMach(entry, false);
+          this.publishIndicatedMachToKias(entry);
+        }
+      } else if (AdcPublisher.TOPIC_REGEXES["indicated_tas_to_ias_factor"].test(topic)) {
+        const indexMatch = topic.match(AdcPublisher.TOPIC_REGEXES["indicated_tas_to_ias_factor"])[1];
+        const index = indexMatch ? parseInt(indexMatch) : -1;
+        this.needRetrievePressure = true;
+        this.needRetrieveTemperature = true;
+        const entry = this.getOrCreateIasTopicEntry(index);
+        entry.indicatedTasToIasTopic = index < 0 ? "indicated_tas_to_ias_factor" : `indicated_tas_to_ias_factor_${index}`;
+        if (this.publishActive) {
+          this.retrieveAmbientPressure(false);
+          this.retrieveAmbientTemperature(false);
+          this.retrieveIas(entry, false);
+          this.retrieveIndicatedTas(entry, false);
+          this.publishIndicatedTasToIas(entry);
+        }
+      } else {
+        super.onTopicSubscribed(topic);
+      }
+    }
+    getOrCreateIasTopicEntry(index) {
+      let entry = this.needPublishIasTopics.get(index);
+      if (!entry) {
+        entry = {
+          iasSimVar: index < 0 ? "AIRSPEED INDICATED:1" : `AIRSPEED INDICATED:${index}`,
+          tasSimVar: index < 0 ? "AIRSPEED TRUE:1" : `AIRSPEED TRUE:${index}`,
+          kias: 0,
+          iasMps: 0,
+          ktas: 0,
+          indicatedMach: 0,
+          indicatedTas: 0
+        };
+        this.needPublishIasTopics.set(index, entry);
+      }
+      return entry;
+    }
+    onUpdate() {
+      const isSlewing = SimVar.GetSimVarValue("IS SLEW ACTIVE", "bool");
+      if (!isSlewing) {
+        if (this.needRetrievePressure) {
+          this.retrieveAmbientPressure(this.needPublish["ambient_pressure_inhg"]);
+        }
+        if (this.needRetrieveTemperature) {
+          this.retrieveAmbientTemperature(this.needPublish["ambient_temp_c"]);
+        }
+        if (this.needRetrieveMach) {
+          this.retrieveMach(this.needPublish["mach_number"]);
+        }
+        for (const entry of this.needPublishIasTopics.values()) {
+          this.retrieveIas(entry, true);
+          if (entry.tasTopic || entry.tasToIasTopic) {
+            this.retrieveTas(entry, true);
+          }
+          if (entry.indicatedMachTopic || entry.indicatedMachToKiasTopic) {
+            this.retrieveIndicatedMach(entry, true);
+          }
+          if (entry.indicatedTasTopic || entry.indicatedTasToIasTopic) {
+            this.retrieveIndicatedTas(entry, true);
+          }
+          this.publishMachToKias(entry);
+          this.publishTasToIas(entry);
+          this.publishIndicatedMachToKias(entry);
+          this.publishIndicatedTasToIas(entry);
+        }
+        super.onUpdate();
+      }
+    }
+    retrieveAmbientPressure(publish) {
+      const pressureInHg = SimVar.GetSimVarValue("AMBIENT PRESSURE", SimVarValueType.InHG);
+      this.pressure = UnitType.IN_HG.convertTo(pressureInHg, UnitType.HPA);
+      publish && this.publish("ambient_pressure_inhg", pressureInHg);
+    }
+    retrieveAmbientTemperature(publish) {
+      this.temperature = SimVar.GetSimVarValue("AMBIENT TEMPERATURE", SimVarValueType.Celsius);
+      publish && this.publish("ambient_temp_c", this.temperature);
+    }
+    retrieveMach(publish) {
+      this.mach = SimVar.GetSimVarValue("AIRSPEED MACH", SimVarValueType.Mach);
+      publish && this.publish("mach_number", this.mach);
+    }
+    retrieveIas(entry, publish) {
+      entry.kias = SimVar.GetSimVarValue(entry.iasSimVar, SimVarValueType.Knots);
+      entry.iasMps = UnitType.KNOT.convertTo(entry.kias, UnitType.MPS);
+      publish && entry.iasTopic && this.publish(entry.iasTopic, entry.kias);
+    }
+    retrieveTas(entry, publish) {
+      entry.ktas = SimVar.GetSimVarValue(entry.tasSimVar, SimVarValueType.Knots);
+      publish && entry.tasTopic && this.publish(entry.tasTopic, entry.ktas);
+    }
+    retrieveIndicatedMach(entry, publish) {
+      entry.indicatedMach = AeroMath.casToMach(entry.iasMps, this.pressure);
+      publish && entry.indicatedMachTopic && this.publish(entry.indicatedMachTopic, entry.indicatedMach);
+    }
+    retrieveIndicatedTas(entry, publish) {
+      entry.indicatedTas = UnitType.MPS.convertTo(AeroMath.casToTas(entry.iasMps, this.pressure, this.temperature), UnitType.KNOT);
+      publish && entry.indicatedTasTopic && this.publish(entry.indicatedTasTopic, entry.indicatedTas);
+    }
+    publishMachToKias(entry) {
+      if (!entry.machToKiasTopic) {
+        return;
+      }
+      const factor = entry.kias < 1 || this.mach === 0 ? 1 / AeroMath.casToMach(1, this.pressure) : entry.kias / this.mach;
+      this.publish(entry.machToKiasTopic, isFinite(factor) ? factor : 1);
+    }
+    publishTasToIas(entry) {
+      if (!entry.tasToIasTopic) {
+        return;
+      }
+      const factor = entry.kias < 1 || entry.ktas === 0 ? 1 / AeroMath.casToTas(1, this.pressure, this.temperature) : entry.kias / entry.ktas;
+      this.publish(entry.tasToIasTopic, isFinite(factor) ? factor : 1);
+    }
+    publishIndicatedMachToKias(entry) {
+      if (!entry.indicatedMachToKiasTopic) {
+        return;
+      }
+      const factor = entry.kias < 1 || entry.indicatedMach === 0 ? 1 / AeroMath.casToMach(1, this.pressure) : entry.kias / entry.indicatedMach;
+      this.publish(entry.indicatedMachToKiasTopic, isFinite(factor) ? factor : 1);
+    }
+    publishIndicatedTasToIas(entry) {
+      if (!entry.indicatedTasToIasTopic) {
+        return;
+      }
+      const factor = entry.kias < 1 || entry.indicatedTas === 0 ? 1 / AeroMath.casToTas(1, this.pressure, this.temperature) : entry.kias / entry.indicatedTas;
+      this.publish(entry.indicatedTasToIasTopic, isFinite(factor) ? factor : 1);
+    }
+  };
+  AdcPublisher.TOPIC_REGEXES = {
+    "ias": /^ias(?:_(0|(?:[1-9])\d*))?$/,
+    "tas": /^tas(?:_(0|(?:[1-9])\d*))?$/,
+    "indicated_mach_number": /^indicated_mach_number(?:_(0|(?:[1-9])\d*))?$/,
+    "indicated_tas": /^indicated_tas(?:_(0|(?:[1-9])\d*))?$/,
+    "mach_to_kias_factor": /^mach_to_kias_factor(?:_(0|(?:[1-9])\d*))?$/,
+    "tas_to_ias_factor": /^tas_to_ias_factor(?:_(0|(?:[1-9])\d*))?$/,
+    "indicated_mach_to_kias_factor": /^indicated_mach_to_kias_factor(?:_(0|(?:[1-9])\d*))?$/,
+    "indicated_tas_to_ias_factor": /^indicated_tas_to_ias_factor(?:_(0|(?:[1-9])\d*))?$/
+  };
+  var AmbientPrecipState;
+  (function(AmbientPrecipState2) {
+    AmbientPrecipState2[AmbientPrecipState2["None"] = 2] = "None";
+    AmbientPrecipState2[AmbientPrecipState2["Rain"] = 4] = "Rain";
+    AmbientPrecipState2[AmbientPrecipState2["Snow"] = 8] = "Snow";
+  })(AmbientPrecipState || (AmbientPrecipState = {}));
+  var AntiIcePublisher = class extends SimVarPublisher {
+    constructor(bus, pacer) {
+      const engineIndexedSimVars = [
+        ["anti_ice_engine_switch_on", { name: "ENG ANTI ICE", type: SimVarValueType.Bool }],
+        ["anti_ice_prop_switch_on", { name: "PROP DEICE SWITCH", type: SimVarValueType.Bool }]
+      ];
+      const simvars = new Map(AntiIcePublisher.nonIndexedSimVars);
+      const engineCount = SimVar.GetSimVarValue("NUMBER OF ENGINES", SimVarValueType.Number);
+      for (const [topic, simvar2] of engineIndexedSimVars) {
+        for (let i = 1; i <= engineCount; i++) {
+          simvars.set(`${topic}_${i}`, {
+            name: `${simvar2.name}:${i}`,
+            type: simvar2.type,
+            map: simvar2.map
+          });
+        }
+      }
+      super(simvars, bus, pacer);
+    }
+  };
+  AntiIcePublisher.nonIndexedSimVars = [
+    ["anti_ice_structural_switch_on", { name: "STRUCTURAL DEICE SWITCH", type: SimVarValueType.Bool }],
+    ["anti_ice_windshield_switch_on", { name: "WINDSHIELD DEICE SWITCH", type: SimVarValueType.Bool }],
+    ["anti_ice_structural_ice_pct", { name: "STRUCTURAL ICE PCT", type: SimVarValueType.Percent }]
+  ];
+  var APLockType;
+  (function(APLockType2) {
+    APLockType2[APLockType2["Heading"] = 0] = "Heading";
+    APLockType2[APLockType2["Nav"] = 1] = "Nav";
+    APLockType2[APLockType2["Alt"] = 2] = "Alt";
+    APLockType2[APLockType2["Bank"] = 3] = "Bank";
+    APLockType2[APLockType2["WingLevel"] = 4] = "WingLevel";
+    APLockType2[APLockType2["Vs"] = 5] = "Vs";
+    APLockType2[APLockType2["Flc"] = 6] = "Flc";
+    APLockType2[APLockType2["Pitch"] = 7] = "Pitch";
+    APLockType2[APLockType2["Approach"] = 8] = "Approach";
+    APLockType2[APLockType2["Backcourse"] = 9] = "Backcourse";
+    APLockType2[APLockType2["Glideslope"] = 10] = "Glideslope";
+    APLockType2[APLockType2["VNav"] = 11] = "VNav";
+  })(APLockType || (APLockType = {}));
+  var APSimVarPublisher = class extends SimVarPublisher {
+    constructor(bus, pacer = void 0) {
+      super(APSimVarPublisher.simvars, bus, pacer);
+    }
+  };
+  APSimVarPublisher.simvars = /* @__PURE__ */ new Map([
+    ["ap_master_status", { name: "AUTOPILOT MASTER", type: SimVarValueType.Bool }],
+    ["ap_yd_status", { name: "AUTOPILOT YAW DAMPER", type: SimVarValueType.Bool }],
+    ["ap_disengage_status", { name: "AUTOPILOT DISENGAGED", type: SimVarValueType.Bool }],
+    ["ap_heading_hold", { name: "AUTOPILOT HEADING LOCK", type: SimVarValueType.Bool }],
+    ["ap_nav_hold", { name: "AUTOPILOT NAV1 LOCK", type: SimVarValueType.Bool }],
+    ["ap_bank_hold", { name: "AUTOPILOT BANK HOLD", type: SimVarValueType.Bool }],
+    ["ap_max_bank_id", { name: "AUTOPILOT MAX BANK ID", type: SimVarValueType.Number }],
+    ["ap_max_bank_value", { name: "AUTOPILOT MAX BANK", type: SimVarValueType.Degree }],
+    ["ap_wing_lvl_hold", { name: "AUTOPILOT WING LEVELER", type: SimVarValueType.Bool }],
+    ["ap_approach_hold", { name: "AUTOPILOT APPROACH HOLD", type: SimVarValueType.Bool }],
+    ["ap_backcourse_hold", { name: "AUTOPILOT BACKCOURSE HOLD", type: SimVarValueType.Bool }],
+    ["ap_vs_hold", { name: "AUTOPILOT VERTICAL HOLD", type: SimVarValueType.Bool }],
+    ["ap_flc_hold", { name: "AUTOPILOT FLIGHT LEVEL CHANGE", type: SimVarValueType.Bool }],
+    ["ap_alt_hold", { name: "AUTOPILOT ALTITUDE LOCK", type: SimVarValueType.Bool }],
+    ["ap_glideslope_hold", { name: "AUTOPILOT GLIDESLOPE HOLD", type: SimVarValueType.Bool }],
+    ["ap_pitch_hold", { name: "AUTOPILOT PITCH HOLD", type: SimVarValueType.Bool }],
+    ["ap_toga_hold", { name: "AUTOPILOT TAKEOFF POWER ACTIVE", type: SimVarValueType.Bool }],
+    ["ap_heading_selected", { name: "AUTOPILOT HEADING LOCK DIR:#index#", type: SimVarValueType.Degree, indexed: true }],
+    ["ap_altitude_selected", { name: "AUTOPILOT ALTITUDE LOCK VAR:#index#", type: SimVarValueType.Feet, indexed: true }],
+    ["ap_pitch_selected", { name: "AUTOPILOT PITCH HOLD REF", type: SimVarValueType.Degree }],
+    ["ap_vs_selected", { name: "AUTOPILOT VERTICAL HOLD VAR:#index#", type: SimVarValueType.FPM, indexed: true }],
+    ["ap_fpa_selected", { name: "L:WT_AP_FPA_Target:#index#", type: SimVarValueType.Degree, indexed: true }],
+    ["ap_ias_selected", { name: "AUTOPILOT AIRSPEED HOLD VAR:#index#", type: SimVarValueType.Knots, indexed: true }],
+    ["ap_mach_selected", { name: "AUTOPILOT MACH HOLD VAR:#index#", type: SimVarValueType.Number, indexed: true }],
+    ["ap_selected_speed_is_mach", { name: "AUTOPILOT MANAGED SPEED IN MACH", type: SimVarValueType.Bool }],
+    ["ap_selected_speed_is_manual", { name: "L:XMLVAR_SpeedIsManuallySet", type: SimVarValueType.Bool }],
+    ["flight_director_bank", { name: "AUTOPILOT FLIGHT DIRECTOR BANK", type: SimVarValueType.Degree }],
+    ["flight_director_pitch", { name: "AUTOPILOT FLIGHT DIRECTOR PITCH", type: SimVarValueType.Degree }],
+    ["flight_director_is_active_1", { name: "AUTOPILOT FLIGHT DIRECTOR ACTIVE:1", type: SimVarValueType.Bool }],
+    ["flight_director_is_active_2", { name: "AUTOPILOT FLIGHT DIRECTOR ACTIVE:2", type: SimVarValueType.Bool }],
+    ["vnav_active", { name: "L:XMLVAR_VNAVButtonValue", type: SimVarValueType.Bool }]
+  ]);
+  var RadioUtils = class {
+    static isNavFrequency(freq) {
+      const freqKhz = Math.round(freq * 1e3);
+      if (freqKhz < 108e3 || freqKhz > 117950) {
+        return false;
+      }
+      return freqKhz % 50 === 0;
+    }
+    static isLocalizerFrequency(freq) {
+      return freq >= 108.1 && freq <= 111.95 && Math.trunc(freq * 10) % 2 === 1;
+    }
+    static isCom833Frequency(freq) {
+      const freqKhz = Math.round(freq * 1e3);
+      if (freqKhz < 118e3 || freqKhz > 136990) {
+        return false;
+      }
+      return RadioUtils.COM_833_ENDINGS.includes(freqKhz % 50);
+    }
+    static isCom25Frequency(freq) {
+      const freqKhz = Math.round(freq * 1e3);
+      if (freqKhz < 118e3 || freqKhz > 136975) {
+        return false;
+      }
+      return freqKhz % 25 === 0;
+    }
+    static isAdfFrequency(freq) {
+      const freqHz = Math.round(freq * 1e3);
+      if (freqHz < 19e4 || freqHz > 1799500) {
+        return false;
+      }
+      return freqHz % 500 === 0;
+    }
+  };
+  RadioUtils.COM_833_ENDINGS = [5, 10, 15, 30, 35, 40];
+  var VorToFrom;
+  (function(VorToFrom2) {
+    VorToFrom2[VorToFrom2["OFF"] = 0] = "OFF";
+    VorToFrom2[VorToFrom2["TO"] = 1] = "TO";
+    VorToFrom2[VorToFrom2["FROM"] = 2] = "FROM";
+  })(VorToFrom || (VorToFrom = {}));
+  var MarkerBeaconState;
+  (function(MarkerBeaconState2) {
+    MarkerBeaconState2[MarkerBeaconState2["Inactive"] = 0] = "Inactive";
+    MarkerBeaconState2[MarkerBeaconState2["Outer"] = 1] = "Outer";
+    MarkerBeaconState2[MarkerBeaconState2["Middle"] = 2] = "Middle";
+    MarkerBeaconState2[MarkerBeaconState2["Inner"] = 3] = "Inner";
+  })(MarkerBeaconState || (MarkerBeaconState = {}));
+  var RadioType;
+  (function(RadioType2) {
+    RadioType2["Com"] = "COM";
+    RadioType2["Nav"] = "NAV";
+    RadioType2["Adf"] = "ADF";
+  })(RadioType || (RadioType = {}));
+  var FrequencyBank;
+  (function(FrequencyBank2) {
+    FrequencyBank2[FrequencyBank2["Active"] = 0] = "Active";
+    FrequencyBank2[FrequencyBank2["Standby"] = 1] = "Standby";
+  })(FrequencyBank || (FrequencyBank = {}));
+  var ComSpacing;
+  (function(ComSpacing2) {
+    ComSpacing2[ComSpacing2["Spacing25Khz"] = 0] = "Spacing25Khz";
+    ComSpacing2[ComSpacing2["Spacing833Khz"] = 1] = "Spacing833Khz";
+  })(ComSpacing || (ComSpacing = {}));
+  var NavProcSimVarPublisher = class extends SimVarPublisher {
+    constructor(bus, pacer = void 0) {
+      super(NavProcSimVarPublisher.simvars, bus, pacer);
+    }
+    static createNavRadioDefinitions(index) {
+      return [
+        [`nav_signal_${index}`, { name: `NAV SIGNAL:${index}`, type: SimVarValueType.Number }],
+        [`nav_obs_${index}`, { name: `NAV OBS:${index}`, type: SimVarValueType.Degree }],
+        [`nav_has_dme_${index}`, { name: `NAV HAS DME:${index}`, type: SimVarValueType.Bool }],
+        [`nav_has_nav_${index}`, { name: `NAV HAS NAV:${index}`, type: SimVarValueType.Bool }],
+        [`nav_cdi_${index}`, { name: `NAV CDI:${index}`, type: SimVarValueType.Number }],
+        [`nav_dme_${index}`, { name: `NAV DME:${index}`, type: SimVarValueType.NM }],
+        [`nav_radial_${index}`, { name: `NAV RADIAL:${index}`, type: SimVarValueType.Degree }],
+        [`nav_radial_error_${index}`, { name: `NAV RADIAL ERROR:${index}`, type: SimVarValueType.Degree }],
+        [`nav_ident_${index}`, { name: `NAV IDENT:${index}`, type: SimVarValueType.String }],
+        [`nav_to_from_${index}`, { name: `NAV TOFROM:${index}`, type: SimVarValueType.Enum }],
+        [`nav_localizer_${index}`, { name: `NAV HAS LOCALIZER:${index}`, type: SimVarValueType.Bool }],
+        [`nav_localizer_crs_${index}`, { name: `NAV LOCALIZER:${index}`, type: SimVarValueType.Number }],
+        [`nav_loc_airport_ident_${index}`, { name: `NAV LOC AIRPORT IDENT:${index}`, type: SimVarValueType.String }],
+        [`nav_loc_runway_designator_${index}`, { name: `NAV LOC RUNWAY DESIGNATOR:${index}`, type: SimVarValueType.Number }],
+        [`nav_loc_runway_number_${index}`, { name: `NAV LOC RUNWAY NUMBER:${index}`, type: SimVarValueType.Number }],
+        [`nav_glideslope_${index}`, { name: `NAV HAS GLIDE SLOPE:${index}`, type: SimVarValueType.Bool }],
+        [`nav_gs_error_${index}`, { name: `NAV GLIDE SLOPE ERROR:${index}`, type: SimVarValueType.Degree }],
+        [`nav_raw_gs_${index}`, { name: `NAV RAW GLIDE SLOPE:${index}`, type: SimVarValueType.Degree }],
+        [`nav_lla_${index}`, { name: `NAV VOR LATLONALT:${index}`, type: SimVarValueType.LLA }],
+        [`nav_dme_lla_${index}`, { name: `NAV DME LATLONALT:${index}`, type: SimVarValueType.LLA }],
+        [`nav_gs_lla_${index}`, { name: `NAV GS LATLONALT:${index}`, type: SimVarValueType.LLA }],
+        [`nav_magvar_${index}`, { name: `NAV MAGVAR:${index}`, type: SimVarValueType.Degree }]
+      ];
+    }
+    static createAdfRadioDefinitions(index) {
+      return [
+        [`adf_signal_${index}`, { name: `ADF SIGNAL:${index}`, type: SimVarValueType.Number }],
+        [`adf_bearing_${index}`, { name: `ADF RADIAL:${index}`, type: SimVarValueType.Degree }],
+        [`adf_lla_${index}`, { name: `ADF LATLONALT:${index}`, type: SimVarValueType.LLA }]
+      ];
+    }
+  };
+  NavProcSimVarPublisher.simvars = new Map([
+    ...NavProcSimVarPublisher.createNavRadioDefinitions(1),
+    ...NavProcSimVarPublisher.createNavRadioDefinitions(2),
+    ...NavProcSimVarPublisher.createNavRadioDefinitions(3),
+    ...NavProcSimVarPublisher.createNavRadioDefinitions(4),
+    ...NavProcSimVarPublisher.createAdfRadioDefinitions(1),
+    ...NavProcSimVarPublisher.createAdfRadioDefinitions(2),
+    ["gps_dtk", { name: "GPS WP DESIRED TRACK", type: SimVarValueType.Degree }],
+    ["gps_xtk", { name: "GPS WP CROSS TRK", type: SimVarValueType.NM }],
+    ["gps_wp", { name: "GPS WP NEXT ID", type: SimVarValueType.NM }],
+    ["gps_wp_bearing", { name: "GPS WP BEARING", type: SimVarValueType.Degree }],
+    ["gps_wp_distance", { name: "GPS WP DISTANCE", type: SimVarValueType.NM }],
+    ["mkr_bcn_state_simvar", { name: "MARKER BEACON STATE", type: SimVarValueType.Number }],
+    ["gps_obs_active_simvar", { name: "GPS OBS ACTIVE", type: SimVarValueType.Bool }],
+    ["gps_obs_value_simvar", { name: "GPS OBS VALUE", type: SimVarValueType.Degree }]
+  ]);
+  var NavSourceType;
+  (function(NavSourceType2) {
+    NavSourceType2[NavSourceType2["Nav"] = 0] = "Nav";
+    NavSourceType2[NavSourceType2["Gps"] = 1] = "Gps";
+    NavSourceType2[NavSourceType2["Adf"] = 2] = "Adf";
+  })(NavSourceType || (NavSourceType = {}));
   var ElectricalPublisher = class extends SimVarPublisher {
     constructor(bus, pacer = void 0) {
       super(ElectricalPublisher.simvars, bus, pacer);
@@ -11987,6 +12934,7 @@
         ["zulu_time", { name: "E:ZULU TIME", type: SimVarValueType.Seconds }],
         ["time_of_day", { name: "E:TIME OF DAY", type: SimVarValueType.Number }],
         ["ground_speed", { name: "GROUND VELOCITY", type: SimVarValueType.Knots }],
+        ["above_ground_height", { name: "PLANE ALT ABOVE GROUND", type: SimVarValueType.Feet }],
         ["inertial_vertical_speed", { name: "VELOCITY WORLD Y", type: SimVarValueType.FPM }]
       ]), this.bus, this.pacer);
       this.needPublish = {
@@ -12128,6 +13076,1194 @@
     GPSSystemSBASState2["Inactive"] = "Inactive";
     GPSSystemSBASState2["Active"] = "Active";
   })(GPSSystemSBASState || (GPSSystemSBASState = {}));
+  var GPSSatComputer = class {
+    constructor(index, bus, ephemerisFile, sbasFile, updateInterval, enabledSBASGroups, syncRole = "none", options) {
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
+      var _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7;
+      this.index = index;
+      this.bus = bus;
+      this.ephemerisFile = ephemerisFile;
+      this.sbasFile = sbasFile;
+      this.updateInterval = updateInterval;
+      this.syncRole = syncRole;
+      this.publisher = this.bus.getPublisher();
+      this.syncPublisher = this.bus.getPublisher();
+      this.stateChangedTopic = `gps_system_state_changed_${this.index}`;
+      this.satStateChangedTopic = `gps_sat_state_changed_${this.index}`;
+      this.satPosCalcTopic = `gps_sat_pos_calculated_${this.index}`;
+      this.sbasStateChangedTopic = `gps_system_sbas_state_changed_${this.index}`;
+      this.pdopTopic = `gps_system_pdop_${this.index}`;
+      this.hdopTopic = `gps_system_hdop_${this.index}`;
+      this.vdopTopic = `gps_system_vdop_${this.index}`;
+      this.channelStateSyncTopic = `gps_system_sync_channel_state_changed_${this.index}`;
+      this.satCalcSyncTopic = `gps_system_sync_sat_calc_${this.index}`;
+      this.satStateSyncTopic = `gps_system_sync_sat_state_changed_${this.index}`;
+      this.resetSyncTopic = `gps_system_sync_reset_${this.index}`;
+      this.stateRequestSyncTopic = `gps_system_sync_state_request_${this.index}`;
+      this.stateResponseSyncTopic = `gps_system_sync_state_response_${this.index}`;
+      this.ephemerisData = {};
+      this.sbasData = [];
+      this.sbasServiceAreas = /* @__PURE__ */ new Map();
+      this.currentAvailableSbasGroups = /* @__PURE__ */ new Set();
+      this.satellites = [];
+      this.publishedSatStates = [];
+      this.channels = [];
+      this.ppos = new GeoPoint(0, 0);
+      this.pposVec = new Float64Array(2);
+      this.lastKnownPosition = new GeoPoint(NaN, NaN);
+      this.distanceFromLastKnownPos = 0;
+      this.altitude = 0;
+      this.simTime = 0;
+      this.previousSimTime = 0;
+      this.lastUpdateTime = 0;
+      this._state = GPSSystemState.Searching;
+      this._sbasState = GPSSystemSBASState.Disabled;
+      this.dops = Vec3Math.create();
+      this._pdop = -1;
+      this._hdop = -1;
+      this._vdop = -1;
+      this.isInit = false;
+      this.needAcquireAndUse = false;
+      this.needSatCalc = false;
+      this.pendingChannelStateUpdates = /* @__PURE__ */ new Map();
+      this.pendingSatStateUpdates = /* @__PURE__ */ new Map();
+      this.almanacProgress = 0;
+      this.lastAlamanacTime = void 0;
+      this._isAlmanacValid = false;
+      this.covarMatrix = [
+        new Float64Array(4),
+        new Float64Array(4),
+        new Float64Array(4),
+        new Float64Array(4)
+      ];
+      this.ephemerisCollectedSatelliteFilter = (sat) => {
+        return GPSSatComputer.EPHEMERIS_COLLECTED_SATELLITE_STATES.has(sat.state.get());
+      };
+      this.losSatelliteFilter = (sat) => {
+        return sat.signalStrength.get() > 0.05 && (this.distanceFromLastKnownPos < 0.0290367 && (this._isAlmanacValid || sat.isCachedEphemerisValid(this.simTime)) || GPSSatComputer.EPHEMERIS_COLLECTED_SATELLITE_STATES.has(sat.state.get()));
+      };
+      this.losSatelliteFilterOmniscient = (sat) => {
+        return sat.signalStrength.get() > 0.05;
+      };
+      this.untrackedSatelliteFilter = (sat) => {
+        return !this.channels.includes(sat) && sat.state.get() !== GPSSatelliteState.Unreachable;
+      };
+      this.satelliteCosts = [];
+      this.satelliteCostCompare = (indexA, indexB) => {
+        return this.satelliteCosts[indexA] - this.satelliteCosts[indexB];
+      };
+      this.collectingDataSatelliteFilter = (sat) => {
+        return sat !== null && GPSSatComputer.COLLECTING_DATA_SATELLITE_STATES.has(sat.state.get());
+      };
+      this.channelCount = Math.max((_a2 = options === null || options === void 0 ? void 0 : options.channelCount) !== null && _a2 !== void 0 ? _a2 : Infinity, 4);
+      this.satInUseMaxCount = SubscribableUtils.toSubscribable((_b = options === null || options === void 0 ? void 0 : options.satInUseMaxCount) !== null && _b !== void 0 ? _b : Infinity, true);
+      this.satInUsePdopTarget = SubscribableUtils.toSubscribable((_c = options === null || options === void 0 ? void 0 : options.satInUsePdopTarget) !== null && _c !== void 0 ? _c : -1, true);
+      this.satInUseOptimumCount = SubscribableUtils.toSubscribable((_d = options === null || options === void 0 ? void 0 : options.satInUseOptimumCount) !== null && _d !== void 0 ? _d : 4, true);
+      this.satelliteTimingOptions = Object.assign({}, options === null || options === void 0 ? void 0 : options.timingOptions);
+      (_e = (_u = this.satelliteTimingOptions).almanacExpireTime) !== null && _e !== void 0 ? _e : _u.almanacExpireTime = 7776e6;
+      (_f = (_v = this.satelliteTimingOptions).ephemerisExpireTime) !== null && _f !== void 0 ? _f : _v.ephemerisExpireTime = 72e5;
+      (_g = (_w = this.satelliteTimingOptions).acquisitionTimeout) !== null && _g !== void 0 ? _g : _w.acquisitionTimeout = 3e4;
+      (_h = (_x = this.satelliteTimingOptions).acquisitionTime) !== null && _h !== void 0 ? _h : _x.acquisitionTime = 3e4;
+      (_j = (_y = this.satelliteTimingOptions).acquisitionTimeRange) !== null && _j !== void 0 ? _j : _y.acquisitionTimeRange = 15e3;
+      (_k = (_z = this.satelliteTimingOptions).acquisitionTimeWithEphemeris) !== null && _k !== void 0 ? _k : _z.acquisitionTimeWithEphemeris = 15e3;
+      (_l = (_0 = this.satelliteTimingOptions).acquisitionTimeRangeWithEphemeris) !== null && _l !== void 0 ? _l : _0.acquisitionTimeRangeWithEphemeris = 5e3;
+      (_m = (_1 = this.satelliteTimingOptions).unreachableExpireTime) !== null && _m !== void 0 ? _m : _1.unreachableExpireTime = 36e5;
+      (_o = (_2 = this.satelliteTimingOptions).ephemerisDownloadTime) !== null && _o !== void 0 ? _o : _2.ephemerisDownloadTime = 3e4;
+      (_p = (_3 = this.satelliteTimingOptions).almanacDownloadTime) !== null && _p !== void 0 ? _p : _3.almanacDownloadTime = 75e4;
+      (_q = (_4 = this.satelliteTimingOptions).sbasEphemerisDownloadTime) !== null && _q !== void 0 ? _q : _4.sbasEphemerisDownloadTime = 60500;
+      (_r = (_5 = this.satelliteTimingOptions).sbasEphemerisDownloadTimeRange) !== null && _r !== void 0 ? _r : _5.sbasEphemerisDownloadTimeRange = 59500;
+      (_s = (_6 = this.satelliteTimingOptions).sbasCorrectionDownloadTime) !== null && _s !== void 0 ? _s : _6.sbasCorrectionDownloadTime = 150500;
+      (_t = (_7 = this.satelliteTimingOptions).sbasCorrectionDownloadTimeRange) !== null && _t !== void 0 ? _t : _7.sbasCorrectionDownloadTimeRange = 149500;
+      this.enabledSBASGroups = "isSubscribableSet" in enabledSBASGroups ? enabledSBASGroups : SetSubject.create(enabledSBASGroups);
+      this.ppos.set(SimVar.GetSimVarValue("PLANE LATITUDE", SimVarValueType.Degree), SimVar.GetSimVarValue("PLANE LONGITUDE", SimVarValueType.Degree));
+      this.altitude = SimVar.GetSimVarValue("PLANE ALTITUDE", SimVarValueType.Meters);
+      this.simTime = (SimVar.GetSimVarValue("E:ABSOLUTE TIME", SimVarValueType.Seconds) - 62135596800) * 1e3;
+      this.bus.getSubscriber().on("gps-position").handle((pos) => {
+        this.ppos.set(pos.lat, pos.long);
+        Vec2Math.set(pos.lat, pos.long, this.pposVec);
+        this.altitude = pos.alt;
+      });
+      this.bus.getSubscriber().on("simTime").handle((time) => this.simTime = time);
+    }
+    get sats() {
+      return this.satellites;
+    }
+    get state() {
+      return this._state;
+    }
+    get sbasState() {
+      return this._sbasState;
+    }
+    get pdop() {
+      return this._pdop;
+    }
+    get hdop() {
+      return this._hdop;
+    }
+    get vdop() {
+      return this._vdop;
+    }
+    addSbasSatellites() {
+      const tempVec = new Float64Array(3);
+      const tempGeoPoint = new GeoPoint(0, 0);
+      const orbitHeight = UnitType.KILOMETER.convertTo(35785, UnitType.GA_RADIAN);
+      for (let i = 0; i < this.sbasData.length; i++) {
+        const sbasDef = this.sbasData[i];
+        this.sbasServiceAreas.set(sbasDef.group, sbasDef.coverage);
+        for (const satDef of sbasDef.constellation) {
+          const sat = new GPSSatellite(satDef.prn, sbasDef.group, void 0, this.satelliteTimingOptions);
+          tempGeoPoint.set(0, satDef.lon);
+          const positionCartesian = Vec3Math.multScalar(tempGeoPoint.toCartesian(tempVec), orbitHeight, tempVec);
+          sat.positionCartesian.set(positionCartesian);
+          this.satellites.push(sat);
+        }
+      }
+    }
+    init() {
+      this.publisher.pub(this.stateChangedTopic, this._state, false, true);
+      this.publisher.pub(this.sbasStateChangedTopic, this._sbasState, false, true);
+      this.publisher.pub(this.pdopTopic, this._pdop, false, true);
+      this.publisher.pub(this.hdopTopic, this._hdop, false, true);
+      this.publisher.pub(this.vdopTopic, this._vdop, false, true);
+      this.loadEphemerisData().then(() => this.loadSbasData()).then(() => {
+        this.publishedSatStates.length = this.satellites.length;
+        this.publishedSatStates.fill(GPSSatelliteState.None);
+        this.channelCount = Math.min(this.channelCount, this.satellites.length);
+        this.channels.length = this.channelCount;
+        this.channels.fill(null);
+        this.isInit = true;
+        if (this.syncRole === "replica") {
+          const sub = this.bus.getSubscriber();
+          sub.on(this.channelStateSyncTopic).handle((data) => {
+            this.pendingChannelStateUpdates.set(data.index, data);
+          });
+          sub.on(this.satCalcSyncTopic).handle(() => {
+            this.needSatCalc = true;
+          });
+          sub.on(this.satStateSyncTopic).handle((data) => {
+            this.pendingSatStateUpdates.set(data.prn, data);
+          });
+          sub.on(this.resetSyncTopic).handle(() => {
+            this.reset();
+          });
+          sub.on(this.stateResponseSyncTopic).handle((response) => {
+            this.needSatCalc = true;
+            for (const channelState of response.channels) {
+              this.pendingChannelStateUpdates.set(channelState.index, channelState);
+            }
+            for (const satState of response.satStates) {
+              this.pendingSatStateUpdates.set(satState.prn, satState);
+            }
+          });
+          this.syncPublisher.pub(this.stateRequestSyncTopic, void 0, true, false);
+        } else if (this.syncRole === "primary") {
+          const sub = this.bus.getSubscriber();
+          sub.on(this.stateRequestSyncTopic).handle(() => {
+            this.syncPublisher.pub(this.stateResponseSyncTopic, {
+              channels: this.channels.map((sat, index) => {
+                return { index, prn: sat === null ? null : sat.prn };
+              }),
+              satStates: this.satellites.map((sat) => {
+                return { prn: sat.prn, state: sat.state.get() };
+              })
+            }, true, false);
+          });
+        }
+        if (this.needAcquireAndUse) {
+          this.needAcquireAndUse = false;
+          this.acquireAndUseSatellites();
+        } else {
+          this.reset();
+        }
+      });
+    }
+    loadEphemerisData() {
+      return new Promise((resolve, reject) => {
+        const request = new XMLHttpRequest();
+        request.onreadystatechange = () => {
+          if (request.readyState === XMLHttpRequest.DONE) {
+            if (request.status === 200) {
+              this.ephemerisData = JSON.parse(request.responseText);
+              for (const prn in this.ephemerisData) {
+                this.satellites.push(new GPSSatellite(parseInt(prn), void 0, this.ephemerisData[prn], this.satelliteTimingOptions));
+              }
+              resolve();
+            } else {
+              reject(`Could not initialize sat computer system with ephemeris data: ${request.responseText}`);
+            }
+          }
+        };
+        request.open("GET", this.ephemerisFile);
+        request.send();
+      });
+    }
+    loadSbasData() {
+      return new Promise((resolve, reject) => {
+        const request = new XMLHttpRequest();
+        request.onreadystatechange = () => {
+          if (request.readyState === XMLHttpRequest.DONE) {
+            if (request.status === 200) {
+              this.sbasData = JSON.parse(request.responseText);
+              this.addSbasSatellites();
+              resolve();
+            } else {
+              reject(`Could not initialize sat computer system with sbas data: ${request.responseText}`);
+            }
+          }
+        };
+        request.open("GET", this.sbasFile);
+        request.send();
+      });
+    }
+    getSatelliteIndexFromPrn(prn) {
+      for (let i = 0; i < this.satellites.length; i++) {
+        if (this.satellites[i].prn === prn) {
+          return i;
+        }
+      }
+      return -1;
+    }
+    calcHorizonAngle() {
+      return Math.acos(6378100 / (6378100 + this.altitude));
+    }
+    syncLastKnownPosition(pos = this.ppos) {
+      this.lastKnownPosition.set(pos);
+    }
+    eraseLastKnownPosition() {
+      this.lastKnownPosition.set(NaN, NaN);
+    }
+    isAlmanacValid(simTime = this.simTime) {
+      return this.lastAlamanacTime !== void 0 && Math.abs(simTime - this.lastAlamanacTime) < this.satelliteTimingOptions.almanacExpireTime;
+    }
+    downloadAlamanac(simTime = this.simTime) {
+      this.almanacProgress = 0;
+      this.lastAlamanacTime = simTime;
+    }
+    eraseAlamanac() {
+      this.almanacProgress = 0;
+      this.lastAlamanacTime = void 0;
+    }
+    eraseCachedEphemeris() {
+      for (let i = 0; i < this.satellites.length; i++) {
+        this.satellites[i].eraseCachedEphemeris();
+      }
+    }
+    acquireAndUseSatellites() {
+      if (this.syncRole === "replica") {
+        return;
+      }
+      if (this.isInit) {
+        this.updateSatellites(this.simTime, 0, true, true);
+      } else {
+        this.needAcquireAndUse = true;
+      }
+    }
+    reset() {
+      this.needAcquireAndUse = false;
+      if (!this.isInit) {
+        return;
+      }
+      for (let i = 0; i < this.channels.length; i++) {
+        this.channels[i] = null;
+      }
+      for (const sat of this.satellites) {
+        const currentState2 = sat.state.get();
+        sat.state.set(GPSSatelliteState.None);
+        if (currentState2 !== GPSSatelliteState.None) {
+          this.publisher.pub(this.satStateChangedTopic, sat, false, false);
+        }
+      }
+      const currentState = this._state;
+      this._state = GPSSystemState.Searching;
+      if (currentState !== GPSSystemState.Searching) {
+        this.publisher.pub(this.stateChangedTopic, GPSSystemState.Searching, false, true);
+      }
+      this.setDop(-1, -1, -1);
+      if (this.syncRole === "primary") {
+        this.syncPublisher.pub(this.resetSyncTopic, void 0, true, false);
+      }
+    }
+    onUpdate() {
+      if (!this.isInit) {
+        return;
+      }
+      const deltaTime = this.simTime - this.previousSimTime;
+      if (this.syncRole !== "replica") {
+        if (deltaTime < 0 || deltaTime > this.updateInterval * 2) {
+          this.previousSimTime = this.simTime;
+          this.lastUpdateTime = this.simTime;
+          return;
+        }
+      }
+      const shouldUpdatePositions = this.syncRole === "replica" ? this.needSatCalc : this.simTime >= this.lastUpdateTime + this.updateInterval;
+      this.needSatCalc = false;
+      this.updateSatellites(this.simTime, deltaTime, shouldUpdatePositions, false);
+    }
+    updateSatellites(simTime, deltaTime, shouldUpdatePositions, forceAcquireAndUse) {
+      var _a2, _b, _c, _d;
+      let numAcquiring = 0;
+      let canApplyDiffCorrections = false;
+      let shouldUpdateDop = shouldUpdatePositions;
+      if (shouldUpdatePositions && this.syncRole === "primary") {
+        (_a2 = this.syncPublisher) === null || _a2 === void 0 ? void 0 : _a2.pub(this.satCalcSyncTopic, void 0, true, false);
+      }
+      if (forceAcquireAndUse) {
+        this.lastKnownPosition.set(this.ppos);
+      }
+      this.distanceFromLastKnownPos = isNaN(this.lastKnownPosition.lat) || isNaN(this.lastKnownPosition.lon) ? Infinity : this.ppos.distance(this.lastKnownPosition);
+      this._isAlmanacValid = this.isAlmanacValid();
+      this.updateAvailableSbasGroups();
+      const enabledSBASGroups = this.enabledSBASGroups.get();
+      for (let i = 0; i < this.satellites.length; i++) {
+        const sat = this.satellites[i];
+        if (shouldUpdatePositions) {
+          sat.computeSatellitePositions(this.simTime);
+          sat.applyProjection(this.ppos, this.altitude);
+        }
+        sat.calculateSignalStrength(this.altitude);
+      }
+      if (this.syncRole === "replica") {
+        for (const update of this.pendingChannelStateUpdates.values()) {
+          const sat = update.prn === null ? null : (_b = this.satellites[this.getSatelliteIndexFromPrn(update.prn)]) !== null && _b !== void 0 ? _b : null;
+          this.assignSatelliteToChannel(update.index, sat);
+        }
+      } else if (shouldUpdatePositions) {
+        this.updateChannelAssignments(forceAcquireAndUse);
+      }
+      this.pendingChannelStateUpdates.clear();
+      for (let i = 0; i < this.satellites.length; i++) {
+        const sat = this.satellites[i];
+        const updatedState = this.syncRole === "replica" ? sat.forceUpdateState(simTime, (_d = (_c = this.pendingSatStateUpdates.get(sat.prn)) === null || _c === void 0 ? void 0 : _c.state) !== null && _d !== void 0 ? _d : sat.state.get()) : sat.updateState(simTime, deltaTime, this.distanceFromLastKnownPos, forceAcquireAndUse);
+        if (updatedState) {
+          shouldUpdateDop = true;
+        }
+        const satState = sat.state.get();
+        if (satState === GPSSatelliteState.DataCollected || satState === GPSSatelliteState.InUse || satState === GPSSatelliteState.InUseDiffApplied) {
+          numAcquiring++;
+          if (sat.areDiffCorrectionsDownloaded && this.currentAvailableSbasGroups.has(sat.sbasGroup)) {
+            canApplyDiffCorrections = true;
+          }
+        } else if (satState === GPSSatelliteState.Acquired) {
+          numAcquiring++;
+        }
+      }
+      this.pendingSatStateUpdates.clear();
+      const newSBASState = canApplyDiffCorrections ? GPSSystemSBASState.Active : enabledSBASGroups.size === 0 ? GPSSystemSBASState.Disabled : GPSSystemSBASState.Inactive;
+      let pdop = this._pdop, hdop = this._hdop, vdop = this._vdop;
+      if (shouldUpdateDop) {
+        if (this.syncRole !== "replica") {
+          [pdop, hdop, vdop] = this.selectSatellites(this.dops);
+        } else if (shouldUpdateDop) {
+          [pdop, hdop, vdop] = this.calculateDop(this.dops);
+        }
+      }
+      let newSystemState = GPSSystemState.Searching;
+      if (pdop >= 0) {
+        newSystemState = canApplyDiffCorrections ? GPSSystemState.DiffSolutionAcquired : GPSSystemState.SolutionAcquired;
+        this.lastKnownPosition.set(this.ppos);
+      } else if (numAcquiring > 0) {
+        newSystemState = GPSSystemState.Acquiring;
+      } else if (this.distanceFromLastKnownPos < 0.0290367) {
+        for (let i = 0; i < this.channels.length; i++) {
+          const sat = this.channels[i];
+          if (sat && sat.state.get() === GPSSatelliteState.None && (this._isAlmanacValid || sat.isCachedEphemerisValid(this.simTime))) {
+            newSystemState = GPSSystemState.Acquiring;
+            break;
+          }
+        }
+      }
+      if (this.syncRole !== "replica") {
+        for (let i = 0; i < this.channels.length; i++) {
+          const sat = this.channels[i];
+          if (sat) {
+            sat.updateDiffCorrectionsApplied(canApplyDiffCorrections);
+          }
+        }
+        this.updateAlmanacState(simTime, deltaTime, forceAcquireAndUse);
+      }
+      this.diffAndPublishSatelliteStates();
+      if (this._state !== newSystemState) {
+        this._state = newSystemState;
+        this.publisher.pub(this.stateChangedTopic, newSystemState, false, true);
+      }
+      if (this._sbasState !== newSBASState) {
+        this._sbasState = newSBASState;
+        this.publisher.pub(this.sbasStateChangedTopic, newSBASState, false, true);
+      }
+      if (shouldUpdatePositions) {
+        this.lastUpdateTime = this.simTime;
+        this.publisher.pub(this.satPosCalcTopic, void 0, false, false);
+      }
+      this.setDop(pdop, hdop, vdop);
+      this.previousSimTime = this.simTime;
+    }
+    updateAvailableSbasGroups() {
+      const enabledSBASGroups = this.enabledSBASGroups.get();
+      for (let i = 0; i < this.sbasData.length; i++) {
+        const sbasData = this.sbasData[i];
+        if (enabledSBASGroups.has(sbasData.group) && Vec2Math.pointWithinPolygon(sbasData.coverage, this.pposVec)) {
+          this.currentAvailableSbasGroups.add(sbasData.group);
+        } else {
+          this.currentAvailableSbasGroups.delete(sbasData.group);
+        }
+      }
+    }
+    updateChannelAssignments(forceAcquireAndUse) {
+      if (this.channelCount >= this.satellites.length) {
+        const end = Math.min(this.channelCount, this.satellites.length);
+        for (let i = 0; i < end; i++) {
+          if (this.channels[i] === null) {
+            this.assignSatelliteToChannel(i, this.satellites[i]);
+          }
+        }
+        return;
+      }
+      const losSatellites = this.satellites.filter(forceAcquireAndUse ? this.losSatelliteFilterOmniscient : this.losSatelliteFilter);
+      let losSatellitesNotTrackedIndexes;
+      let openChannelIndexes;
+      let isTrackingSbasSatelliteInLos = false;
+      if (forceAcquireAndUse) {
+        losSatellitesNotTrackedIndexes = ArrayUtils.range(losSatellites.length);
+        openChannelIndexes = ArrayUtils.range(this.channelCount, this.channelCount - 1, -1);
+      } else {
+        losSatellitesNotTrackedIndexes = [];
+        for (let i = 0; i < losSatellites.length; i++) {
+          const sat = losSatellites[i];
+          if (this.channels.includes(sat)) {
+            if (sat.sbasGroup !== void 0 && this.currentAvailableSbasGroups.has(sat.sbasGroup)) {
+              isTrackingSbasSatelliteInLos = true;
+            }
+          } else {
+            losSatellitesNotTrackedIndexes.push(i);
+          }
+        }
+        openChannelIndexes = [];
+        for (let i = this.channels.length - 1; i >= 0; i--) {
+          const sat = this.channels[i];
+          if (!sat || sat.state.get() === GPSSatelliteState.Unreachable) {
+            openChannelIndexes.push(i);
+          }
+        }
+      }
+      if (openChannelIndexes.length === 0 && this.channels.every(this.ephemerisCollectedSatelliteFilter)) {
+        const trackedLosMatrix = GPSSatComputer.getLosMatrix(this.channels);
+        const trackedCovarMatrix = GPSSatComputer.calculateCovarMatrix(trackedLosMatrix, this.covarMatrix);
+        if (!isFinite(trackedCovarMatrix[0][0]) || !isFinite(trackedCovarMatrix[1][1]) || !isFinite(trackedCovarMatrix[2][2])) {
+          openChannelIndexes.push(Math.trunc(Math.random() * this.channelCount));
+        } else {
+          if (this.channelCount > 4 && !isTrackingSbasSatelliteInLos) {
+            let highestSbasSignal = 0;
+            let highestSbasSignalIndex = -1;
+            for (let i = 0; i < losSatellitesNotTrackedIndexes.length; i++) {
+              const index = losSatellitesNotTrackedIndexes[i];
+              const sat = losSatellites[index];
+              const signalStrength = sat.signalStrength.get();
+              if (sat.sbasGroup !== void 0 && this.currentAvailableSbasGroups.has(sat.sbasGroup) && signalStrength > highestSbasSignal) {
+                highestSbasSignal = signalStrength;
+                highestSbasSignalIndex = index;
+              }
+            }
+            if (highestSbasSignalIndex >= 0) {
+              const sTranspose = this.channels.map(GPSSatComputer.createVec4);
+              GPSSatComputer.calculateDowndateSTranspose(trackedLosMatrix, trackedCovarMatrix, sTranspose);
+              const pDiag = GPSSatComputer.calculateDowndatePDiag(trackedLosMatrix, sTranspose, new Float64Array(trackedLosMatrix.length));
+              GPSSatComputer.calculateSatelliteCosts(sTranspose, pDiag, this.satelliteCosts);
+              let satToReplaceCost = Infinity;
+              let satToReplaceChannelIndex = -1;
+              for (let i = 0; i < this.channels.length; i++) {
+                const cost = this.satelliteCosts[i];
+                if (cost < satToReplaceCost) {
+                  satToReplaceCost = cost;
+                  satToReplaceChannelIndex = i;
+                }
+              }
+              if (satToReplaceChannelIndex >= 0) {
+                this.assignSatelliteToChannel(satToReplaceChannelIndex, losSatellites[highestSbasSignalIndex]);
+              }
+            }
+          }
+          return;
+        }
+      }
+      if (openChannelIndexes.length > 0) {
+        if (openChannelIndexes.length < losSatellitesNotTrackedIndexes.length) {
+          const losMatrix = GPSSatComputer.getLosMatrix(losSatellites);
+          const covarMatrix = GPSSatComputer.calculateCovarMatrix(losMatrix, this.covarMatrix);
+          const sTranspose = losSatellites.map(GPSSatComputer.createVec4);
+          GPSSatComputer.calculateDowndateSTranspose(losMatrix, covarMatrix, sTranspose);
+          const pDiag = GPSSatComputer.calculateDowndatePDiag(losMatrix, sTranspose, new Float64Array(losMatrix.length));
+          GPSSatComputer.calculateSatelliteCosts(sTranspose, pDiag, this.satelliteCosts);
+          if (!isTrackingSbasSatelliteInLos) {
+            let highestSbasCost = -Infinity;
+            let highestSbasCostIndex = -1;
+            for (let i = 0; i < this.satelliteCosts.length; i++) {
+              const sbasGroup = losSatellites[i].sbasGroup;
+              if (sbasGroup !== void 0 && this.currentAvailableSbasGroups.has(sbasGroup)) {
+                const cost = this.satelliteCosts[i];
+                if (cost > highestSbasCost) {
+                  highestSbasCost = cost;
+                  highestSbasCostIndex = i;
+                }
+              }
+            }
+            if (highestSbasCostIndex >= 0) {
+              this.satelliteCosts[highestSbasCostIndex] = Infinity;
+            }
+          }
+          const satelliteIndexes = ArrayUtils.range(losSatellites.length);
+          satelliteIndexes.sort(this.satelliteCostCompare);
+          for (let i = satelliteIndexes.length - 1; i >= 0; i--) {
+            if (losSatellitesNotTrackedIndexes.includes(i)) {
+              const sat = losSatellites[i];
+              const channelIndex = openChannelIndexes.pop();
+              this.assignSatelliteToChannel(channelIndex, sat);
+              if (openChannelIndexes.length === 0) {
+                break;
+              }
+            }
+          }
+        } else {
+          for (let i = 0; i < losSatellitesNotTrackedIndexes.length; i++) {
+            const channelIndex = openChannelIndexes.pop();
+            this.assignSatelliteToChannel(channelIndex, losSatellites[i]);
+          }
+        }
+        if (openChannelIndexes.length > 0) {
+          const untrackedSatellites = this.satellites.filter(this.untrackedSatelliteFilter);
+          let untrackedIndex = 0;
+          while (openChannelIndexes.length > 0 && untrackedIndex < untrackedSatellites.length) {
+            const channelIndex = openChannelIndexes.pop();
+            this.assignSatelliteToChannel(channelIndex, untrackedSatellites[untrackedIndex++]);
+          }
+        }
+      }
+    }
+    assignSatelliteToChannel(channelIndex, sat) {
+      const oldSat = this.channels[channelIndex];
+      if (oldSat === sat) {
+        return;
+      }
+      if (oldSat && oldSat.state.get() !== GPSSatelliteState.Unreachable) {
+        oldSat.setTracked(false);
+      }
+      this.channels[channelIndex] = sat;
+      if (sat !== null) {
+        sat.setTracked(true);
+      }
+      if (this.syncRole === "primary") {
+        this.syncPublisher.pub(this.channelStateSyncTopic, { index: channelIndex, prn: sat === null ? null : sat.prn }, true, false);
+      }
+    }
+    calculateDop(out) {
+      Vec3Math.set(-1, -1, -1, out);
+      const satsInUse = this.satellites.filter(GPSSatComputer.inUseSatelliteFilter);
+      if (satsInUse.length < 4) {
+        return out;
+      }
+      const losMatrix = GPSSatComputer.getLosMatrix(satsInUse);
+      const covarMatrix = GPSSatComputer.calculateCovarMatrix(losMatrix, this.covarMatrix);
+      const varX = covarMatrix[0][0];
+      const varY = covarMatrix[1][1];
+      const varZ = covarMatrix[2][2];
+      if (!isFinite(varX) || !isFinite(varY) || !isFinite(varZ)) {
+        return out;
+      }
+      const horizSumVar = varX + varY;
+      const pdop = Math.sqrt(horizSumVar + varZ);
+      const hdop = Math.sqrt(horizSumVar);
+      const vdop = Math.sqrt(varZ);
+      return Vec3Math.set(pdop, hdop, vdop, out);
+    }
+    selectSatellites(out) {
+      Vec3Math.set(-1, -1, -1, out);
+      const satellitesToUse = this.satellites.filter(GPSSatComputer.readySatelliteFilter);
+      if (satellitesToUse.length < 4) {
+        this.updateSatelliteInUseStates(satellitesToUse, []);
+        return out;
+      }
+      const losMatrix = GPSSatComputer.getLosMatrix(satellitesToUse);
+      const covarMatrix = GPSSatComputer.calculateCovarMatrix(losMatrix, this.covarMatrix);
+      const maxCount = MathUtils.clamp(this.satInUseMaxCount.get(), 4, this.channelCount);
+      if (!VecNMath.isFinite(covarMatrix[0]) || !VecNMath.isFinite(covarMatrix[1]) || !VecNMath.isFinite(covarMatrix[2]) || !VecNMath.isFinite(covarMatrix[3])) {
+        const satellitesToDiscard2 = satellitesToUse.splice(maxCount);
+        this.updateSatelliteInUseStates(satellitesToUse, satellitesToDiscard2);
+        return out;
+      }
+      const satellitesToDiscard = [];
+      const pdopTarget = this.satInUsePdopTarget.get();
+      const optimumCount = Math.max(this.satInUseOptimumCount.get(), 4);
+      const pdopTargetSq = pdopTarget < 0 ? -1 : pdopTarget * pdopTarget;
+      let pdopSq = covarMatrix[0][0] + covarMatrix[1][1] + covarMatrix[2][2];
+      if (satellitesToUse.length > maxCount || satellitesToUse.length > optimumCount && pdopSq < pdopTargetSq) {
+        const sTranspose = satellitesToUse.map(GPSSatComputer.createVec4);
+        GPSSatComputer.calculateDowndateSTranspose(losMatrix, covarMatrix, sTranspose);
+        const pDiag = GPSSatComputer.calculateDowndatePDiag(losMatrix, sTranspose, new Float64Array(losMatrix.length));
+        GPSSatComputer.calculateSatelliteCosts(sTranspose, pDiag, this.satelliteCosts);
+        const satelliteIndexes = ArrayUtils.range(satellitesToUse.length);
+        satelliteIndexes.sort(this.satelliteCostCompare);
+        pdopSq = covarMatrix[0][0] + covarMatrix[1][1] + covarMatrix[2][2];
+        let indexToRemove = satelliteIndexes[0];
+        while (satellitesToUse.length > maxCount || satellitesToUse.length > optimumCount && pdopSq + this.satelliteCosts[indexToRemove] <= pdopTargetSq) {
+          satellitesToDiscard.push(satellitesToUse[indexToRemove]);
+          satellitesToUse.splice(indexToRemove, 1);
+          losMatrix.splice(indexToRemove, 1);
+          satelliteIndexes.length--;
+          for (let i = 0; i < satelliteIndexes.length; i++) {
+            satelliteIndexes[i] = i;
+          }
+          for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 4; j++) {
+              covarMatrix[i][j] += sTranspose[indexToRemove][i] * sTranspose[indexToRemove][j] / pDiag[indexToRemove];
+            }
+          }
+          sTranspose.length--;
+          GPSSatComputer.calculateDowndateSTranspose(losMatrix, covarMatrix, sTranspose);
+          GPSSatComputer.calculateDowndatePDiag(losMatrix, sTranspose, pDiag);
+          GPSSatComputer.calculateSatelliteCosts(sTranspose, pDiag, this.satelliteCosts);
+          satelliteIndexes.sort(this.satelliteCostCompare);
+          pdopSq = covarMatrix[0][0] + covarMatrix[1][1] + covarMatrix[2][2];
+          indexToRemove = satelliteIndexes[0];
+        }
+      }
+      this.updateSatelliteInUseStates(satellitesToUse, satellitesToDiscard);
+      const varX = covarMatrix[0][0];
+      const varY = covarMatrix[1][1];
+      const varZ = covarMatrix[2][2];
+      if (!isFinite(varX) || !isFinite(varY) || !isFinite(varZ)) {
+        return out;
+      }
+      const horizSumVar = varX + varY;
+      const pdop = Math.sqrt(horizSumVar + varZ);
+      const hdop = Math.sqrt(horizSumVar);
+      const vdop = Math.sqrt(varZ);
+      return Vec3Math.set(pdop, hdop, vdop, out);
+    }
+    updateSatelliteInUseStates(satellitesToUse, satellitesToNotUse) {
+      for (let i = 0; i < satellitesToUse.length; i++) {
+        satellitesToUse[i].updateInUse(true);
+      }
+      for (let i = 0; i < satellitesToNotUse.length; i++) {
+        satellitesToNotUse[i].updateInUse(false);
+      }
+    }
+    updateAlmanacState(simTime, deltaTime, forceDownload) {
+      if (forceDownload) {
+        this.lastAlamanacTime = simTime;
+        this.almanacProgress = 0;
+      } else {
+        const isCollectingData = this.channels.some(this.collectingDataSatelliteFilter);
+        if (isCollectingData) {
+          this.almanacProgress += deltaTime / this.satelliteTimingOptions.almanacDownloadTime;
+          if (this.almanacProgress >= 1) {
+            this.lastAlamanacTime = simTime;
+            this.almanacProgress -= 1;
+          }
+        } else {
+          this.almanacProgress = 0;
+        }
+      }
+    }
+    diffAndPublishSatelliteStates() {
+      for (let i = 0; i < this.satellites.length; i++) {
+        const sat = this.satellites[i];
+        const state = sat.state.get();
+        if (this.publishedSatStates[i] !== state) {
+          this.publishedSatStates[i] = state;
+          this.publisher.pub(this.satStateChangedTopic, sat, false, false);
+          if (this.syncRole === "primary") {
+            this.syncPublisher.pub(this.satStateSyncTopic, { prn: sat.prn, state }, true, false);
+          }
+        }
+      }
+    }
+    setDop(pdop, hdop, vdop) {
+      if (this._pdop !== pdop) {
+        this._pdop = pdop;
+        this.publisher.pub(this.pdopTopic, pdop, false, true);
+      }
+      if (this._hdop !== hdop) {
+        this._hdop = hdop;
+        this.publisher.pub(this.hdopTopic, hdop, false, true);
+      }
+      if (this._vdop !== vdop) {
+        this._vdop = vdop;
+        this.publisher.pub(this.vdopTopic, vdop, false, true);
+      }
+    }
+    static getLosMatrix(satellites) {
+      const los = [];
+      for (let i = 0; i < satellites.length; i++) {
+        const [zenith, hour] = satellites[i].position.get();
+        los[i] = Vec3Math.setFromSpherical(1, zenith, hour, new Float64Array(4));
+        los[i][3] = 1;
+      }
+      return los;
+    }
+    static calculateCovarMatrix(los, out) {
+      if (los.length < 4) {
+        for (let i = 0; i < 4; i++) {
+          out[i].fill(NaN, 0, 4);
+        }
+        return out;
+      }
+      const P11 = los.reduce(GPSSatComputer.covarMultiplyFuncs[0][0], 0);
+      const P12 = los.reduce(GPSSatComputer.covarMultiplyFuncs[0][1], 0);
+      const P13 = los.reduce(GPSSatComputer.covarMultiplyFuncs[0][2], 0);
+      const P14 = los.reduce(GPSSatComputer.covarMultiplyFuncs[0][3], 0);
+      const P22 = los.reduce(GPSSatComputer.covarMultiplyFuncs[1][0], 0);
+      const P23 = los.reduce(GPSSatComputer.covarMultiplyFuncs[1][1], 0);
+      const P24 = los.reduce(GPSSatComputer.covarMultiplyFuncs[1][2], 0);
+      const P33 = los.reduce(GPSSatComputer.covarMultiplyFuncs[2][0], 0);
+      const P34 = los.reduce(GPSSatComputer.covarMultiplyFuncs[2][1], 0);
+      const P44 = los.length;
+      const detA = 1 / (P11 * P22 - P12 * P12);
+      const V11 = P22 * detA;
+      const V12 = -P12 * detA;
+      const V22 = P11 * detA;
+      const X11 = V11 * P13 + V12 * P23;
+      const X12 = V11 * P14 + V12 * P24;
+      const X21 = V12 * P13 + V22 * P23;
+      const X22 = V12 * P14 + V22 * P24;
+      const Hi11 = P33 - (P13 * X11 + P23 * X21);
+      const Hi12 = P34 - (P13 * X12 + P23 * X22);
+      const Hi22 = P44 - (P14 * X12 + P24 * X22);
+      const detHi = 1 / (Hi11 * Hi22 - Hi12 * Hi12);
+      const H11 = Hi22 * detHi;
+      const H12 = -Hi12 * detHi;
+      const H22 = Hi11 * detHi;
+      const Z11 = X11 * H11 + X12 * H12;
+      const Z12 = X11 * H12 + X12 * H22;
+      const Z21 = X21 * H11 + X22 * H12;
+      const Z22 = X21 * H12 + X22 * H22;
+      const E11 = V11 + Z11 * X11 + Z12 * X12;
+      const E12 = V12 + Z11 * X21 + Z12 * X22;
+      const E22 = V22 + Z21 * X21 + Z22 * X22;
+      out[0][0] = E11;
+      out[0][1] = E12;
+      out[0][2] = -Z11;
+      out[0][3] = -Z12;
+      out[1][0] = E12;
+      out[1][1] = E22;
+      out[1][2] = -Z21;
+      out[1][3] = -Z22;
+      out[2][0] = -Z11;
+      out[2][1] = -Z21;
+      out[2][2] = H11;
+      out[2][3] = H12;
+      out[3][0] = -Z12;
+      out[3][1] = -Z22;
+      out[3][2] = H12;
+      out[3][3] = H22;
+      return out;
+    }
+    static calculateDowndateSTranspose(los, covar, out) {
+      for (let i = 0; i < los.length; i++) {
+        for (let j = 0; j < 4; j++) {
+          out[i][j] = 0;
+          for (let k = 0; k < 4; k++) {
+            out[i][j] += los[i][k] * covar[k][j];
+          }
+        }
+      }
+      return out;
+    }
+    static calculateDowndatePDiag(los, sTranspose, out) {
+      out.fill(1);
+      for (let i = 0; i < los.length; i++) {
+        for (let j = 0; j < 4; j++) {
+          out[i] -= sTranspose[i][j] * los[i][j];
+        }
+      }
+      return out;
+    }
+    static calculateSatelliteCosts(sTranspose, pDiag, out) {
+      out.length = sTranspose.length;
+      for (let i = 0; i < sTranspose.length; i++) {
+        out[i] = (sTranspose[i][0] * sTranspose[i][0] + sTranspose[i][1] * sTranspose[i][1] + sTranspose[i][2] * sTranspose[i][2]) / pDiag[i];
+      }
+      return out;
+    }
+  };
+  GPSSatComputer.EPHEMERIS_COLLECTED_SATELLITE_STATES = /* @__PURE__ */ new Set([GPSSatelliteState.DataCollected, GPSSatelliteState.InUse, GPSSatelliteState.InUseDiffApplied]);
+  GPSSatComputer.inUseSatelliteFilter = (sat) => {
+    const state = sat.state.get();
+    return state === GPSSatelliteState.InUse || state === GPSSatelliteState.InUseDiffApplied;
+  };
+  GPSSatComputer.readySatelliteFilter = (sat) => {
+    const state = sat.state.get();
+    return state === GPSSatelliteState.DataCollected || state === GPSSatelliteState.InUse || state === GPSSatelliteState.InUseDiffApplied;
+  };
+  GPSSatComputer.createVec4 = () => new Float64Array(4);
+  GPSSatComputer.COLLECTING_DATA_SATELLITE_STATES = /* @__PURE__ */ new Set([
+    GPSSatelliteState.Acquired,
+    GPSSatelliteState.DataCollected,
+    GPSSatelliteState.InUse,
+    GPSSatelliteState.InUseDiffApplied
+  ]);
+  GPSSatComputer.covarMultiplyFuncs = [
+    [0, 1, 2, 3].map((col) => (sum, vec) => sum + vec[0] * vec[col]),
+    [1, 2, 3].map((col) => (sum, vec) => sum + vec[1] * vec[col]),
+    [2, 3].map((col) => (sum, vec) => sum + vec[2] * vec[col])
+  ];
+  var GPSSatellite = class {
+    constructor(prn, sbasGroup, ephemeris, timingOptions) {
+      this.prn = prn;
+      this.sbasGroup = sbasGroup;
+      this.ephemeris = ephemeris;
+      this.timingOptions = timingOptions;
+      this.vec3Cache = [new Float64Array(3), new Float64Array(3), new Float64Array(3), new Float64Array(3), new Float64Array(3)];
+      this.state = Subject.create(GPSSatelliteState.None);
+      this.position = Vec2Subject.create(new Float64Array(2));
+      this.positionCartesian = Vec3Subject.create(new Float64Array(3));
+      this.signalStrength = Subject.create(0);
+      this.isTracked = false;
+      this.hasComputedPosition = false;
+      this._lastEphemerisTime = void 0;
+      this._lastUnreachableTime = void 0;
+      this._areDiffCorrectionsDownloaded = false;
+      this.timeSpentAcquiring = void 0;
+      this.timeToAcquire = void 0;
+      this.timeToDownloadEphemeris = void 0;
+      this.timeToDownloadCorrections = void 0;
+    }
+    get lastEphemerisTime() {
+      return this._lastEphemerisTime;
+    }
+    get lastUnreachableTime() {
+      return this._lastUnreachableTime;
+    }
+    get areDiffCorrectionsDownloaded() {
+      return this._areDiffCorrectionsDownloaded;
+    }
+    computeSatellitePositions(simTime) {
+      const record = this.ephemeris;
+      if (record !== void 0) {
+        const mu = 3986005e8;
+        const omegae_dot = 72921151467e-15;
+        const a = record.sqrtA * record.sqrtA;
+        const n0 = Math.sqrt(mu / (a * a * a));
+        const now = simTime / 1e3;
+        const t = (now - 86400 * 3 + 1735) % 604800;
+        let tk = t - record.toeTimeEphemeris;
+        if (tk > 302400) {
+          tk -= 604800;
+        } else if (tk < -302400) {
+          tk += 604800;
+        }
+        const n = n0 + record.deltaN;
+        const M = record.m0 + n * tk;
+        let E = M;
+        let E_old;
+        let dE;
+        for (let i2 = 1; i2 < 20; i2++) {
+          E_old = E;
+          E = M + record.eEccentricity * Math.sin(E);
+          dE = E - E_old % (2 * Math.PI);
+          if (Math.abs(dE) < 1e-12) {
+            break;
+          }
+        }
+        const sek = Math.sin(E);
+        const cek = Math.cos(E);
+        const OneMinusecosE = 1 - record.eEccentricity * cek;
+        const sq1e2 = Math.sqrt(1 - record.eEccentricity * record.eEccentricity);
+        const tmp_Y = sq1e2 * sek;
+        const tmp_X = cek - record.eEccentricity;
+        const nu = Math.atan2(tmp_Y, tmp_X);
+        const phi = nu + record.omegaS;
+        const s2pk = Math.sin(2 * phi);
+        const c2pk = Math.cos(2 * phi);
+        const u = phi + record.cuc * c2pk + record.cus * s2pk;
+        const suk = Math.sin(u);
+        const cuk = Math.cos(u);
+        const r = a * OneMinusecosE + record.crc * c2pk + record.crs * s2pk;
+        const i = record.i0 + record.idot * tk + record.cic * c2pk + record.cis * s2pk;
+        const sik = Math.sin(i);
+        const cik = Math.cos(i);
+        const Omega_dot = record.omegaLDot - omegae_dot;
+        const Omega = record.omegaL + Omega_dot * tk - omegae_dot * record.toeTimeEphemeris;
+        const sok = Math.sin(Omega);
+        const cok = Math.cos(Omega);
+        const xprime = r * cuk;
+        const yprime = r * suk;
+        const x = xprime * cok - yprime * cik * sok;
+        const y = xprime * sok + yprime * cik * cok;
+        const z = yprime * sik;
+        this.positionCartesian.set(UnitType.METER.convertTo(x, UnitType.GA_RADIAN), UnitType.METER.convertTo(y, UnitType.GA_RADIAN), UnitType.METER.convertTo(z, UnitType.GA_RADIAN));
+      }
+    }
+    applyProjection(ppos, altitude) {
+      const satPos = this.positionCartesian.get();
+      const altRadians = UnitType.METER.convertTo(altitude, UnitType.GA_RADIAN);
+      const pposCartesian = Vec3Math.multScalar(ppos.toCartesian(this.vec3Cache[0]), 1 + altRadians, this.vec3Cache[0]);
+      const delta = Vec3Math.normalize(Vec3Math.sub(satPos, pposCartesian, this.vec3Cache[1]), this.vec3Cache[1]);
+      const zenithAngle = Math.acos(Vec3Math.dot(delta, Vec3Math.normalize(pposCartesian, this.vec3Cache[2])));
+      const satPos0 = Vec3Math.normalize(satPos, this.vec3Cache[1]);
+      const northPole = Vec3Math.set(0, 0, 1, this.vec3Cache[2]);
+      if (Math.abs(zenithAngle) < 1e-8 || Math.abs(zenithAngle - 180) < 1e-8) {
+        this.position.set(zenithAngle, 0);
+      } else {
+        const A = Vec3Math.normalize(Vec3Math.cross(pposCartesian, northPole, this.vec3Cache[3]), this.vec3Cache[3]);
+        const B = Vec3Math.normalize(Vec3Math.cross(pposCartesian, satPos0, this.vec3Cache[4]), this.vec3Cache[4]);
+        const signBz = B[2] >= 0 ? 1 : -1;
+        const hourAngle = Math.acos(Vec3Math.dot(A, B)) * signBz;
+        this.position.set(zenithAngle, -hourAngle);
+      }
+      this.hasComputedPosition = true;
+    }
+    calculateSignalStrength(altitude) {
+      if (this.hasComputedPosition) {
+        const maxZenithAngle = GPSSatellite.calcHorizonAngle(altitude) + Math.PI / 2;
+        const signalStrength = Math.max(0, 1 - this.position.get()[0] / maxZenithAngle);
+        this.signalStrength.set(signalStrength);
+      }
+    }
+    static calcHorizonAngle(altitude) {
+      return Math.acos(6378100 / (6378100 + Math.max(altitude, 0)));
+    }
+    isCachedEphemerisValid(simTime) {
+      return this._lastEphemerisTime !== void 0 && Math.abs(simTime - this._lastEphemerisTime) < this.timingOptions.ephemerisExpireTime;
+    }
+    eraseCachedEphemeris() {
+      this._lastEphemerisTime = void 0;
+    }
+    setTracked(tracked) {
+      if (this.isTracked === tracked) {
+        return;
+      }
+      this.isTracked = tracked;
+      this.timeSpentAcquiring = void 0;
+      this.timeToAcquire = void 0;
+      this.timeToDownloadEphemeris = void 0;
+      this._areDiffCorrectionsDownloaded = false;
+      this.timeToDownloadCorrections = void 0;
+      if (tracked || this.state.get() !== GPSSatelliteState.Unreachable) {
+        this.state.set(GPSSatelliteState.None);
+      }
+    }
+    updateState(simTime, deltaTime, distanceFromLastKnownPos, forceAcquireAndUse) {
+      const stateChanged = this.isTracked ? this.updateStateTracked(simTime, deltaTime, distanceFromLastKnownPos, forceAcquireAndUse) : this.updateStateUntracked(simTime);
+      switch (this.state.get()) {
+        case GPSSatelliteState.Unreachable:
+          if (this.isTracked) {
+            this._lastUnreachableTime = simTime;
+          }
+          break;
+        case GPSSatelliteState.DataCollected:
+        case GPSSatelliteState.InUse:
+        case GPSSatelliteState.InUseDiffApplied:
+          this._lastEphemerisTime = simTime;
+          break;
+      }
+      return stateChanged;
+    }
+    updateStateTracked(simTime, deltaTime, distanceFromLastKnownPos, forceAcquireAndUse) {
+      const reachable = this.signalStrength.get() > 0.05;
+      if (forceAcquireAndUse) {
+        const state = this.state.get();
+        if (reachable) {
+          if (this.sbasGroup !== void 0) {
+            this._areDiffCorrectionsDownloaded = true;
+            this.timeToDownloadCorrections = void 0;
+          }
+          if (state !== GPSSatelliteState.DataCollected) {
+            this.timeSpentAcquiring = void 0;
+            this.timeToAcquire = void 0;
+            this.timeToDownloadEphemeris = void 0;
+            this.state.set(GPSSatelliteState.DataCollected);
+            return true;
+          }
+        } else {
+          if (state !== GPSSatelliteState.Unreachable) {
+            this.timeSpentAcquiring = void 0;
+            this.timeToAcquire = void 0;
+            this.timeToDownloadEphemeris = void 0;
+            this._areDiffCorrectionsDownloaded = false;
+            this.timeToDownloadCorrections = void 0;
+            this.state.set(GPSSatelliteState.Unreachable);
+            return true;
+          }
+        }
+      } else {
+        switch (this.state.get()) {
+          case GPSSatelliteState.None:
+            if (this.timeSpentAcquiring === void 0) {
+              this.timeSpentAcquiring = 0;
+            }
+            this.timeSpentAcquiring += deltaTime;
+            if (reachable) {
+              if (this.timeToAcquire === void 0) {
+                this.timeToAcquire = distanceFromLastKnownPos < 580734e-9 && this.isCachedEphemerisValid(simTime) ? this.timingOptions.acquisitionTimeWithEphemeris + (Math.random() - 0.5) * this.timingOptions.acquisitionTimeRangeWithEphemeris : this.timingOptions.acquisitionTime + (Math.random() - 0.5) * this.timingOptions.acquisitionTimeRange;
+              }
+              this.timeToAcquire -= deltaTime;
+              if (this.timeToAcquire <= 0) {
+                this.timeSpentAcquiring = void 0;
+                this.timeToAcquire = void 0;
+                if (this.isCachedEphemerisValid(simTime)) {
+                  this.state.set(GPSSatelliteState.DataCollected);
+                } else {
+                  this.state.set(GPSSatelliteState.Acquired);
+                }
+                return true;
+              }
+            } else {
+              this.timeToAcquire = void 0;
+              if (this.timeSpentAcquiring >= this.timingOptions.acquisitionTimeout) {
+                this.timeSpentAcquiring = void 0;
+                this.state.set(GPSSatelliteState.Unreachable);
+                return true;
+              }
+            }
+            break;
+          case GPSSatelliteState.Unreachable:
+            if (this._lastUnreachableTime === void 0) {
+              this._lastUnreachableTime = simTime;
+            } else if (Math.abs(simTime - this._lastUnreachableTime) >= this.timingOptions.unreachableExpireTime) {
+              this._lastUnreachableTime = void 0;
+              this.state.set(GPSSatelliteState.None);
+              return true;
+            }
+            break;
+          case GPSSatelliteState.Acquired:
+            if (!reachable) {
+              this.timeToDownloadEphemeris = void 0;
+              this._areDiffCorrectionsDownloaded = false;
+              this.timeToDownloadCorrections = void 0;
+              this.state.set(GPSSatelliteState.None);
+              return true;
+            } else {
+              if (this.timeToDownloadEphemeris === void 0) {
+                this.timeToDownloadEphemeris = this.sbasGroup === void 0 ? this.timingOptions.ephemerisDownloadTime : this.timingOptions.sbasEphemerisDownloadTime + (Math.random() - 0.5) * this.timingOptions.sbasEphemerisDownloadTimeRange;
+              }
+              this.timeToDownloadEphemeris -= deltaTime;
+              this.updateSbasCorrectionsDownload(deltaTime);
+              if (this.timeToDownloadEphemeris <= 0) {
+                this.timeToDownloadEphemeris = void 0;
+                this.state.set(GPSSatelliteState.DataCollected);
+                return true;
+              }
+            }
+            break;
+          case GPSSatelliteState.DataCollected:
+            if (!reachable) {
+              this._areDiffCorrectionsDownloaded = false;
+              this.timeToDownloadCorrections = void 0;
+              this.state.set(GPSSatelliteState.None);
+              return true;
+            } else {
+              this.updateSbasCorrectionsDownload(deltaTime);
+            }
+            break;
+          case GPSSatelliteState.InUse:
+            if (!reachable) {
+              this._areDiffCorrectionsDownloaded = false;
+              this.timeToDownloadCorrections = void 0;
+              this.state.set(GPSSatelliteState.None);
+              return true;
+            } else {
+              this.updateSbasCorrectionsDownload(deltaTime);
+            }
+            break;
+          case GPSSatelliteState.InUseDiffApplied:
+            if (!reachable) {
+              this._areDiffCorrectionsDownloaded = false;
+              this.timeToDownloadCorrections = void 0;
+              this.state.set(GPSSatelliteState.None);
+              return true;
+            } else {
+              this.updateSbasCorrectionsDownload(deltaTime);
+            }
+            break;
+        }
+      }
+      return false;
+    }
+    updateSbasCorrectionsDownload(deltaTime) {
+      if (this.sbasGroup === void 0 || this._areDiffCorrectionsDownloaded) {
+        return;
+      }
+      if (this.timeToDownloadCorrections === void 0) {
+        this.timeToDownloadCorrections = this.timingOptions.sbasCorrectionDownloadTime + (Math.random() - 0.5) * this.timingOptions.sbasCorrectionDownloadTimeRange;
+      }
+      this.timeToDownloadCorrections -= deltaTime;
+      if (this.timeToDownloadCorrections <= 0) {
+        this._areDiffCorrectionsDownloaded = true;
+        this.timeToDownloadCorrections = void 0;
+      }
+    }
+    updateStateUntracked(simTime) {
+      if (this.state.get() === GPSSatelliteState.Unreachable) {
+        if (this._lastUnreachableTime === void 0) {
+          this._lastUnreachableTime = simTime;
+        } else if (Math.abs(simTime - this._lastUnreachableTime) >= this.timingOptions.unreachableExpireTime) {
+          this._lastUnreachableTime = void 0;
+          this.state.set(GPSSatelliteState.None);
+          return true;
+        }
+      }
+      return false;
+    }
+    forceUpdateState(simTime, state) {
+      switch (state) {
+        case GPSSatelliteState.Unreachable:
+          this.timeSpentAcquiring = void 0;
+          this.timeToAcquire = void 0;
+          if (this.isTracked) {
+            this._lastUnreachableTime = simTime;
+          }
+        case GPSSatelliteState.None:
+          this.timeToDownloadEphemeris = void 0;
+          this._areDiffCorrectionsDownloaded = false;
+          this.timeToDownloadCorrections = void 0;
+          break;
+        case GPSSatelliteState.DataCollected:
+        case GPSSatelliteState.InUse:
+        case GPSSatelliteState.InUseDiffApplied:
+          this.timeToDownloadEphemeris = void 0;
+          this._lastEphemerisTime = simTime;
+          break;
+      }
+      if (this.state.get() !== state) {
+        this.state.set(state);
+        return true;
+      } else {
+        return false;
+      }
+    }
+    updateInUse(inUse) {
+      if (inUse) {
+        if (this.state.get() === GPSSatelliteState.DataCollected) {
+          this.state.set(GPSSatelliteState.InUse);
+          return true;
+        }
+      } else {
+        switch (this.state.get()) {
+          case GPSSatelliteState.InUse:
+          case GPSSatelliteState.InUseDiffApplied:
+            this.state.set(GPSSatelliteState.DataCollected);
+            return true;
+        }
+      }
+      return false;
+    }
+    updateDiffCorrectionsApplied(apply) {
+      switch (this.state.get()) {
+        case GPSSatelliteState.InUse:
+          if (apply) {
+            this.state.set(GPSSatelliteState.InUseDiffApplied);
+            return true;
+          }
+          break;
+        case GPSSatelliteState.InUseDiffApplied:
+          if (!apply) {
+            this.state.set(GPSSatelliteState.InUse);
+            return true;
+          }
+          break;
+      }
+      return false;
+    }
+  };
   var MinimumsMode;
   (function(MinimumsMode2) {
     MinimumsMode2[MinimumsMode2["OFF"] = 0] = "OFF";
@@ -12214,6 +14350,30 @@
   var Wait = class {
     static awaitDelay(delay) {
       return new Promise((resolve) => setTimeout(() => resolve(), delay));
+    }
+    static awaitFrames(count, glassCockpitRefresh = false) {
+      let elapsedFrameCount = 0;
+      if (glassCockpitRefresh) {
+        return new Promise((resolve) => {
+          const callback = () => {
+            if (++elapsedFrameCount > count) {
+              resolve();
+            } else {
+              requestAnimationFrame(callback);
+            }
+          };
+          requestAnimationFrame(callback);
+        });
+      } else {
+        return new Promise((resolve) => {
+          const id = setInterval(() => {
+            if (++elapsedFrameCount > count) {
+              clearInterval(id);
+              resolve();
+            }
+          }, 0);
+        });
+      }
     }
     static awaitCondition(predicate, interval = 0, timeout = 0) {
       const t0 = Date.now();
@@ -13811,7 +15971,8 @@
       "rect": true,
       "stop": true,
       "svg": true,
-      "text": true
+      "text": true,
+      "tspan": true
     };
     function Fragment2(props) {
       return props.children;
@@ -13838,6 +15999,18 @@
                     element.classList.add(modifiedKey);
                   } else {
                     element.classList.remove(modifiedKey);
+                  }
+                }, true);
+              } else if (key === "style" && typeof prop === "object" && "isSubscribableMap" in prop) {
+                prop.sub((map, eventType, modifiedKey, modifiedValue) => {
+                  switch (eventType) {
+                    case SubscribableMapEventType.Added:
+                    case SubscribableMapEventType.Changed:
+                      element.style.setProperty(modifiedKey, modifiedValue);
+                      break;
+                    case SubscribableMapEventType.Deleted:
+                      element.style.setProperty(modifiedKey, null);
+                      break;
                   }
                 }, true);
               } else if (typeof prop === "object" && "isSubscribable" in prop) {
@@ -13899,15 +16072,18 @@
           props.children = children;
         }
         if (typeof type === "function" && type.name === Fragment2.name) {
-          let childNodes = type(props);
-          while (childNodes !== null && childNodes.length === 1 && Array.isArray(childNodes[0])) {
-            childNodes = childNodes[0];
+          let fragmentChildren = type(props);
+          while (fragmentChildren && fragmentChildren.length === 1 && Array.isArray(fragmentChildren[0])) {
+            fragmentChildren = fragmentChildren[0];
           }
           vnode = {
             instance: null,
             props,
-            children: childNodes
+            children: null
           };
+          if (fragmentChildren) {
+            vnode.children = createChildNodes(vnode, fragmentChildren);
+          }
         } else {
           let instance;
           const pluginSystem = window._pluginSystem;
@@ -14223,6 +16399,72 @@
       return record;
     }
     FSComponent2.addCssClassesToRecord = addCssClassesToRecord;
+    function bindStyleMap(mapToBind, stylesToSubscribe, reservedStyles) {
+      const reservedStyleSet = new Set(reservedStyles);
+      if (stylesToSubscribe.isSubscribableMap === true) {
+        return bindStyleMapToSubscribableMap(mapToBind, stylesToSubscribe, reservedStyleSet);
+      } else if (stylesToSubscribe instanceof ObjectSubject) {
+        return bindStyleMapToObjectSubject(mapToBind, stylesToSubscribe, reservedStyleSet);
+      } else {
+        return bindStyleMapToRecord(mapToBind, stylesToSubscribe, reservedStyleSet);
+      }
+    }
+    FSComponent2.bindStyleMap = bindStyleMap;
+    function bindStyleMapToSubscribableMap(mapToBind, stylesToSubscribe, reservedStyleSet) {
+      if (reservedStyleSet.size === 0) {
+        return stylesToSubscribe.pipe(mapToBind);
+      } else {
+        return stylesToSubscribe.sub((set, type, key, value) => {
+          if (reservedStyleSet.has(key)) {
+            return;
+          }
+          switch (type) {
+            case SubscribableMapEventType.Added:
+            case SubscribableMapEventType.Changed:
+              mapToBind.setValue(key, value);
+              break;
+            case SubscribableMapEventType.Deleted:
+              mapToBind.delete(key);
+              break;
+          }
+        }, true);
+      }
+    }
+    function bindStyleMapToObjectSubject(mapToBind, stylesToSubscribe, reservedStyleSet) {
+      return stylesToSubscribe.sub((obj, style, value) => {
+        if (reservedStyleSet.has(style)) {
+          return;
+        }
+        if (value) {
+          mapToBind.setValue(style, value);
+        } else {
+          mapToBind.delete(style);
+        }
+      }, true);
+    }
+    function bindStyleMapToRecord(mapToBind, stylesToSubscribe, reservedStyleSet) {
+      const subs = [];
+      for (const style in stylesToSubscribe) {
+        if (reservedStyleSet.has(style)) {
+          continue;
+        }
+        const value = stylesToSubscribe[style];
+        if (typeof value === "object") {
+          subs.push(value.sub((styleValue) => {
+            if (styleValue) {
+              mapToBind.setValue(style, styleValue);
+            } else {
+              mapToBind.delete(style);
+            }
+          }, true));
+        } else if (value) {
+          mapToBind.setValue(style, value);
+        } else {
+          mapToBind.delete(style);
+        }
+      }
+      return subs;
+    }
     function shallowDestroy(root) {
       FSComponent2.visitNodes(root, (node) => {
         if (node !== root && node.instance instanceof DisplayComponent) {
@@ -14319,7 +16561,7 @@
       this.positionRadiusInhibitTimer = new DebounceTimer();
       this.processPendingPositionRadius = () => {
         if (this.isPositionRadiusPending) {
-          Coherent.call("SET_MAP_PARAMS", this.uid, this.pos, this.radius, 1);
+          Coherent.call("SET_MAP_PARAMS", this.uid, this.pos, this.radius);
         }
         if (--this.positionRadiusInhibitFramesRemaining > 0) {
           this.positionRadiusInhibitTimer.schedule(this.processPendingPositionRadius, 0);
@@ -14352,7 +16594,7 @@
           this.resolutionSub = this.resolution.sub(this.resolutionHandler, true, pause);
           this.isoLinesSub = this.isoLines.sub(this.isoLinesHandler, true, pause);
           if (this.modeFlags !== 4) {
-            Coherent.call("SET_MAP_PARAMS", this.uid, this.pos, this.radius, 1);
+            Coherent.call("SET_MAP_PARAMS", this.uid, this.pos, this.radius);
           }
           this.props.onBoundCallback && this.props.onBoundCallback(this);
         }
@@ -14463,7 +16705,7 @@
         if (this.positionRadiusInhibitFramesRemaining > 0) {
           this.isPositionRadiusPending = true;
         } else {
-          Coherent.call("SET_MAP_PARAMS", this.uid, this.pos, this.radius, 1);
+          Coherent.call("SET_MAP_PARAMS", this.uid, this.pos, this.radius);
         }
       }
     }
@@ -15069,1086 +17311,598 @@
   HorizonProjection.geoPointCache = [new GeoPoint(0, 0)];
   HorizonProjection.relativeVec3Cache = [Vec3Math.create()];
   HorizonProjection.cameraRelativeVec3Cache = [Vec3Math.create()];
-  var MapLayer = class extends DisplayComponent {
+  var FlightPathLegRenderPart;
+  (function(FlightPathLegRenderPart2) {
+    FlightPathLegRenderPart2[FlightPathLegRenderPart2["None"] = 0] = "None";
+    FlightPathLegRenderPart2[FlightPathLegRenderPart2["Ingress"] = 1] = "Ingress";
+    FlightPathLegRenderPart2[FlightPathLegRenderPart2["Base"] = 2] = "Base";
+    FlightPathLegRenderPart2[FlightPathLegRenderPart2["Egress"] = 4] = "Egress";
+    FlightPathLegRenderPart2[FlightPathLegRenderPart2["All"] = 7] = "All";
+  })(FlightPathLegRenderPart || (FlightPathLegRenderPart = {}));
+  var AbstractFlightPathLegRenderer = class {
+    constructor() {
+      this.tempVector = FlightPathUtils.createEmptyCircleVector();
+    }
+    render(leg, context, streamStack, partsToRender, ...args) {
+      const legCalc = leg.calculated;
+      if (!legCalc || !BitFlags.isAny(partsToRender, FlightPathLegRenderPart.Ingress | FlightPathLegRenderPart.Base | FlightPathLegRenderPart.Egress)) {
+        return;
+      }
+      const excludeIngress = !BitFlags.isAll(partsToRender, FlightPathLegRenderPart.Ingress);
+      const excludeBase = !BitFlags.isAll(partsToRender, FlightPathLegRenderPart.Base);
+      const excludeEgress = !BitFlags.isAll(partsToRender, FlightPathLegRenderPart.Egress);
+      let mainVectors = legCalc.ingressToEgress;
+      let mainVectorStartIndex = 0;
+      let mainVectorEndIndex = legCalc.ingressToEgress.length;
+      if (excludeIngress || excludeEgress) {
+        mainVectors = legCalc.flightPath;
+        mainVectorEndIndex = excludeEgress || legCalc.egressJoinIndex < 0 || legCalc.egress.length === 0 ? legCalc.flightPath.length : legCalc.egressJoinIndex;
+      }
+      if (!excludeIngress) {
+        for (let i = 0; i < legCalc.ingress.length; i++) {
+          this.renderVector(legCalc.ingress[i], true, false, leg, context, streamStack, ...args);
+        }
+        if (excludeEgress && !excludeBase) {
+          mainVectorStartIndex = Math.max(0, legCalc.ingressJoinIndex);
+          const lastIngressVector = legCalc.ingress[legCalc.ingress.length - 1];
+          const ingressJoinVector = legCalc.flightPath[legCalc.ingressJoinIndex];
+          if (lastIngressVector && ingressJoinVector) {
+            const ingressEnd = AbstractFlightPathLegRenderer.geoPointCache[0].set(lastIngressVector.endLat, lastIngressVector.endLon);
+            const vectorEnd = AbstractFlightPathLegRenderer.geoPointCache[1].set(ingressJoinVector.endLat, ingressJoinVector.endLon);
+            if (!ingressEnd.equals(vectorEnd)) {
+              const ingressJoinVectorCircle = FlightPathUtils.setGeoCircleFromVector(ingressJoinVector, AbstractFlightPathLegRenderer.geoCircleCache[0]);
+              FlightPathUtils.setCircleVector(this.tempVector, ingressJoinVectorCircle, ingressEnd, vectorEnd, ingressJoinVector.flags);
+              this.renderVector(this.tempVector, false, false, leg, context, streamStack, ...args);
+            }
+            mainVectorStartIndex++;
+          }
+        }
+      }
+      if (!excludeBase) {
+        const len = Math.min(mainVectorEndIndex, mainVectors.length);
+        for (let i = mainVectorStartIndex; i < len; i++) {
+          this.renderVector(mainVectors[i], false, false, leg, context, streamStack, ...args);
+        }
+      }
+      if (!excludeEgress) {
+        if (excludeIngress && !excludeBase) {
+          const firstEgressVector = legCalc.egress[0];
+          const egressJoinVector = legCalc.flightPath[legCalc.egressJoinIndex];
+          if (firstEgressVector && egressJoinVector) {
+            const egressStart = AbstractFlightPathLegRenderer.geoPointCache[0].set(firstEgressVector.startLat, firstEgressVector.startLon);
+            const egressJoinVectorStart = AbstractFlightPathLegRenderer.geoPointCache[1].set(egressJoinVector.startLat, egressJoinVector.startLon);
+            if (!egressStart.equals(egressJoinVectorStart)) {
+              const egressJoinVectorCircle = FlightPathUtils.setGeoCircleFromVector(egressJoinVector, AbstractFlightPathLegRenderer.geoCircleCache[0]);
+              FlightPathUtils.setCircleVector(this.tempVector, egressJoinVectorCircle, egressJoinVectorStart, egressStart, egressJoinVector.flags);
+              this.renderVector(this.tempVector, false, false, leg, context, streamStack, ...args);
+            }
+          }
+        }
+        for (let i = 0; i < legCalc.egress.length; i++) {
+          this.renderVector(legCalc.egress[i], false, true, leg, context, streamStack, ...args);
+        }
+      }
+    }
+  };
+  AbstractFlightPathLegRenderer.geoPointCache = [new GeoPoint(0, 0), new GeoPoint(0, 0)];
+  AbstractFlightPathLegRenderer.geoCircleCache = [new GeoCircle(new Float64Array(3), 0)];
+  var AbstractFlightPathPlanRenderer = class {
+    constructor(renderOrder = "forward", renderActiveLegLast = true) {
+      this.renderOrder = renderOrder;
+      this.renderActiveLegLast = renderActiveLegLast;
+    }
+    render(plan, startIndex, endIndex, context, streamStack, ...args) {
+      startIndex !== null && startIndex !== void 0 ? startIndex : startIndex = 0;
+      endIndex !== null && endIndex !== void 0 ? endIndex : endIndex = plan.length - 1;
+      const activeLegIndex = plan.activeLateralLeg < plan.length ? plan.activeLateralLeg : -1;
+      const activeLeg = plan.activeLateralLeg < plan.length ? plan.getLeg(plan.activeLateralLeg) : void 0;
+      const isReverse = this.renderOrder === "reverse";
+      if (isReverse) {
+        const oldEndIndex = endIndex;
+        endIndex = startIndex;
+        startIndex = oldEndIndex;
+      }
+      let index = startIndex;
+      const delta = isReverse ? -1 : 1;
+      for (const leg of plan.legs(isReverse, startIndex)) {
+        if ((index - endIndex) * delta > 0) {
+          break;
+        }
+        if (this.renderActiveLegLast && index === activeLegIndex) {
+          index += delta;
+          continue;
+        }
+        this.renderLeg(leg, plan, activeLeg, index, activeLegIndex, context, streamStack, ...args);
+        index += delta;
+      }
+      if (this.renderActiveLegLast && activeLeg) {
+        this.renderLeg(activeLeg, plan, activeLeg, activeLegIndex, activeLegIndex, context, streamStack, ...args);
+      }
+    }
+  };
+  var AbstractCssTransform = class {
+    constructor(initialParams) {
+      this.params = new Float64Array(initialParams);
+      this.cachedParams = new Float64Array(initialParams);
+    }
+    resolve() {
+      if (this.stringValue !== void 0 && VecNMath.equals(this.params, this.cachedParams)) {
+        return this.stringValue;
+      }
+      VecNMath.copy(this.params, this.cachedParams);
+      this.stringValue = this.buildString(this.params);
+      return this.stringValue;
+    }
+  };
+  var CssMatrixTransform = class extends AbstractCssTransform {
+    constructor() {
+      super(CssMatrixTransform.DEFAULT_PARAMS);
+    }
+    set(arg1, skewY, skewX, scaleY, translateX, translateY) {
+      let scaleX;
+      if (typeof arg1 === "number") {
+        scaleX = arg1;
+      } else {
+        [scaleX, skewX, skewY, scaleY, translateX, translateY] = arg1.getParameters();
+      }
+      this.params[0] = scaleX;
+      this.params[1] = skewY;
+      this.params[2] = skewX;
+      this.params[3] = scaleY;
+      this.params[4] = translateX;
+      this.params[5] = translateY;
+    }
+    buildString(params) {
+      return `matrix(${params.join(", ")})`;
+    }
+  };
+  CssMatrixTransform.DEFAULT_PARAMS = [1, 0, 0, 1, 0, 0];
+  var CssRotateTransform = class extends AbstractCssTransform {
+    constructor(unit) {
+      super(CssRotateTransform.DEFAULT_PARAMS);
+      this.unit = unit;
+    }
+    set(angle, precision = 0) {
+      this.params[0] = precision === 0 ? angle : MathUtils.round(angle, precision);
+    }
+    buildString(params) {
+      return `rotate(${params[0]}${this.unit})`;
+    }
+  };
+  CssRotateTransform.DEFAULT_PARAMS = [0];
+  var CssRotate3dTransform = class extends AbstractCssTransform {
+    constructor(unit) {
+      super(CssRotate3dTransform.DEFAULT_PARAMS);
+      this.unit = unit;
+    }
+    set(x, y, z, angle, precision = 0) {
+      this.params[0] = x;
+      this.params[1] = y;
+      this.params[2] = z;
+      this.params[3] = precision === 0 ? angle : MathUtils.round(angle, precision);
+    }
+    buildString(params) {
+      return `rotate3d(${params[0]}, ${params[1]}, ${params[2]}, ${params[3]}${this.unit})`;
+    }
+  };
+  CssRotate3dTransform.DEFAULT_PARAMS = [0, 0, 1, 0];
+  var CssTranslateXTransform = class extends AbstractCssTransform {
+    constructor(unit) {
+      super(CssTranslateXTransform.DEFAULT_PARAMS);
+      this.unit = unit;
+    }
+    set(x, precision = 0) {
+      this.params[0] = precision === 0 ? x : MathUtils.round(x, precision);
+    }
+    buildString(params) {
+      return `translateX(${params[0]}${this.unit})`;
+    }
+  };
+  CssTranslateXTransform.DEFAULT_PARAMS = [0];
+  var CssTranslateYTransform = class extends AbstractCssTransform {
+    constructor(unit) {
+      super(CssTranslateYTransform.DEFAULT_PARAMS);
+      this.unit = unit;
+    }
+    set(y, precision = 0) {
+      this.params[0] = precision === 0 ? y : MathUtils.round(y, precision);
+    }
+    buildString(params) {
+      return `translateY(${params[0]}${this.unit})`;
+    }
+  };
+  CssTranslateYTransform.DEFAULT_PARAMS = [0];
+  var CssTranslateZTransform = class extends AbstractCssTransform {
+    constructor(unit) {
+      super(CssTranslateZTransform.DEFAULT_PARAMS);
+      this.unit = unit;
+    }
+    set(z, precision = 0) {
+      this.params[0] = precision === 0 ? z : MathUtils.round(z, precision);
+    }
+    buildString(params) {
+      return `translateZ(${params[0]}${this.unit})`;
+    }
+  };
+  CssTranslateZTransform.DEFAULT_PARAMS = [0];
+  var CssTranslateTransform = class extends AbstractCssTransform {
+    constructor(unitX, unitY = unitX) {
+      super(CssTranslateTransform.DEFAULT_PARAMS);
+      this.unitX = unitX;
+      this.unitY = unitY;
+    }
+    set(x, y, precisionX = 0, precisionY = precisionX) {
+      this.params[0] = precisionX === 0 ? x : MathUtils.round(x, precisionX);
+      this.params[1] = precisionY === 0 ? y : MathUtils.round(y, precisionY);
+    }
+    buildString(params) {
+      return `translate(${params[0]}${this.unitX}, ${params[1]}${this.unitY})`;
+    }
+  };
+  CssTranslateTransform.DEFAULT_PARAMS = [0, 0];
+  var CssTranslate3dTransform = class extends AbstractCssTransform {
+    constructor(unitX, unitY = unitX, unitZ = unitX) {
+      super(CssTranslate3dTransform.DEFAULT_PARAMS);
+      this.unitX = unitX;
+      this.unitY = unitY;
+      this.unitZ = unitZ;
+    }
+    set(x, y, z, precisionX = 0, precisionY = precisionX, precisionZ = precisionX) {
+      this.params[0] = precisionX === 0 ? x : MathUtils.round(x, precisionX);
+      this.params[1] = precisionY === 0 ? y : MathUtils.round(y, precisionY);
+      this.params[2] = precisionZ === 0 ? z : MathUtils.round(z, precisionZ);
+    }
+    buildString(params) {
+      return `translate3d(${params[0]}${this.unitX}, ${params[1]}${this.unitY}, ${params[2]}${this.unitZ})`;
+    }
+  };
+  CssTranslate3dTransform.DEFAULT_PARAMS = [0, 0, 0];
+  var CssScaleXTransform = class extends AbstractCssTransform {
+    constructor() {
+      super(CssScaleXTransform.DEFAULT_PARAMS);
+    }
+    set(x, precision = 0) {
+      this.params[0] = precision === 0 ? x : MathUtils.round(x, precision);
+    }
+    buildString(params) {
+      return `scaleX(${params[0]})`;
+    }
+  };
+  CssScaleXTransform.DEFAULT_PARAMS = [1];
+  var CssScaleYTransform = class extends AbstractCssTransform {
+    constructor() {
+      super(CssScaleYTransform.DEFAULT_PARAMS);
+    }
+    set(y, precision = 0) {
+      this.params[0] = precision === 0 ? y : MathUtils.round(y, precision);
+    }
+    buildString(params) {
+      return `scaleY(${params[0]})`;
+    }
+  };
+  CssScaleYTransform.DEFAULT_PARAMS = [1];
+  var CssScaleZTransform = class extends AbstractCssTransform {
+    constructor() {
+      super(CssScaleZTransform.DEFAULT_PARAMS);
+    }
+    set(z, precision = 0) {
+      this.params[0] = precision === 0 ? z : MathUtils.round(z, precision);
+    }
+    buildString(params) {
+      return `scaleZ(${params[0]})`;
+    }
+  };
+  CssScaleZTransform.DEFAULT_PARAMS = [1];
+  var CssScaleTransform = class extends AbstractCssTransform {
+    constructor() {
+      super(CssScaleTransform.DEFAULT_PARAMS);
+    }
+    set(x, y, precisionX = 0, precisionY = precisionX) {
+      this.params[0] = precisionX === 0 ? x : MathUtils.round(x, precisionX);
+      this.params[1] = precisionY === 0 ? y : MathUtils.round(y, precisionY);
+    }
+    buildString(params) {
+      return `scale(${params[0]}, ${params[1]})`;
+    }
+  };
+  CssScaleTransform.DEFAULT_PARAMS = [1, 1];
+  var CssScale3dTransform = class extends AbstractCssTransform {
+    constructor() {
+      super(CssScale3dTransform.DEFAULT_PARAMS);
+    }
+    set(x, y, z, precisionX = 0, precisionY = precisionX, precisionZ = precisionX) {
+      this.params[0] = precisionX === 0 ? x : MathUtils.round(x, precisionX);
+      this.params[1] = precisionY === 0 ? y : MathUtils.round(y, precisionY);
+      this.params[2] = precisionZ === 0 ? z : MathUtils.round(y, precisionZ);
+    }
+    buildString(params) {
+      return `scale3d(${params[0]}, ${params[1]}, ${params[2]})`;
+    }
+  };
+  CssScale3dTransform.DEFAULT_PARAMS = [1, 1, 1];
+  var CssTransformChain = class {
+    constructor(...transforms) {
+      this.stringValues = [];
+      this.transforms = transforms;
+    }
+    getChild(index) {
+      if (index < 0 || index >= this.transforms.length) {
+        throw new RangeError();
+      }
+      return this.transforms[index];
+    }
+    resolve() {
+      let needRebuildString = false;
+      for (let i = 0; i < this.transforms.length; i++) {
+        const stringValue = this.transforms[i].resolve();
+        if (this.stringValues[i] !== stringValue) {
+          this.stringValues[i] = stringValue;
+          needRebuildString = true;
+        }
+      }
+      if (needRebuildString || this.chainedStringValue === void 0) {
+        this.chainedStringValue = this.stringValues.join(" ");
+      }
+      return this.chainedStringValue;
+    }
+  };
+  var CssTransformSubject = class extends AbstractSubscribable {
+    constructor(transform) {
+      super();
+      this._transform = transform;
+      this.stringValue = transform.resolve();
+      this.transform = transform;
+    }
+    get() {
+      return this.stringValue;
+    }
+    resolve() {
+      const stringValue = this._transform.resolve();
+      if (stringValue !== this.stringValue) {
+        this.stringValue = stringValue;
+        this.notify();
+      }
+    }
+    static create(transform) {
+      return new CssTransformSubject(transform);
+    }
+  };
+  var CssTransformBuilder = class {
+    static matrix() {
+      return new CssMatrixTransform();
+    }
+    static rotate(unit) {
+      return new CssRotateTransform(unit);
+    }
+    static rotate3d(unit) {
+      return new CssRotate3dTransform(unit);
+    }
+    static translateX(unit) {
+      return new CssTranslateXTransform(unit);
+    }
+    static translateY(unit) {
+      return new CssTranslateYTransform(unit);
+    }
+    static translateZ(unit) {
+      return new CssTranslateZTransform(unit);
+    }
+    static translate(unitX, unitY) {
+      return new CssTranslateTransform(unitX, unitY);
+    }
+    static translate3d(unitX, unitY, unitZ) {
+      return new CssTranslate3dTransform(unitX, unitY, unitZ);
+    }
+    static scaleX() {
+      return new CssScaleXTransform();
+    }
+    static scaleY() {
+      return new CssScaleYTransform();
+    }
+    static scaleZ() {
+      return new CssScaleZTransform();
+    }
+    static scale() {
+      return new CssScaleTransform();
+    }
+    static scale3d() {
+      return new CssScale3dTransform();
+    }
+    static concat(...transforms) {
+      return new CssTransformChain(...transforms);
+    }
+  };
+  var DefaultMapLabeledRingLabel = class extends DisplayComponent {
     constructor() {
       super(...arguments);
-      this._isVisible = true;
+      this.translate = CssTransformSubject.create(CssTransformBuilder.translate("%"));
+      this.left = Subject.create("");
+      this.top = Subject.create("");
+      this.center = new Float64Array(2);
+      this.radius = 0;
+      this.anchor = new Float64Array(2);
+      this.radialAngle = 0;
+      this.radialOffset = 0;
     }
-    isVisible() {
-      return this._isVisible;
-    }
-    setVisible(val) {
-      if (this._isVisible === val) {
-        return;
+    get content() {
+      if (this._content === void 0 || this._content === null) {
+        throw new Error("DefaultMapLabeledRingLabel: unable to access content");
       }
-      this._isVisible = val;
-      this.onVisibilityChanged(val);
-    }
-    onVisibilityChanged(isVisible) {
-    }
-    onAttached() {
-    }
-    onWake() {
-    }
-    onSleep() {
-    }
-    onMapProjectionChanged(mapProjection, changeFlags) {
-    }
-    onUpdated(time, elapsed) {
-    }
-    onDetached() {
-    }
-  };
-  var MapProjectionChangeType;
-  (function(MapProjectionChangeType2) {
-    MapProjectionChangeType2[MapProjectionChangeType2["Target"] = 1] = "Target";
-    MapProjectionChangeType2[MapProjectionChangeType2["Center"] = 2] = "Center";
-    MapProjectionChangeType2[MapProjectionChangeType2["TargetProjected"] = 4] = "TargetProjected";
-    MapProjectionChangeType2[MapProjectionChangeType2["Range"] = 8] = "Range";
-    MapProjectionChangeType2[MapProjectionChangeType2["RangeEndpoints"] = 16] = "RangeEndpoints";
-    MapProjectionChangeType2[MapProjectionChangeType2["ScaleFactor"] = 32] = "ScaleFactor";
-    MapProjectionChangeType2[MapProjectionChangeType2["Rotation"] = 64] = "Rotation";
-    MapProjectionChangeType2[MapProjectionChangeType2["ProjectedSize"] = 128] = "ProjectedSize";
-    MapProjectionChangeType2[MapProjectionChangeType2["ProjectedResolution"] = 256] = "ProjectedResolution";
-  })(MapProjectionChangeType || (MapProjectionChangeType = {}));
-  var MapProjection = class {
-    constructor(projectedWidth, projectedHeight) {
-      this.target = new GeoPoint(0, 0);
-      this.targetProjectedOffset = new Float64Array(2);
-      this.targetProjected = new Float64Array(2);
-      this.range = 1;
-      this.rangeEndpoints = new Float64Array([0.5, 0, 0.5, 1]);
-      this.projectedSize = new Float64Array(2);
-      this.center = new GeoPoint(0, 0);
-      this.centerProjected = new Float64Array(2);
-      this.projectedRange = 0;
-      this.widthRange = 0;
-      this.heightRange = 0;
-      this.oldParameters = {
-        target: new GeoPoint(0, 0),
-        center: new GeoPoint(0, 0),
-        targetProjected: new Float64Array(2),
-        range: 1,
-        rangeEndpoints: new Float64Array(4),
-        scaleFactor: 1,
-        rotation: 0,
-        projectedSize: new Float64Array(2),
-        projectedResolution: 0
-      };
-      this.queuedParameters = Object.assign({}, this.oldParameters);
-      this.updateQueued = false;
-      this.changeListeners = [];
-      Vec2Math.set(projectedWidth, projectedHeight, this.projectedSize);
-      this.geoProjection = new MercatorProjection();
-      Vec2Math.set(projectedWidth / 2, projectedHeight / 2, this.centerProjected);
-      this.targetProjected.set(this.centerProjected);
-      this.geoProjection.setReflectY(true).setTranslation(this.centerProjected);
-      this.recompute();
-    }
-    getGeoProjection() {
-      return this.geoProjection;
-    }
-    getTarget() {
-      return this.target.readonly;
-    }
-    getTargetProjectedOffset() {
-      return this.targetProjectedOffset;
-    }
-    getTargetProjected() {
-      return this.targetProjected;
-    }
-    getRange() {
-      return this.range;
-    }
-    getRangeEndpoints() {
-      return this.rangeEndpoints;
-    }
-    getWidthRange() {
-      return this.widthRange;
-    }
-    getHeightRange() {
-      return this.heightRange;
-    }
-    getScaleFactor() {
-      return this.geoProjection.getScaleFactor();
-    }
-    getRotation() {
-      return this.geoProjection.getPostRotation();
-    }
-    getProjectedSize() {
-      return this.projectedSize;
-    }
-    getCenter() {
-      return this.center.readonly;
-    }
-    getCenterProjected() {
-      return this.centerProjected;
-    }
-    getProjectedResolution() {
-      return this.range / this.projectedRange;
-    }
-    calculateRangeAtCenter(centerProjected) {
-      const endpoints = this.rangeEndpoints;
-      const projectedWidth = this.projectedSize[0];
-      const projectedHeight = this.projectedSize[1];
-      const endpoint1 = MapProjection.tempVec2_3;
-      endpoint1[0] = centerProjected[0] + projectedWidth * (endpoints[0] - 0.5);
-      endpoint1[1] = centerProjected[1] + projectedHeight * (endpoints[1] - 0.5);
-      const endpoint2 = MapProjection.tempVec2_4;
-      endpoint2[0] = centerProjected[0] + projectedWidth * (endpoints[2] - 0.5);
-      endpoint2[1] = centerProjected[1] + projectedHeight * (endpoints[3] - 0.5);
-      const top = this.geoProjection.invert(endpoint1, MapProjection.tempGeoPoint_1);
-      const bottom = this.geoProjection.invert(endpoint2, MapProjection.tempGeoPoint_2);
-      return top.distance(bottom);
-    }
-    recompute() {
-      const currentTargetProjected = this.geoProjection.project(this.target, MapProjection.tempVec2_1);
-      if (!isFinite(currentTargetProjected[0] + currentTargetProjected[1])) {
-        const translation = this.geoProjection.getTranslation();
-        if (isFinite(this.target.lat) && isFinite(this.target.lon) && isFinite(this.geoProjection.getPostRotation()) && isFinite(translation[0]) && isFinite(translation[1])) {
-          this.geoProjection.setScaleFactor(MapProjection.DEFAULT_SCALE_FACTOR);
-          this.geoProjection.setCenter(MapProjection.tempGeoPoint_1.set(0, 0));
-          this.geoProjection.setPreRotation(Vec3Math.set(0, 0, 0, MapProjection.vec3Cache[0]));
-        } else {
-          return;
-        }
-      }
-      const currentCenterProjected = MapProjection.tempVec2_2;
-      currentCenterProjected.set(currentTargetProjected);
-      currentCenterProjected[0] -= this.targetProjectedOffset[0];
-      currentCenterProjected[1] -= this.targetProjectedOffset[1];
-      let currentRange = this.calculateRangeAtCenter(currentCenterProjected);
-      let ratio = currentRange / this.range;
-      if (!isFinite(ratio) || ratio === 0) {
-        return;
-      }
-      let lastScaleFactor = this.geoProjection.getScaleFactor();
-      let iterCount = 0;
-      let ratioError = Math.abs(ratio - 1);
-      let deltaRatioError = MapProjection.SCALE_FACTOR_TOLERANCE + 1;
-      while (iterCount++ < MapProjection.SCALE_FACTOR_MAX_ITER && ratioError > MapProjection.SCALE_FACTOR_TOLERANCE && deltaRatioError > MapProjection.SCALE_FACTOR_TOLERANCE) {
-        this.geoProjection.setScaleFactor(ratio * lastScaleFactor);
-        this.geoProjection.project(this.target, currentTargetProjected);
-        currentCenterProjected.set(currentTargetProjected);
-        currentCenterProjected[0] -= this.targetProjectedOffset[0];
-        currentCenterProjected[1] -= this.targetProjectedOffset[1];
-        currentRange = this.calculateRangeAtCenter(currentCenterProjected);
-        const newRatio = currentRange / this.range;
-        const ratioDelta = newRatio - ratio;
-        if (!isFinite(ratio) || ratio < 1 && ratioDelta <= 0 || ratio > 1 && ratioDelta >= 0) {
-          this.geoProjection.setScaleFactor(lastScaleFactor);
-        }
-        lastScaleFactor = this.geoProjection.getScaleFactor();
-        ratio = newRatio;
-        const newRatioError = Math.abs(ratio - 1);
-        deltaRatioError = Math.abs(newRatioError - ratioError);
-        ratioError = newRatioError;
-      }
-      this.invert(currentCenterProjected, this.center);
-      this.geoProjection.setCenter(this.center);
-      const preRotation = Vec3Math.set(-this.center.lon * Avionics.Utils.DEG2RAD, 0, 0, MapProjection.vec3Cache[0]);
-      this.geoProjection.setPreRotation(preRotation);
-      const width = this.projectedSize[0];
-      const height = this.projectedSize[1];
-      this.projectedRange = Math.hypot((this.rangeEndpoints[2] - this.rangeEndpoints[0]) * width, (this.rangeEndpoints[3] - this.rangeEndpoints[1]) * height);
-      const left = Vec2Math.set(0, height / 2, MapProjection.tempVec2_1);
-      const right = Vec2Math.set(width, height / 2, MapProjection.tempVec2_2);
-      this.widthRange = this.geoDistance(left, right);
-      const top = Vec2Math.set(width / 2, 0, MapProjection.tempVec2_1);
-      const bottom = Vec2Math.set(width / 2, height, MapProjection.tempVec2_2);
-      this.heightRange = this.geoDistance(top, bottom);
-    }
-    set(parameters) {
-      this.storeParameters(this.oldParameters);
-      parameters.projectedSize && this.setProjectedSize(parameters.projectedSize);
-      parameters.target && this.target.set(parameters.target);
-      parameters.targetProjectedOffset && this.setTargetProjectedOffset(parameters.targetProjectedOffset);
-      parameters.range !== void 0 && (this.range = parameters.range);
-      parameters.rangeEndpoints && this.rangeEndpoints.set(parameters.rangeEndpoints);
-      parameters.rotation !== void 0 && this.geoProjection.setPostRotation(parameters.rotation);
-      let changeFlags = this.computeChangeFlags(this.oldParameters);
-      if (changeFlags !== 0) {
-        this.recompute();
-        changeFlags |= this.computeDerivedChangeFlags(this.oldParameters);
-        if (changeFlags !== 0) {
-          this.notifyChangeListeners(changeFlags);
-        }
-      }
-    }
-    setQueued(parameters) {
-      Object.assign(this.queuedParameters, parameters);
-      this.updateQueued = true;
-    }
-    applyQueued() {
-      if (this.updateQueued) {
-        this.updateQueued = false;
-        this.set(this.queuedParameters);
-        for (const key in this.queuedParameters) {
-          delete this.queuedParameters[key];
-        }
-      }
-    }
-    setProjectedSize(size) {
-      this.projectedSize.set(size);
-      Vec2Math.set(size[0] / 2, size[1] / 2, this.centerProjected);
-      this.geoProjection.setTranslation(this.centerProjected);
-      Vec2Math.add(this.centerProjected, this.targetProjectedOffset, this.targetProjected);
-    }
-    setTargetProjectedOffset(offset) {
-      this.targetProjectedOffset.set(offset);
-      Vec2Math.add(this.centerProjected, this.targetProjectedOffset, this.targetProjected);
-    }
-    storeParameters(record) {
-      record.target.set(this.target);
-      record.center.set(this.center);
-      record.targetProjected.set(this.targetProjected);
-      record.range = this.range;
-      record.rangeEndpoints.set(this.rangeEndpoints);
-      record.scaleFactor = this.geoProjection.getScaleFactor();
-      record.rotation = this.getRotation();
-      record.projectedSize.set(this.projectedSize);
-      record.projectedResolution = this.getProjectedResolution();
-    }
-    computeChangeFlags(oldParameters) {
-      return (oldParameters.target.equals(this.target) ? 0 : MapProjectionChangeType.Target) | (Vec2Math.equals(oldParameters.targetProjected, this.targetProjected) ? 0 : MapProjectionChangeType.TargetProjected) | (oldParameters.range === this.range ? 0 : MapProjectionChangeType.Range) | (VecNMath.equals(oldParameters.rangeEndpoints, this.rangeEndpoints) ? 0 : MapProjectionChangeType.RangeEndpoints) | (oldParameters.rotation === this.getRotation() ? 0 : MapProjectionChangeType.Rotation) | (Vec2Math.equals(oldParameters.projectedSize, this.projectedSize) ? 0 : MapProjectionChangeType.ProjectedSize);
-    }
-    computeDerivedChangeFlags(oldParameters) {
-      return (oldParameters.center.equals(this.center) ? 0 : MapProjectionChangeType.Center) | (oldParameters.scaleFactor === this.geoProjection.getScaleFactor() ? 0 : MapProjectionChangeType.ScaleFactor) | (oldParameters.projectedResolution === this.getProjectedResolution() ? 0 : MapProjectionChangeType.ProjectedResolution);
-    }
-    project(point, out) {
-      return this.geoProjection.project(point, out);
-    }
-    invert(vec, out) {
-      return this.geoProjection.invert(vec, out);
-    }
-    isInProjectedBounds(point, bounds) {
-      let left;
-      let top;
-      let right;
-      let bottom;
-      if (bounds) {
-        left = bounds[0];
-        top = bounds[1];
-        right = bounds[2];
-        bottom = bounds[3];
-      } else {
-        left = 0;
-        top = 0;
-        right = this.projectedSize[0];
-        bottom = this.projectedSize[1];
-      }
-      if (!(point instanceof Float64Array)) {
-        point = this.project(point, MapProjection.tempVec2_2);
-      }
-      const x = point[0];
-      const y = point[1];
-      return x >= left && x <= right && y >= top && y <= bottom;
-    }
-    geoDistance(point1, point2) {
-      if (point1 instanceof Float64Array) {
-        point1 = this.invert(point1, MapProjection.tempGeoPoint_1);
-      }
-      if (point2 instanceof Float64Array) {
-        point2 = this.invert(point2, MapProjection.tempGeoPoint_2);
-      }
-      return point1.distance(point2);
-    }
-    projectedDistance(point1, point2) {
-      if (!(point1 instanceof Float64Array)) {
-        point1 = this.project(point1, MapProjection.tempVec2_1);
-      }
-      if (!(point2 instanceof Float64Array)) {
-        point2 = this.project(point2, MapProjection.tempVec2_2);
-      }
-      return Vec2Math.distance(point1, point2);
-    }
-    notifyChangeListeners(changeFlags) {
-      for (let i = 0; i < this.changeListeners.length; i++) {
-        this.changeListeners[i](this, changeFlags);
-      }
-    }
-    addChangeListener(listener) {
-      this.changeListeners.push(listener);
-    }
-    removeChangeListener(listener) {
-      const index = this.changeListeners.lastIndexOf(listener);
-      if (index >= 0) {
-        this.changeListeners.splice(index, 1);
-        return true;
-      } else {
-        return false;
-      }
-    }
-  };
-  MapProjection.DEFAULT_SCALE_FACTOR = UnitType.GA_RADIAN.convertTo(1, UnitType.NMILE);
-  MapProjection.SCALE_FACTOR_MAX_ITER = 20;
-  MapProjection.SCALE_FACTOR_TOLERANCE = 1e-6;
-  MapProjection.tempVec2_1 = new Float64Array(2);
-  MapProjection.tempVec2_2 = new Float64Array(2);
-  MapProjection.tempVec2_3 = new Float64Array(2);
-  MapProjection.tempVec2_4 = new Float64Array(2);
-  MapProjection.tempGeoPoint_1 = new GeoPoint(0, 0);
-  MapProjection.tempGeoPoint_2 = new GeoPoint(0, 0);
-  MapProjection.vec3Cache = [Vec3Math.create()];
-  var MapComponent = class extends DisplayComponent {
-    constructor(props) {
-      var _a2;
-      super(props);
-      this.layerEntries = [];
-      this.lastUpdateTime = 0;
-      this._isAwake = true;
-      this.updateCycleHandler = this.update.bind(this);
-      this.projectedSize = "isSubscribable" in this.props.projectedSize ? this.props.projectedSize : Subject.create(this.props.projectedSize);
-      const initialSize = this.projectedSize.get();
-      if (this.props.projection !== void 0) {
-        this.props.projection.set({ projectedSize: new Float64Array(initialSize) });
-      }
-      this.mapProjection = (_a2 = this.props.projection) !== null && _a2 !== void 0 ? _a2 : new MapProjection(initialSize[0], initialSize[1]);
-    }
-    getProjectedSize() {
-      return this.mapProjection.getProjectedSize();
-    }
-    get isAwake() {
-      return this._isAwake;
-    }
-    sleep() {
-      this.setAwakeState(false);
-    }
-    wake() {
-      this.setAwakeState(true);
-    }
-    setAwakeState(isAwake) {
-      if (this._isAwake === isAwake) {
-        return;
-      }
-      this._isAwake = isAwake;
-      this._isAwake ? this.onWake() : this.onSleep();
+      return this._content;
     }
     onAfterRender(thisNode) {
       var _a2;
-      this.mapProjection.addChangeListener(this.onMapProjectionChanged.bind(this));
-      this.projectedSizeSub = this.projectedSize.sub((size) => {
-        this.mapProjection.set({ projectedSize: size });
-      });
-      (_a2 = this.props.updateFreq) === null || _a2 === void 0 ? void 0 : _a2.sub((freq) => {
-        var _a3;
-        (_a3 = this.updateCycleSub) === null || _a3 === void 0 ? void 0 : _a3.destroy();
-        this.updateCycleSub = this.props.bus.getSubscriber().on("realTime").whenChanged().atFrequency(freq).handle(this.updateCycleHandler);
-      }, true);
-      this.attachLayers(thisNode);
+      this.thisNode = thisNode;
+      this._content = (_a2 = thisNode.children) === null || _a2 === void 0 ? void 0 : _a2[0].instance;
     }
-    attachLayers(thisNode) {
-      FSComponent.visitNodes(thisNode, (node) => {
-        if (node.instance instanceof MapLayer) {
-          this.attachLayer(node.instance);
-          return true;
-        }
-        return false;
-      });
+    getAnchor() {
+      return this.anchor;
     }
-    onWake() {
-      this.wakeLayers();
+    getRadialAngle() {
+      return this.radialAngle;
     }
-    wakeLayers() {
-      const len = this.layerEntries.length;
-      for (let i = 0; i < len; i++) {
-        this.layerEntries[i].layer.onWake();
-      }
+    getRadialOffset() {
+      return this.radialOffset;
     }
-    onSleep() {
-      this.sleepLayers();
+    setAnchor(anchor) {
+      this.anchor.set(anchor);
+      this.translate.transform.set(-anchor[0] * 100, -anchor[1] * 100);
+      this.translate.resolve();
     }
-    sleepLayers() {
-      const len = this.layerEntries.length;
-      for (let i = 0; i < len; i++) {
-        this.layerEntries[i].layer.onSleep();
-      }
-    }
-    onMapProjectionChanged(mapProjection, changeFlags) {
-      if (BitFlags.isAll(changeFlags, MapProjectionChangeType.ProjectedSize)) {
-        this.onProjectedSizeChanged();
-      }
-      const len = this.layerEntries.length;
-      for (let i = 0; i < len; i++) {
-        this.layerEntries[i].layer.onMapProjectionChanged(mapProjection, changeFlags);
-      }
-    }
-    attachLayer(layer) {
-      if (this.layerEntries.findIndex((entry2) => entry2.layer === layer) >= 0) {
+    setRadialAngle(angle) {
+      if (this.radialAngle === angle) {
         return;
       }
-      const entry = new LayerEntry(layer);
-      this.layerEntries.push(entry);
-      entry.attach();
+      this.radialAngle = angle;
+      this.updatePosition();
     }
-    detachLayer(layer) {
-      const index = this.layerEntries.findIndex((entry) => entry.layer === layer);
-      if (index >= 0) {
-        const entry = this.layerEntries[index];
-        entry.detach();
-        this.layerEntries.splice(index, 1);
-        return true;
-      } else {
-        return false;
-      }
-    }
-    update(time) {
-      if (!this._isAwake) {
+    setRadialOffset(offset) {
+      if (this.radialOffset === offset) {
         return;
       }
-      this.onUpdated(time, time - this.lastUpdateTime);
-      this.lastUpdateTime = time;
+      this.radialOffset = offset;
+      this.updatePosition();
     }
-    onUpdated(time, elapsed) {
-      this.updateLayers(time, elapsed);
-    }
-    updateLayers(time, elapsed) {
-      const len = this.layerEntries.length;
-      for (let i = 0; i < len; i++) {
-        this.layerEntries[i].update(time);
+    setRingPosition(center, radius) {
+      if (Vec2Math.equals(this.center, center) && radius === this.radius) {
+        return;
       }
+      this.center.set(center);
+      this.radius = radius;
+      this.updatePosition();
+    }
+    updatePosition() {
+      const pos = DefaultMapLabeledRingLabel.tempVec2_1;
+      Vec2Math.setFromPolar(this.radius + this.radialOffset, this.radialAngle, pos);
+      Vec2Math.add(this.center, pos, pos);
+      this.left.set(`${pos[0]}px`);
+      this.top.set(`${pos[1]}px`);
+    }
+    render() {
+      return FSComponent.buildComponent("div", { style: {
+        "position": "absolute",
+        "left": this.left,
+        "top": this.top,
+        "transform": this.translate
+      } }, this.props.children);
     }
     destroy() {
-      var _a2, _b;
+      this.thisNode && FSComponent.shallowDestroy(this.thisNode);
       super.destroy();
-      (_a2 = this.updateCycleSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
-      (_b = this.projectedSizeSub) === null || _b === void 0 ? void 0 : _b.destroy();
-      const len = this.layerEntries.length;
-      for (let i = 0; i < len; i++) {
-        this.layerEntries[i].destroy();
-      }
     }
   };
-  var LayerEntry = class {
-    constructor(layer) {
-      this.layer = layer;
-      this.updatePeriod = 0;
-      this.lastUpdated = 0;
-    }
-    attach() {
-      var _a2, _b;
-      (_a2 = this.updateFreqSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
-      this.updateFreqSub = (_b = this.layer.props.updateFreq) === null || _b === void 0 ? void 0 : _b.sub((freq) => {
-        const clamped = Math.max(0, freq);
-        this.updatePeriod = clamped === 0 ? 0 : 1e3 / clamped;
-      }, true);
-      this.layer.onAttached();
-    }
-    update(currentTime) {
-      if (currentTime - this.lastUpdated >= this.updatePeriod) {
-        this.layer.onUpdated(currentTime, currentTime - this.lastUpdated);
-        this.lastUpdated = currentTime;
+  DefaultMapLabeledRingLabel.tempVec2_1 = new Float64Array(2);
+  var GeoCirclePathRenderer = class {
+    render(circle, startLat, startLon, endLat, endLon, streamStack, continuePath = false) {
+      if (!continuePath) {
+        streamStack.beginPath();
+        streamStack.moveTo(startLon, startLat);
       }
-    }
-    detach() {
-      var _a2;
-      (_a2 = this.updateFreqSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
-      this.layer.onDetached();
-    }
-    destroy() {
-      this.detach();
-      this.layer.destroy();
-    }
-  };
-  var MapModel = class {
-    constructor() {
-      this.modules = /* @__PURE__ */ new Map();
-    }
-    getModule(nameOrModule) {
-      if (typeof nameOrModule === "string") {
-        return this.modules.get(nameOrModule);
-      } else if (typeof nameOrModule === "function") {
-        return this.modules.get(nameOrModule.name);
-      }
-      throw new Error("Invalid type supplied: must be a string key or a module constructor.");
-    }
-    addModule(name, module) {
-      if (this.modules.has(name)) {
-        return;
-      }
-      this.modules.set(name, module);
-    }
-  };
-  var AbstractMapTextLabel = class {
-    constructor(text, priority, options) {
-      var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
-      this.text = SubscribableUtils.toSubscribable(text, true);
-      this.priority = SubscribableUtils.toSubscribable(priority, true);
-      this.anchor = SubscribableUtils.toSubscribable((_a2 = options === null || options === void 0 ? void 0 : options.anchor) !== null && _a2 !== void 0 ? _a2 : Vec2Math.create(), true);
-      this.font = SubscribableUtils.toSubscribable((_b = options === null || options === void 0 ? void 0 : options.font) !== null && _b !== void 0 ? _b : "", true);
-      this.fontSize = SubscribableUtils.toSubscribable((_c = options === null || options === void 0 ? void 0 : options.fontSize) !== null && _c !== void 0 ? _c : 10, true);
-      this.fontStr = MappedSubject.create(([s, f]) => {
-        return `${s}px ${f}`;
-      }, this.fontSize, this.font);
-      this.fontColor = SubscribableUtils.toSubscribable((_d = options === null || options === void 0 ? void 0 : options.fontColor) !== null && _d !== void 0 ? _d : "white", true);
-      this.fontOutlineWidth = SubscribableUtils.toSubscribable((_e = options === null || options === void 0 ? void 0 : options.fontOutlineWidth) !== null && _e !== void 0 ? _e : 0, true);
-      this.fontOutlineColor = SubscribableUtils.toSubscribable((_f = options === null || options === void 0 ? void 0 : options.fontOutlineColor) !== null && _f !== void 0 ? _f : "black", true);
-      this.showBg = SubscribableUtils.toSubscribable((_g = options === null || options === void 0 ? void 0 : options.showBg) !== null && _g !== void 0 ? _g : false, true);
-      this.bgColor = SubscribableUtils.toSubscribable((_h = options === null || options === void 0 ? void 0 : options.bgColor) !== null && _h !== void 0 ? _h : "black", true);
-      this.bgPadding = SubscribableUtils.toSubscribable((_j = options === null || options === void 0 ? void 0 : options.bgPadding) !== null && _j !== void 0 ? _j : VecNMath.create(4), true);
-      this.bgBorderRadius = SubscribableUtils.toSubscribable((_k = options === null || options === void 0 ? void 0 : options.bgBorderRadius) !== null && _k !== void 0 ? _k : 0, true);
-      this.bgOutlineWidth = SubscribableUtils.toSubscribable((_l = options === null || options === void 0 ? void 0 : options.bgOutlineWidth) !== null && _l !== void 0 ? _l : 0, true);
-      this.bgOutlineColor = SubscribableUtils.toSubscribable((_m = options === null || options === void 0 ? void 0 : options.bgOutlineColor) !== null && _m !== void 0 ? _m : "white", true);
-    }
-    draw(context, mapProjection) {
-      if (this.fontSize.get() !== 0) {
-        this.setTextStyle(context);
-        const width = context.measureText(this.text.get()).width;
-        const height = this.fontSize.get();
-        const showBg = this.showBg.get();
-        const bgPadding = this.bgPadding.get();
-        const bgOutlineWidth = this.bgOutlineWidth.get();
-        const bgExtraWidth = showBg ? bgPadding[1] + bgPadding[3] + bgOutlineWidth * 2 : 0;
-        const bgExtraHeight = showBg ? bgPadding[0] + bgPadding[2] + bgOutlineWidth * 2 : 0;
-        const anchor = this.anchor.get();
-        const pos = this.getPosition(mapProjection, AbstractMapTextLabel.tempVec2);
-        const centerX = pos[0] - (anchor[0] - 0.5) * (width + bgExtraWidth);
-        const centerY = pos[1] - (anchor[1] - 0.5) * (height + bgExtraHeight);
-        if (showBg) {
-          this.drawBackground(context, centerX, centerY, width, height);
-        }
-        this.drawText(context, centerX, centerY);
-      }
-    }
-    setTextStyle(context) {
-      context.font = this.fontStr.get();
-      context.textBaseline = "middle";
-      context.textAlign = "center";
-    }
-    drawText(context, centerX, centerY) {
-      const text = this.text.get();
-      const fontOutlineWidth = this.fontOutlineWidth.get();
-      if (fontOutlineWidth > 0) {
-        context.lineWidth = fontOutlineWidth * 2;
-        context.strokeStyle = this.fontOutlineColor.get();
-        context.strokeText(text, centerX, centerY);
-      }
-      context.fillStyle = this.fontColor.get();
-      context.fillText(text, centerX, centerY);
-    }
-    drawBackground(context, centerX, centerY, width, height) {
-      const bgPadding = this.bgPadding.get();
-      const bgOutlineWidth = this.bgOutlineWidth.get();
-      const bgBorderRadius = this.bgBorderRadius.get();
-      const backgroundLeft = centerX - width / 2 - (bgPadding[3] + bgOutlineWidth);
-      const backgroundTop = centerY - height / 2 - (bgPadding[0] + bgOutlineWidth);
-      const backgroundWidth = width + (bgPadding[1] + bgPadding[3] + 2 * bgOutlineWidth);
-      const backgroundHeight = height + (bgPadding[0] + bgPadding[2] + 2 * bgOutlineWidth);
-      let isRounded = false;
-      if (bgBorderRadius > 0) {
-        isRounded = true;
-        this.loadBackgroundPath(context, backgroundLeft, backgroundTop, backgroundWidth, backgroundHeight, bgBorderRadius);
-      }
-      if (bgOutlineWidth > 0) {
-        context.lineWidth = bgOutlineWidth * 2;
-        context.strokeStyle = this.bgOutlineColor.get();
-        if (isRounded) {
-          context.stroke();
+      if (circle.isGreatCircle()) {
+        const startPoint = GeoPoint.sphericalToCartesian(startLat, startLon, GeoCirclePathRenderer.vec3Cache[0]);
+        const distance = circle.distanceAlong(startPoint, GeoCirclePathRenderer.geoPointCache[0].set(endLat, endLon), Math.PI);
+        if (distance >= Math.PI - GeoPoint.EQUALITY_TOLERANCE) {
+          const midPoint = circle.offsetDistanceAlong(startPoint, distance / 2, GeoCirclePathRenderer.geoPointCache[0], Math.PI);
+          const midLat = midPoint.lat;
+          const midLon = midPoint.lon;
+          streamStack.lineTo(midLon, midLat);
+          streamStack.lineTo(endLon, endLat);
         } else {
-          context.strokeRect(backgroundLeft, backgroundTop, backgroundWidth, backgroundHeight);
-        }
-      }
-      context.fillStyle = this.bgColor.get();
-      if (isRounded) {
-        context.fill();
-      } else {
-        context.fillRect(backgroundLeft, backgroundTop, backgroundWidth, backgroundHeight);
-      }
-    }
-    loadBackgroundPath(context, left, top, width, height, radius) {
-      const right = left + width;
-      const bottom = top + height;
-      context.beginPath();
-      context.moveTo(left + radius, top);
-      context.lineTo(right - radius, top);
-      context.arcTo(right, top, right, top + radius, radius);
-      context.lineTo(right, bottom - radius);
-      context.arcTo(right, bottom, right - radius, bottom, radius);
-      context.lineTo(left + radius, bottom);
-      context.arcTo(left, bottom, left, bottom - radius, radius);
-      context.lineTo(left, top + radius);
-      context.arcTo(left, top, left + radius, top, radius);
-    }
-  };
-  AbstractMapTextLabel.tempVec2 = new Float64Array(2);
-  var MapLocationTextLabel = class extends AbstractMapTextLabel {
-    constructor(text, priority, location, options) {
-      var _a2;
-      super(text, priority, options);
-      this.location = SubscribableUtils.toSubscribable(location, true);
-      this.offset = SubscribableUtils.toSubscribable((_a2 = options === null || options === void 0 ? void 0 : options.offset) !== null && _a2 !== void 0 ? _a2 : Vec2Math.create(), true);
-    }
-    getPosition(mapProjection, out) {
-      mapProjection.project(this.location.get(), out);
-      Vec2Math.add(out, this.offset.get(), out);
-      return out;
-    }
-  };
-  var MapCullableLocationTextLabel = class extends MapLocationTextLabel {
-    constructor(text, priority, location, alwaysShow, options) {
-      super(text, priority, location, options);
-      this.bounds = new Float64Array(4);
-      this.invalidation = new SubEvent();
-      this.subs = [];
-      this.alwaysShow = SubscribableUtils.toSubscribable(alwaysShow, true);
-      this.subs.push(this.priority.sub(() => {
-        this.invalidation.notify(this);
-      }));
-      this.subs.push(this.alwaysShow.sub(() => {
-        this.invalidation.notify(this);
-      }));
-      this.subs.push(this.location.sub(() => {
-        this.invalidation.notify(this);
-      }));
-      this.subs.push(this.text.sub(() => {
-        this.invalidation.notify(this);
-      }));
-      this.subs.push(this.fontSize.sub(() => {
-        this.invalidation.notify(this);
-      }));
-      this.subs.push(this.anchor.sub(() => {
-        this.invalidation.notify(this);
-      }));
-      this.subs.push(this.offset.sub(() => {
-        this.invalidation.notify(this);
-      }));
-      this.subs.push(this.bgPadding.sub(() => {
-        this.invalidation.notify(this);
-      }));
-      this.subs.push(this.bgOutlineWidth.sub(() => {
-        this.invalidation.notify(this);
-      }));
-    }
-    updateBounds(mapProjection) {
-      const fontSize = this.fontSize.get();
-      const anchor = this.anchor.get();
-      const width = 0.6 * fontSize * this.text.get().length;
-      const height = fontSize;
-      const pos = this.getPosition(mapProjection, MapCullableLocationTextLabel.tempVec2);
-      let left = pos[0] - anchor[0] * width;
-      let right = left + width;
-      let top = pos[1] - anchor[1] * height;
-      let bottom = top + height;
-      if (this.showBg.get()) {
-        const bgPadding = this.bgPadding.get();
-        const bgOutlineWidth = this.bgOutlineWidth.get();
-        left -= bgPadding[3] + bgOutlineWidth;
-        right += bgPadding[1] + bgOutlineWidth;
-        top -= bgPadding[0] + bgOutlineWidth;
-        bottom += bgPadding[2] + bgOutlineWidth;
-      }
-      this.bounds[0] = left;
-      this.bounds[1] = top;
-      this.bounds[2] = right;
-      this.bounds[3] = bottom;
-    }
-    destroy() {
-      for (const sub of this.subs) {
-        sub.destroy();
-      }
-    }
-  };
-  var MapCullableTextLabelManager = class {
-    constructor(cullingEnabled = true) {
-      this.cullingEnabled = cullingEnabled;
-      this.registered = /* @__PURE__ */ new Map();
-      this._visibleLabels = [];
-      this.needUpdate = false;
-      this.lastScaleFactor = 1;
-      this.lastRotation = 0;
-      this.invalidationHandler = () => {
-        this.needUpdate = true;
-      };
-    }
-    get visibleLabels() {
-      return this._visibleLabels;
-    }
-    register(label) {
-      if (this.registered.has(label)) {
-        return;
-      }
-      this.registered.set(label, label.invalidation.on(this.invalidationHandler));
-      this.needUpdate = true;
-    }
-    deregister(label) {
-      const sub = this.registered.get(label);
-      if (sub === void 0) {
-        return;
-      }
-      sub.destroy();
-      this.registered.delete(label);
-      this.needUpdate = true;
-    }
-    setCullingEnabled(enabled) {
-      this.cullingEnabled = enabled;
-      this.needUpdate = true;
-    }
-    update(mapProjection) {
-      if (!this.needUpdate) {
-        const scaleFactorRatio = mapProjection.getScaleFactor() / this.lastScaleFactor;
-        if (scaleFactorRatio < MapCullableTextLabelManager.SCALE_UPDATE_THRESHOLD && scaleFactorRatio > 1 / MapCullableTextLabelManager.SCALE_UPDATE_THRESHOLD) {
-          const rotationDelta = Math.abs(mapProjection.getRotation() - this.lastRotation);
-          if (Math.min(rotationDelta, 2 * Math.PI - rotationDelta) < MapCullableTextLabelManager.ROTATION_UPDATE_THRESHOLD) {
-            return;
-          }
-        }
-      }
-      const labelArray = Array.from(this.registered.keys()).sort(MapCullableTextLabelManager.SORT_FUNC);
-      if (this.cullingEnabled) {
-        this._visibleLabels = [];
-        const len = labelArray.length;
-        for (let i = 0; i < len; i++) {
-          labelArray[i].updateBounds(mapProjection);
-        }
-        const collisionArray = [];
-        for (let i = 0; i < len; i++) {
-          const label = labelArray[i];
-          let show = true;
-          if (!label.alwaysShow.get()) {
-            const len2 = collisionArray.length;
-            for (let j = 0; j < len2; j++) {
-              const other = collisionArray[j];
-              if (MapCullableTextLabelManager.doesCollide(label.bounds, other)) {
-                show = false;
-                break;
-              }
-            }
-          }
-          if (show) {
-            collisionArray.push(label.bounds);
-            this._visibleLabels.push(label);
-          }
+          streamStack.lineTo(endLon, endLat);
         }
       } else {
-        this._visibleLabels = labelArray;
+        const turnCenter = FlightPathUtils.getTurnCenterFromCircle(circle, GeoCirclePathRenderer.geoPointCache[0]);
+        const turnDirection = FlightPathUtils.getTurnDirectionFromCircle(circle);
+        const isCenterPole = Math.abs(turnCenter.lat) >= 90 - GeoCircle.ANGULAR_TOLERANCE * Avionics.Utils.RAD2DEG;
+        let startAngle, endAngle;
+        if (isCenterPole) {
+          startAngle = startLon;
+          endAngle = endLon;
+        } else {
+          startAngle = turnCenter.bearingTo(startLat, startLon);
+          endAngle = turnCenter.bearingTo(endLat, endLon);
+        }
+        streamStack.arc(turnCenter.lon, turnCenter.lat, FlightPathUtils.getTurnRadiusFromCircle(circle), startAngle, endAngle, turnDirection === "left");
       }
-      this.lastScaleFactor = mapProjection.getScaleFactor();
-      this.lastRotation = mapProjection.getRotation();
-      this.needUpdate = false;
-    }
-    static doesCollide(a, b) {
-      return a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
     }
   };
-  MapCullableTextLabelManager.SCALE_UPDATE_THRESHOLD = 1.2;
-  MapCullableTextLabelManager.ROTATION_UPDATE_THRESHOLD = Math.PI / 6;
-  MapCullableTextLabelManager.SORT_FUNC = (a, b) => {
-    const alwaysShowA = a.alwaysShow.get();
-    const alwaysShowB = b.alwaysShow.get();
-    if (alwaysShowA && !alwaysShowB) {
-      return -1;
-    } else if (alwaysShowB && !alwaysShowA) {
-      return 1;
-    } else {
-      return b.priority.get() - a.priority.get();
+  GeoCirclePathRenderer.NORTH_POLE_VEC = new Float64Array([0, 0, 1]);
+  GeoCirclePathRenderer.geoPointCache = [new GeoPoint(0, 0), new GeoPoint(0, 0)];
+  GeoCirclePathRenderer.vec3Cache = [new Float64Array(3)];
+  var FlightPathLegLineRenderer = class extends AbstractFlightPathLegRenderer {
+    constructor(styleSelector) {
+      super();
+      this.styleSelector = styleSelector;
+      this.pathRenderer = new GeoCirclePathRenderer();
+      this.styleBuffer = [
+        {
+          strokeWidth: 1,
+          strokeStyle: "white",
+          strokeDash: null,
+          outlineWidth: 0,
+          outlineStyle: "black",
+          outlineDash: null,
+          isContinuous: false
+        },
+        {
+          strokeWidth: 1,
+          strokeStyle: "white",
+          strokeDash: null,
+          outlineWidth: 0,
+          outlineStyle: "black",
+          outlineDash: null,
+          isContinuous: false
+        }
+      ];
+      this.activeStyleIndex = 0;
+      this.isAtLegStart = false;
+      this.needStrokeLineAtLegEnd = false;
     }
-  };
-  var AbstractMapWaypointIcon = class {
-    constructor(waypoint, priority, size, options) {
+    render(leg, context, streamStack, partsToRender, ...args) {
+      this.isAtLegStart = true;
+      this.needStrokeLineAtLegEnd = false;
+      super.render(leg, context, streamStack, partsToRender, ...args);
+      if (this.needStrokeLineAtLegEnd) {
+        this.strokeLine(context, this.styleBuffer[(this.activeStyleIndex + 1) % 2]);
+        this.needStrokeLineAtLegEnd = false;
+      }
+    }
+    renderVector(vector, isIngress, isEgress, leg, context, streamStack, ...args) {
+      const style = this.styleSelector(vector, isIngress, isEgress, leg, streamStack.getProjection(), this.styleBuffer[this.activeStyleIndex], ...args);
+      const previousStyle = this.styleBuffer[(this.activeStyleIndex + 1) % 2];
+      const didStyleChange = !this.isAtLegStart && !FlightPathLegLineRenderer.areStylesEqual(style, previousStyle);
+      const continuePath = !this.isAtLegStart && style.isContinuous && !didStyleChange;
+      if (didStyleChange) {
+        this.strokeLine(context, previousStyle);
+        this.needStrokeLineAtLegEnd = false;
+      }
+      const circle = FlightPathUtils.setGeoCircleFromVector(vector, FlightPathLegLineRenderer.geoCircleCache[1]);
+      this.pathRenderer.render(circle, vector.startLat, vector.startLon, vector.endLat, vector.endLon, streamStack, continuePath);
+      this.activeStyleIndex = (this.activeStyleIndex + 1) % 2;
+      this.isAtLegStart = false;
+      this.needStrokeLineAtLegEnd = true;
+    }
+    strokeLine(context, style) {
       var _a2, _b;
-      this.waypoint = waypoint;
-      this.priority = SubscribableUtils.toSubscribable(priority, true);
-      this.size = SubscribableUtils.toSubscribable(size, true);
-      this.anchor = SubscribableUtils.toSubscribable((_a2 = options === null || options === void 0 ? void 0 : options.anchor) !== null && _a2 !== void 0 ? _a2 : Vec2Math.create(0.5, 0.5), true);
-      this.offset = SubscribableUtils.toSubscribable((_b = options === null || options === void 0 ? void 0 : options.offset) !== null && _b !== void 0 ? _b : Vec2Math.create(), true);
+      if (style.outlineWidth > 0) {
+        const outlineWidth = style.strokeWidth + 2 * style.outlineWidth;
+        context.lineWidth = outlineWidth;
+        context.strokeStyle = style.outlineStyle;
+        context.setLineDash((_a2 = style.outlineDash) !== null && _a2 !== void 0 ? _a2 : FlightPathLegLineRenderer.EMPTY_DASH);
+        context.stroke();
+      }
+      if (style.strokeWidth > 0) {
+        context.lineWidth = style.strokeWidth;
+        context.strokeStyle = style.strokeStyle;
+        context.setLineDash((_b = style.strokeDash) !== null && _b !== void 0 ? _b : FlightPathLegLineRenderer.EMPTY_DASH);
+        context.stroke();
+      }
     }
-    draw(context, mapProjection) {
-      const size = this.size.get();
-      const offset = this.offset.get();
-      const anchor = this.anchor.get();
-      const projected = mapProjection.project(this.waypoint.location.get(), MapWaypointImageIcon.tempVec2);
-      const left = projected[0] + offset[0] - anchor[0] * size[0];
-      const top = projected[1] + offset[1] - anchor[1] * size[1];
-      this.drawIconAt(context, mapProjection, left, top);
+    static areStylesEqual(style1, style2) {
+      return (style1.strokeWidth === 0 && style2.strokeWidth === 0 || style1.strokeWidth === style2.strokeWidth && style1.strokeStyle === style2.strokeStyle && style1.strokeDash === style2.strokeDash) && (style1.outlineWidth === 0 && style2.outlineWidth === 0 || style1.outlineWidth === style2.outlineWidth && style1.outlineStyle === style2.outlineStyle && style1.outlineDash === style2.outlineDash);
     }
   };
-  AbstractMapWaypointIcon.tempVec2 = new Float64Array(2);
-  var MapWaypointImageIcon = class extends AbstractMapWaypointIcon {
-    constructor(waypoint, priority, img, size, options) {
-      super(waypoint, priority, size, options);
-      this.img = img;
-    }
-    drawIconAt(context, mapProjection, left, top) {
-      const size = this.size.get();
-      context.drawImage(this.img, left, top, size[0], size[1]);
-    }
-  };
-  var MapWaypointRenderer = class {
-    constructor(textManager, selectRoleToRender = MapWaypointRenderer.DEFAULT_RENDER_ROLE_SELECTOR) {
-      this.textManager = textManager;
-      this.selectRoleToRender = selectRoleToRender;
-      this.registered = /* @__PURE__ */ new Map();
-      this.toCleanUp = /* @__PURE__ */ new Set();
-      this.roleDefinitions = /* @__PURE__ */ new Map();
-      this.onWaypointAdded = new SubEvent();
-      this.onWaypointRemoved = new SubEvent();
-    }
-    hasRenderRole(role) {
-      return this.roleDefinitions.has(role);
-    }
-    addRenderRole(role, def) {
-      if (this.roleDefinitions.has(role)) {
-        return false;
-      }
-      this.roleDefinitions.set(role, Object.assign({}, def !== null && def !== void 0 ? def : MapWaypointRenderer.NULL_ROLE_DEF));
-      return true;
-    }
-    removeRenderRole(role) {
-      return this.roleDefinitions.delete(role);
-    }
-    getRenderRoleDefinition(role) {
-      return this.roleDefinitions.get(role);
-    }
-    renderRoles() {
-      return this.roleDefinitions.keys();
-    }
-    clearRenderRoles() {
-      this.roleDefinitions.clear();
-    }
-    setIconFactory(role, factory) {
-      const roleDef = this.roleDefinitions.get(role);
-      if (!roleDef) {
-        return false;
-      }
-      roleDef.iconFactory = factory;
-      return true;
-    }
-    setLabelFactory(role, factory) {
-      const roleDef = this.roleDefinitions.get(role);
-      if (!roleDef) {
-        return false;
-      }
-      roleDef.labelFactory = factory;
-      return true;
-    }
-    setCanvasContext(role, context) {
-      const roleDef = this.roleDefinitions.get(role);
-      if (!roleDef) {
-        return false;
-      }
-      roleDef.canvasContext = context;
-      return true;
-    }
-    setVisibilityHandler(role, handler) {
-      const roleDef = this.roleDefinitions.get(role);
-      if (!roleDef) {
-        return false;
-      }
-      roleDef.visibilityHandler = handler;
-      return true;
-    }
-    isRegistered(waypoint, role) {
-      if (!waypoint) {
-        return false;
-      }
-      const entry = this.registered.get(waypoint.uid);
-      if (!entry) {
-        return false;
-      }
-      if (role === void 0) {
-        return true;
-      }
-      return entry.isAllRoles(role);
-    }
-    register(waypoint, role, sourceId) {
-      if (role === 0 || sourceId === "") {
-        return;
-      }
-      let entry = this.registered.get(waypoint.uid);
-      if (!entry) {
-        entry = new MapWaypointRendererEntry(waypoint, this.textManager, this.roleDefinitions, this.selectRoleToRender);
-        this.registered.set(waypoint.uid, entry);
-        this.onWaypointAdded.notify(this, waypoint);
-      }
-      entry.addRole(role, sourceId);
-    }
-    deregister(waypoint, role, sourceId) {
-      if (role === 0 || sourceId === "") {
-        return;
-      }
-      const entry = this.registered.get(waypoint.uid);
-      if (!entry) {
-        return;
-      }
-      entry.removeRole(role, sourceId);
-      if (entry.roles === 0) {
-        this.deleteEntry(entry);
-        this.onWaypointRemoved.notify(this, waypoint);
-      }
-    }
-    deleteEntry(entry) {
-      this.registered.delete(entry.waypoint.uid);
-      this.toCleanUp.add(entry);
-    }
-    update(mapProjection) {
-      var _a2;
-      this.toCleanUp.forEach((entry) => {
-        entry.destroy();
-      });
-      this.toCleanUp.clear();
-      const entriesToDrawIcon = [];
-      this.registered.forEach((entry) => {
-        entry.update();
-        if (entry.icon) {
-          entriesToDrawIcon.push(entry);
-        }
-      });
-      const projectedSize = mapProjection.getProjectedSize();
-      for (const roleDef of this.roleDefinitions.values()) {
-        const context = roleDef.canvasContext;
-        if (context) {
-          context.clearRect(0, 0, projectedSize[0], projectedSize[1]);
-        }
-      }
-      entriesToDrawIcon.sort(MapWaypointRenderer.ENTRY_SORT_FUNC);
-      const len2 = entriesToDrawIcon.length;
-      for (let i = 0; i < len2; i++) {
-        const entry = entriesToDrawIcon[i];
-        const icon = entry.icon;
-        const context = (_a2 = this.roleDefinitions.get(entry.lastRenderedRole)) === null || _a2 === void 0 ? void 0 : _a2.canvasContext;
-        if (context) {
-          icon.draw(context, mapProjection);
-        }
-      }
-    }
-    getNearestWaypoint(pos, first) {
-      var _a2, _b;
-      const ordered = [...this.registered.values()].sort((a, b) => this.orderByDistance(a.waypoint, b.waypoint, pos)).filter((w) => {
-        const roleDef = this.getRenderRoleDefinition(w.lastRenderedRole);
-        if (roleDef !== void 0) {
-          return roleDef.visibilityHandler(w.waypoint);
-        }
-        return false;
-      });
-      if (first !== void 0) {
-        return (_a2 = ordered.find((entry) => first(entry.waypoint))) === null || _a2 === void 0 ? void 0 : _a2.waypoint;
-      }
-      return (_b = ordered[0]) === null || _b === void 0 ? void 0 : _b.waypoint;
-    }
-    orderByDistance(a, b, pos) {
-      const aDist = a.location.get().distance(pos);
-      const bDist = b.location.get().distance(pos);
-      return aDist - bDist;
-    }
-  };
-  MapWaypointRenderer.NULL_ROLE_DEF = {
-    iconFactory: null,
-    labelFactory: null,
-    canvasContext: null,
-    visibilityHandler: () => true
-  };
-  MapWaypointRenderer.ENTRY_SORT_FUNC = (a, b) => {
-    return a.icon.priority.get() - b.icon.priority.get();
-  };
-  MapWaypointRenderer.DEFAULT_RENDER_ROLE_SELECTOR = (entry, roleDefinitions) => {
-    for (const role of roleDefinitions.keys()) {
-      if (entry.isAllRoles(role) && roleDefinitions.get(role).visibilityHandler(entry.waypoint)) {
-        return role;
-      }
-    }
-    return 0;
-  };
-  var MapWaypointRendererEntry = class {
-    constructor(waypoint, textManager, roleDefinitions, selectRoleToRender) {
-      this.waypoint = waypoint;
-      this.textManager = textManager;
-      this.roleDefinitions = roleDefinitions;
-      this.selectRoleToRender = selectRoleToRender;
-      this.registrations = {};
-      this._roles = 0;
-      this._icon = null;
-      this._label = null;
-      this._lastRenderedRole = 0;
-    }
-    get roles() {
-      return this._roles;
-    }
-    get lastRenderedRole() {
-      return this._lastRenderedRole;
-    }
-    get icon() {
-      return this._icon;
-    }
-    get label() {
-      return this._label;
-    }
-    isAnyRole(roles, useLastRendered = false) {
-      let toCompare;
-      if (useLastRendered) {
-        toCompare = this.lastRenderedRole;
-      } else {
-        toCompare = this.roles;
-      }
-      return BitFlags.isAny(toCompare, roles);
-    }
-    isOnlyRole(roles, useLastRendered = false) {
-      let toCompare;
-      if (useLastRendered) {
-        toCompare = this.lastRenderedRole;
-      } else {
-        toCompare = this.roles;
-      }
-      return toCompare === roles;
-    }
-    isAllRoles(roles, useLastRendered = false) {
-      let toCompare;
-      if (useLastRendered) {
-        toCompare = this.lastRenderedRole;
-      } else {
-        toCompare = this.roles;
-      }
-      return BitFlags.isAll(toCompare, roles);
-    }
-    addRole(roles, sourceId) {
-      BitFlags.forEach(roles, (value, index) => {
-        var _a2;
-        var _b, _c;
-        ((_a2 = (_b = this.registrations)[_c = 1 << index]) !== null && _a2 !== void 0 ? _a2 : _b[_c] = /* @__PURE__ */ new Set()).add(sourceId);
-      }, true);
-      this._roles = this._roles | roles;
-    }
-    removeRole(roles, sourceId) {
-      BitFlags.forEach(roles, (value, index) => {
-        const role = 1 << index;
-        const registrations = this.registrations[role];
-        if (registrations) {
-          registrations.delete(sourceId);
-          if (registrations.size === 0) {
-            this._roles = this._roles & ~role;
-          }
-        }
-      }, true);
-    }
-    prepareRender(showRole, iconFactory, labelFactory) {
-      var _a2, _b;
-      if (showRole === this._lastRenderedRole) {
-        return;
-      }
-      this._icon = (_a2 = iconFactory === null || iconFactory === void 0 ? void 0 : iconFactory.getIcon(showRole, this.waypoint)) !== null && _a2 !== void 0 ? _a2 : null;
-      const label = (_b = labelFactory === null || labelFactory === void 0 ? void 0 : labelFactory.getLabel(showRole, this.waypoint)) !== null && _b !== void 0 ? _b : null;
-      if (this._label && this._label !== label) {
-        this.textManager.deregister(this._label);
-      }
-      if (label && label !== this._label) {
-        this.textManager.register(label);
-      }
-      this._label = label;
-      this._lastRenderedRole = showRole;
-    }
-    update() {
-      var _a2, _b;
-      const showRole = this.selectRoleToRender(this, this.roleDefinitions);
-      const roleDef = this.roleDefinitions.get(showRole);
-      const iconFactory = (_a2 = roleDef === null || roleDef === void 0 ? void 0 : roleDef.iconFactory) !== null && _a2 !== void 0 ? _a2 : null;
-      const labelFactory = (_b = roleDef === null || roleDef === void 0 ? void 0 : roleDef.labelFactory) !== null && _b !== void 0 ? _b : null;
-      this.prepareRender(showRole, iconFactory, labelFactory);
-    }
-    destroy() {
-      if (this._label) {
-        this.textManager.deregister(this._label);
-      }
-    }
-  };
+  FlightPathLegLineRenderer.EMPTY_DASH = [];
+  FlightPathLegLineRenderer.geoCircleCache = [new GeoCircle(new Float64Array(3), 0), new GeoCircle(new Float64Array(3), 0)];
   var NullPathStream = class {
     beginPath() {
     }
@@ -16961,6 +18715,59 @@
       this.stack[this.stack.length - 1].closePath();
     }
   };
+  var GeoCirclePatternRenderer = class {
+    constructor() {
+      this.pathRenderer = new GeoCirclePathRenderer();
+      this.patternStream = new PatternPathStream(NullPathStream.INSTANCE, null);
+    }
+    render(circle, startLat, startLon, endLat, endLon, context, streamStack, pattern, continuePath = false) {
+      this.patternStream.setPattern(pattern);
+      streamStack.unshiftPostProjected(this.patternStream);
+      this.pathRenderer.render(circle, startLat, startLon, endLat, endLon, streamStack, continuePath);
+      streamStack.shiftPostProjected();
+    }
+  };
+  var FlightPathVectorPatternRenderer = class {
+    constructor() {
+      this.renderer = new GeoCirclePatternRenderer();
+    }
+    render(vector, context, streamStack, pattern, continuePath = false) {
+      const circle = FlightPathUtils.setGeoCircleFromVector(vector, FlightPathVectorPatternRenderer.geoCircleCache[0]);
+      this.renderer.render(circle, vector.startLat, vector.startLon, vector.endLat, vector.endLon, context, streamStack, pattern, continuePath);
+    }
+  };
+  FlightPathVectorPatternRenderer.geoCircleCache = [new GeoCircle(new Float64Array(3), 0)];
+  var GeoCircleLineRenderer = class {
+    constructor() {
+      this.pathRenderer = new GeoCirclePathRenderer();
+    }
+    render(circle, startLat, startLon, endLat, endLon, context, streamStack, width, style, dash, outlineWidth = 0, outlineStyle = "black", lineCap = "butt") {
+      this.pathRenderer.render(circle, startLat, startLon, endLat, endLon, streamStack);
+      if (outlineWidth > 0) {
+        context.lineWidth = width + outlineWidth * 2;
+        context.strokeStyle = outlineStyle;
+        context.lineCap = lineCap;
+        context.setLineDash(dash !== null && dash !== void 0 ? dash : GeoCircleLineRenderer.EMPTY_DASH);
+        context.stroke();
+      }
+      context.lineWidth = width;
+      context.strokeStyle = style;
+      context.lineCap = lineCap;
+      context.setLineDash(dash !== null && dash !== void 0 ? dash : GeoCircleLineRenderer.EMPTY_DASH);
+      context.stroke();
+    }
+  };
+  GeoCircleLineRenderer.EMPTY_DASH = [];
+  var FlightPathVectorLineRenderer = class {
+    constructor() {
+      this.renderer = new GeoCircleLineRenderer();
+    }
+    render(vector, context, streamStack, width, style, dash, outlineWidth, outlineStyle, lineCap = "butt") {
+      const circle = FlightPathUtils.setGeoCircleFromVector(vector, FlightPathVectorLineRenderer.geoCircleCache[0]);
+      this.renderer.render(circle, vector.startLat, vector.startLon, vector.endLat, vector.endLon, context, streamStack, width, style, dash, outlineWidth, outlineStyle, lineCap);
+    }
+  };
+  FlightPathVectorLineRenderer.geoCircleCache = [new GeoCircle(new Float64Array(3), 0)];
   var GeoProjectionPathStreamStack = class extends AbstractTransformingPathStream {
     constructor(consumer, projection, arg1, arg2, arg3) {
       super(consumer);
@@ -17028,280 +18835,6 @@
       this.preStack.closePath();
     }
   };
-  var GeoCirclePathRenderer = class {
-    render(circle, startLat, startLon, endLat, endLon, streamStack, continuePath = false) {
-      if (!continuePath) {
-        streamStack.beginPath();
-        streamStack.moveTo(startLon, startLat);
-      }
-      if (circle.isGreatCircle()) {
-        const startPoint = GeoPoint.sphericalToCartesian(startLat, startLon, GeoCirclePathRenderer.vec3Cache[0]);
-        const distance = circle.distanceAlong(startPoint, GeoCirclePathRenderer.geoPointCache[0].set(endLat, endLon), Math.PI);
-        if (distance >= Math.PI - GeoPoint.EQUALITY_TOLERANCE) {
-          const midPoint = circle.offsetDistanceAlong(startPoint, distance / 2, GeoCirclePathRenderer.geoPointCache[0], Math.PI);
-          const midLat = midPoint.lat;
-          const midLon = midPoint.lon;
-          streamStack.lineTo(midLon, midLat);
-          streamStack.lineTo(endLon, endLat);
-        } else {
-          streamStack.lineTo(endLon, endLat);
-        }
-      } else {
-        const turnCenter = FlightPathUtils.getTurnCenterFromCircle(circle, GeoCirclePathRenderer.geoPointCache[0]);
-        const turnDirection = FlightPathUtils.getTurnDirectionFromCircle(circle);
-        const isCenterPole = Math.abs(turnCenter.lat) >= 90 - GeoCircle.ANGULAR_TOLERANCE * Avionics.Utils.RAD2DEG;
-        let startAngle, endAngle;
-        if (isCenterPole) {
-          startAngle = startLon;
-          endAngle = endLon;
-        } else {
-          startAngle = turnCenter.bearingTo(startLat, startLon);
-          endAngle = turnCenter.bearingTo(endLat, endLon);
-        }
-        streamStack.arc(turnCenter.lon, turnCenter.lat, FlightPathUtils.getTurnRadiusFromCircle(circle), startAngle, endAngle, turnDirection === "left");
-      }
-    }
-  };
-  GeoCirclePathRenderer.NORTH_POLE_VEC = new Float64Array([0, 0, 1]);
-  GeoCirclePathRenderer.geoPointCache = [new GeoPoint(0, 0), new GeoPoint(0, 0)];
-  GeoCirclePathRenderer.vec3Cache = [new Float64Array(3)];
-  var GeoCircleLineRenderer = class {
-    constructor() {
-      this.pathRenderer = new GeoCirclePathRenderer();
-    }
-    render(circle, startLat, startLon, endLat, endLon, context, streamStack, width, style, dash, outlineWidth = 0, outlineStyle = "black", lineCap = "butt") {
-      this.pathRenderer.render(circle, startLat, startLon, endLat, endLon, streamStack);
-      if (outlineWidth > 0) {
-        context.lineWidth = width + outlineWidth * 2;
-        context.strokeStyle = outlineStyle;
-        context.lineCap = lineCap;
-        context.setLineDash(dash !== null && dash !== void 0 ? dash : GeoCircleLineRenderer.EMPTY_DASH);
-        context.stroke();
-      }
-      context.lineWidth = width;
-      context.strokeStyle = style;
-      context.lineCap = lineCap;
-      context.setLineDash(dash !== null && dash !== void 0 ? dash : GeoCircleLineRenderer.EMPTY_DASH);
-      context.stroke();
-    }
-  };
-  GeoCircleLineRenderer.EMPTY_DASH = [];
-  var GeoCirclePatternRenderer = class {
-    constructor() {
-      this.pathRenderer = new GeoCirclePathRenderer();
-      this.patternStream = new PatternPathStream(NullPathStream.INSTANCE, null);
-    }
-    render(circle, startLat, startLon, endLat, endLon, context, streamStack, pattern, continuePath = false) {
-      this.patternStream.setPattern(pattern);
-      streamStack.unshiftPostProjected(this.patternStream);
-      this.pathRenderer.render(circle, startLat, startLon, endLat, endLon, streamStack, continuePath);
-      streamStack.shiftPostProjected();
-    }
-  };
-  var AbstractFlightPathPlanRenderer = class {
-    constructor(renderOrder = "forward", renderActiveLegLast = true) {
-      this.renderOrder = renderOrder;
-      this.renderActiveLegLast = renderActiveLegLast;
-    }
-    render(plan, startIndex, endIndex, context, streamStack, ...args) {
-      startIndex !== null && startIndex !== void 0 ? startIndex : startIndex = 0;
-      endIndex !== null && endIndex !== void 0 ? endIndex : endIndex = plan.length - 1;
-      const activeLegIndex = plan.activeLateralLeg < plan.length ? plan.activeLateralLeg : -1;
-      const activeLeg = plan.activeLateralLeg < plan.length ? plan.getLeg(plan.activeLateralLeg) : void 0;
-      const isReverse = this.renderOrder === "reverse";
-      if (isReverse) {
-        const oldEndIndex = endIndex;
-        endIndex = startIndex;
-        startIndex = oldEndIndex;
-      }
-      let index = startIndex;
-      const delta = isReverse ? -1 : 1;
-      for (const leg of plan.legs(isReverse, startIndex)) {
-        if ((index - endIndex) * delta > 0) {
-          break;
-        }
-        if (this.renderActiveLegLast && index === activeLegIndex) {
-          index += delta;
-          continue;
-        }
-        this.renderLeg(leg, plan, activeLeg, index, activeLegIndex, context, streamStack, ...args);
-        index += delta;
-      }
-      if (this.renderActiveLegLast && activeLeg) {
-        this.renderLeg(activeLeg, plan, activeLeg, activeLegIndex, activeLegIndex, context, streamStack, ...args);
-      }
-    }
-  };
-  var FlightPathLegRenderPart;
-  (function(FlightPathLegRenderPart2) {
-    FlightPathLegRenderPart2[FlightPathLegRenderPart2["None"] = 0] = "None";
-    FlightPathLegRenderPart2[FlightPathLegRenderPart2["Ingress"] = 1] = "Ingress";
-    FlightPathLegRenderPart2[FlightPathLegRenderPart2["Base"] = 2] = "Base";
-    FlightPathLegRenderPart2[FlightPathLegRenderPart2["Egress"] = 4] = "Egress";
-    FlightPathLegRenderPart2[FlightPathLegRenderPart2["All"] = 7] = "All";
-  })(FlightPathLegRenderPart || (FlightPathLegRenderPart = {}));
-  var AbstractFlightPathLegRenderer = class {
-    constructor() {
-      this.tempVector = FlightPathUtils.createEmptyCircleVector();
-    }
-    render(leg, context, streamStack, partsToRender, ...args) {
-      const legCalc = leg.calculated;
-      if (!legCalc || !BitFlags.isAny(partsToRender, FlightPathLegRenderPart.Ingress | FlightPathLegRenderPart.Base | FlightPathLegRenderPart.Egress)) {
-        return;
-      }
-      const excludeIngress = !BitFlags.isAll(partsToRender, FlightPathLegRenderPart.Ingress);
-      const excludeBase = !BitFlags.isAll(partsToRender, FlightPathLegRenderPart.Base);
-      const excludeEgress = !BitFlags.isAll(partsToRender, FlightPathLegRenderPart.Egress);
-      let mainVectors = legCalc.ingressToEgress;
-      let mainVectorStartIndex = 0;
-      let mainVectorEndIndex = legCalc.ingressToEgress.length;
-      if (excludeIngress || excludeEgress) {
-        mainVectors = legCalc.flightPath;
-        mainVectorEndIndex = excludeEgress || legCalc.egressJoinIndex < 0 || legCalc.egress.length === 0 ? legCalc.flightPath.length : legCalc.egressJoinIndex;
-      }
-      if (!excludeIngress) {
-        for (let i = 0; i < legCalc.ingress.length; i++) {
-          this.renderVector(legCalc.ingress[i], true, false, leg, context, streamStack, ...args);
-        }
-        if (excludeEgress && !excludeBase) {
-          mainVectorStartIndex = Math.max(0, legCalc.ingressJoinIndex);
-          const lastIngressVector = legCalc.ingress[legCalc.ingress.length - 1];
-          const ingressJoinVector = legCalc.flightPath[legCalc.ingressJoinIndex];
-          if (lastIngressVector && ingressJoinVector) {
-            const ingressEnd = AbstractFlightPathLegRenderer.geoPointCache[0].set(lastIngressVector.endLat, lastIngressVector.endLon);
-            const vectorEnd = AbstractFlightPathLegRenderer.geoPointCache[1].set(ingressJoinVector.endLat, ingressJoinVector.endLon);
-            if (!ingressEnd.equals(vectorEnd)) {
-              const ingressJoinVectorCircle = FlightPathUtils.setGeoCircleFromVector(ingressJoinVector, AbstractFlightPathLegRenderer.geoCircleCache[0]);
-              FlightPathUtils.setCircleVector(this.tempVector, ingressJoinVectorCircle, ingressEnd, vectorEnd, ingressJoinVector.flags);
-              this.renderVector(this.tempVector, false, false, leg, context, streamStack, ...args);
-            }
-            mainVectorStartIndex++;
-          }
-        }
-      }
-      if (!excludeBase) {
-        const len = Math.min(mainVectorEndIndex, mainVectors.length);
-        for (let i = mainVectorStartIndex; i < len; i++) {
-          this.renderVector(mainVectors[i], false, false, leg, context, streamStack, ...args);
-        }
-      }
-      if (!excludeEgress) {
-        if (excludeIngress && !excludeBase) {
-          const firstEgressVector = legCalc.egress[0];
-          const egressJoinVector = legCalc.flightPath[legCalc.egressJoinIndex];
-          if (firstEgressVector && egressJoinVector) {
-            const egressStart = AbstractFlightPathLegRenderer.geoPointCache[0].set(firstEgressVector.startLat, firstEgressVector.startLon);
-            const egressJoinVectorStart = AbstractFlightPathLegRenderer.geoPointCache[1].set(egressJoinVector.startLat, egressJoinVector.startLon);
-            if (!egressStart.equals(egressJoinVectorStart)) {
-              const egressJoinVectorCircle = FlightPathUtils.setGeoCircleFromVector(egressJoinVector, AbstractFlightPathLegRenderer.geoCircleCache[0]);
-              FlightPathUtils.setCircleVector(this.tempVector, egressJoinVectorCircle, egressJoinVectorStart, egressStart, egressJoinVector.flags);
-              this.renderVector(this.tempVector, false, false, leg, context, streamStack, ...args);
-            }
-          }
-        }
-        for (let i = 0; i < legCalc.egress.length; i++) {
-          this.renderVector(legCalc.egress[i], false, true, leg, context, streamStack, ...args);
-        }
-      }
-    }
-  };
-  AbstractFlightPathLegRenderer.geoPointCache = [new GeoPoint(0, 0), new GeoPoint(0, 0)];
-  AbstractFlightPathLegRenderer.geoCircleCache = [new GeoCircle(new Float64Array(3), 0)];
-  var FlightPathLegLineRenderer = class extends AbstractFlightPathLegRenderer {
-    constructor(styleSelector) {
-      super();
-      this.styleSelector = styleSelector;
-      this.pathRenderer = new GeoCirclePathRenderer();
-      this.styleBuffer = [
-        {
-          strokeWidth: 1,
-          strokeStyle: "white",
-          strokeDash: null,
-          outlineWidth: 0,
-          outlineStyle: "black",
-          outlineDash: null,
-          isContinuous: false
-        },
-        {
-          strokeWidth: 1,
-          strokeStyle: "white",
-          strokeDash: null,
-          outlineWidth: 0,
-          outlineStyle: "black",
-          outlineDash: null,
-          isContinuous: false
-        }
-      ];
-      this.activeStyleIndex = 0;
-      this.isAtLegStart = false;
-      this.needStrokeLineAtLegEnd = false;
-    }
-    render(leg, context, streamStack, partsToRender, ...args) {
-      this.isAtLegStart = true;
-      this.needStrokeLineAtLegEnd = false;
-      super.render(leg, context, streamStack, partsToRender, ...args);
-      if (this.needStrokeLineAtLegEnd) {
-        this.strokeLine(context, this.styleBuffer[(this.activeStyleIndex + 1) % 2]);
-        this.needStrokeLineAtLegEnd = false;
-      }
-    }
-    renderVector(vector, isIngress, isEgress, leg, context, streamStack, ...args) {
-      const style = this.styleSelector(vector, isIngress, isEgress, leg, streamStack.getProjection(), this.styleBuffer[this.activeStyleIndex], ...args);
-      const previousStyle = this.styleBuffer[(this.activeStyleIndex + 1) % 2];
-      const didStyleChange = !this.isAtLegStart && !FlightPathLegLineRenderer.areStylesEqual(style, previousStyle);
-      const continuePath = !this.isAtLegStart && style.isContinuous && !didStyleChange;
-      if (didStyleChange) {
-        this.strokeLine(context, previousStyle);
-        this.needStrokeLineAtLegEnd = false;
-      }
-      const circle = FlightPathUtils.setGeoCircleFromVector(vector, FlightPathLegLineRenderer.geoCircleCache[1]);
-      this.pathRenderer.render(circle, vector.startLat, vector.startLon, vector.endLat, vector.endLon, streamStack, continuePath);
-      this.activeStyleIndex = (this.activeStyleIndex + 1) % 2;
-      this.isAtLegStart = false;
-      this.needStrokeLineAtLegEnd = true;
-    }
-    strokeLine(context, style) {
-      var _a2, _b;
-      if (style.outlineWidth > 0) {
-        const outlineWidth = style.strokeWidth + 2 * style.outlineWidth;
-        context.lineWidth = outlineWidth;
-        context.strokeStyle = style.outlineStyle;
-        context.setLineDash((_a2 = style.outlineDash) !== null && _a2 !== void 0 ? _a2 : FlightPathLegLineRenderer.EMPTY_DASH);
-        context.stroke();
-      }
-      if (style.strokeWidth > 0) {
-        context.lineWidth = style.strokeWidth;
-        context.strokeStyle = style.strokeStyle;
-        context.setLineDash((_b = style.strokeDash) !== null && _b !== void 0 ? _b : FlightPathLegLineRenderer.EMPTY_DASH);
-        context.stroke();
-      }
-    }
-    static areStylesEqual(style1, style2) {
-      return (style1.strokeWidth === 0 && style2.strokeWidth === 0 || style1.strokeWidth === style2.strokeWidth && style1.strokeStyle === style2.strokeStyle && style1.strokeDash === style2.strokeDash) && (style1.outlineWidth === 0 && style2.outlineWidth === 0 || style1.outlineWidth === style2.outlineWidth && style1.outlineStyle === style2.outlineStyle && style1.outlineDash === style2.outlineDash);
-    }
-  };
-  FlightPathLegLineRenderer.EMPTY_DASH = [];
-  FlightPathLegLineRenderer.geoCircleCache = [new GeoCircle(new Float64Array(3), 0), new GeoCircle(new Float64Array(3), 0)];
-  var FlightPathVectorPatternRenderer = class {
-    constructor() {
-      this.renderer = new GeoCirclePatternRenderer();
-    }
-    render(vector, context, streamStack, pattern, continuePath = false) {
-      const circle = FlightPathUtils.setGeoCircleFromVector(vector, FlightPathVectorPatternRenderer.geoCircleCache[0]);
-      this.renderer.render(circle, vector.startLat, vector.startLon, vector.endLat, vector.endLon, context, streamStack, pattern, continuePath);
-    }
-  };
-  FlightPathVectorPatternRenderer.geoCircleCache = [new GeoCircle(new Float64Array(3), 0)];
-  var FlightPathVectorLineRenderer = class {
-    constructor() {
-      this.renderer = new GeoCircleLineRenderer();
-    }
-    render(vector, context, streamStack, width, style, dash, outlineWidth, outlineStyle, lineCap = "butt") {
-      const circle = FlightPathUtils.setGeoCircleFromVector(vector, FlightPathVectorLineRenderer.geoCircleCache[0]);
-      this.renderer.render(circle, vector.startLat, vector.startLon, vector.endLat, vector.endLon, context, streamStack, width, style, dash, outlineWidth, outlineStyle, lineCap);
-    }
-  };
-  FlightPathVectorLineRenderer.geoCircleCache = [new GeoCircle(new Float64Array(3), 0)];
   var MapAbstractAirspaceRenderer = class {
     render(airspace, projection, context, lod = 0, stream) {
       const shapes = airspace.lods[lod];
@@ -17311,78 +18844,873 @@
       }
     }
   };
-  var MapSingleLineAirspaceRenderer = class extends MapAbstractAirspaceRenderer {
-    constructor(lineWidth, strokeStyle, dash) {
-      super();
-      this.lineWidth = lineWidth;
-      this.strokeStyle = strokeStyle;
-      this.dash = dash;
+  var MapLayer = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this._isVisible = true;
     }
-    renderShape(shape, projection, context, stream) {
-      if (shape.length < 2) {
+    isVisible() {
+      return this._isVisible;
+    }
+    setVisible(val) {
+      if (this._isVisible === val) {
         return;
       }
-      stream !== null && stream !== void 0 ? stream : stream = context;
-      stream.beginPath();
-      const firstProjected = projection.project(shape[0].end, MapSingleLineAirspaceRenderer.vec2Cache[0]);
-      stream.moveTo(firstProjected[0], firstProjected[1]);
-      let start = shape[0].end;
-      const len = shape.length;
-      for (let i = 1; i < len; i++) {
-        const vector = shape[i];
-        const circle = vector.circle;
-        if (circle) {
-          if (circle.isGreatCircle()) {
-            this.pathGreatCircle(circle, start, vector.end, projection, stream);
-          } else {
-            this.pathSmallCircle(circle, start, vector.end, projection, stream);
-          }
+      this._isVisible = val;
+      this.onVisibilityChanged(val);
+    }
+    onVisibilityChanged(isVisible) {
+    }
+    onAttached() {
+    }
+    onWake() {
+    }
+    onSleep() {
+    }
+    onMapProjectionChanged(mapProjection, changeFlags) {
+    }
+    onUpdated(time, elapsed) {
+    }
+    onDetached() {
+    }
+  };
+  var MapProjectionChangeType;
+  (function(MapProjectionChangeType2) {
+    MapProjectionChangeType2[MapProjectionChangeType2["Target"] = 1] = "Target";
+    MapProjectionChangeType2[MapProjectionChangeType2["Center"] = 2] = "Center";
+    MapProjectionChangeType2[MapProjectionChangeType2["TargetProjected"] = 4] = "TargetProjected";
+    MapProjectionChangeType2[MapProjectionChangeType2["Range"] = 8] = "Range";
+    MapProjectionChangeType2[MapProjectionChangeType2["RangeEndpoints"] = 16] = "RangeEndpoints";
+    MapProjectionChangeType2[MapProjectionChangeType2["ScaleFactor"] = 32] = "ScaleFactor";
+    MapProjectionChangeType2[MapProjectionChangeType2["Rotation"] = 64] = "Rotation";
+    MapProjectionChangeType2[MapProjectionChangeType2["ProjectedSize"] = 128] = "ProjectedSize";
+    MapProjectionChangeType2[MapProjectionChangeType2["ProjectedResolution"] = 256] = "ProjectedResolution";
+  })(MapProjectionChangeType || (MapProjectionChangeType = {}));
+  var MapProjection = class {
+    constructor(projectedWidth, projectedHeight) {
+      this.target = new GeoPoint(0, 0);
+      this.targetProjectedOffset = new Float64Array(2);
+      this.targetProjected = new Float64Array(2);
+      this.range = 1;
+      this.rangeEndpoints = new Float64Array([0.5, 0, 0.5, 1]);
+      this.projectedSize = new Float64Array(2);
+      this.center = new GeoPoint(0, 0);
+      this.centerProjected = new Float64Array(2);
+      this.projectedRange = 0;
+      this.widthRange = 0;
+      this.heightRange = 0;
+      this.oldParameters = {
+        target: new GeoPoint(0, 0),
+        center: new GeoPoint(0, 0),
+        targetProjected: new Float64Array(2),
+        range: 1,
+        rangeEndpoints: new Float64Array(4),
+        scaleFactor: 1,
+        rotation: 0,
+        projectedSize: new Float64Array(2),
+        projectedResolution: 0
+      };
+      this.queuedParameters = Object.assign({}, this.oldParameters);
+      this.updateQueued = false;
+      this.changeListeners = [];
+      Vec2Math.set(projectedWidth, projectedHeight, this.projectedSize);
+      this.geoProjection = new MercatorProjection();
+      Vec2Math.set(projectedWidth / 2, projectedHeight / 2, this.centerProjected);
+      this.targetProjected.set(this.centerProjected);
+      this.geoProjection.setReflectY(true).setTranslation(this.centerProjected);
+      this.recompute();
+    }
+    getGeoProjection() {
+      return this.geoProjection;
+    }
+    getTarget() {
+      return this.target.readonly;
+    }
+    getTargetProjectedOffset() {
+      return this.targetProjectedOffset;
+    }
+    getTargetProjected() {
+      return this.targetProjected;
+    }
+    getRange() {
+      return this.range;
+    }
+    getRangeEndpoints() {
+      return this.rangeEndpoints;
+    }
+    getWidthRange() {
+      return this.widthRange;
+    }
+    getHeightRange() {
+      return this.heightRange;
+    }
+    getScaleFactor() {
+      return this.geoProjection.getScaleFactor();
+    }
+    getRotation() {
+      return this.geoProjection.getPostRotation();
+    }
+    getProjectedSize() {
+      return this.projectedSize;
+    }
+    getCenter() {
+      return this.center.readonly;
+    }
+    getCenterProjected() {
+      return this.centerProjected;
+    }
+    getProjectedResolution() {
+      return this.range / this.projectedRange;
+    }
+    calculateRangeAtCenter(centerProjected) {
+      const endpoints = this.rangeEndpoints;
+      const projectedWidth = this.projectedSize[0];
+      const projectedHeight = this.projectedSize[1];
+      const endpoint1 = MapProjection.tempVec2_3;
+      endpoint1[0] = centerProjected[0] + projectedWidth * (endpoints[0] - 0.5);
+      endpoint1[1] = centerProjected[1] + projectedHeight * (endpoints[1] - 0.5);
+      const endpoint2 = MapProjection.tempVec2_4;
+      endpoint2[0] = centerProjected[0] + projectedWidth * (endpoints[2] - 0.5);
+      endpoint2[1] = centerProjected[1] + projectedHeight * (endpoints[3] - 0.5);
+      const top = this.geoProjection.invert(endpoint1, MapProjection.tempGeoPoint_1);
+      const bottom = this.geoProjection.invert(endpoint2, MapProjection.tempGeoPoint_2);
+      return top.distance(bottom);
+    }
+    recompute() {
+      const currentTargetProjected = this.geoProjection.project(this.target, MapProjection.tempVec2_1);
+      if (!isFinite(currentTargetProjected[0] + currentTargetProjected[1])) {
+        const translation = this.geoProjection.getTranslation();
+        if (isFinite(this.target.lat) && isFinite(this.target.lon) && isFinite(this.geoProjection.getPostRotation()) && isFinite(translation[0]) && isFinite(translation[1])) {
+          this.geoProjection.setScaleFactor(MapProjection.DEFAULT_SCALE_FACTOR);
+          this.geoProjection.setCenter(MapProjection.tempGeoPoint_1.set(0, 0));
+          this.geoProjection.setPreRotation(Vec3Math.set(0, 0, 0, MapProjection.vec3Cache[0]));
         } else {
-          const endProjected = projection.project(vector.end, MapSingleLineAirspaceRenderer.vec2Cache[0]);
-          stream.moveTo(endProjected[0], endProjected[1]);
+          return;
         }
-        start = vector.end;
       }
-      context.lineWidth = this.lineWidth;
-      context.strokeStyle = this.strokeStyle;
-      context.setLineDash(this.dash);
-      context.stroke();
+      const currentCenterProjected = MapProjection.tempVec2_2;
+      currentCenterProjected.set(currentTargetProjected);
+      currentCenterProjected[0] -= this.targetProjectedOffset[0];
+      currentCenterProjected[1] -= this.targetProjectedOffset[1];
+      let currentRange = this.calculateRangeAtCenter(currentCenterProjected);
+      let ratio = currentRange / this.range;
+      if (!isFinite(ratio) || ratio === 0) {
+        return;
+      }
+      let lastScaleFactor = this.geoProjection.getScaleFactor();
+      let iterCount = 0;
+      let ratioError = Math.abs(ratio - 1);
+      let deltaRatioError = MapProjection.SCALE_FACTOR_TOLERANCE + 1;
+      while (iterCount++ < MapProjection.SCALE_FACTOR_MAX_ITER && ratioError > MapProjection.SCALE_FACTOR_TOLERANCE && deltaRatioError > MapProjection.SCALE_FACTOR_TOLERANCE) {
+        this.geoProjection.setScaleFactor(ratio * lastScaleFactor);
+        this.geoProjection.project(this.target, currentTargetProjected);
+        currentCenterProjected.set(currentTargetProjected);
+        currentCenterProjected[0] -= this.targetProjectedOffset[0];
+        currentCenterProjected[1] -= this.targetProjectedOffset[1];
+        currentRange = this.calculateRangeAtCenter(currentCenterProjected);
+        const newRatio = currentRange / this.range;
+        const ratioDelta = newRatio - ratio;
+        if (!isFinite(ratio) || ratio < 1 && ratioDelta <= 0 || ratio > 1 && ratioDelta >= 0) {
+          this.geoProjection.setScaleFactor(lastScaleFactor);
+        }
+        lastScaleFactor = this.geoProjection.getScaleFactor();
+        ratio = newRatio;
+        const newRatioError = Math.abs(ratio - 1);
+        deltaRatioError = Math.abs(newRatioError - ratioError);
+        ratioError = newRatioError;
+      }
+      this.invert(currentCenterProjected, this.center);
+      this.geoProjection.setCenter(this.center);
+      const preRotation = Vec3Math.set(-this.center.lon * Avionics.Utils.DEG2RAD, 0, 0, MapProjection.vec3Cache[0]);
+      this.geoProjection.setPreRotation(preRotation);
+      const width = this.projectedSize[0];
+      const height = this.projectedSize[1];
+      this.projectedRange = Math.hypot((this.rangeEndpoints[2] - this.rangeEndpoints[0]) * width, (this.rangeEndpoints[3] - this.rangeEndpoints[1]) * height);
+      const left = Vec2Math.set(0, height / 2, MapProjection.tempVec2_1);
+      const right = Vec2Math.set(width, height / 2, MapProjection.tempVec2_2);
+      this.widthRange = this.geoDistance(left, right);
+      const top = Vec2Math.set(width / 2, 0, MapProjection.tempVec2_1);
+      const bottom = Vec2Math.set(width / 2, height, MapProjection.tempVec2_2);
+      this.heightRange = this.geoDistance(top, bottom);
     }
-    pathGreatCircle(circle, start, end, projection, stream) {
-      const endProjected = projection.project(end, MapSingleLineAirspaceRenderer.vec2Cache[0]);
-      stream.lineTo(endProjected[0], endProjected[1]);
+    set(parameters) {
+      this.storeParameters(this.oldParameters);
+      parameters.projectedSize && this.setProjectedSize(parameters.projectedSize);
+      parameters.target && this.target.set(parameters.target);
+      parameters.targetProjectedOffset && this.setTargetProjectedOffset(parameters.targetProjectedOffset);
+      parameters.range !== void 0 && (this.range = parameters.range);
+      parameters.rangeEndpoints && this.rangeEndpoints.set(parameters.rangeEndpoints);
+      parameters.rotation !== void 0 && this.geoProjection.setPostRotation(parameters.rotation);
+      let changeFlags = this.computeChangeFlags(this.oldParameters);
+      if (changeFlags !== 0) {
+        this.recompute();
+        changeFlags |= this.computeDerivedChangeFlags(this.oldParameters);
+        if (changeFlags !== 0) {
+          this.notifyChangeListeners(changeFlags);
+        }
+      }
     }
-    pathSmallCircle(circle, start, end, projection, stream) {
-      const center = MapSingleLineAirspaceRenderer.geoPointCache[0].setFromCartesian(circle.radius < Math.PI / 2 ? circle.center : Vec3Math.multScalar(circle.center, -1, MapSingleLineAirspaceRenderer.vec3Cache[0]));
-      const centerProjected = projection.project(center, MapSingleLineAirspaceRenderer.vec2Cache[0]);
-      const endProjected = projection.project(end, MapSingleLineAirspaceRenderer.vec2Cache[1]);
-      if (start.equals(end)) {
-        const radius = Vec2Math.distance(endProjected, centerProjected);
-        const startAngle = Math.atan2(endProjected[1] - centerProjected[1], endProjected[0] - centerProjected[0]);
-        stream.arc(centerProjected[0], centerProjected[1], radius, startAngle, startAngle + 2 * Math.PI);
-        stream.moveTo(endProjected[0], endProjected[1]);
+    setQueued(parameters) {
+      Object.assign(this.queuedParameters, parameters);
+      this.updateQueued = true;
+    }
+    applyQueued() {
+      if (this.updateQueued) {
+        this.updateQueued = false;
+        this.set(this.queuedParameters);
+        for (const key in this.queuedParameters) {
+          delete this.queuedParameters[key];
+        }
+      }
+    }
+    setProjectedSize(size) {
+      this.projectedSize.set(size);
+      Vec2Math.set(size[0] / 2, size[1] / 2, this.centerProjected);
+      this.geoProjection.setTranslation(this.centerProjected);
+      Vec2Math.add(this.centerProjected, this.targetProjectedOffset, this.targetProjected);
+    }
+    setTargetProjectedOffset(offset) {
+      this.targetProjectedOffset.set(offset);
+      Vec2Math.add(this.centerProjected, this.targetProjectedOffset, this.targetProjected);
+    }
+    storeParameters(record) {
+      record.target.set(this.target);
+      record.center.set(this.center);
+      record.targetProjected.set(this.targetProjected);
+      record.range = this.range;
+      record.rangeEndpoints.set(this.rangeEndpoints);
+      record.scaleFactor = this.geoProjection.getScaleFactor();
+      record.rotation = this.getRotation();
+      record.projectedSize.set(this.projectedSize);
+      record.projectedResolution = this.getProjectedResolution();
+    }
+    computeChangeFlags(oldParameters) {
+      return (oldParameters.target.equals(this.target) ? 0 : MapProjectionChangeType.Target) | (Vec2Math.equals(oldParameters.targetProjected, this.targetProjected) ? 0 : MapProjectionChangeType.TargetProjected) | (oldParameters.range === this.range ? 0 : MapProjectionChangeType.Range) | (VecNMath.equals(oldParameters.rangeEndpoints, this.rangeEndpoints) ? 0 : MapProjectionChangeType.RangeEndpoints) | (oldParameters.rotation === this.getRotation() ? 0 : MapProjectionChangeType.Rotation) | (Vec2Math.equals(oldParameters.projectedSize, this.projectedSize) ? 0 : MapProjectionChangeType.ProjectedSize);
+    }
+    computeDerivedChangeFlags(oldParameters) {
+      return (oldParameters.center.equals(this.center) ? 0 : MapProjectionChangeType.Center) | (oldParameters.scaleFactor === this.geoProjection.getScaleFactor() ? 0 : MapProjectionChangeType.ScaleFactor) | (oldParameters.projectedResolution === this.getProjectedResolution() ? 0 : MapProjectionChangeType.ProjectedResolution);
+    }
+    project(point, out) {
+      return this.geoProjection.project(point, out);
+    }
+    invert(vec, out) {
+      return this.geoProjection.invert(vec, out);
+    }
+    isInProjectedBounds(point, bounds) {
+      let left;
+      let top;
+      let right;
+      let bottom;
+      if (bounds) {
+        left = bounds[0];
+        top = bounds[1];
+        right = bounds[2];
+        bottom = bounds[3];
       } else {
-        const startProjected = projection.project(start, MapSingleLineAirspaceRenderer.vec2Cache[2]);
-        const startDelta = Vec2Math.sub(startProjected, centerProjected, MapSingleLineAirspaceRenderer.vec2Cache[3]);
-        const startDeltaMag = Vec2Math.abs(startDelta);
-        const endDelta = Vec2Math.sub(endProjected, centerProjected, MapSingleLineAirspaceRenderer.vec2Cache[4]);
-        const endDeltaMag = Vec2Math.abs(endDelta);
-        const radius = (startDeltaMag + endDeltaMag) / 2;
-        const startAngle = Vec2Math.theta(startDelta);
-        const arcStartX = centerProjected[0] + radius / startDeltaMag * startDelta[0];
-        const arcStartY = centerProjected[1] + radius / startDeltaMag * startDelta[1];
-        const endAngle = Vec2Math.theta(endDelta);
-        const arcEndX = centerProjected[0] + radius / endDeltaMag * endDelta[0];
-        const arcEndY = centerProjected[1] + radius / endDeltaMag * endDelta[1];
-        stream.lineTo(arcStartX, arcStartY);
-        stream.arc(centerProjected[0], centerProjected[1], radius, startAngle, endAngle, circle.radius < Math.PI / 2);
-        stream.lineTo(arcEndX, arcEndY);
+        left = 0;
+        top = 0;
+        right = this.projectedSize[0];
+        bottom = this.projectedSize[1];
+      }
+      if (!(point instanceof Float64Array)) {
+        point = this.project(point, MapProjection.tempVec2_2);
+      }
+      const x = point[0];
+      const y = point[1];
+      return x >= left && x <= right && y >= top && y <= bottom;
+    }
+    geoDistance(point1, point2) {
+      if (point1 instanceof Float64Array) {
+        point1 = this.invert(point1, MapProjection.tempGeoPoint_1);
+      }
+      if (point2 instanceof Float64Array) {
+        point2 = this.invert(point2, MapProjection.tempGeoPoint_2);
+      }
+      return point1.distance(point2);
+    }
+    projectedDistance(point1, point2) {
+      if (!(point1 instanceof Float64Array)) {
+        point1 = this.project(point1, MapProjection.tempVec2_1);
+      }
+      if (!(point2 instanceof Float64Array)) {
+        point2 = this.project(point2, MapProjection.tempVec2_2);
+      }
+      return Vec2Math.distance(point1, point2);
+    }
+    notifyChangeListeners(changeFlags) {
+      for (let i = 0; i < this.changeListeners.length; i++) {
+        this.changeListeners[i](this, changeFlags);
+      }
+    }
+    addChangeListener(listener) {
+      this.changeListeners.push(listener);
+    }
+    removeChangeListener(listener) {
+      const index = this.changeListeners.lastIndexOf(listener);
+      if (index >= 0) {
+        this.changeListeners.splice(index, 1);
+        return true;
+      } else {
+        return false;
       }
     }
   };
-  MapSingleLineAirspaceRenderer.geoPointCache = [new GeoPoint(0, 0)];
-  MapSingleLineAirspaceRenderer.vec2Cache = [new Float64Array(2), new Float64Array(2), new Float64Array(2), new Float64Array(2), new Float64Array(2)];
-  MapSingleLineAirspaceRenderer.vec3Cache = [new Float64Array(3)];
+  MapProjection.DEFAULT_SCALE_FACTOR = UnitType.GA_RADIAN.convertTo(1, UnitType.NMILE);
+  MapProjection.SCALE_FACTOR_MAX_ITER = 20;
+  MapProjection.SCALE_FACTOR_TOLERANCE = 1e-6;
+  MapProjection.tempVec2_1 = new Float64Array(2);
+  MapProjection.tempVec2_2 = new Float64Array(2);
+  MapProjection.tempVec2_3 = new Float64Array(2);
+  MapProjection.tempVec2_4 = new Float64Array(2);
+  MapProjection.tempGeoPoint_1 = new GeoPoint(0, 0);
+  MapProjection.tempGeoPoint_2 = new GeoPoint(0, 0);
+  MapProjection.vec3Cache = [Vec3Math.create()];
+  var MapComponent = class extends DisplayComponent {
+    constructor(props) {
+      var _a2;
+      super(props);
+      this.layerEntries = [];
+      this.lastUpdateTime = 0;
+      this._isAwake = true;
+      this.updateCycleHandler = this.update.bind(this);
+      this.projectedSize = "isSubscribable" in this.props.projectedSize ? this.props.projectedSize : Subject.create(this.props.projectedSize);
+      const initialSize = this.projectedSize.get();
+      if (this.props.projection !== void 0) {
+        this.props.projection.set({ projectedSize: new Float64Array(initialSize) });
+      }
+      this.mapProjection = (_a2 = this.props.projection) !== null && _a2 !== void 0 ? _a2 : new MapProjection(initialSize[0], initialSize[1]);
+    }
+    getProjectedSize() {
+      return this.mapProjection.getProjectedSize();
+    }
+    get isAwake() {
+      return this._isAwake;
+    }
+    sleep() {
+      this.setAwakeState(false);
+    }
+    wake() {
+      this.setAwakeState(true);
+    }
+    setAwakeState(isAwake) {
+      if (this._isAwake === isAwake) {
+        return;
+      }
+      this._isAwake = isAwake;
+      this._isAwake ? this.onWake() : this.onSleep();
+    }
+    onAfterRender(thisNode) {
+      var _a2;
+      this.mapProjection.addChangeListener(this.onMapProjectionChanged.bind(this));
+      this.projectedSizeSub = this.projectedSize.sub((size) => {
+        this.mapProjection.set({ projectedSize: size });
+      });
+      (_a2 = this.props.updateFreq) === null || _a2 === void 0 ? void 0 : _a2.sub((freq) => {
+        var _a3;
+        (_a3 = this.updateCycleSub) === null || _a3 === void 0 ? void 0 : _a3.destroy();
+        this.updateCycleSub = this.props.bus.getSubscriber().on("realTime").whenChanged().atFrequency(freq).handle(this.updateCycleHandler);
+      }, true);
+      this.attachLayers(thisNode);
+    }
+    attachLayers(thisNode) {
+      FSComponent.visitNodes(thisNode, (node) => {
+        if (node.instance instanceof MapLayer) {
+          this.attachLayer(node.instance);
+          return true;
+        }
+        return false;
+      });
+    }
+    onWake() {
+      this.wakeLayers();
+    }
+    wakeLayers() {
+      const len = this.layerEntries.length;
+      for (let i = 0; i < len; i++) {
+        this.layerEntries[i].layer.onWake();
+      }
+    }
+    onSleep() {
+      this.sleepLayers();
+    }
+    sleepLayers() {
+      const len = this.layerEntries.length;
+      for (let i = 0; i < len; i++) {
+        this.layerEntries[i].layer.onSleep();
+      }
+    }
+    onMapProjectionChanged(mapProjection, changeFlags) {
+      if (BitFlags.isAll(changeFlags, MapProjectionChangeType.ProjectedSize)) {
+        this.onProjectedSizeChanged();
+      }
+      const len = this.layerEntries.length;
+      for (let i = 0; i < len; i++) {
+        this.layerEntries[i].layer.onMapProjectionChanged(mapProjection, changeFlags);
+      }
+    }
+    attachLayer(layer) {
+      if (this.layerEntries.findIndex((entry2) => entry2.layer === layer) >= 0) {
+        return;
+      }
+      const entry = new LayerEntry(layer);
+      this.layerEntries.push(entry);
+      entry.attach();
+    }
+    detachLayer(layer) {
+      const index = this.layerEntries.findIndex((entry) => entry.layer === layer);
+      if (index >= 0) {
+        const entry = this.layerEntries[index];
+        entry.detach();
+        this.layerEntries.splice(index, 1);
+        return true;
+      } else {
+        return false;
+      }
+    }
+    update(time) {
+      if (!this._isAwake) {
+        return;
+      }
+      this.onUpdated(time, time - this.lastUpdateTime);
+      this.lastUpdateTime = time;
+    }
+    onUpdated(time, elapsed) {
+      this.updateLayers(time, elapsed);
+    }
+    updateLayers(time, elapsed) {
+      const len = this.layerEntries.length;
+      for (let i = 0; i < len; i++) {
+        this.layerEntries[i].update(time);
+      }
+    }
+    destroy() {
+      var _a2, _b;
+      super.destroy();
+      (_a2 = this.updateCycleSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
+      (_b = this.projectedSizeSub) === null || _b === void 0 ? void 0 : _b.destroy();
+      const len = this.layerEntries.length;
+      for (let i = 0; i < len; i++) {
+        this.layerEntries[i].destroy();
+      }
+    }
+  };
+  var LayerEntry = class {
+    constructor(layer) {
+      this.layer = layer;
+      this.updatePeriod = 0;
+      this.lastUpdated = 0;
+    }
+    attach() {
+      var _a2, _b;
+      (_a2 = this.updateFreqSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
+      this.updateFreqSub = (_b = this.layer.props.updateFreq) === null || _b === void 0 ? void 0 : _b.sub((freq) => {
+        const clamped = Math.max(0, freq);
+        this.updatePeriod = clamped === 0 ? 0 : 1e3 / clamped;
+      }, true);
+      this.layer.onAttached();
+    }
+    update(currentTime) {
+      if (currentTime - this.lastUpdated >= this.updatePeriod) {
+        this.layer.onUpdated(currentTime, currentTime - this.lastUpdated);
+        this.lastUpdated = currentTime;
+      }
+    }
+    detach() {
+      var _a2;
+      (_a2 = this.updateFreqSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
+      this.layer.onDetached();
+    }
+    destroy() {
+      this.detach();
+      this.layer.destroy();
+    }
+  };
+  var AbstractMapTextLabel = class {
+    constructor(text, priority, options) {
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+      this.text = SubscribableUtils.toSubscribable(text, true);
+      this.priority = SubscribableUtils.toSubscribable(priority, true);
+      this.anchor = SubscribableUtils.toSubscribable((_a2 = options === null || options === void 0 ? void 0 : options.anchor) !== null && _a2 !== void 0 ? _a2 : Vec2Math.create(), true);
+      this.font = SubscribableUtils.toSubscribable((_b = options === null || options === void 0 ? void 0 : options.font) !== null && _b !== void 0 ? _b : "", true);
+      this.fontSize = SubscribableUtils.toSubscribable((_c = options === null || options === void 0 ? void 0 : options.fontSize) !== null && _c !== void 0 ? _c : 10, true);
+      this.fontStr = MappedSubject.create(([s, f]) => {
+        return `${s}px ${f}`;
+      }, this.fontSize, this.font);
+      this.fontColor = SubscribableUtils.toSubscribable((_d = options === null || options === void 0 ? void 0 : options.fontColor) !== null && _d !== void 0 ? _d : "white", true);
+      this.fontOutlineWidth = SubscribableUtils.toSubscribable((_e = options === null || options === void 0 ? void 0 : options.fontOutlineWidth) !== null && _e !== void 0 ? _e : 0, true);
+      this.fontOutlineColor = SubscribableUtils.toSubscribable((_f = options === null || options === void 0 ? void 0 : options.fontOutlineColor) !== null && _f !== void 0 ? _f : "black", true);
+      this.showBg = SubscribableUtils.toSubscribable((_g = options === null || options === void 0 ? void 0 : options.showBg) !== null && _g !== void 0 ? _g : false, true);
+      this.bgColor = SubscribableUtils.toSubscribable((_h = options === null || options === void 0 ? void 0 : options.bgColor) !== null && _h !== void 0 ? _h : "black", true);
+      this.bgPadding = SubscribableUtils.toSubscribable((_j = options === null || options === void 0 ? void 0 : options.bgPadding) !== null && _j !== void 0 ? _j : VecNMath.create(4), true);
+      this.bgBorderRadius = SubscribableUtils.toSubscribable((_k = options === null || options === void 0 ? void 0 : options.bgBorderRadius) !== null && _k !== void 0 ? _k : 0, true);
+      this.bgOutlineWidth = SubscribableUtils.toSubscribable((_l = options === null || options === void 0 ? void 0 : options.bgOutlineWidth) !== null && _l !== void 0 ? _l : 0, true);
+      this.bgOutlineColor = SubscribableUtils.toSubscribable((_m = options === null || options === void 0 ? void 0 : options.bgOutlineColor) !== null && _m !== void 0 ? _m : "white", true);
+    }
+    draw(context, mapProjection) {
+      if (this.fontSize.get() !== 0) {
+        this.setTextStyle(context);
+        const width = context.measureText(this.text.get()).width;
+        const height = this.fontSize.get();
+        const showBg = this.showBg.get();
+        const bgPadding = this.bgPadding.get();
+        const bgOutlineWidth = this.bgOutlineWidth.get();
+        const bgExtraWidth = showBg ? bgPadding[1] + bgPadding[3] + bgOutlineWidth * 2 : 0;
+        const bgExtraHeight = showBg ? bgPadding[0] + bgPadding[2] + bgOutlineWidth * 2 : 0;
+        const anchor = this.anchor.get();
+        const pos = this.getPosition(mapProjection, AbstractMapTextLabel.tempVec2);
+        const centerX = pos[0] - (anchor[0] - 0.5) * (width + bgExtraWidth);
+        const centerY = pos[1] - (anchor[1] - 0.5) * (height + bgExtraHeight);
+        if (showBg) {
+          this.drawBackground(context, centerX, centerY, width, height);
+        }
+        this.drawText(context, centerX, centerY);
+      }
+    }
+    setTextStyle(context) {
+      context.font = this.fontStr.get();
+      context.textBaseline = "middle";
+      context.textAlign = "center";
+    }
+    drawText(context, centerX, centerY) {
+      const text = this.text.get();
+      const fontOutlineWidth = this.fontOutlineWidth.get();
+      if (fontOutlineWidth > 0) {
+        context.lineWidth = fontOutlineWidth * 2;
+        context.strokeStyle = this.fontOutlineColor.get();
+        context.strokeText(text, centerX, centerY);
+      }
+      context.fillStyle = this.fontColor.get();
+      context.fillText(text, centerX, centerY);
+    }
+    drawBackground(context, centerX, centerY, width, height) {
+      const bgPadding = this.bgPadding.get();
+      const bgOutlineWidth = this.bgOutlineWidth.get();
+      const bgBorderRadius = this.bgBorderRadius.get();
+      const backgroundLeft = centerX - width / 2 - (bgPadding[3] + bgOutlineWidth);
+      const backgroundTop = centerY - height / 2 - (bgPadding[0] + bgOutlineWidth);
+      const backgroundWidth = width + (bgPadding[1] + bgPadding[3] + 2 * bgOutlineWidth);
+      const backgroundHeight = height + (bgPadding[0] + bgPadding[2] + 2 * bgOutlineWidth);
+      let isRounded = false;
+      if (bgBorderRadius > 0) {
+        isRounded = true;
+        this.loadBackgroundPath(context, backgroundLeft, backgroundTop, backgroundWidth, backgroundHeight, bgBorderRadius);
+      }
+      if (bgOutlineWidth > 0) {
+        context.lineWidth = bgOutlineWidth * 2;
+        context.strokeStyle = this.bgOutlineColor.get();
+        if (isRounded) {
+          context.stroke();
+        } else {
+          context.strokeRect(backgroundLeft, backgroundTop, backgroundWidth, backgroundHeight);
+        }
+      }
+      context.fillStyle = this.bgColor.get();
+      if (isRounded) {
+        context.fill();
+      } else {
+        context.fillRect(backgroundLeft, backgroundTop, backgroundWidth, backgroundHeight);
+      }
+    }
+    loadBackgroundPath(context, left, top, width, height, radius) {
+      const right = left + width;
+      const bottom = top + height;
+      context.beginPath();
+      context.moveTo(left + radius, top);
+      context.lineTo(right - radius, top);
+      context.arcTo(right, top, right, top + radius, radius);
+      context.lineTo(right, bottom - radius);
+      context.arcTo(right, bottom, right - radius, bottom, radius);
+      context.lineTo(left + radius, bottom);
+      context.arcTo(left, bottom, left, bottom - radius, radius);
+      context.lineTo(left, top + radius);
+      context.arcTo(left, top, left + radius, top, radius);
+    }
+  };
+  AbstractMapTextLabel.tempVec2 = new Float64Array(2);
+  var MapLocationTextLabel = class extends AbstractMapTextLabel {
+    constructor(text, priority, location, options) {
+      var _a2;
+      super(text, priority, options);
+      this.location = SubscribableUtils.toSubscribable(location, true);
+      this.offset = SubscribableUtils.toSubscribable((_a2 = options === null || options === void 0 ? void 0 : options.offset) !== null && _a2 !== void 0 ? _a2 : Vec2Math.create(), true);
+    }
+    getPosition(mapProjection, out) {
+      mapProjection.project(this.location.get(), out);
+      Vec2Math.add(out, this.offset.get(), out);
+      return out;
+    }
+  };
+  var MapCullableLocationTextLabel = class extends MapLocationTextLabel {
+    constructor(text, priority, location, alwaysShow, options) {
+      super(text, priority, location, options);
+      this.bounds = new Float64Array(4);
+      this.invalidation = new SubEvent();
+      this.subs = [];
+      this.alwaysShow = SubscribableUtils.toSubscribable(alwaysShow, true);
+      this.subs.push(this.priority.sub(() => {
+        this.invalidation.notify(this);
+      }));
+      this.subs.push(this.alwaysShow.sub(() => {
+        this.invalidation.notify(this);
+      }));
+      this.subs.push(this.location.sub(() => {
+        this.invalidation.notify(this);
+      }));
+      this.subs.push(this.text.sub(() => {
+        this.invalidation.notify(this);
+      }));
+      this.subs.push(this.fontSize.sub(() => {
+        this.invalidation.notify(this);
+      }));
+      this.subs.push(this.anchor.sub(() => {
+        this.invalidation.notify(this);
+      }));
+      this.subs.push(this.offset.sub(() => {
+        this.invalidation.notify(this);
+      }));
+      this.subs.push(this.bgPadding.sub(() => {
+        this.invalidation.notify(this);
+      }));
+      this.subs.push(this.bgOutlineWidth.sub(() => {
+        this.invalidation.notify(this);
+      }));
+    }
+    updateBounds(mapProjection) {
+      const fontSize = this.fontSize.get();
+      const anchor = this.anchor.get();
+      const width = 0.6 * fontSize * this.text.get().length;
+      const height = fontSize;
+      const pos = this.getPosition(mapProjection, MapCullableLocationTextLabel.tempVec2);
+      let left = pos[0] - anchor[0] * width;
+      let right = left + width;
+      let top = pos[1] - anchor[1] * height;
+      let bottom = top + height;
+      if (this.showBg.get()) {
+        const bgPadding = this.bgPadding.get();
+        const bgOutlineWidth = this.bgOutlineWidth.get();
+        left -= bgPadding[3] + bgOutlineWidth;
+        right += bgPadding[1] + bgOutlineWidth;
+        top -= bgPadding[0] + bgOutlineWidth;
+        bottom += bgPadding[2] + bgOutlineWidth;
+      }
+      this.bounds[0] = left;
+      this.bounds[1] = top;
+      this.bounds[2] = right;
+      this.bounds[3] = bottom;
+    }
+    destroy() {
+      for (const sub of this.subs) {
+        sub.destroy();
+      }
+    }
+  };
+  var MapCullableTextLabelManager = class {
+    constructor(cullingEnabled = true) {
+      this.cullingEnabled = cullingEnabled;
+      this.registered = /* @__PURE__ */ new Map();
+      this._visibleLabels = [];
+      this.needUpdate = false;
+      this.lastScaleFactor = 1;
+      this.lastRotation = 0;
+      this.invalidationHandler = () => {
+        this.needUpdate = true;
+      };
+    }
+    get visibleLabels() {
+      return this._visibleLabels;
+    }
+    register(label) {
+      if (this.registered.has(label)) {
+        return;
+      }
+      this.registered.set(label, label.invalidation.on(this.invalidationHandler));
+      this.needUpdate = true;
+    }
+    deregister(label) {
+      const sub = this.registered.get(label);
+      if (sub === void 0) {
+        return;
+      }
+      sub.destroy();
+      this.registered.delete(label);
+      this.needUpdate = true;
+    }
+    setCullingEnabled(enabled) {
+      this.cullingEnabled = enabled;
+      this.needUpdate = true;
+    }
+    update(mapProjection) {
+      if (!this.needUpdate) {
+        const scaleFactorRatio = mapProjection.getScaleFactor() / this.lastScaleFactor;
+        if (scaleFactorRatio < MapCullableTextLabelManager.SCALE_UPDATE_THRESHOLD && scaleFactorRatio > 1 / MapCullableTextLabelManager.SCALE_UPDATE_THRESHOLD) {
+          const rotationDelta = Math.abs(mapProjection.getRotation() - this.lastRotation);
+          if (Math.min(rotationDelta, 2 * Math.PI - rotationDelta) < MapCullableTextLabelManager.ROTATION_UPDATE_THRESHOLD) {
+            return;
+          }
+        }
+      }
+      const labelArray = Array.from(this.registered.keys()).sort(MapCullableTextLabelManager.SORT_FUNC);
+      if (this.cullingEnabled) {
+        this._visibleLabels = [];
+        const len = labelArray.length;
+        for (let i = 0; i < len; i++) {
+          labelArray[i].updateBounds(mapProjection);
+        }
+        const collisionArray = [];
+        for (let i = 0; i < len; i++) {
+          const label = labelArray[i];
+          let show = true;
+          if (!label.alwaysShow.get()) {
+            const len2 = collisionArray.length;
+            for (let j = 0; j < len2; j++) {
+              const other = collisionArray[j];
+              if (MapCullableTextLabelManager.doesCollide(label.bounds, other)) {
+                show = false;
+                break;
+              }
+            }
+          }
+          if (show) {
+            collisionArray.push(label.bounds);
+            this._visibleLabels.push(label);
+          }
+        }
+      } else {
+        this._visibleLabels = labelArray;
+      }
+      this.lastScaleFactor = mapProjection.getScaleFactor();
+      this.lastRotation = mapProjection.getRotation();
+      this.needUpdate = false;
+    }
+    static doesCollide(a, b) {
+      return a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
+    }
+  };
+  MapCullableTextLabelManager.SCALE_UPDATE_THRESHOLD = 1.2;
+  MapCullableTextLabelManager.ROTATION_UPDATE_THRESHOLD = Math.PI / 6;
+  MapCullableTextLabelManager.SORT_FUNC = (a, b) => {
+    const alwaysShowA = a.alwaysShow.get();
+    const alwaysShowB = b.alwaysShow.get();
+    if (alwaysShowA && !alwaysShowB) {
+      return -1;
+    } else if (alwaysShowB && !alwaysShowA) {
+      return 1;
+    } else {
+      return b.priority.get() - a.priority.get();
+    }
+  };
+  var MapFieldOfViewCalculator = class {
+    constructor(maxIter = MapFieldOfViewCalculator.DEFAULT_MAX_ITER, rangeTolerance = MapFieldOfViewCalculator.DEFAULT_RANGE_TOLERANCE) {
+      this.maxIter = maxIter;
+      this.rangeTolerance = rangeTolerance;
+      this.tempProjection = new MapProjection(100, 100);
+    }
+    calculateFov(mapProjection, focus, margins, out) {
+      out.range = NaN;
+      out.target.set(NaN, NaN);
+      if (focus.length === 0) {
+        return out;
+      }
+      const projectedSize = mapProjection.getProjectedSize();
+      const targetWidth = projectedSize[0] - margins[0] - margins[2];
+      const targetHeight = projectedSize[1] - margins[1] - margins[3];
+      if (targetWidth * targetHeight <= 0) {
+        return out;
+      }
+      const mean = Vec3Math.set(0, 0, 0, MapFieldOfViewCalculator.vec3Cache[0]);
+      for (let i = 0; i < focus.length; i++) {
+        Vec3Math.add(mean, GeoPoint.sphericalToCartesian(focus[i], MapFieldOfViewCalculator.vec3Cache[1]), mean);
+      }
+      Vec3Math.multScalar(mean, 1 / focus.length, mean);
+      this.tempProjection.set({
+        projectedSize: mapProjection.getProjectedSize(),
+        rotation: mapProjection.getRotation(),
+        target: MapFieldOfViewCalculator.geoPointCache[0].setFromCartesian(mean),
+        targetProjectedOffset: Vec2Math.set(margins[0] + (targetWidth - projectedSize[0]) / 2, margins[1] + (targetHeight - projectedSize[1]) / 2, MapFieldOfViewCalculator.vec2Cache[0]),
+        rangeEndpoints: mapProjection.getRangeEndpoints(),
+        range: mapProjection.getRange()
+      });
+      let minX;
+      let minY;
+      let maxX;
+      let maxY;
+      for (let i = 0; i < focus.length; i++) {
+        const projected = this.tempProjection.project(focus[i], MapFieldOfViewCalculator.vec2Cache[0]);
+        minX = Math.min(projected[0], minX !== null && minX !== void 0 ? minX : Infinity);
+        minY = Math.min(projected[1], minY !== null && minY !== void 0 ? minY : Infinity);
+        maxX = Math.max(projected[0], maxX !== null && maxX !== void 0 ? maxX : -Infinity);
+        maxY = Math.max(projected[1], maxY !== null && maxY !== void 0 ? maxY : -Infinity);
+      }
+      if (minX === void 0 || minY === void 0 || maxX === void 0 || maxY === void 0) {
+        return out;
+      }
+      let focusWidth = maxX - minX;
+      let focusHeight = maxY - minY;
+      if (focusWidth === 0 && focusHeight === 0) {
+        out.target.set(focus[0]);
+        out.range = 0;
+        return out;
+      }
+      this.tempProjection.invert(Vec2Math.set((minX + maxX) / 2, (minY + maxY) / 2, MapFieldOfViewCalculator.vec2Cache[0]), out.target);
+      this.tempProjection.set({
+        target: out.target
+      });
+      let widthRatio = focusWidth / targetWidth;
+      let heightRatio = focusHeight / targetHeight;
+      let constrainedRatio = Math.max(widthRatio, heightRatio);
+      const range = out.range = this.tempProjection.getRange();
+      const topLeft = this.tempProjection.invert(Vec2Math.set(minX, minY, MapFieldOfViewCalculator.vec2Cache[0]), MapFieldOfViewCalculator.geoPointCache[0]);
+      const bottomRight = this.tempProjection.invert(Vec2Math.set(maxX, maxY, MapFieldOfViewCalculator.vec2Cache[0]), MapFieldOfViewCalculator.geoPointCache[1]);
+      let iterCount = 0;
+      const rangeParam = { range };
+      let ratioError = Math.abs(constrainedRatio - 1);
+      let deltaRatioError = this.rangeTolerance + 1;
+      while (iterCount++ < this.maxIter && ratioError > this.rangeTolerance && deltaRatioError > this.rangeTolerance) {
+        rangeParam.range = out.range = this.tempProjection.getRange() * constrainedRatio;
+        if (out.range <= GeoPoint.EQUALITY_TOLERANCE) {
+          out.range = GeoPoint.EQUALITY_TOLERANCE;
+          return out;
+        }
+        this.tempProjection.set(rangeParam);
+        const topLeftProjected = this.tempProjection.project(topLeft, MapFieldOfViewCalculator.vec2Cache[0]);
+        const bottomRightProjected = this.tempProjection.project(bottomRight, MapFieldOfViewCalculator.vec2Cache[1]);
+        focusWidth = bottomRightProjected[0] - topLeftProjected[0];
+        focusHeight = bottomRightProjected[1] - topLeftProjected[1];
+        widthRatio = focusWidth / targetWidth;
+        heightRatio = focusHeight / targetHeight;
+        constrainedRatio = Math.max(widthRatio, heightRatio);
+        const newRatioError = Math.abs(constrainedRatio - 1);
+        deltaRatioError = Math.abs(newRatioError - ratioError);
+        ratioError = newRatioError;
+      }
+      this.tempProjection.invert(mapProjection.getTargetProjected(), out.target);
+      return out;
+    }
+  };
+  MapFieldOfViewCalculator.DEFAULT_MAX_ITER = 20;
+  MapFieldOfViewCalculator.DEFAULT_RANGE_TOLERANCE = 0.01;
+  MapFieldOfViewCalculator.geoPointCache = [new GeoPoint(0, 0), new GeoPoint(0, 0)];
+  MapFieldOfViewCalculator.vec2Cache = [Vec2Math.create(), Vec2Math.create()];
+  MapFieldOfViewCalculator.vec3Cache = [Vec3Math.create(), Vec3Math.create()];
+  var MapModel = class {
+    constructor() {
+      this.modules = /* @__PURE__ */ new Map();
+    }
+    getModule(nameOrModule) {
+      if (typeof nameOrModule === "string") {
+        return this.modules.get(nameOrModule);
+      } else if (typeof nameOrModule === "function") {
+        return this.modules.get(nameOrModule.name);
+      }
+      throw new Error("Invalid type supplied: must be a string key or a module constructor.");
+    }
+    addModule(name, module) {
+      if (this.modules.has(name)) {
+        return;
+      }
+      this.modules.set(name, module);
+    }
+  };
   var Shape = class {
     constructor() {
       this.segments = [];
@@ -17596,7 +19924,7 @@
         } else {
           const lastIndex = this.length - 1;
           const result = this.calculateOffsetVertex(lastIndex, offset, startPoint);
-          if (!result || Shape.isPointInSegmentBounds(this.segments[lastIndex], this.segments[lastIndex - 1].end, result)) {
+          if (!result || !Shape.isPointInSegmentBounds(this.segments[lastIndex], this.segments[lastIndex - 1].end, result)) {
             this.calculateOffsetEndPoint(lastIndex, offset, startPoint);
           }
         }
@@ -17845,99 +20173,399 @@
   Shape.vec2Cache = [new Float64Array(2), new Float64Array(2), new Float64Array(2), new Float64Array(2)];
   Shape.vec3Cache = [new Float64Array(3)];
   Shape.transformCache = [new Transform2D(), new Transform2D()];
-  var MapFieldOfViewCalculator = class {
-    constructor(maxIter = MapFieldOfViewCalculator.DEFAULT_MAX_ITER, rangeTolerance = MapFieldOfViewCalculator.DEFAULT_RANGE_TOLERANCE) {
-      this.maxIter = maxIter;
-      this.rangeTolerance = rangeTolerance;
-      this.tempProjection = new MapProjection(100, 100);
+  var MapSingleLineAirspaceRenderer = class extends MapAbstractAirspaceRenderer {
+    constructor(lineWidth, strokeStyle, dash) {
+      super();
+      this.lineWidth = lineWidth;
+      this.strokeStyle = strokeStyle;
+      this.dash = dash;
     }
-    calculateFov(mapProjection, focus, margins, out) {
-      out.range = NaN;
-      out.target.set(NaN, NaN);
-      if (focus.length === 0) {
-        return out;
+    renderShape(shape, projection, context, stream) {
+      if (shape.length < 2) {
+        return;
       }
-      const projectedSize = mapProjection.getProjectedSize();
-      const targetWidth = projectedSize[0] - margins[0] - margins[2];
-      const targetHeight = projectedSize[1] - margins[1] - margins[3];
-      if (targetWidth * targetHeight <= 0) {
-        return out;
-      }
-      const mean = Vec3Math.set(0, 0, 0, MapFieldOfViewCalculator.vec3Cache[0]);
-      for (let i = 0; i < focus.length; i++) {
-        Vec3Math.add(mean, GeoPoint.sphericalToCartesian(focus[i], MapFieldOfViewCalculator.vec3Cache[1]), mean);
-      }
-      Vec3Math.multScalar(mean, 1 / focus.length, mean);
-      this.tempProjection.set({
-        projectedSize: mapProjection.getProjectedSize(),
-        rotation: mapProjection.getRotation(),
-        target: MapFieldOfViewCalculator.geoPointCache[0].setFromCartesian(mean),
-        targetProjectedOffset: Vec2Math.set(margins[0] + (targetWidth - projectedSize[0]) / 2, margins[1] + (targetHeight - projectedSize[1]) / 2, MapFieldOfViewCalculator.vec2Cache[0]),
-        rangeEndpoints: mapProjection.getRangeEndpoints(),
-        range: mapProjection.getRange()
-      });
-      let minX;
-      let minY;
-      let maxX;
-      let maxY;
-      for (let i = 0; i < focus.length; i++) {
-        const projected = this.tempProjection.project(focus[i], MapFieldOfViewCalculator.vec2Cache[0]);
-        minX = Math.min(projected[0], minX !== null && minX !== void 0 ? minX : Infinity);
-        minY = Math.min(projected[1], minY !== null && minY !== void 0 ? minY : Infinity);
-        maxX = Math.max(projected[0], maxX !== null && maxX !== void 0 ? maxX : -Infinity);
-        maxY = Math.max(projected[1], maxY !== null && maxY !== void 0 ? maxY : -Infinity);
-      }
-      if (minX === void 0 || minY === void 0 || maxX === void 0 || maxY === void 0) {
-        return out;
-      }
-      let focusWidth = maxX - minX;
-      let focusHeight = maxY - minY;
-      if (focusWidth === 0 && focusHeight === 0) {
-        out.target.set(focus[0]);
-        out.range = 0;
-        return out;
-      }
-      this.tempProjection.invert(Vec2Math.set((minX + maxX) / 2, (minY + maxY) / 2, MapFieldOfViewCalculator.vec2Cache[0]), out.target);
-      this.tempProjection.set({
-        target: out.target
-      });
-      let widthRatio = focusWidth / targetWidth;
-      let heightRatio = focusHeight / targetHeight;
-      let constrainedRatio = Math.max(widthRatio, heightRatio);
-      const range = out.range = this.tempProjection.getRange();
-      const topLeft = this.tempProjection.invert(Vec2Math.set(minX, minY, MapFieldOfViewCalculator.vec2Cache[0]), MapFieldOfViewCalculator.geoPointCache[0]);
-      const bottomRight = this.tempProjection.invert(Vec2Math.set(maxX, maxY, MapFieldOfViewCalculator.vec2Cache[0]), MapFieldOfViewCalculator.geoPointCache[1]);
-      let iterCount = 0;
-      const rangeParam = { range };
-      let ratioError = Math.abs(constrainedRatio - 1);
-      let deltaRatioError = this.rangeTolerance + 1;
-      while (iterCount++ < this.maxIter && ratioError > this.rangeTolerance && deltaRatioError > this.rangeTolerance) {
-        rangeParam.range = out.range = this.tempProjection.getRange() * constrainedRatio;
-        if (out.range <= GeoPoint.EQUALITY_TOLERANCE) {
-          out.range = GeoPoint.EQUALITY_TOLERANCE;
-          return out;
+      stream !== null && stream !== void 0 ? stream : stream = context;
+      stream.beginPath();
+      const firstProjected = projection.project(shape[0].end, MapSingleLineAirspaceRenderer.vec2Cache[0]);
+      stream.moveTo(firstProjected[0], firstProjected[1]);
+      let start = shape[0].end;
+      const len = shape.length;
+      for (let i = 1; i < len; i++) {
+        const vector = shape[i];
+        const circle = vector.circle;
+        if (circle) {
+          if (circle.isGreatCircle()) {
+            this.pathGreatCircle(circle, start, vector.end, projection, stream);
+          } else {
+            this.pathSmallCircle(circle, start, vector.end, projection, stream);
+          }
+        } else {
+          const endProjected = projection.project(vector.end, MapSingleLineAirspaceRenderer.vec2Cache[0]);
+          stream.moveTo(endProjected[0], endProjected[1]);
         }
-        this.tempProjection.set(rangeParam);
-        const topLeftProjected = this.tempProjection.project(topLeft, MapFieldOfViewCalculator.vec2Cache[0]);
-        const bottomRightProjected = this.tempProjection.project(bottomRight, MapFieldOfViewCalculator.vec2Cache[1]);
-        focusWidth = bottomRightProjected[0] - topLeftProjected[0];
-        focusHeight = bottomRightProjected[1] - topLeftProjected[1];
-        widthRatio = focusWidth / targetWidth;
-        heightRatio = focusHeight / targetHeight;
-        constrainedRatio = Math.max(widthRatio, heightRatio);
-        const newRatioError = Math.abs(constrainedRatio - 1);
-        deltaRatioError = Math.abs(newRatioError - ratioError);
-        ratioError = newRatioError;
+        start = vector.end;
       }
-      this.tempProjection.invert(mapProjection.getTargetProjected(), out.target);
-      return out;
+      context.lineWidth = this.lineWidth;
+      context.strokeStyle = this.strokeStyle;
+      context.setLineDash(this.dash);
+      context.stroke();
+    }
+    pathGreatCircle(circle, start, end, projection, stream) {
+      const endProjected = projection.project(end, MapSingleLineAirspaceRenderer.vec2Cache[0]);
+      stream.lineTo(endProjected[0], endProjected[1]);
+    }
+    pathSmallCircle(circle, start, end, projection, stream) {
+      const center = MapSingleLineAirspaceRenderer.geoPointCache[0].setFromCartesian(circle.radius < Math.PI / 2 ? circle.center : Vec3Math.multScalar(circle.center, -1, MapSingleLineAirspaceRenderer.vec3Cache[0]));
+      const centerProjected = projection.project(center, MapSingleLineAirspaceRenderer.vec2Cache[0]);
+      const endProjected = projection.project(end, MapSingleLineAirspaceRenderer.vec2Cache[1]);
+      if (start.equals(end)) {
+        const radius = Vec2Math.distance(endProjected, centerProjected);
+        const startAngle = Math.atan2(endProjected[1] - centerProjected[1], endProjected[0] - centerProjected[0]);
+        stream.arc(centerProjected[0], centerProjected[1], radius, startAngle, startAngle + 2 * Math.PI);
+        stream.moveTo(endProjected[0], endProjected[1]);
+      } else {
+        const startProjected = projection.project(start, MapSingleLineAirspaceRenderer.vec2Cache[2]);
+        const startDelta = Vec2Math.sub(startProjected, centerProjected, MapSingleLineAirspaceRenderer.vec2Cache[3]);
+        const startDeltaMag = Vec2Math.abs(startDelta);
+        const endDelta = Vec2Math.sub(endProjected, centerProjected, MapSingleLineAirspaceRenderer.vec2Cache[4]);
+        const endDeltaMag = Vec2Math.abs(endDelta);
+        const radius = (startDeltaMag + endDeltaMag) / 2;
+        const startAngle = Vec2Math.theta(startDelta);
+        const arcStartX = centerProjected[0] + radius / startDeltaMag * startDelta[0];
+        const arcStartY = centerProjected[1] + radius / startDeltaMag * startDelta[1];
+        const endAngle = Vec2Math.theta(endDelta);
+        const arcEndX = centerProjected[0] + radius / endDeltaMag * endDelta[0];
+        const arcEndY = centerProjected[1] + radius / endDeltaMag * endDelta[1];
+        stream.lineTo(arcStartX, arcStartY);
+        stream.arc(centerProjected[0], centerProjected[1], radius, startAngle, endAngle, circle.radius < Math.PI / 2);
+        stream.lineTo(arcEndX, arcEndY);
+      }
     }
   };
-  MapFieldOfViewCalculator.DEFAULT_MAX_ITER = 20;
-  MapFieldOfViewCalculator.DEFAULT_RANGE_TOLERANCE = 0.01;
-  MapFieldOfViewCalculator.geoPointCache = [new GeoPoint(0, 0), new GeoPoint(0, 0)];
-  MapFieldOfViewCalculator.vec2Cache = [Vec2Math.create(), Vec2Math.create()];
-  MapFieldOfViewCalculator.vec3Cache = [Vec3Math.create(), Vec3Math.create()];
+  MapSingleLineAirspaceRenderer.geoPointCache = [new GeoPoint(0, 0)];
+  MapSingleLineAirspaceRenderer.vec2Cache = [new Float64Array(2), new Float64Array(2), new Float64Array(2), new Float64Array(2), new Float64Array(2)];
+  MapSingleLineAirspaceRenderer.vec3Cache = [new Float64Array(3)];
+  var AbstractMapWaypointIcon = class {
+    constructor(waypoint, priority, size, options) {
+      var _a2, _b;
+      this.waypoint = waypoint;
+      this.priority = SubscribableUtils.toSubscribable(priority, true);
+      this.size = SubscribableUtils.toSubscribable(size, true);
+      this.anchor = SubscribableUtils.toSubscribable((_a2 = options === null || options === void 0 ? void 0 : options.anchor) !== null && _a2 !== void 0 ? _a2 : Vec2Math.create(0.5, 0.5), true);
+      this.offset = SubscribableUtils.toSubscribable((_b = options === null || options === void 0 ? void 0 : options.offset) !== null && _b !== void 0 ? _b : Vec2Math.create(), true);
+    }
+    draw(context, mapProjection) {
+      const size = this.size.get();
+      const offset = this.offset.get();
+      const anchor = this.anchor.get();
+      const projected = mapProjection.project(this.waypoint.location.get(), MapWaypointImageIcon.tempVec2);
+      const left = projected[0] + offset[0] - anchor[0] * size[0];
+      const top = projected[1] + offset[1] - anchor[1] * size[1];
+      this.drawIconAt(context, mapProjection, left, top);
+    }
+  };
+  AbstractMapWaypointIcon.tempVec2 = new Float64Array(2);
+  var MapWaypointImageIcon = class extends AbstractMapWaypointIcon {
+    constructor(waypoint, priority, img, size, options) {
+      super(waypoint, priority, size, options);
+      this.img = img;
+    }
+    drawIconAt(context, mapProjection, left, top) {
+      const size = this.size.get();
+      context.drawImage(this.img, left, top, size[0], size[1]);
+    }
+  };
+  var MapWaypointRenderer = class {
+    constructor(textManager, selectRoleToRender = MapWaypointRenderer.DEFAULT_RENDER_ROLE_SELECTOR) {
+      this.textManager = textManager;
+      this.selectRoleToRender = selectRoleToRender;
+      this.registered = /* @__PURE__ */ new Map();
+      this.toCleanUp = /* @__PURE__ */ new Set();
+      this.roleDefinitions = /* @__PURE__ */ new Map();
+      this.onWaypointAdded = new SubEvent();
+      this.onWaypointRemoved = new SubEvent();
+    }
+    hasRenderRole(role) {
+      return this.roleDefinitions.has(role);
+    }
+    addRenderRole(role, def) {
+      if (this.roleDefinitions.has(role)) {
+        return false;
+      }
+      this.roleDefinitions.set(role, Object.assign({}, def !== null && def !== void 0 ? def : MapWaypointRenderer.NULL_ROLE_DEF));
+      return true;
+    }
+    removeRenderRole(role) {
+      return this.roleDefinitions.delete(role);
+    }
+    getRenderRoleDefinition(role) {
+      return this.roleDefinitions.get(role);
+    }
+    renderRoles() {
+      return this.roleDefinitions.keys();
+    }
+    clearRenderRoles() {
+      this.roleDefinitions.clear();
+    }
+    setIconFactory(role, factory) {
+      const roleDef = this.roleDefinitions.get(role);
+      if (!roleDef) {
+        return false;
+      }
+      roleDef.iconFactory = factory;
+      return true;
+    }
+    setLabelFactory(role, factory) {
+      const roleDef = this.roleDefinitions.get(role);
+      if (!roleDef) {
+        return false;
+      }
+      roleDef.labelFactory = factory;
+      return true;
+    }
+    setCanvasContext(role, context) {
+      const roleDef = this.roleDefinitions.get(role);
+      if (!roleDef) {
+        return false;
+      }
+      roleDef.canvasContext = context;
+      return true;
+    }
+    setVisibilityHandler(role, handler) {
+      const roleDef = this.roleDefinitions.get(role);
+      if (!roleDef) {
+        return false;
+      }
+      roleDef.visibilityHandler = handler;
+      return true;
+    }
+    isRegistered(waypoint, role) {
+      if (!waypoint) {
+        return false;
+      }
+      const entry = this.registered.get(waypoint.uid);
+      if (!entry) {
+        return false;
+      }
+      if (role === void 0) {
+        return true;
+      }
+      return entry.isAllRoles(role);
+    }
+    register(waypoint, role, sourceId) {
+      if (role === 0 || sourceId === "") {
+        return;
+      }
+      let entry = this.registered.get(waypoint.uid);
+      if (!entry) {
+        entry = new MapWaypointRendererEntry(waypoint, this.textManager, this.roleDefinitions, this.selectRoleToRender);
+        this.registered.set(waypoint.uid, entry);
+        this.onWaypointAdded.notify(this, waypoint);
+      }
+      entry.addRole(role, sourceId);
+    }
+    deregister(waypoint, role, sourceId) {
+      if (role === 0 || sourceId === "") {
+        return;
+      }
+      const entry = this.registered.get(waypoint.uid);
+      if (!entry) {
+        return;
+      }
+      entry.removeRole(role, sourceId);
+      if (entry.roles === 0) {
+        this.deleteEntry(entry);
+        this.onWaypointRemoved.notify(this, waypoint);
+      }
+    }
+    deleteEntry(entry) {
+      this.registered.delete(entry.waypoint.uid);
+      this.toCleanUp.add(entry);
+    }
+    update(mapProjection) {
+      var _a2;
+      this.toCleanUp.forEach((entry) => {
+        entry.destroy();
+      });
+      this.toCleanUp.clear();
+      const entriesToDrawIcon = [];
+      this.registered.forEach((entry) => {
+        entry.update();
+        if (entry.icon) {
+          entriesToDrawIcon.push(entry);
+        }
+      });
+      const projectedSize = mapProjection.getProjectedSize();
+      for (const roleDef of this.roleDefinitions.values()) {
+        const context = roleDef.canvasContext;
+        if (context) {
+          context.clearRect(0, 0, projectedSize[0], projectedSize[1]);
+        }
+      }
+      entriesToDrawIcon.sort(MapWaypointRenderer.ENTRY_SORT_FUNC);
+      const len2 = entriesToDrawIcon.length;
+      for (let i = 0; i < len2; i++) {
+        const entry = entriesToDrawIcon[i];
+        const icon = entry.icon;
+        const context = (_a2 = this.roleDefinitions.get(entry.lastRenderedRole)) === null || _a2 === void 0 ? void 0 : _a2.canvasContext;
+        if (context) {
+          icon.draw(context, mapProjection);
+        }
+      }
+    }
+    getNearestWaypoint(pos, first) {
+      var _a2, _b;
+      const ordered = [...this.registered.values()].sort((a, b) => this.orderByDistance(a.waypoint, b.waypoint, pos)).filter((w) => {
+        const roleDef = this.getRenderRoleDefinition(w.lastRenderedRole);
+        if (roleDef !== void 0) {
+          return roleDef.visibilityHandler(w.waypoint);
+        }
+        return false;
+      });
+      if (first !== void 0) {
+        return (_a2 = ordered.find((entry) => first(entry.waypoint))) === null || _a2 === void 0 ? void 0 : _a2.waypoint;
+      }
+      return (_b = ordered[0]) === null || _b === void 0 ? void 0 : _b.waypoint;
+    }
+    orderByDistance(a, b, pos) {
+      const aDist = a.location.get().distance(pos);
+      const bDist = b.location.get().distance(pos);
+      return aDist - bDist;
+    }
+  };
+  MapWaypointRenderer.NULL_ROLE_DEF = {
+    iconFactory: null,
+    labelFactory: null,
+    canvasContext: null,
+    visibilityHandler: () => true
+  };
+  MapWaypointRenderer.ENTRY_SORT_FUNC = (a, b) => {
+    return a.icon.priority.get() - b.icon.priority.get();
+  };
+  MapWaypointRenderer.DEFAULT_RENDER_ROLE_SELECTOR = (entry, roleDefinitions) => {
+    for (const role of roleDefinitions.keys()) {
+      if (entry.isAllRoles(role) && roleDefinitions.get(role).visibilityHandler(entry.waypoint)) {
+        return role;
+      }
+    }
+    return 0;
+  };
+  var MapWaypointRendererEntry = class {
+    constructor(waypoint, textManager, roleDefinitions, selectRoleToRender) {
+      this.waypoint = waypoint;
+      this.textManager = textManager;
+      this.roleDefinitions = roleDefinitions;
+      this.selectRoleToRender = selectRoleToRender;
+      this.registrations = {};
+      this._roles = 0;
+      this._icon = null;
+      this._label = null;
+      this._lastRenderedRole = 0;
+    }
+    get roles() {
+      return this._roles;
+    }
+    get lastRenderedRole() {
+      return this._lastRenderedRole;
+    }
+    get icon() {
+      return this._icon;
+    }
+    get label() {
+      return this._label;
+    }
+    isAnyRole(roles, useLastRendered = false) {
+      let toCompare;
+      if (useLastRendered) {
+        toCompare = this.lastRenderedRole;
+      } else {
+        toCompare = this.roles;
+      }
+      return BitFlags.isAny(toCompare, roles);
+    }
+    isOnlyRole(roles, useLastRendered = false) {
+      let toCompare;
+      if (useLastRendered) {
+        toCompare = this.lastRenderedRole;
+      } else {
+        toCompare = this.roles;
+      }
+      return toCompare === roles;
+    }
+    isAllRoles(roles, useLastRendered = false) {
+      let toCompare;
+      if (useLastRendered) {
+        toCompare = this.lastRenderedRole;
+      } else {
+        toCompare = this.roles;
+      }
+      return BitFlags.isAll(toCompare, roles);
+    }
+    addRole(roles, sourceId) {
+      BitFlags.forEach(roles, (value, index) => {
+        var _a2;
+        var _b, _c;
+        ((_a2 = (_b = this.registrations)[_c = 1 << index]) !== null && _a2 !== void 0 ? _a2 : _b[_c] = /* @__PURE__ */ new Set()).add(sourceId);
+      }, true);
+      this._roles = this._roles | roles;
+    }
+    removeRole(roles, sourceId) {
+      BitFlags.forEach(roles, (value, index) => {
+        const role = 1 << index;
+        const registrations = this.registrations[role];
+        if (registrations) {
+          registrations.delete(sourceId);
+          if (registrations.size === 0) {
+            this._roles = this._roles & ~role;
+          }
+        }
+      }, true);
+    }
+    prepareRender(showRole, iconFactory, labelFactory) {
+      var _a2, _b;
+      if (showRole === this._lastRenderedRole) {
+        return;
+      }
+      this._icon = (_a2 = iconFactory === null || iconFactory === void 0 ? void 0 : iconFactory.getIcon(showRole, this.waypoint)) !== null && _a2 !== void 0 ? _a2 : null;
+      const label = (_b = labelFactory === null || labelFactory === void 0 ? void 0 : labelFactory.getLabel(showRole, this.waypoint)) !== null && _b !== void 0 ? _b : null;
+      if (this._label && this._label !== label) {
+        this.textManager.deregister(this._label);
+      }
+      if (label && label !== this._label) {
+        this.textManager.register(label);
+      }
+      this._label = label;
+      this._lastRenderedRole = showRole;
+    }
+    update() {
+      var _a2, _b;
+      const showRole = this.selectRoleToRender(this, this.roleDefinitions);
+      const roleDef = this.roleDefinitions.get(showRole);
+      const iconFactory = (_a2 = roleDef === null || roleDef === void 0 ? void 0 : roleDef.iconFactory) !== null && _a2 !== void 0 ? _a2 : null;
+      const labelFactory = (_b = roleDef === null || roleDef === void 0 ? void 0 : roleDef.labelFactory) !== null && _b !== void 0 ? _b : null;
+      this.prepareRender(showRole, iconFactory, labelFactory);
+    }
+    destroy() {
+      if (this._label) {
+        this.textManager.deregister(this._label);
+      }
+    }
+  };
+  var MapAirspaceModule = class {
+    constructor(showTypes) {
+      this.showTypes = showTypes;
+      this.show = {};
+      for (const type in showTypes) {
+        this.show[type] = Subject.create(false);
+      }
+    }
+  };
+  var MapAutopilotPropsModule = class {
+    constructor() {
+      this.selectedAltitude = NumberUnitSubject.create(UnitType.FOOT.createNumber(0));
+      this.selectedHeading = Subject.create(0);
+    }
+  };
   var MapOwnAirplaneIconOrientation;
   (function(MapOwnAirplaneIconOrientation2) {
     MapOwnAirplaneIconOrientation2["HeadingUp"] = "HeadingUp";
@@ -17963,317 +20591,596 @@
       this.magVar = Subject.create(0);
     }
   };
-  var MapAutopilotPropsModule = class {
-    constructor() {
-      this.selectedAltitude = NumberUnitSubject.create(UnitType.FOOT.createNumber(0));
+  var MapCanvasLayerCanvasInstanceClass = class {
+    constructor(canvas, context, isDisplayed) {
+      this.canvas = canvas;
+      this.context = context;
+      this.isDisplayed = isDisplayed;
+    }
+    clear() {
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+    reset() {
+      const width = this.canvas.width;
+      this.canvas.width = 0;
+      this.canvas.width = width;
     }
   };
-  var MapAirspaceModule = class {
-    constructor(showTypes) {
-      this.showTypes = showTypes;
-      this.show = {};
-      for (const type in showTypes) {
-        this.show[type] = Subject.create(false);
+  var MapCanvasLayer = class extends MapLayer {
+    constructor() {
+      super(...arguments);
+      this.displayCanvasRef = FSComponent.createRef();
+      this.width = 0;
+      this.height = 0;
+      this.displayCanvasContext = null;
+      this.isInit = false;
+    }
+    get display() {
+      if (!this._display) {
+        throw new Error("MapCanvasLayer: attempted to access display before it was initialized");
+      }
+      return this._display;
+    }
+    get buffer() {
+      if (!this._buffer) {
+        throw new Error("MapCanvasLayer: attempted to access buffer before it was initialized");
+      }
+      return this._buffer;
+    }
+    tryGetDisplay() {
+      return this._display;
+    }
+    tryGetBuffer() {
+      return this._buffer;
+    }
+    getWidth() {
+      return this.width;
+    }
+    getHeight() {
+      return this.height;
+    }
+    setWidth(width) {
+      if (width === this.width) {
+        return;
+      }
+      this.width = width;
+      if (this.isInit) {
+        this.updateCanvasSize();
+      }
+    }
+    setHeight(height) {
+      if (height === this.height) {
+        return;
+      }
+      this.height = height;
+      if (this.isInit) {
+        this.updateCanvasSize();
+      }
+    }
+    copyBufferToDisplay() {
+      if (!this.isInit || !this.props.useBuffer) {
+        return;
+      }
+      this.display.context.drawImage(this.buffer.canvas, 0, 0, this.width, this.height);
+    }
+    onAfterRender() {
+      this.displayCanvasContext = this.displayCanvasRef.instance.getContext("2d");
+    }
+    onVisibilityChanged(isVisible) {
+      if (this.isInit) {
+        this.updateCanvasVisibility();
+      }
+    }
+    updateFromVisibility() {
+      this.display.canvas.style.display = this.isVisible() ? "block" : "none";
+    }
+    onAttached() {
+      this.initCanvasInstances();
+      this.isInit = true;
+      this.updateCanvasVisibility();
+      this.updateCanvasSize();
+    }
+    initCanvasInstances() {
+      this._display = this.createCanvasInstance(this.displayCanvasRef.instance, this.displayCanvasContext, true);
+      if (this.props.useBuffer) {
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        this._buffer = this.createCanvasInstance(canvas, context, false);
+      }
+    }
+    createCanvasInstance(canvas, context, isDisplayed) {
+      return new MapCanvasLayerCanvasInstanceClass(canvas, context, isDisplayed);
+    }
+    updateCanvasSize() {
+      const displayCanvas = this.display.canvas;
+      displayCanvas.width = this.width;
+      displayCanvas.height = this.height;
+      displayCanvas.style.width = `${this.width}px`;
+      displayCanvas.style.height = `${this.height}px`;
+      if (this._buffer) {
+        const bufferCanvas = this._buffer.canvas;
+        bufferCanvas.width = this.width;
+        bufferCanvas.height = this.height;
+      }
+    }
+    updateCanvasVisibility() {
+      this.display.canvas.style.display = this.isVisible() ? "block" : "none";
+    }
+    render() {
+      var _a2;
+      return FSComponent.buildComponent("canvas", { ref: this.displayCanvasRef, class: (_a2 = this.props.class) !== null && _a2 !== void 0 ? _a2 : "", width: "0", height: "0", style: "position: absolute;" });
+    }
+  };
+  var MapSyncedCanvasLayer = class extends MapCanvasLayer {
+    onAttached() {
+      super.onAttached();
+      this.updateFromProjectedSize(this.props.mapProjection.getProjectedSize());
+    }
+    updateFromProjectedSize(projectedSize) {
+      this.setWidth(projectedSize[0]);
+      this.setHeight(projectedSize[1]);
+      const displayCanvas = this.display.canvas;
+      displayCanvas.style.left = "0px";
+      displayCanvas.style.top = "0px";
+    }
+    onMapProjectionChanged(mapProjection, changeFlags) {
+      if (BitFlags.isAll(changeFlags, MapProjectionChangeType.ProjectedSize)) {
+        this.updateFromProjectedSize(mapProjection.getProjectedSize());
       }
     }
   };
-  var AbstractCssTransform = class {
-    constructor(initialParams) {
-      this.params = new Float64Array(initialParams);
-      this.cachedParams = new Float64Array(initialParams);
+  var MapCachedCanvasLayerReferenceClass = class {
+    constructor() {
+      this._center = new GeoPoint(0, 0);
+      this._scaleFactor = 1;
+      this._rotation = 0;
     }
-    resolve() {
-      if (this.stringValue !== void 0 && VecNMath.equals(this.params, this.cachedParams)) {
-        return this.stringValue;
+    get center() {
+      return this._center.readonly;
+    }
+    get scaleFactor() {
+      return this._scaleFactor;
+    }
+    get rotation() {
+      return this._rotation;
+    }
+    syncWithMapProjection(mapProjection) {
+      this._center.set(mapProjection.getCenter());
+      this._scaleFactor = mapProjection.getScaleFactor();
+      this._rotation = mapProjection.getRotation();
+    }
+    syncWithReference(reference) {
+      this._center.set(reference.center);
+      this._scaleFactor = reference.scaleFactor;
+      this._rotation = reference.rotation;
+    }
+  };
+  var MapCachedCanvasLayerTransformClass = class {
+    constructor() {
+      this._scale = 0;
+      this._rotation = 0;
+      this._translation = new Float64Array(2);
+      this._margin = 0;
+      this._marginRemaining = 0;
+    }
+    get scale() {
+      return this._scale;
+    }
+    get rotation() {
+      return this._rotation;
+    }
+    get translation() {
+      return this._translation;
+    }
+    get margin() {
+      return this._margin;
+    }
+    get marginRemaining() {
+      return this._marginRemaining;
+    }
+    update(mapProjection, reference, referenceMargin) {
+      this._scale = mapProjection.getScaleFactor() / reference.scaleFactor;
+      this._rotation = mapProjection.getRotation() - reference.rotation;
+      mapProjection.project(reference.center, this._translation);
+      Vec2Math.sub(this._translation, mapProjection.getCenterProjected(), this._translation);
+      this._margin = referenceMargin * this._scale;
+      this._marginRemaining = this._margin - Math.max(Math.abs(this._translation[0]), Math.abs(this._translation[1]));
+    }
+    copyFrom(other) {
+      this._scale = other.scale;
+      this._rotation = other.rotation;
+      this._translation.set(other.translation);
+      this._margin = other.margin;
+    }
+  };
+  var MapCachedCanvasLayerCanvasInstanceClass = class extends MapCanvasLayerCanvasInstanceClass {
+    constructor(canvas, context, isDisplayed, getReferenceMargin) {
+      super(canvas, context, isDisplayed);
+      this.getReferenceMargin = getReferenceMargin;
+      this._reference = new MapCachedCanvasLayerReferenceClass();
+      this._transform = new MapCachedCanvasLayerTransformClass();
+      this._isInvalid = false;
+      this._geoProjection = new MercatorProjection();
+      this.canvasTransform = CssTransformSubject.create(CssTransformBuilder.concat(CssTransformBuilder.scale(), CssTransformBuilder.translate("px"), CssTransformBuilder.rotate("rad")));
+      this.canvasTransform.sub((transform) => {
+        this.canvas.style.transform = transform;
+      }, true);
+    }
+    get reference() {
+      return this._reference;
+    }
+    get transform() {
+      return this._transform;
+    }
+    get isInvalid() {
+      return this._isInvalid;
+    }
+    get geoProjection() {
+      return this._geoProjection;
+    }
+    syncWithMapProjection(mapProjection) {
+      const projectedCenter = Vec2Math.set(this.canvas.width / 2, this.canvas.height / 2, MapCachedCanvasLayerCanvasInstanceClass.tempVec2_1);
+      this._reference.syncWithMapProjection(mapProjection);
+      this._geoProjection.copyParametersFrom(mapProjection.getGeoProjection()).setTranslation(projectedCenter);
+      this._transform.update(mapProjection, this.reference, this.getReferenceMargin());
+      this._isInvalid = false;
+      if (this.isDisplayed) {
+        this.transformCanvasElement();
       }
-      VecNMath.copy(this.params, this.cachedParams);
-      this.stringValue = this.buildString(this.params);
-      return this.stringValue;
     }
-  };
-  var CssMatrixTransform = class extends AbstractCssTransform {
-    constructor() {
-      super(CssMatrixTransform.DEFAULT_PARAMS);
-    }
-    set(arg1, skewY, skewX, scaleY, translateX, translateY) {
-      let scaleX;
-      if (typeof arg1 === "number") {
-        scaleX = arg1;
-      } else {
-        [scaleX, skewX, skewY, scaleY, translateX, translateY] = arg1.getParameters();
+    syncWithCanvasInstance(other) {
+      this._reference.syncWithReference(other.reference);
+      this._geoProjection.copyParametersFrom(other.geoProjection);
+      this._transform.copyFrom(other.transform);
+      this._isInvalid = other.isInvalid;
+      if (this.isDisplayed && !this._isInvalid) {
+        this.transformCanvasElement();
       }
-      this.params[0] = scaleX;
-      this.params[1] = skewY;
-      this.params[2] = skewX;
-      this.params[3] = scaleY;
-      this.params[4] = translateX;
-      this.params[5] = translateY;
     }
-    buildString(params) {
-      return `matrix(${params.join(", ")})`;
-    }
-  };
-  CssMatrixTransform.DEFAULT_PARAMS = [1, 0, 0, 1, 0, 0];
-  var CssRotateTransform = class extends AbstractCssTransform {
-    constructor(unit) {
-      super(CssRotateTransform.DEFAULT_PARAMS);
-      this.unit = unit;
-    }
-    set(angle, precision = 0) {
-      this.params[0] = precision === 0 ? angle : MathUtils.round(angle, precision);
-    }
-    buildString(params) {
-      return `rotate(${params[0]}${this.unit})`;
-    }
-  };
-  CssRotateTransform.DEFAULT_PARAMS = [0];
-  var CssRotate3dTransform = class extends AbstractCssTransform {
-    constructor(unit) {
-      super(CssRotate3dTransform.DEFAULT_PARAMS);
-      this.unit = unit;
-    }
-    set(x, y, z, angle, precision = 0) {
-      this.params[0] = x;
-      this.params[1] = y;
-      this.params[2] = z;
-      this.params[3] = precision === 0 ? angle : MathUtils.round(angle, precision);
-    }
-    buildString(params) {
-      return `rotate3d(${params[0]}, ${params[1]}, ${params[2]}, ${params[3]}${this.unit})`;
-    }
-  };
-  CssRotate3dTransform.DEFAULT_PARAMS = [0, 0, 1, 0];
-  var CssTranslateXTransform = class extends AbstractCssTransform {
-    constructor(unit) {
-      super(CssTranslateXTransform.DEFAULT_PARAMS);
-      this.unit = unit;
-    }
-    set(x, precision = 0) {
-      this.params[0] = precision === 0 ? x : MathUtils.round(x, precision);
-    }
-    buildString(params) {
-      return `translateX(${params[0]}${this.unit})`;
-    }
-  };
-  CssTranslateXTransform.DEFAULT_PARAMS = [0];
-  var CssTranslateYTransform = class extends AbstractCssTransform {
-    constructor(unit) {
-      super(CssTranslateYTransform.DEFAULT_PARAMS);
-      this.unit = unit;
-    }
-    set(y, precision = 0) {
-      this.params[0] = precision === 0 ? y : MathUtils.round(y, precision);
-    }
-    buildString(params) {
-      return `translateY(${params[0]}${this.unit})`;
-    }
-  };
-  CssTranslateYTransform.DEFAULT_PARAMS = [0];
-  var CssTranslateZTransform = class extends AbstractCssTransform {
-    constructor(unit) {
-      super(CssTranslateZTransform.DEFAULT_PARAMS);
-      this.unit = unit;
-    }
-    set(z, precision = 0) {
-      this.params[0] = precision === 0 ? z : MathUtils.round(z, precision);
-    }
-    buildString(params) {
-      return `translateZ(${params[0]}${this.unit})`;
-    }
-  };
-  CssTranslateZTransform.DEFAULT_PARAMS = [0];
-  var CssTranslateTransform = class extends AbstractCssTransform {
-    constructor(unitX, unitY = unitX) {
-      super(CssTranslateTransform.DEFAULT_PARAMS);
-      this.unitX = unitX;
-      this.unitY = unitY;
-    }
-    set(x, y, precisionX = 0, precisionY = precisionX) {
-      this.params[0] = precisionX === 0 ? x : MathUtils.round(x, precisionX);
-      this.params[1] = precisionY === 0 ? y : MathUtils.round(y, precisionY);
-    }
-    buildString(params) {
-      return `translate(${params[0]}${this.unitX}, ${params[1]}${this.unitY})`;
-    }
-  };
-  CssTranslateTransform.DEFAULT_PARAMS = [0, 0];
-  var CssTranslate3dTransform = class extends AbstractCssTransform {
-    constructor(unitX, unitY = unitX, unitZ = unitX) {
-      super(CssTranslate3dTransform.DEFAULT_PARAMS);
-      this.unitX = unitX;
-      this.unitY = unitY;
-      this.unitZ = unitZ;
-    }
-    set(x, y, z, precisionX = 0, precisionY = precisionX, precisionZ = precisionX) {
-      this.params[0] = precisionX === 0 ? x : MathUtils.round(x, precisionX);
-      this.params[1] = precisionY === 0 ? y : MathUtils.round(y, precisionY);
-      this.params[2] = precisionZ === 0 ? z : MathUtils.round(z, precisionZ);
-    }
-    buildString(params) {
-      return `translate3d(${params[0]}${this.unitX}, ${params[1]}${this.unitY}, ${params[2]}${this.unitZ})`;
-    }
-  };
-  CssTranslate3dTransform.DEFAULT_PARAMS = [0, 0, 0];
-  var CssScaleXTransform = class extends AbstractCssTransform {
-    constructor() {
-      super(CssScaleXTransform.DEFAULT_PARAMS);
-    }
-    set(x, precision = 0) {
-      this.params[0] = precision === 0 ? x : MathUtils.round(x, precision);
-    }
-    buildString(params) {
-      return `scaleX(${params[0]})`;
-    }
-  };
-  CssScaleXTransform.DEFAULT_PARAMS = [1];
-  var CssScaleYTransform = class extends AbstractCssTransform {
-    constructor() {
-      super(CssScaleYTransform.DEFAULT_PARAMS);
-    }
-    set(y, precision = 0) {
-      this.params[0] = precision === 0 ? y : MathUtils.round(y, precision);
-    }
-    buildString(params) {
-      return `scaleY(${params[0]})`;
-    }
-  };
-  CssScaleYTransform.DEFAULT_PARAMS = [1];
-  var CssScaleZTransform = class extends AbstractCssTransform {
-    constructor() {
-      super(CssScaleZTransform.DEFAULT_PARAMS);
-    }
-    set(z, precision = 0) {
-      this.params[0] = precision === 0 ? z : MathUtils.round(z, precision);
-    }
-    buildString(params) {
-      return `scaleZ(${params[0]})`;
-    }
-  };
-  CssScaleZTransform.DEFAULT_PARAMS = [1];
-  var CssScaleTransform = class extends AbstractCssTransform {
-    constructor() {
-      super(CssScaleTransform.DEFAULT_PARAMS);
-    }
-    set(x, y, precisionX = 0, precisionY = precisionX) {
-      this.params[0] = precisionX === 0 ? x : MathUtils.round(x, precisionX);
-      this.params[1] = precisionY === 0 ? y : MathUtils.round(y, precisionY);
-    }
-    buildString(params) {
-      return `scale(${params[0]}, ${params[1]})`;
-    }
-  };
-  CssScaleTransform.DEFAULT_PARAMS = [1, 1];
-  var CssScale3dTransform = class extends AbstractCssTransform {
-    constructor() {
-      super(CssScale3dTransform.DEFAULT_PARAMS);
-    }
-    set(x, y, z, precisionX = 0, precisionY = precisionX, precisionZ = precisionX) {
-      this.params[0] = precisionX === 0 ? x : MathUtils.round(x, precisionX);
-      this.params[1] = precisionY === 0 ? y : MathUtils.round(y, precisionY);
-      this.params[2] = precisionZ === 0 ? z : MathUtils.round(y, precisionZ);
-    }
-    buildString(params) {
-      return `scale3d(${params[0]}, ${params[1]}, ${params[2]})`;
-    }
-  };
-  CssScale3dTransform.DEFAULT_PARAMS = [1, 1, 1];
-  var CssTransformChain = class {
-    constructor(...transforms) {
-      this.stringValues = [];
-      this.transforms = transforms;
-    }
-    getChild(index) {
-      if (index < 0 || index >= this.transforms.length) {
-        throw new RangeError();
+    updateTransform(mapProjection) {
+      this._transform.update(mapProjection, this.reference, this.getReferenceMargin());
+      if (!this._isInvalid) {
+        const scaleFactorRatio = mapProjection.getScaleFactor() / this._reference.scaleFactor;
+        this._isInvalid = scaleFactorRatio >= MapCachedCanvasLayerCanvasInstanceClass.SCALE_INVALIDATION_THRESHOLD || scaleFactorRatio <= 1 / MapCachedCanvasLayerCanvasInstanceClass.SCALE_INVALIDATION_THRESHOLD || this._transform.marginRemaining < 0;
       }
-      return this.transforms[index];
+      if (this.isDisplayed && !this._isInvalid) {
+        this.transformCanvasElement();
+      }
     }
-    resolve() {
-      let needRebuildString = false;
-      for (let i = 0; i < this.transforms.length; i++) {
-        const stringValue = this.transforms[i].resolve();
-        if (this.stringValues[i] !== stringValue) {
-          this.stringValues[i] = stringValue;
-          needRebuildString = true;
+    transformCanvasElement() {
+      const transform = this.transform;
+      const offsetX = transform.translation[0] / transform.scale;
+      const offsetY = transform.translation[1] / transform.scale;
+      this.canvasTransform.transform.getChild(0).set(transform.scale, transform.scale, 1e-3);
+      this.canvasTransform.transform.getChild(1).set(offsetX, offsetY, 0.1);
+      this.canvasTransform.transform.getChild(2).set(transform.rotation, 1e-4);
+      this.canvasTransform.resolve();
+    }
+    invalidate() {
+      this._isInvalid = true;
+      this.clear();
+    }
+  };
+  MapCachedCanvasLayerCanvasInstanceClass.SCALE_INVALIDATION_THRESHOLD = 1.2;
+  MapCachedCanvasLayerCanvasInstanceClass.tempVec2_1 = new Float64Array(2);
+  var MapCachedCanvasLayer = class extends MapCanvasLayer {
+    constructor(props) {
+      super(props);
+      this.size = 0;
+      this.referenceMargin = 0;
+      this.needUpdateTransforms = false;
+      this.props.overdrawFactor = Math.max(1, this.props.overdrawFactor);
+    }
+    getSize() {
+      return this.size;
+    }
+    getReferenceMargin() {
+      return this.referenceMargin;
+    }
+    onAttached() {
+      super.onAttached();
+      this.updateFromProjectedSize(this.props.mapProjection.getProjectedSize());
+      this.needUpdateTransforms = true;
+    }
+    createCanvasInstance(canvas, context, isDisplayed) {
+      return new MapCachedCanvasLayerCanvasInstanceClass(canvas, context, isDisplayed, this.getReferenceMargin.bind(this));
+    }
+    updateFromProjectedSize(projectedSize) {
+      const projectedWidth = projectedSize[0];
+      const projectedHeight = projectedSize[1];
+      const diag = Math.hypot(projectedWidth, projectedHeight);
+      this.size = diag * this.props.overdrawFactor;
+      this.referenceMargin = (this.size - diag) / 2;
+      this.setWidth(this.size);
+      this.setHeight(this.size);
+      const posX = (projectedWidth - this.size) / 2;
+      const posY = (projectedHeight - this.size) / 2;
+      const displayCanvas = this.display.canvas;
+      displayCanvas.style.left = `${posX}px`;
+      displayCanvas.style.top = `${posY}px`;
+    }
+    onMapProjectionChanged(mapProjection, changeFlags) {
+      var _a2;
+      if (BitFlags.isAll(changeFlags, MapProjectionChangeType.ProjectedSize)) {
+        this.updateFromProjectedSize(mapProjection.getProjectedSize());
+        this.display.invalidate();
+        (_a2 = this.tryGetBuffer()) === null || _a2 === void 0 ? void 0 : _a2.invalidate();
+      }
+      this.needUpdateTransforms = true;
+    }
+    onUpdated(time, elapsed) {
+      super.onUpdated(time, elapsed);
+      if (!this.needUpdateTransforms) {
+        return;
+      }
+      this.updateTransforms();
+    }
+    updateTransforms() {
+      var _a2;
+      const mapProjection = this.props.mapProjection;
+      this.display.updateTransform(mapProjection);
+      (_a2 = this.tryGetBuffer()) === null || _a2 === void 0 ? void 0 : _a2.updateTransform(mapProjection);
+      this.needUpdateTransforms = false;
+    }
+  };
+  var MapAirspaceLayer = class extends MapLayer {
+    constructor() {
+      var _a2, _b;
+      super(...arguments);
+      this.canvasLayerRef = FSComponent.createRef();
+      this.clipBoundsSub = VecNSubject.createFromVector(new Float64Array(4));
+      this.facLoader = new FacilityLoader(FacilityRepository.getRepository(this.props.bus), async () => {
+        this.searchSession = new NearestLodBoundarySearchSession(this.props.lodBoundaryCache, await this.facLoader.startNearestSearchSession(FacilitySearchType.Boundary), 0.5);
+        this.isAttached && this.scheduleSearch(0, true);
+      });
+      this.searchedAirspaces = /* @__PURE__ */ new Map();
+      this.searchDebounceDelay = (_a2 = this.props.searchDebounceDelay) !== null && _a2 !== void 0 ? _a2 : MapAirspaceLayer.DEFAULT_SEARCH_DEBOUNCE_DELAY;
+      this.renderTimeBudget = (_b = this.props.renderTimeBudget) !== null && _b !== void 0 ? _b : MapAirspaceLayer.DEFAULT_RENDER_TIME_BUDGET;
+      this.activeRenderProcess = null;
+      this.renderTaskQueueHandler = {
+        renderTimeBudget: this.renderTimeBudget,
+        onStarted() {
+        },
+        canContinue(elapsedFrameCount, dispatchedTaskCount, timeElapsed) {
+          return timeElapsed < this.renderTimeBudget;
+        },
+        onPaused: this.onRenderPaused.bind(this),
+        onFinished: this.onRenderFinished.bind(this),
+        onAborted: this.onRenderAborted.bind(this)
+      };
+      this.searchDebounceTimer = 0;
+      this.isSearchScheduled = false;
+      this.needRefilter = false;
+      this.isSearchBusy = false;
+      this.lastDesiredSearchRadius = 0;
+      this.lastSearchRadius = 0;
+      this.isRenderScheduled = false;
+      this.isBackgroundRenderScheduled = false;
+      this.isDisplayInvalidated = true;
+      this.isAttached = false;
+    }
+    onAttached() {
+      this.canvasLayerRef.instance.onAttached();
+      this.updateClipBounds();
+      this.clippedPathStream = new ClippedPathStream(this.canvasLayerRef.instance.buffer.context, this.clipBoundsSub);
+      this.props.maxSearchRadius.sub((radius) => {
+        const radiusMeters = radius.asUnit(UnitType.METER);
+        if (radiusMeters < this.lastSearchRadius || radiusMeters > this.lastDesiredSearchRadius) {
+          this.scheduleSearch(0, false);
+        }
+      });
+      this.props.maxSearchItemCount.sub(() => {
+        this.scheduleSearch(0, false);
+      });
+      this.initModuleListeners();
+      this.isAttached = true;
+      this.searchSession && this.scheduleSearch(0, true);
+    }
+    initModuleListeners() {
+      const airspaceModule = this.props.model.getModule("airspace");
+      for (const type of Object.values(airspaceModule.show)) {
+        type.sub(this.onAirspaceTypeShowChanged.bind(this));
+      }
+    }
+    onMapProjectionChanged(mapProjection, changeFlags) {
+      this.canvasLayerRef.instance.onMapProjectionChanged(mapProjection, changeFlags);
+      if (BitFlags.isAll(changeFlags, MapProjectionChangeType.ProjectedSize)) {
+        this.updateClipBounds();
+      }
+    }
+    updateClipBounds() {
+      const size = this.canvasLayerRef.instance.getSize();
+      this.clipBoundsSub.set(-MapAirspaceLayer.CLIP_BOUNDS_BUFFER, -MapAirspaceLayer.CLIP_BOUNDS_BUFFER, size + MapAirspaceLayer.CLIP_BOUNDS_BUFFER, size + MapAirspaceLayer.CLIP_BOUNDS_BUFFER);
+    }
+    scheduleSearch(delay, refilter) {
+      if (!this.searchSession) {
+        return;
+      }
+      this.searchDebounceTimer = delay;
+      this.isSearchScheduled = true;
+      this.needRefilter || (this.needRefilter = refilter);
+    }
+    scheduleRender() {
+      this.isRenderScheduled = true;
+    }
+    async searchAirspaces(refilter) {
+      this.isSearchBusy = true;
+      const center = this.props.mapProjection.getCenter();
+      const drawableDiag = this.canvasLayerRef.instance.display.canvas.width * Math.SQRT2;
+      this.lastDesiredSearchRadius = UnitType.GA_RADIAN.convertTo(this.props.mapProjection.getProjectedResolution() * drawableDiag / 2, UnitType.METER);
+      this.lastSearchRadius = Math.min(this.props.maxSearchRadius.get().asUnit(UnitType.METER), this.lastDesiredSearchRadius);
+      const session = this.searchSession;
+      refilter && session.setFilter(this.getBoundaryFilter());
+      const results = await session.searchNearest(center.lat, center.lon, this.lastSearchRadius, this.props.maxSearchItemCount.get());
+      for (let i = 0; i < results.added.length; i++) {
+        const airspace = results.added[i];
+        this.searchedAirspaces.set(airspace.facility.id, airspace);
+      }
+      for (let i = 0; i < results.removed.length; i++) {
+        this.searchedAirspaces.delete(results.removed[i]);
+      }
+      this.isSearchBusy = false;
+      this.scheduleRender();
+    }
+    getBoundaryFilter() {
+      const module = this.props.model.getModule("airspace");
+      const show = module.show;
+      let filter = 0;
+      for (const type in show) {
+        if (show[type].get()) {
+          filter |= module.showTypes[type];
         }
       }
-      if (needRebuildString || this.chainedStringValue === void 0) {
-        this.chainedStringValue = this.stringValues.join(" ");
+      return filter;
+    }
+    onUpdated(time, elapsed) {
+      this.canvasLayerRef.instance.onUpdated(time, elapsed);
+      this.updateFromInvalidation();
+      this.updateScheduledRender();
+      this.updateScheduledSearch(elapsed);
+    }
+    updateFromInvalidation() {
+      const canvasLayer = this.canvasLayerRef.instance;
+      const display = canvasLayer.display;
+      const buffer = canvasLayer.buffer;
+      const needBackgroundRender = !this.isBackgroundRenderScheduled && !this.activeRenderProcess && display.transform.marginRemaining / display.transform.margin <= MapAirspaceLayer.BACKGROUND_RENDER_MARGIN_THRESHOLD;
+      const shouldScheduleSearch = needBackgroundRender || display.isInvalid || buffer.isInvalid && this.activeRenderProcess;
+      this.isBackgroundRenderScheduled || (this.isBackgroundRenderScheduled = needBackgroundRender);
+      if (display.isInvalid) {
+        this.isDisplayInvalidated = true;
+        this.isBackgroundRenderScheduled = false;
+        display.clear();
+        display.syncWithMapProjection(this.props.mapProjection);
       }
-      return this.chainedStringValue;
-    }
-  };
-  var CssTransformSubject = class extends AbstractSubscribable {
-    constructor(transform) {
-      super();
-      this._transform = transform;
-      this.stringValue = transform.resolve();
-      this.transform = transform;
-    }
-    get() {
-      return this.stringValue;
-    }
-    resolve() {
-      const stringValue = this._transform.resolve();
-      if (stringValue !== this.stringValue) {
-        this.stringValue = stringValue;
-        this.notify();
+      if (buffer.isInvalid) {
+        if (this.activeRenderProcess) {
+          this.activeRenderProcess.abort();
+          this.cleanUpRender();
+        }
+        buffer.clear();
+        buffer.syncWithMapProjection(this.props.mapProjection);
+      }
+      if (shouldScheduleSearch) {
+        this.scheduleSearch(this.searchDebounceDelay, false);
       }
     }
-    static create(transform) {
-      return new CssTransformSubject(transform);
+    updateScheduledSearch(elapsed) {
+      if (!this.isSearchScheduled) {
+        return;
+      }
+      this.searchDebounceTimer = Math.max(0, this.searchDebounceTimer - elapsed);
+      if (this.searchDebounceTimer === 0 && !this.isSearchBusy) {
+        this.searchAirspaces(this.needRefilter);
+        this.isSearchScheduled = false;
+        this.needRefilter = false;
+      }
+    }
+    updateScheduledRender() {
+      if (!this.isRenderScheduled) {
+        return;
+      }
+      this.startRenderProcess();
+      this.isRenderScheduled = false;
+      this.isBackgroundRenderScheduled = false;
+    }
+    startRenderProcess() {
+      const canvasLayer = this.canvasLayerRef.instance;
+      if (this.activeRenderProcess) {
+        this.activeRenderProcess.abort();
+      }
+      const buffer = canvasLayer.buffer;
+      buffer.clear();
+      buffer.syncWithMapProjection(this.props.mapProjection);
+      this.props.airspaceRenderManager.clearRegisteredAirspaces();
+      for (const airspace of this.searchedAirspaces.values()) {
+        if (this.isAirspaceInBounds(airspace, buffer)) {
+          this.props.airspaceRenderManager.registerAirspace(airspace);
+        }
+      }
+      const lod = this.selectLod(this.props.mapProjection.getProjectedResolution());
+      this.activeRenderProcess = this.props.airspaceRenderManager.prepareRenderProcess(buffer.geoProjection, buffer.context, this.renderTaskQueueHandler, lod, this.clippedPathStream);
+      this.activeRenderProcess.start();
+    }
+    isAirspaceInBounds(airspace, canvas) {
+      const corner = MapAirspaceLayer.geoPointCache[0];
+      const cornerProjected = MapAirspaceLayer.vec2Cache[0];
+      let minX, maxX, minY, maxY;
+      canvas.geoProjection.project(corner.set(airspace.facility.topLeft.lat, airspace.facility.topLeft.long), cornerProjected);
+      minX = maxX = cornerProjected[0];
+      minY = maxY = cornerProjected[1];
+      canvas.geoProjection.project(corner.set(airspace.facility.topLeft.lat, airspace.facility.bottomRight.long), cornerProjected);
+      minX = Math.min(minX, cornerProjected[0]);
+      maxX = Math.max(maxX, cornerProjected[0]);
+      minY = Math.min(minY, cornerProjected[1]);
+      maxY = Math.max(maxY, cornerProjected[1]);
+      canvas.geoProjection.project(corner.set(airspace.facility.bottomRight.lat, airspace.facility.bottomRight.long), cornerProjected);
+      minX = Math.min(minX, cornerProjected[0]);
+      maxX = Math.max(maxX, cornerProjected[0]);
+      minY = Math.min(minY, cornerProjected[1]);
+      maxY = Math.max(maxY, cornerProjected[1]);
+      canvas.geoProjection.project(corner.set(airspace.facility.bottomRight.lat, airspace.facility.topLeft.long), cornerProjected);
+      minX = Math.min(minX, cornerProjected[0]);
+      maxX = Math.max(maxX, cornerProjected[0]);
+      minY = Math.min(minY, cornerProjected[1]);
+      maxY = Math.max(maxY, cornerProjected[1]);
+      const width = canvas.canvas.width;
+      const height = canvas.canvas.height;
+      return minX < width && maxX > 0 && minY < height && maxY > 0;
+    }
+    selectLod(resolution) {
+      const thresholds = this.props.lodBoundaryCache.lodDistanceThresholds;
+      let i = thresholds.length - 1;
+      while (i >= 0) {
+        if (resolution * 2 >= thresholds[i]) {
+          break;
+        }
+        i--;
+      }
+      return i;
+    }
+    cleanUpRender() {
+      this.canvasLayerRef.instance.buffer.reset();
+      this.activeRenderProcess = null;
+    }
+    renderAirspacesToDisplay() {
+      const display = this.canvasLayerRef.instance.display;
+      const buffer = this.canvasLayerRef.instance.buffer;
+      display.clear();
+      display.syncWithCanvasInstance(buffer);
+      this.canvasLayerRef.instance.copyBufferToDisplay();
+    }
+    onRenderPaused() {
+      if (this.isDisplayInvalidated) {
+        this.renderAirspacesToDisplay();
+      }
+    }
+    onRenderFinished() {
+      this.renderAirspacesToDisplay();
+      this.cleanUpRender();
+      this.isDisplayInvalidated = false;
+    }
+    onRenderAborted() {
+      this.cleanUpRender();
+    }
+    onAirspaceTypeShowChanged() {
+      this.scheduleSearch(0, true);
+    }
+    render() {
+      return FSComponent.buildComponent(MapCachedCanvasLayer, { ref: this.canvasLayerRef, model: this.props.model, mapProjection: this.props.mapProjection, useBuffer: true, overdrawFactor: Math.SQRT2 });
     }
   };
-  var CssTransformBuilder = class {
-    static matrix() {
-      return new CssMatrixTransform();
-    }
-    static rotate(unit) {
-      return new CssRotateTransform(unit);
-    }
-    static rotate3d(unit) {
-      return new CssRotate3dTransform(unit);
-    }
-    static translateX(unit) {
-      return new CssTranslateXTransform(unit);
-    }
-    static translateY(unit) {
-      return new CssTranslateYTransform(unit);
-    }
-    static translateZ(unit) {
-      return new CssTranslateZTransform(unit);
-    }
-    static translate(unitX, unitY) {
-      return new CssTranslateTransform(unitX, unitY);
-    }
-    static translate3d(unitX, unitY, unitZ) {
-      return new CssTranslate3dTransform(unitX, unitY, unitZ);
-    }
-    static scaleX() {
-      return new CssScaleXTransform();
-    }
-    static scaleY() {
-      return new CssScaleYTransform();
-    }
-    static scaleZ() {
-      return new CssScaleZTransform();
-    }
-    static scale() {
-      return new CssScaleTransform();
-    }
-    static scale3d() {
-      return new CssScale3dTransform();
-    }
-    static concat(...transforms) {
-      return new CssTransformChain(...transforms);
-    }
-  };
+  MapAirspaceLayer.DEFAULT_SEARCH_DEBOUNCE_DELAY = 500;
+  MapAirspaceLayer.DEFAULT_RENDER_TIME_BUDGET = 0.2;
+  MapAirspaceLayer.BACKGROUND_RENDER_MARGIN_THRESHOLD = 0.1;
+  MapAirspaceLayer.CLIP_BOUNDS_BUFFER = 10;
+  MapAirspaceLayer.geoPointCache = [new GeoPoint(0, 0)];
+  MapAirspaceLayer.vec2Cache = [new Float64Array(2)];
   var NumberFormatter = class {
     static formatNumber(number, opts) {
       if (isNaN(number)) {
         return opts.nanString;
       }
-      const { precision, roundFunc, maxDigits, forceDecimalZeroes, pad, showCommas, useMinusSign, forceSign, cache } = opts;
+      const { precision, roundFunc, maxDigits, forceDecimalZeroes, pad, showCommas, useMinusSign, forceSign, hideSign, cache } = opts;
       const sign = number < 0 ? -1 : 1;
       const abs = Math.abs(number);
       let rounded = abs;
@@ -18326,15 +21233,26 @@
         parts[0] = parts[0].replace(NumberFormatter.COMMAS_REGEX, ",");
         formatted = parts.join(".");
       }
-      formatted = (forceSign || signText !== "+" ? signText : "") + formatted;
+      if (!hideSign && (forceSign || signText !== "+")) {
+        formatted = signText + formatted;
+      }
       if (cache) {
         opts.cachedString = formatted;
       }
       return formatted;
     }
+    static resolveOptions(options) {
+      var _a2;
+      var _b;
+      const resolved = Object.assign({}, options);
+      for (const key in NumberFormatter.DEFAULT_OPTIONS) {
+        (_a2 = (_b = resolved)[key]) !== null && _a2 !== void 0 ? _a2 : _b[key] = NumberFormatter.DEFAULT_OPTIONS[key];
+      }
+      resolved.roundFunc = NumberFormatter.roundFuncs[resolved.round];
+      return resolved;
+    }
     static create(options) {
-      const optsToUse = Object.assign({}, NumberFormatter.DEFAULT_OPTIONS, options);
-      optsToUse.roundFunc = NumberFormatter.roundFuncs[optsToUse.round];
+      const optsToUse = NumberFormatter.resolveOptions(options);
       return (number) => {
         return NumberFormatter.formatNumber(number, optsToUse);
       };
@@ -18349,6 +21267,7 @@
     showCommas: false,
     useMinusSign: false,
     forceSign: false,
+    hideSign: false,
     nanString: "NaN",
     cache: false
   };
@@ -18492,144 +21411,6 @@
   MapSystemKeys.AirspaceManager = "airspaceRenderManager";
   MapSystemKeys.Traffic = "traffic";
   MapSystemKeys.DataIntegrity = "dataIntegrity";
-  var MapCanvasLayerCanvasInstanceClass = class {
-    constructor(canvas, context, isDisplayed) {
-      this.canvas = canvas;
-      this.context = context;
-      this.isDisplayed = isDisplayed;
-    }
-    clear() {
-      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    }
-    reset() {
-      const width = this.canvas.width;
-      this.canvas.width = 0;
-      this.canvas.width = width;
-    }
-  };
-  var MapCanvasLayer = class extends MapLayer {
-    constructor() {
-      super(...arguments);
-      this.displayCanvasRef = FSComponent.createRef();
-      this.width = 0;
-      this.height = 0;
-      this.displayCanvasContext = null;
-      this.isInit = false;
-    }
-    get display() {
-      if (!this._display) {
-        throw new Error("MapCanvasLayer: attempted to access display before it was initialized");
-      }
-      return this._display;
-    }
-    get buffer() {
-      if (!this._buffer) {
-        throw new Error("MapCanvasLayer: attempted to access buffer before it was initialized");
-      }
-      return this._buffer;
-    }
-    tryGetDisplay() {
-      return this._display;
-    }
-    tryGetBuffer() {
-      return this._buffer;
-    }
-    getWidth() {
-      return this.width;
-    }
-    getHeight() {
-      return this.height;
-    }
-    setWidth(width) {
-      if (width === this.width) {
-        return;
-      }
-      this.width = width;
-      if (this.isInit) {
-        this.updateCanvasSize();
-      }
-    }
-    setHeight(height) {
-      if (height === this.height) {
-        return;
-      }
-      this.height = height;
-      if (this.isInit) {
-        this.updateCanvasSize();
-      }
-    }
-    copyBufferToDisplay() {
-      if (!this.isInit || !this.props.useBuffer) {
-        return;
-      }
-      this.display.context.drawImage(this.buffer.canvas, 0, 0, this.width, this.height);
-    }
-    onAfterRender() {
-      this.displayCanvasContext = this.displayCanvasRef.instance.getContext("2d");
-    }
-    onVisibilityChanged(isVisible) {
-      if (this.isInit) {
-        this.updateCanvasVisibility();
-      }
-    }
-    updateFromVisibility() {
-      this.display.canvas.style.display = this.isVisible() ? "block" : "none";
-    }
-    onAttached() {
-      this.initCanvasInstances();
-      this.isInit = true;
-      this.updateCanvasVisibility();
-      this.updateCanvasSize();
-    }
-    initCanvasInstances() {
-      this._display = this.createCanvasInstance(this.displayCanvasRef.instance, this.displayCanvasContext, true);
-      if (this.props.useBuffer) {
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-        this._buffer = this.createCanvasInstance(canvas, context, false);
-      }
-    }
-    createCanvasInstance(canvas, context, isDisplayed) {
-      return new MapCanvasLayerCanvasInstanceClass(canvas, context, isDisplayed);
-    }
-    updateCanvasSize() {
-      const displayCanvas = this.display.canvas;
-      displayCanvas.width = this.width;
-      displayCanvas.height = this.height;
-      displayCanvas.style.width = `${this.width}px`;
-      displayCanvas.style.height = `${this.height}px`;
-      if (this._buffer) {
-        const bufferCanvas = this._buffer.canvas;
-        bufferCanvas.width = this.width;
-        bufferCanvas.height = this.height;
-      }
-    }
-    updateCanvasVisibility() {
-      this.display.canvas.style.display = this.isVisible() ? "block" : "none";
-    }
-    render() {
-      var _a2;
-      return FSComponent.buildComponent("canvas", { ref: this.displayCanvasRef, class: (_a2 = this.props.class) !== null && _a2 !== void 0 ? _a2 : "", width: "0", height: "0", style: "position: absolute;" });
-    }
-  };
-  var MapSyncedCanvasLayer = class extends MapCanvasLayer {
-    onAttached() {
-      super.onAttached();
-      this.updateFromProjectedSize(this.props.mapProjection.getProjectedSize());
-    }
-    updateFromProjectedSize(projectedSize) {
-      this.setWidth(projectedSize[0]);
-      this.setHeight(projectedSize[1]);
-      const displayCanvas = this.display.canvas;
-      displayCanvas.style.left = "0px";
-      displayCanvas.style.top = "0px";
-    }
-    onMapProjectionChanged(mapProjection, changeFlags) {
-      if (BitFlags.isAll(changeFlags, MapProjectionChangeType.ProjectedSize)) {
-        this.updateFromProjectedSize(mapProjection.getProjectedSize());
-      }
-    }
-  };
   var MapAltitudeArcLayer = class extends MapLayer {
     constructor() {
       var _a2, _b, _c, _d, _e, _f, _g, _h;
@@ -19030,430 +21811,6 @@
       );
     }
   };
-  var MapCachedCanvasLayerReferenceClass = class {
-    constructor() {
-      this._center = new GeoPoint(0, 0);
-      this._scaleFactor = 1;
-      this._rotation = 0;
-    }
-    get center() {
-      return this._center.readonly;
-    }
-    get scaleFactor() {
-      return this._scaleFactor;
-    }
-    get rotation() {
-      return this._rotation;
-    }
-    syncWithMapProjection(mapProjection) {
-      this._center.set(mapProjection.getCenter());
-      this._scaleFactor = mapProjection.getScaleFactor();
-      this._rotation = mapProjection.getRotation();
-    }
-    syncWithReference(reference) {
-      this._center.set(reference.center);
-      this._scaleFactor = reference.scaleFactor;
-      this._rotation = reference.rotation;
-    }
-  };
-  var MapCachedCanvasLayerTransformClass = class {
-    constructor() {
-      this._scale = 0;
-      this._rotation = 0;
-      this._translation = new Float64Array(2);
-      this._margin = 0;
-      this._marginRemaining = 0;
-    }
-    get scale() {
-      return this._scale;
-    }
-    get rotation() {
-      return this._rotation;
-    }
-    get translation() {
-      return this._translation;
-    }
-    get margin() {
-      return this._margin;
-    }
-    get marginRemaining() {
-      return this._marginRemaining;
-    }
-    update(mapProjection, reference, referenceMargin) {
-      this._scale = mapProjection.getScaleFactor() / reference.scaleFactor;
-      this._rotation = mapProjection.getRotation() - reference.rotation;
-      mapProjection.project(reference.center, this._translation);
-      Vec2Math.sub(this._translation, mapProjection.getCenterProjected(), this._translation);
-      this._margin = referenceMargin * this._scale;
-      this._marginRemaining = this._margin - Math.max(Math.abs(this._translation[0]), Math.abs(this._translation[1]));
-    }
-    copyFrom(other) {
-      this._scale = other.scale;
-      this._rotation = other.rotation;
-      this._translation.set(other.translation);
-      this._margin = other.margin;
-    }
-  };
-  var MapCachedCanvasLayerCanvasInstanceClass = class extends MapCanvasLayerCanvasInstanceClass {
-    constructor(canvas, context, isDisplayed, getReferenceMargin) {
-      super(canvas, context, isDisplayed);
-      this.getReferenceMargin = getReferenceMargin;
-      this._reference = new MapCachedCanvasLayerReferenceClass();
-      this._transform = new MapCachedCanvasLayerTransformClass();
-      this._isInvalid = false;
-      this._geoProjection = new MercatorProjection();
-      this.canvasTransform = CssTransformSubject.create(CssTransformBuilder.concat(CssTransformBuilder.scale(), CssTransformBuilder.translate("px"), CssTransformBuilder.rotate("rad")));
-      this.canvasTransform.sub((transform) => {
-        this.canvas.style.transform = transform;
-      }, true);
-    }
-    get reference() {
-      return this._reference;
-    }
-    get transform() {
-      return this._transform;
-    }
-    get isInvalid() {
-      return this._isInvalid;
-    }
-    get geoProjection() {
-      return this._geoProjection;
-    }
-    syncWithMapProjection(mapProjection) {
-      const projectedCenter = Vec2Math.set(this.canvas.width / 2, this.canvas.height / 2, MapCachedCanvasLayerCanvasInstanceClass.tempVec2_1);
-      this._reference.syncWithMapProjection(mapProjection);
-      this._geoProjection.copyParametersFrom(mapProjection.getGeoProjection()).setTranslation(projectedCenter);
-      this._transform.update(mapProjection, this.reference, this.getReferenceMargin());
-      this._isInvalid = false;
-      if (this.isDisplayed) {
-        this.transformCanvasElement();
-      }
-    }
-    syncWithCanvasInstance(other) {
-      this._reference.syncWithReference(other.reference);
-      this._geoProjection.copyParametersFrom(other.geoProjection);
-      this._transform.copyFrom(other.transform);
-      this._isInvalid = other.isInvalid;
-      if (this.isDisplayed && !this._isInvalid) {
-        this.transformCanvasElement();
-      }
-    }
-    updateTransform(mapProjection) {
-      this._transform.update(mapProjection, this.reference, this.getReferenceMargin());
-      if (!this._isInvalid) {
-        const scaleFactorRatio = mapProjection.getScaleFactor() / this._reference.scaleFactor;
-        this._isInvalid = scaleFactorRatio >= MapCachedCanvasLayerCanvasInstanceClass.SCALE_INVALIDATION_THRESHOLD || scaleFactorRatio <= 1 / MapCachedCanvasLayerCanvasInstanceClass.SCALE_INVALIDATION_THRESHOLD || this._transform.marginRemaining < 0;
-      }
-      if (this.isDisplayed && !this._isInvalid) {
-        this.transformCanvasElement();
-      }
-    }
-    transformCanvasElement() {
-      const transform = this.transform;
-      const offsetX = transform.translation[0] / transform.scale;
-      const offsetY = transform.translation[1] / transform.scale;
-      this.canvasTransform.transform.getChild(0).set(transform.scale, transform.scale, 1e-3);
-      this.canvasTransform.transform.getChild(1).set(offsetX, offsetY, 0.1);
-      this.canvasTransform.transform.getChild(2).set(transform.rotation, 1e-4);
-      this.canvasTransform.resolve();
-    }
-    invalidate() {
-      this._isInvalid = true;
-      this.clear();
-    }
-  };
-  MapCachedCanvasLayerCanvasInstanceClass.SCALE_INVALIDATION_THRESHOLD = 1.2;
-  MapCachedCanvasLayerCanvasInstanceClass.tempVec2_1 = new Float64Array(2);
-  var MapCachedCanvasLayer = class extends MapCanvasLayer {
-    constructor(props) {
-      super(props);
-      this.size = 0;
-      this.referenceMargin = 0;
-      this.needUpdateTransforms = false;
-      this.props.overdrawFactor = Math.max(1, this.props.overdrawFactor);
-    }
-    getSize() {
-      return this.size;
-    }
-    getReferenceMargin() {
-      return this.referenceMargin;
-    }
-    onAttached() {
-      super.onAttached();
-      this.updateFromProjectedSize(this.props.mapProjection.getProjectedSize());
-      this.needUpdateTransforms = true;
-    }
-    createCanvasInstance(canvas, context, isDisplayed) {
-      return new MapCachedCanvasLayerCanvasInstanceClass(canvas, context, isDisplayed, this.getReferenceMargin.bind(this));
-    }
-    updateFromProjectedSize(projectedSize) {
-      const projectedWidth = projectedSize[0];
-      const projectedHeight = projectedSize[1];
-      const diag = Math.hypot(projectedWidth, projectedHeight);
-      this.size = diag * this.props.overdrawFactor;
-      this.referenceMargin = (this.size - diag) / 2;
-      this.setWidth(this.size);
-      this.setHeight(this.size);
-      const posX = (projectedWidth - this.size) / 2;
-      const posY = (projectedHeight - this.size) / 2;
-      const displayCanvas = this.display.canvas;
-      displayCanvas.style.left = `${posX}px`;
-      displayCanvas.style.top = `${posY}px`;
-    }
-    onMapProjectionChanged(mapProjection, changeFlags) {
-      var _a2;
-      if (BitFlags.isAll(changeFlags, MapProjectionChangeType.ProjectedSize)) {
-        this.updateFromProjectedSize(mapProjection.getProjectedSize());
-        this.display.invalidate();
-        (_a2 = this.tryGetBuffer()) === null || _a2 === void 0 ? void 0 : _a2.invalidate();
-      }
-      this.needUpdateTransforms = true;
-    }
-    onUpdated(time, elapsed) {
-      super.onUpdated(time, elapsed);
-      if (!this.needUpdateTransforms) {
-        return;
-      }
-      this.updateTransforms();
-    }
-    updateTransforms() {
-      var _a2;
-      const mapProjection = this.props.mapProjection;
-      this.display.updateTransform(mapProjection);
-      (_a2 = this.tryGetBuffer()) === null || _a2 === void 0 ? void 0 : _a2.updateTransform(mapProjection);
-      this.needUpdateTransforms = false;
-    }
-  };
-  var MapLabeledRingLabelClass = class {
-    constructor(content, wrapper) {
-      this.content = content;
-      this.wrapper = wrapper;
-      this.center = new Float64Array(2);
-      this.radius = 0;
-      this.anchor = new Float64Array(2);
-      this.radialAngle = 0;
-      this.radialOffset = 0;
-    }
-    getAnchor() {
-      return this.anchor;
-    }
-    getRadialAngle() {
-      return this.radialAngle;
-    }
-    getRadialOffset() {
-      return this.radialOffset;
-    }
-    setAnchor(anchor) {
-      this.anchor.set(anchor);
-      this.wrapper.style.transform = `translate(${-anchor[0] * 100}%, ${-anchor[1] * 100}%)`;
-    }
-    setRadialAngle(angle) {
-      if (this.radialAngle === angle) {
-        return;
-      }
-      this.radialAngle = angle;
-      this.updatePosition();
-    }
-    setRadialOffset(offset) {
-      if (this.radialOffset === offset) {
-        return;
-      }
-      this.radialOffset = offset;
-      this.updatePosition();
-    }
-    setRingPosition(center, radius) {
-      if (Vec2Math.equals(this.center, center) && radius === this.radius) {
-        return;
-      }
-      this.center.set(center);
-      this.radius = radius;
-      this.updatePosition();
-    }
-    updatePosition() {
-      const pos = MapLabeledRingLabelClass.tempVec2_1;
-      Vec2Math.setFromPolar(this.radius + this.radialOffset, this.radialAngle, pos);
-      Vec2Math.add(this.center, pos, pos);
-      this.wrapper.style.left = `${pos[0]}px`;
-      this.wrapper.style.top = `${pos[1]}px`;
-    }
-  };
-  MapLabeledRingLabelClass.tempVec2_1 = new Float64Array(2);
-  var MapOwnAirplaneLayer = class extends MapLayer {
-    constructor() {
-      super(...arguments);
-      this.imageFilePath = SubscribableUtils.isSubscribable(this.props.imageFilePath) ? this.props.imageFilePath.map(SubscribableMapFunctions.identity()) : this.props.imageFilePath;
-      this.style = ObjectSubject.create({
-        display: "",
-        position: "absolute",
-        left: "0px",
-        top: "0px",
-        width: "0px",
-        height: "0px",
-        transform: "translate3d(0, 0, 0) rotate(0deg)",
-        "transform-origin": "50% 50%"
-      });
-      this.ownAirplanePropsModule = this.props.model.getModule("ownAirplaneProps");
-      this.ownAirplaneIconModule = this.props.model.getModule("ownAirplaneIcon");
-      this.iconSize = SubscribableUtils.toSubscribable(this.props.iconSize, true);
-      this.iconAnchor = SubscribableUtils.toSubscribable(this.props.iconAnchor, true);
-      this.iconOffset = Vec2Math.create();
-      this.visibilityBounds = VecNMath.create(4);
-      this.iconTransform = CssTransformBuilder.concat(CssTransformBuilder.translate3d("px"), CssTransformBuilder.rotate("deg"));
-      this.isGsAboveTrackThreshold = this.ownAirplanePropsModule.groundSpeed.map((gs) => gs.asUnit(UnitType.KNOT) >= 5).pause();
-      this.showIcon = true;
-      this.isInsideVisibilityBounds = true;
-      this.planeRotation = 0;
-      this.needUpdateVisibility = false;
-      this.needUpdatePositionRotation = false;
-    }
-    onVisibilityChanged(isVisible) {
-      this.needUpdateVisibility = true;
-      this.needUpdatePositionRotation = this.showIcon = isVisible && this.ownAirplaneIconModule.show.get();
-    }
-    onAttached() {
-      this.showSub = this.ownAirplaneIconModule.show.sub((show) => {
-        this.needUpdateVisibility = true;
-        this.needUpdatePositionRotation = this.showIcon = show && this.isVisible();
-      });
-      this.positionSub = this.ownAirplanePropsModule.position.sub(() => {
-        this.needUpdatePositionRotation = this.showIcon;
-      });
-      this.headingSub = this.ownAirplanePropsModule.hdgTrue.sub((hdg) => {
-        this.planeRotation = hdg;
-        this.needUpdatePositionRotation = this.showIcon;
-      }, false, true);
-      this.trackSub = this.ownAirplanePropsModule.trackTrue.sub((track) => {
-        this.planeRotation = track;
-        this.needUpdatePositionRotation = this.showIcon;
-      }, false, true);
-      this.trackThresholdSub = this.isGsAboveTrackThreshold.sub((isAboveThreshold) => {
-        if (isAboveThreshold) {
-          this.headingSub.pause();
-          this.trackSub.resume(true);
-        } else {
-          this.trackSub.pause();
-          this.headingSub.resume(true);
-        }
-      }, false, true);
-      this.iconSizeSub = this.iconSize.sub((size) => {
-        this.style.set("width", `${size}px`);
-        this.style.set("height", `${size}px`);
-        this.updateOffset();
-      }, true);
-      this.iconAnchorSub = this.iconAnchor.sub(() => {
-        this.updateOffset();
-      });
-      this.orientationSub = this.ownAirplaneIconModule.orientation.sub((orientation) => {
-        switch (orientation) {
-          case MapOwnAirplaneIconOrientation.HeadingUp:
-            this.isGsAboveTrackThreshold.pause();
-            this.trackThresholdSub.pause();
-            this.trackSub.pause();
-            this.headingSub.resume(true);
-            break;
-          case MapOwnAirplaneIconOrientation.TrackUp:
-            this.headingSub.pause();
-            this.trackSub.pause();
-            this.isGsAboveTrackThreshold.resume();
-            this.trackThresholdSub.resume(true);
-            break;
-          default:
-            this.needUpdatePositionRotation = this.showIcon;
-            this.isGsAboveTrackThreshold.pause();
-            this.trackThresholdSub.pause();
-            this.headingSub.pause();
-            this.trackSub.pause();
-            this.planeRotation = 0;
-        }
-      }, true);
-      this.needUpdateVisibility = true;
-      this.needUpdatePositionRotation = true;
-    }
-    updateOffset() {
-      const anchor = this.iconAnchor.get();
-      this.iconOffset.set(anchor);
-      Vec2Math.multScalar(this.iconOffset, -this.iconSize.get(), this.iconOffset);
-      this.style.set("left", `${this.iconOffset[0]}px`);
-      this.style.set("top", `${this.iconOffset[1]}px`);
-      this.style.set("transform-origin", `${anchor[0] * 100}% ${anchor[1] * 100}%`);
-      this.updateVisibilityBounds();
-    }
-    updateVisibilityBounds() {
-      const size = this.iconSize.get();
-      const maxProtrusion = Math.max(
-        Math.hypot(this.iconOffset[0], this.iconOffset[1]),
-        Math.hypot(this.iconOffset[0] + size, this.iconOffset[1]),
-        Math.hypot(this.iconOffset[0] + size, this.iconOffset[1] + size),
-        Math.hypot(this.iconOffset[0], this.iconOffset[1] + size)
-      );
-      const boundsOffset = maxProtrusion + 50;
-      const projectedSize = this.props.mapProjection.getProjectedSize();
-      this.visibilityBounds[0] = -boundsOffset;
-      this.visibilityBounds[1] = -boundsOffset;
-      this.visibilityBounds[2] = projectedSize[0] + boundsOffset;
-      this.visibilityBounds[3] = projectedSize[1] + boundsOffset;
-      this.needUpdatePositionRotation = this.showIcon;
-    }
-    onMapProjectionChanged(mapProjection, changeFlags) {
-      if (BitFlags.isAll(changeFlags, MapProjectionChangeType.ProjectedSize)) {
-        this.updateVisibilityBounds();
-      }
-      this.needUpdatePositionRotation = this.showIcon;
-    }
-    onUpdated(time, elapsed) {
-      if (this.needUpdatePositionRotation) {
-        this.updateIconPositionRotation();
-        this.needUpdatePositionRotation = false;
-        this.needUpdateVisibility = false;
-      } else if (this.needUpdateVisibility) {
-        this.updateIconVisibility();
-        this.needUpdateVisibility = false;
-      }
-    }
-    updateIconVisibility() {
-      this.style.set("display", this.isInsideVisibilityBounds && this.showIcon ? "" : "none");
-    }
-    updateIconPositionRotation() {
-      const projected = this.props.mapProjection.project(this.ownAirplanePropsModule.position.get(), MapOwnAirplaneLayer.vec2Cache[0]);
-      this.isInsideVisibilityBounds = this.props.mapProjection.isInProjectedBounds(projected, this.visibilityBounds);
-      if (this.isInsideVisibilityBounds) {
-        let rotation;
-        switch (this.ownAirplaneIconModule.orientation.get()) {
-          case MapOwnAirplaneIconOrientation.HeadingUp:
-          case MapOwnAirplaneIconOrientation.TrackUp:
-            rotation = this.planeRotation + this.props.mapProjection.getRotation() * Avionics.Utils.RAD2DEG;
-            break;
-          default:
-            rotation = 0;
-        }
-        this.iconTransform.getChild(0).set(projected[0], projected[1], 0, 0.1);
-        this.iconTransform.getChild(1).set(rotation, 0.1);
-        this.style.set("transform", this.iconTransform.resolve());
-      }
-      this.updateIconVisibility();
-    }
-    render() {
-      var _a2;
-      return FSComponent.buildComponent("img", { src: this.imageFilePath, class: (_a2 = this.props.class) !== null && _a2 !== void 0 ? _a2 : "", style: this.style });
-    }
-    destroy() {
-      var _a2, _b, _c, _d, _e, _f, _g, _h;
-      if (SubscribableUtils.isSubscribable(this.imageFilePath)) {
-        this.imageFilePath.destroy();
-      }
-      this.isGsAboveTrackThreshold.destroy();
-      (_a2 = this.showSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
-      (_b = this.positionSub) === null || _b === void 0 ? void 0 : _b.destroy();
-      (_c = this.headingSub) === null || _c === void 0 ? void 0 : _c.destroy();
-      (_d = this.trackSub) === null || _d === void 0 ? void 0 : _d.destroy();
-      (_e = this.trackThresholdSub) === null || _e === void 0 ? void 0 : _e.destroy();
-      (_f = this.iconSizeSub) === null || _f === void 0 ? void 0 : _f.destroy();
-      (_g = this.iconAnchorSub) === null || _g === void 0 ? void 0 : _g.destroy();
-      (_h = this.orientationSub) === null || _h === void 0 ? void 0 : _h.destroy();
-      super.destroy();
-    }
-  };
-  MapOwnAirplaneLayer.vec2Cache = [Vec2Math.create()];
   var MapCullableTextLayer = class extends MapSyncedCanvasLayer {
     onUpdated(time, elapsed) {
       super.onUpdated(time, elapsed);
@@ -19469,258 +21826,75 @@
       }
     }
   };
-  var MapAirspaceLayer = class extends MapLayer {
+  var MapLineLayer = class extends MapSyncedCanvasLayer {
     constructor() {
-      var _a2, _b;
+      var _a2, _b, _c, _d, _e, _f;
       super(...arguments);
-      this.canvasLayerRef = FSComponent.createRef();
-      this.clipBoundsSub = VecNSubject.createFromVector(new Float64Array(4));
-      this.facLoader = new FacilityLoader(FacilityRepository.getRepository(this.props.bus), async () => {
-        this.searchSession = new NearestLodBoundarySearchSession(this.props.lodBoundaryCache, await this.facLoader.startNearestSearchSession(FacilitySearchType.Boundary), 0.5);
-        this.isAttached && this.scheduleSearch(0, true);
-      });
-      this.searchedAirspaces = /* @__PURE__ */ new Map();
-      this.searchDebounceDelay = (_a2 = this.props.searchDebounceDelay) !== null && _a2 !== void 0 ? _a2 : MapAirspaceLayer.DEFAULT_SEARCH_DEBOUNCE_DELAY;
-      this.renderTimeBudget = (_b = this.props.renderTimeBudget) !== null && _b !== void 0 ? _b : MapAirspaceLayer.DEFAULT_RENDER_TIME_BUDGET;
-      this.activeRenderProcess = null;
-      this.renderTaskQueueHandler = {
-        renderTimeBudget: this.renderTimeBudget,
-        onStarted() {
-        },
-        canContinue(elapsedFrameCount, dispatchedTaskCount, timeElapsed) {
-          return timeElapsed < this.renderTimeBudget;
-        },
-        onPaused: this.onRenderPaused.bind(this),
-        onFinished: this.onRenderFinished.bind(this),
-        onAborted: this.onRenderAborted.bind(this)
-      };
-      this.searchDebounceTimer = 0;
-      this.isSearchScheduled = false;
-      this.needRefilter = false;
-      this.isSearchBusy = false;
-      this.lastDesiredSearchRadius = 0;
-      this.lastSearchRadius = 0;
-      this.isRenderScheduled = false;
-      this.isBackgroundRenderScheduled = false;
-      this.isDisplayInvalidated = true;
-      this.isAttached = false;
+      this.strokeWidth = (_a2 = this.props.strokeWidth) !== null && _a2 !== void 0 ? _a2 : MapLineLayer.DEFAULT_STROKE_WIDTH;
+      this.strokeStyle = (_b = this.props.strokeStyle) !== null && _b !== void 0 ? _b : MapLineLayer.DEFAULT_STROKE_STYLE;
+      this.strokeDash = (_c = this.props.strokeDash) !== null && _c !== void 0 ? _c : MapLineLayer.DEFAULT_STROKE_DASH;
+      this.outlineWidth = (_d = this.props.outlineWidth) !== null && _d !== void 0 ? _d : MapLineLayer.DEFAULT_OUTLINE_WIDTH;
+      this.outlineStyle = (_e = this.props.outlineStyle) !== null && _e !== void 0 ? _e : MapLineLayer.DEFAULT_OUTLINE_STYLE;
+      this.outlineDash = (_f = this.props.outlineDash) !== null && _f !== void 0 ? _f : MapLineLayer.DEFAULT_OUTLINE_DASH;
+      this.vec = new Float64Array([0, 0]);
+      this.isUpdateScheduled = false;
     }
     onAttached() {
-      this.canvasLayerRef.instance.onAttached();
-      this.updateClipBounds();
-      this.clippedPathStream = new ClippedPathStream(this.canvasLayerRef.instance.buffer.context, this.clipBoundsSub);
-      this.props.maxSearchRadius.sub((radius) => {
-        const radiusMeters = radius.asUnit(UnitType.METER);
-        if (radiusMeters < this.lastSearchRadius || radiusMeters > this.lastDesiredSearchRadius) {
-          this.scheduleSearch(0, false);
-        }
+      super.onAttached();
+      this.props.start.sub(() => {
+        this.scheduleUpdate();
       });
-      this.props.maxSearchItemCount.sub(() => {
-        this.scheduleSearch(0, false);
+      this.props.end.sub(() => {
+        this.scheduleUpdate();
       });
-      this.initModuleListeners();
-      this.isAttached = true;
-      this.searchSession && this.scheduleSearch(0, true);
-    }
-    initModuleListeners() {
-      const airspaceModule = this.props.model.getModule("airspace");
-      for (const type of Object.values(airspaceModule.show)) {
-        type.sub(this.onAirspaceTypeShowChanged.bind(this));
-      }
+      this.scheduleUpdate();
     }
     onMapProjectionChanged(mapProjection, changeFlags) {
-      this.canvasLayerRef.instance.onMapProjectionChanged(mapProjection, changeFlags);
-      if (BitFlags.isAll(changeFlags, MapProjectionChangeType.ProjectedSize)) {
-        this.updateClipBounds();
-      }
+      super.onMapProjectionChanged(mapProjection, changeFlags);
+      this.scheduleUpdate();
     }
-    updateClipBounds() {
-      const size = this.canvasLayerRef.instance.getSize();
-      this.clipBoundsSub.set(-MapAirspaceLayer.CLIP_BOUNDS_BUFFER, -MapAirspaceLayer.CLIP_BOUNDS_BUFFER, size + MapAirspaceLayer.CLIP_BOUNDS_BUFFER, size + MapAirspaceLayer.CLIP_BOUNDS_BUFFER);
-    }
-    scheduleSearch(delay, refilter) {
-      if (!this.searchSession) {
-        return;
-      }
-      this.searchDebounceTimer = delay;
-      this.isSearchScheduled = true;
-      this.needRefilter || (this.needRefilter = refilter);
-    }
-    scheduleRender() {
-      this.isRenderScheduled = true;
-    }
-    async searchAirspaces(refilter) {
-      this.isSearchBusy = true;
-      const center = this.props.mapProjection.getCenter();
-      const drawableDiag = this.canvasLayerRef.instance.display.canvas.width * Math.SQRT2;
-      this.lastDesiredSearchRadius = UnitType.GA_RADIAN.convertTo(this.props.mapProjection.getProjectedResolution() * drawableDiag / 2, UnitType.METER);
-      this.lastSearchRadius = Math.min(this.props.maxSearchRadius.get().asUnit(UnitType.METER), this.lastDesiredSearchRadius);
-      const session = this.searchSession;
-      refilter && session.setFilter(this.getBoundaryFilter());
-      const results = await session.searchNearest(center.lat, center.lon, this.lastSearchRadius, this.props.maxSearchItemCount.get());
-      for (let i = 0; i < results.added.length; i++) {
-        const airspace = results.added[i];
-        this.searchedAirspaces.set(airspace.facility.id, airspace);
-      }
-      for (let i = 0; i < results.removed.length; i++) {
-        this.searchedAirspaces.delete(results.removed[i]);
-      }
-      this.isSearchBusy = false;
-      this.scheduleRender();
-    }
-    getBoundaryFilter() {
-      const module = this.props.model.getModule("airspace");
-      const show = module.show;
-      let filter = 0;
-      for (const type in show) {
-        if (show[type].get()) {
-          filter |= module.showTypes[type];
-        }
-      }
-      return filter;
+    scheduleUpdate() {
+      this.isUpdateScheduled = true;
     }
     onUpdated(time, elapsed) {
-      this.canvasLayerRef.instance.onUpdated(time, elapsed);
-      this.updateFromInvalidation();
-      this.updateScheduledRender();
-      this.updateScheduledSearch(elapsed);
-    }
-    updateFromInvalidation() {
-      const canvasLayer = this.canvasLayerRef.instance;
-      const display = canvasLayer.display;
-      const buffer = canvasLayer.buffer;
-      const needBackgroundRender = !this.isBackgroundRenderScheduled && !this.activeRenderProcess && display.transform.marginRemaining / display.transform.margin <= MapAirspaceLayer.BACKGROUND_RENDER_MARGIN_THRESHOLD;
-      const shouldScheduleSearch = needBackgroundRender || display.isInvalid || buffer.isInvalid && this.activeRenderProcess;
-      this.isBackgroundRenderScheduled || (this.isBackgroundRenderScheduled = needBackgroundRender);
-      if (display.isInvalid) {
-        this.isDisplayInvalidated = true;
-        this.isBackgroundRenderScheduled = false;
-        display.clear();
-        display.syncWithMapProjection(this.props.mapProjection);
-      }
-      if (buffer.isInvalid) {
-        if (this.activeRenderProcess) {
-          this.activeRenderProcess.abort();
-          this.cleanUpRender();
+      super.onUpdated(time, elapsed);
+      if (this.isUpdateScheduled) {
+        this.display.clear();
+        const start = this.props.start.get();
+        const end = this.props.end.get();
+        if (start !== null && end !== null) {
+          const [x1, y1] = start instanceof Float64Array ? start : this.props.mapProjection.project(start, this.vec);
+          const [x2, y2] = end instanceof Float64Array ? end : this.props.mapProjection.project(end, this.vec);
+          this.drawLine(x1, y1, x2, y2);
         }
-        buffer.clear();
-        buffer.syncWithMapProjection(this.props.mapProjection);
-      }
-      if (shouldScheduleSearch) {
-        this.scheduleSearch(this.searchDebounceDelay, false);
+        this.isUpdateScheduled = false;
       }
     }
-    updateScheduledSearch(elapsed) {
-      if (!this.isSearchScheduled) {
-        return;
+    drawLine(x1, y1, x2, y2) {
+      const context = this.display.context;
+      context.beginPath();
+      context.moveTo(x1, y1);
+      context.lineTo(x2, y2);
+      if (this.outlineWidth > 0) {
+        this.stroke(context, this.strokeWidth + this.outlineWidth * 2, this.outlineStyle, this.outlineDash);
       }
-      this.searchDebounceTimer = Math.max(0, this.searchDebounceTimer - elapsed);
-      if (this.searchDebounceTimer === 0 && !this.isSearchBusy) {
-        this.searchAirspaces(this.needRefilter);
-        this.isSearchScheduled = false;
-        this.needRefilter = false;
-      }
-    }
-    updateScheduledRender() {
-      if (!this.isRenderScheduled) {
-        return;
-      }
-      this.startRenderProcess();
-      this.isRenderScheduled = false;
-      this.isBackgroundRenderScheduled = false;
-    }
-    startRenderProcess() {
-      const canvasLayer = this.canvasLayerRef.instance;
-      if (this.activeRenderProcess) {
-        this.activeRenderProcess.abort();
-      }
-      const buffer = canvasLayer.buffer;
-      buffer.clear();
-      buffer.syncWithMapProjection(this.props.mapProjection);
-      this.props.airspaceRenderManager.clearRegisteredAirspaces();
-      for (const airspace of this.searchedAirspaces.values()) {
-        if (this.isAirspaceInBounds(airspace, buffer)) {
-          this.props.airspaceRenderManager.registerAirspace(airspace);
-        }
-      }
-      const lod = this.selectLod(this.props.mapProjection.getProjectedResolution());
-      this.activeRenderProcess = this.props.airspaceRenderManager.prepareRenderProcess(buffer.geoProjection, buffer.context, this.renderTaskQueueHandler, lod, this.clippedPathStream);
-      this.activeRenderProcess.start();
-    }
-    isAirspaceInBounds(airspace, canvas) {
-      const corner = MapAirspaceLayer.geoPointCache[0];
-      const cornerProjected = MapAirspaceLayer.vec2Cache[0];
-      let minX, maxX, minY, maxY;
-      canvas.geoProjection.project(corner.set(airspace.facility.topLeft.lat, airspace.facility.topLeft.long), cornerProjected);
-      minX = maxX = cornerProjected[0];
-      minY = maxY = cornerProjected[1];
-      canvas.geoProjection.project(corner.set(airspace.facility.topLeft.lat, airspace.facility.bottomRight.long), cornerProjected);
-      minX = Math.min(minX, cornerProjected[0]);
-      maxX = Math.max(maxX, cornerProjected[0]);
-      minY = Math.min(minY, cornerProjected[1]);
-      maxY = Math.max(maxY, cornerProjected[1]);
-      canvas.geoProjection.project(corner.set(airspace.facility.bottomRight.lat, airspace.facility.bottomRight.long), cornerProjected);
-      minX = Math.min(minX, cornerProjected[0]);
-      maxX = Math.max(maxX, cornerProjected[0]);
-      minY = Math.min(minY, cornerProjected[1]);
-      maxY = Math.max(maxY, cornerProjected[1]);
-      canvas.geoProjection.project(corner.set(airspace.facility.bottomRight.lat, airspace.facility.topLeft.long), cornerProjected);
-      minX = Math.min(minX, cornerProjected[0]);
-      maxX = Math.max(maxX, cornerProjected[0]);
-      minY = Math.min(minY, cornerProjected[1]);
-      maxY = Math.max(maxY, cornerProjected[1]);
-      const width = canvas.canvas.width;
-      const height = canvas.canvas.height;
-      return minX < width && maxX > 0 && minY < height && maxY > 0;
-    }
-    selectLod(resolution) {
-      const thresholds = this.props.lodBoundaryCache.lodDistanceThresholds;
-      let i = thresholds.length - 1;
-      while (i >= 0) {
-        if (resolution * 2 >= thresholds[i]) {
-          break;
-        }
-        i--;
-      }
-      return i;
-    }
-    cleanUpRender() {
-      this.canvasLayerRef.instance.buffer.reset();
-      this.activeRenderProcess = null;
-    }
-    renderAirspacesToDisplay() {
-      const display = this.canvasLayerRef.instance.display;
-      const buffer = this.canvasLayerRef.instance.buffer;
-      display.clear();
-      display.syncWithCanvasInstance(buffer);
-      this.canvasLayerRef.instance.copyBufferToDisplay();
-    }
-    onRenderPaused() {
-      if (this.isDisplayInvalidated) {
-        this.renderAirspacesToDisplay();
+      if (this.strokeWidth > 0) {
+        this.stroke(context, this.strokeWidth, this.strokeStyle, this.strokeDash);
       }
     }
-    onRenderFinished() {
-      this.renderAirspacesToDisplay();
-      this.cleanUpRender();
-      this.isDisplayInvalidated = false;
-    }
-    onRenderAborted() {
-      this.cleanUpRender();
-    }
-    onAirspaceTypeShowChanged() {
-      this.scheduleSearch(0, true);
-    }
-    render() {
-      return FSComponent.buildComponent(MapCachedCanvasLayer, { ref: this.canvasLayerRef, model: this.props.model, mapProjection: this.props.mapProjection, useBuffer: true, overdrawFactor: Math.SQRT2 });
+    stroke(context, width, style, dash) {
+      context.lineWidth = width;
+      context.strokeStyle = style;
+      context.setLineDash(dash);
+      context.stroke();
     }
   };
-  MapAirspaceLayer.DEFAULT_SEARCH_DEBOUNCE_DELAY = 500;
-  MapAirspaceLayer.DEFAULT_RENDER_TIME_BUDGET = 0.2;
-  MapAirspaceLayer.BACKGROUND_RENDER_MARGIN_THRESHOLD = 0.1;
-  MapAirspaceLayer.CLIP_BOUNDS_BUFFER = 10;
-  MapAirspaceLayer.geoPointCache = [new GeoPoint(0, 0)];
-  MapAirspaceLayer.vec2Cache = [new Float64Array(2)];
+  MapLineLayer.DEFAULT_STROKE_WIDTH = 2;
+  MapLineLayer.DEFAULT_STROKE_STYLE = "white";
+  MapLineLayer.DEFAULT_STROKE_DASH = [];
+  MapLineLayer.DEFAULT_OUTLINE_WIDTH = 0;
+  MapLineLayer.DEFAULT_OUTLINE_STYLE = "black";
+  MapLineLayer.DEFAULT_OUTLINE_DASH = [];
   var MapNearestWaypointsLayer = class extends MapLayer {
     constructor() {
       var _a2;
@@ -19994,75 +22168,182 @@
       this.refreshCallback(results);
     }
   };
-  var MapLineLayer = class extends MapSyncedCanvasLayer {
+  var MapOwnAirplaneLayer = class extends MapLayer {
     constructor() {
-      var _a2, _b, _c, _d, _e, _f;
       super(...arguments);
-      this.strokeWidth = (_a2 = this.props.strokeWidth) !== null && _a2 !== void 0 ? _a2 : MapLineLayer.DEFAULT_STROKE_WIDTH;
-      this.strokeStyle = (_b = this.props.strokeStyle) !== null && _b !== void 0 ? _b : MapLineLayer.DEFAULT_STROKE_STYLE;
-      this.strokeDash = (_c = this.props.strokeDash) !== null && _c !== void 0 ? _c : MapLineLayer.DEFAULT_STROKE_DASH;
-      this.outlineWidth = (_d = this.props.outlineWidth) !== null && _d !== void 0 ? _d : MapLineLayer.DEFAULT_OUTLINE_WIDTH;
-      this.outlineStyle = (_e = this.props.outlineStyle) !== null && _e !== void 0 ? _e : MapLineLayer.DEFAULT_OUTLINE_STYLE;
-      this.outlineDash = (_f = this.props.outlineDash) !== null && _f !== void 0 ? _f : MapLineLayer.DEFAULT_OUTLINE_DASH;
-      this.vec = new Float64Array([0, 0]);
-      this.isUpdateScheduled = false;
+      this.imageFilePath = SubscribableUtils.isSubscribable(this.props.imageFilePath) ? this.props.imageFilePath.map(SubscribableMapFunctions.identity()) : this.props.imageFilePath;
+      this.style = ObjectSubject.create({
+        display: "",
+        position: "absolute",
+        left: "0px",
+        top: "0px",
+        width: "0px",
+        height: "0px",
+        transform: "translate3d(0, 0, 0) rotate(0deg)",
+        "transform-origin": "50% 50%"
+      });
+      this.ownAirplanePropsModule = this.props.model.getModule("ownAirplaneProps");
+      this.ownAirplaneIconModule = this.props.model.getModule("ownAirplaneIcon");
+      this.iconSize = SubscribableUtils.toSubscribable(this.props.iconSize, true);
+      this.iconAnchor = SubscribableUtils.toSubscribable(this.props.iconAnchor, true);
+      this.iconOffset = Vec2Math.create();
+      this.visibilityBounds = VecNMath.create(4);
+      this.iconTransform = CssTransformBuilder.concat(CssTransformBuilder.translate3d("px"), CssTransformBuilder.rotate("deg"));
+      this.isGsAboveTrackThreshold = this.ownAirplanePropsModule.groundSpeed.map((gs) => gs.asUnit(UnitType.KNOT) >= 5).pause();
+      this.showIcon = true;
+      this.isInsideVisibilityBounds = true;
+      this.planeRotation = 0;
+      this.needUpdateVisibility = false;
+      this.needUpdatePositionRotation = false;
+    }
+    onVisibilityChanged(isVisible) {
+      this.needUpdateVisibility = true;
+      this.needUpdatePositionRotation = this.showIcon = isVisible && this.ownAirplaneIconModule.show.get();
     }
     onAttached() {
-      super.onAttached();
-      this.props.start.sub(() => {
-        this.scheduleUpdate();
+      this.showSub = this.ownAirplaneIconModule.show.sub((show) => {
+        this.needUpdateVisibility = true;
+        this.needUpdatePositionRotation = this.showIcon = show && this.isVisible();
       });
-      this.props.end.sub(() => {
-        this.scheduleUpdate();
+      this.positionSub = this.ownAirplanePropsModule.position.sub(() => {
+        this.needUpdatePositionRotation = this.showIcon;
       });
-      this.scheduleUpdate();
+      this.headingSub = this.ownAirplanePropsModule.hdgTrue.sub((hdg) => {
+        this.planeRotation = hdg;
+        this.needUpdatePositionRotation = this.showIcon;
+      }, false, true);
+      this.trackSub = this.ownAirplanePropsModule.trackTrue.sub((track) => {
+        this.planeRotation = track;
+        this.needUpdatePositionRotation = this.showIcon;
+      }, false, true);
+      this.trackThresholdSub = this.isGsAboveTrackThreshold.sub((isAboveThreshold) => {
+        if (isAboveThreshold) {
+          this.headingSub.pause();
+          this.trackSub.resume(true);
+        } else {
+          this.trackSub.pause();
+          this.headingSub.resume(true);
+        }
+      }, false, true);
+      this.iconSizeSub = this.iconSize.sub((size) => {
+        this.style.set("width", `${size}px`);
+        this.style.set("height", `${size}px`);
+        this.updateOffset();
+      }, true);
+      this.iconAnchorSub = this.iconAnchor.sub(() => {
+        this.updateOffset();
+      });
+      this.orientationSub = this.ownAirplaneIconModule.orientation.sub((orientation) => {
+        switch (orientation) {
+          case MapOwnAirplaneIconOrientation.HeadingUp:
+            this.isGsAboveTrackThreshold.pause();
+            this.trackThresholdSub.pause();
+            this.trackSub.pause();
+            this.headingSub.resume(true);
+            break;
+          case MapOwnAirplaneIconOrientation.TrackUp:
+            this.headingSub.pause();
+            this.trackSub.pause();
+            this.isGsAboveTrackThreshold.resume();
+            this.trackThresholdSub.resume(true);
+            break;
+          default:
+            this.needUpdatePositionRotation = this.showIcon;
+            this.isGsAboveTrackThreshold.pause();
+            this.trackThresholdSub.pause();
+            this.headingSub.pause();
+            this.trackSub.pause();
+            this.planeRotation = 0;
+        }
+      }, true);
+      this.needUpdateVisibility = true;
+      this.needUpdatePositionRotation = true;
+    }
+    updateOffset() {
+      const anchor = this.iconAnchor.get();
+      this.iconOffset.set(anchor);
+      Vec2Math.multScalar(this.iconOffset, -this.iconSize.get(), this.iconOffset);
+      this.style.set("left", `${this.iconOffset[0]}px`);
+      this.style.set("top", `${this.iconOffset[1]}px`);
+      this.style.set("transform-origin", `${anchor[0] * 100}% ${anchor[1] * 100}%`);
+      this.updateVisibilityBounds();
+    }
+    updateVisibilityBounds() {
+      const size = this.iconSize.get();
+      const maxProtrusion = Math.max(
+        Math.hypot(this.iconOffset[0], this.iconOffset[1]),
+        Math.hypot(this.iconOffset[0] + size, this.iconOffset[1]),
+        Math.hypot(this.iconOffset[0] + size, this.iconOffset[1] + size),
+        Math.hypot(this.iconOffset[0], this.iconOffset[1] + size)
+      );
+      const boundsOffset = maxProtrusion + 50;
+      const projectedSize = this.props.mapProjection.getProjectedSize();
+      this.visibilityBounds[0] = -boundsOffset;
+      this.visibilityBounds[1] = -boundsOffset;
+      this.visibilityBounds[2] = projectedSize[0] + boundsOffset;
+      this.visibilityBounds[3] = projectedSize[1] + boundsOffset;
+      this.needUpdatePositionRotation = this.showIcon;
     }
     onMapProjectionChanged(mapProjection, changeFlags) {
-      super.onMapProjectionChanged(mapProjection, changeFlags);
-      this.scheduleUpdate();
-    }
-    scheduleUpdate() {
-      this.isUpdateScheduled = true;
+      if (BitFlags.isAll(changeFlags, MapProjectionChangeType.ProjectedSize)) {
+        this.updateVisibilityBounds();
+      }
+      this.needUpdatePositionRotation = this.showIcon;
     }
     onUpdated(time, elapsed) {
-      super.onUpdated(time, elapsed);
-      if (this.isUpdateScheduled) {
-        this.display.clear();
-        const start = this.props.start.get();
-        const end = this.props.end.get();
-        if (start !== null && end !== null) {
-          const [x1, y1] = start instanceof Float64Array ? start : this.props.mapProjection.project(start, this.vec);
-          const [x2, y2] = end instanceof Float64Array ? end : this.props.mapProjection.project(end, this.vec);
-          this.drawLine(x1, y1, x2, y2);
+      if (this.needUpdatePositionRotation) {
+        this.updateIconPositionRotation();
+        this.needUpdatePositionRotation = false;
+        this.needUpdateVisibility = false;
+      } else if (this.needUpdateVisibility) {
+        this.updateIconVisibility();
+        this.needUpdateVisibility = false;
+      }
+    }
+    updateIconVisibility() {
+      this.style.set("display", this.isInsideVisibilityBounds && this.showIcon ? "" : "none");
+    }
+    updateIconPositionRotation() {
+      const projected = this.props.mapProjection.project(this.ownAirplanePropsModule.position.get(), MapOwnAirplaneLayer.vec2Cache[0]);
+      this.isInsideVisibilityBounds = this.props.mapProjection.isInProjectedBounds(projected, this.visibilityBounds);
+      if (this.isInsideVisibilityBounds) {
+        let rotation;
+        switch (this.ownAirplaneIconModule.orientation.get()) {
+          case MapOwnAirplaneIconOrientation.HeadingUp:
+          case MapOwnAirplaneIconOrientation.TrackUp:
+            rotation = this.planeRotation + this.props.mapProjection.getRotation() * Avionics.Utils.RAD2DEG;
+            break;
+          default:
+            rotation = 0;
         }
-        this.isUpdateScheduled = false;
+        this.iconTransform.getChild(0).set(projected[0], projected[1], 0, 0.1);
+        this.iconTransform.getChild(1).set(rotation, 0.1);
+        this.style.set("transform", this.iconTransform.resolve());
       }
+      this.updateIconVisibility();
     }
-    drawLine(x1, y1, x2, y2) {
-      const context = this.display.context;
-      context.beginPath();
-      context.moveTo(x1, y1);
-      context.lineTo(x2, y2);
-      if (this.outlineWidth > 0) {
-        this.stroke(context, this.strokeWidth + this.outlineWidth * 2, this.outlineStyle, this.outlineDash);
-      }
-      if (this.strokeWidth > 0) {
-        this.stroke(context, this.strokeWidth, this.strokeStyle, this.strokeDash);
-      }
+    render() {
+      var _a2;
+      return FSComponent.buildComponent("img", { src: this.imageFilePath, class: (_a2 = this.props.class) !== null && _a2 !== void 0 ? _a2 : "", style: this.style });
     }
-    stroke(context, width, style, dash) {
-      context.lineWidth = width;
-      context.strokeStyle = style;
-      context.setLineDash(dash);
-      context.stroke();
+    destroy() {
+      var _a2, _b, _c, _d, _e, _f, _g, _h;
+      if (SubscribableUtils.isSubscribable(this.imageFilePath)) {
+        this.imageFilePath.destroy();
+      }
+      this.isGsAboveTrackThreshold.destroy();
+      (_a2 = this.showSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
+      (_b = this.positionSub) === null || _b === void 0 ? void 0 : _b.destroy();
+      (_c = this.headingSub) === null || _c === void 0 ? void 0 : _c.destroy();
+      (_d = this.trackSub) === null || _d === void 0 ? void 0 : _d.destroy();
+      (_e = this.trackThresholdSub) === null || _e === void 0 ? void 0 : _e.destroy();
+      (_f = this.iconSizeSub) === null || _f === void 0 ? void 0 : _f.destroy();
+      (_g = this.iconAnchorSub) === null || _g === void 0 ? void 0 : _g.destroy();
+      (_h = this.orientationSub) === null || _h === void 0 ? void 0 : _h.destroy();
+      super.destroy();
     }
   };
-  MapLineLayer.DEFAULT_STROKE_WIDTH = 2;
-  MapLineLayer.DEFAULT_STROKE_STYLE = "white";
-  MapLineLayer.DEFAULT_STROKE_DASH = [];
-  MapLineLayer.DEFAULT_OUTLINE_WIDTH = 0;
-  MapLineLayer.DEFAULT_OUTLINE_STYLE = "black";
-  MapLineLayer.DEFAULT_OUTLINE_DASH = [];
+  MapOwnAirplaneLayer.vec2Cache = [Vec2Math.create()];
   var MapSystemController = class {
     constructor(context) {
       this._isAlive = true;
@@ -20272,6 +22553,7 @@
   var MapRotationModule = class {
     constructor() {
       this.rotationType = Subject.create(MapRotation.HeadingUp);
+      this.dtk = Subject.create(0);
     }
   };
   var MapOwnAirplaneIconOrientationController = class extends MapSystemController {
@@ -20400,7 +22682,7 @@
         [MapRotation.NorthUp]: () => 0,
         [MapRotation.HeadingUp]: this.ownAirplanePropsModule === void 0 ? () => 0 : () => -this.ownAirplanePropsModule.hdgTrue.get() * Avionics.Utils.DEG2RAD,
         [MapRotation.TrackUp]: this.ownAirplanePropsModule === void 0 ? () => 0 : () => this.ownAirplanePropsModule.groundSpeed.get().asUnit(UnitType.KNOT) < 5 ? -this.ownAirplanePropsModule.hdgTrue.get() * Avionics.Utils.DEG2RAD : -this.ownAirplanePropsModule.trackTrue.get() * Avionics.Utils.DEG2RAD,
-        [MapRotation.DtkUp]: () => 0
+        [MapRotation.DtkUp]: () => -this.rotationModule.dtk.get() * Avionics.Utils.DEG2RAD
       };
     }
     onAfterMapRender() {
@@ -20726,9 +23008,6 @@
       var _a2, _b, _c, _d, _e, _f, _g, _h;
       this.bus = bus;
       this.tfcInstrument = tfcInstrument;
-      this.maxIntruderCount = maxIntruderCount;
-      this.realTimeUpdateFreq = realTimeUpdateFreq;
-      this.simTimeUpdateFreq = simTimeUpdateFreq;
       this.operatingModeSub = Subject.create(TcasOperatingMode.Standby);
       this.intrudersSorted = [];
       this.intrudersFiltered = [];
@@ -20754,6 +23033,9 @@
         horizontal: UnitType.NMILE.createNumber(0),
         vertical: UnitType.FOOT.createNumber(0)
       };
+      this.maxIntruderCount = SubscribableUtils.toSubscribable(maxIntruderCount, true);
+      this.realTimeUpdateFreq = SubscribableUtils.toSubscribable(realTimeUpdateFreq, true);
+      this.simTimeUpdateFreq = SubscribableUtils.toSubscribable(simTimeUpdateFreq, true);
       this.sensitivity = this.createSensitivity();
       this.ownAirplane = new OwnAirplane(this.ownAirplaneSubs);
       const fullRAOptions = {
@@ -20792,19 +23074,23 @@
       this.tfcInstrument.forEachContact((contact) => {
         this.onContactAdded(contact.uid);
       });
-      sub.on("gps-position").atFrequency(this.realTimeUpdateFreq).handle((lla) => {
-        this.ownAirplaneSubs.position.set(lla.lat, lla.long);
-        this.ownAirplaneSubs.altitude.set(lla.alt, UnitType.METER);
-      });
-      sub.on("ground_speed").whenChanged().atFrequency(this.realTimeUpdateFreq).handle((gs) => {
-        this.ownAirplaneSubs.groundSpeed.set(gs);
-      });
-      sub.on("vertical_speed").whenChanged().atFrequency(this.realTimeUpdateFreq).handle((vs) => {
-        this.ownAirplaneSubs.verticalSpeed.set(vs);
-      });
-      sub.on("radio_alt").whenChanged().atFrequency(this.realTimeUpdateFreq).handle((alt) => {
-        this.ownAirplaneSubs.radarAltitude.set(alt);
-      });
+      const atFreqSubs = [];
+      this.realTimeUpdateFreq.sub((freq) => {
+        for (const atFreqSub of atFreqSubs) {
+          atFreqSub.destroy();
+        }
+        atFreqSubs.length = 0;
+        atFreqSubs.push(sub.on("gps-position").atFrequency(freq).handle((lla) => {
+          this.ownAirplaneSubs.position.set(lla.lat, lla.long);
+          this.ownAirplaneSubs.altitude.set(lla.alt, UnitType.METER);
+        }), sub.on("ground_speed").atFrequency(freq).handle((gs) => {
+          this.ownAirplaneSubs.groundSpeed.set(gs);
+        }), sub.on("vertical_speed").atFrequency(freq).handle((vs) => {
+          this.ownAirplaneSubs.verticalSpeed.set(vs);
+        }), sub.on("radio_alt").atFrequency(freq).handle((alt) => {
+          this.ownAirplaneSubs.radarAltitude.set(alt);
+        }));
+      }, true);
       this.ownAirplaneSubs.groundTrack.setConsumer(sub.on("track_deg_true"));
       this.ownAirplaneSubs.isOnGround.setConsumer(sub.on("on_ground"));
       this.simTime.setConsumer(sub.on("simTime"));
@@ -20905,7 +23191,7 @@
           return;
       }
       const realTime = Date.now();
-      if (Math.abs(simTime - this.lastUpdateSimTime) < 1e3 / this.simTimeUpdateFreq || Math.abs(realTime - this.lastUpdateRealTime) < 1e3 / this.realTimeUpdateFreq) {
+      if (Math.abs(simTime - this.lastUpdateSimTime) < 1e3 / this.simTimeUpdateFreq.get() || Math.abs(realTime - this.lastUpdateRealTime) < 1e3 / this.realTimeUpdateFreq.get()) {
         return;
       }
       this.doUpdate(simTime);
@@ -20933,7 +23219,7 @@
       const oldCulled = this.intrudersFiltered;
       this.intrudersFiltered = [];
       const len = this.intrudersSorted.length;
-      for (let i = 0; i < len && this.intrudersFiltered.length < this.maxIntruderCount; i++) {
+      for (let i = 0; i < len && this.intrudersFiltered.length < this.maxIntruderCount.get(); i++) {
         const intruder = this.intrudersSorted[i];
         if (intruder.isPredictionValid && this.filterIntruder(intruder)) {
           this.intrudersFiltered.push(intruder);
@@ -22424,10 +24710,7 @@
       this.reference = Subject.create(EBingReference.SEA);
       this.showIsoLines = Subject.create(false);
       this.colors = ArraySubject.create(BingComponent.createEarthColorsArray("#0000FF", [
-        {
-          elev: 0,
-          color: "#000000"
-        }
+        { elev: 0, color: "#000000" }
       ], 0, 3e4, 1));
       this.colorsElevationRange = Vec2Subject.create(Vec2Math.create(0, 3e4));
     }
@@ -22665,44 +24948,62 @@
     constructor(context, properties, updateFreq) {
       super(context);
       this.properties = properties;
-      this.updateFreq = updateFreq;
       this.module = this.context.model.getModule(MapSystemKeys.AutopilotProps);
-      this.subs = {};
+      this.subs = [];
+      this.updateFreq = updateFreq === void 0 ? void 0 : SubscribableUtils.toSubscribable(updateFreq, true);
     }
     onAfterMapRender() {
       const sub = this.context.bus.getSubscriber();
       if (this.updateFreq) {
         this.updateFreqSub = this.updateFreq.sub((freq) => {
-          var _a2;
+          for (const subscription of this.subs) {
+            subscription.destroy();
+          }
+          this.subs.length = 0;
           for (const property of this.properties) {
-            (_a2 = this.subs[property]) === null || _a2 === void 0 ? void 0 : _a2.destroy();
-            this.subs[property] = this.bindProperty(sub, property, freq);
+            this.subs.push(this.bindProperty(sub, property, freq));
           }
         }, true);
       } else {
         for (const property of this.properties) {
-          this.subs[property] = this.bindProperty(sub, property);
+          this.subs.push(this.bindProperty(sub, property));
         }
       }
     }
     bindProperty(sub, property, updateFreq) {
-      switch (property) {
+      let key;
+      let topic = void 0;
+      if (typeof property === "string") {
+        key = property;
+      } else {
+        key = property.key;
+        topic = property.topic;
+      }
+      switch (key) {
         case "selectedAltitude":
-          return (updateFreq === void 0 ? sub.on("ap_altitude_selected") : sub.on("ap_altitude_selected").atFrequency(updateFreq)).handle((alt) => {
+          topic !== null && topic !== void 0 ? topic : topic = "ap_altitude_selected";
+          return (updateFreq === void 0 ? sub.on(topic) : sub.on(topic).atFrequency(updateFreq)).handle((alt) => {
             this.module.selectedAltitude.set(alt, UnitType.FOOT);
           });
+        case "selectedHeading":
+          topic !== null && topic !== void 0 ? topic : topic = "ap_heading_selected";
+          return (updateFreq === void 0 ? sub.on(topic) : sub.on(topic).atFrequency(updateFreq)).handle((hdg) => {
+            this.module.selectedHeading.set(hdg);
+          });
+        default:
+          throw new Error(`MapAutopilotPropsController: invalid property key: ${key}`);
       }
     }
     onMapDestroyed() {
       this.destroy();
     }
     destroy() {
-      var _a2, _b;
-      super.destroy();
+      var _a2;
       (_a2 = this.updateFreqSub) === null || _a2 === void 0 ? void 0 : _a2.destroy();
-      for (const property of this.properties) {
-        (_b = this.subs[property]) === null || _b === void 0 ? void 0 : _b.destroy();
+      for (const sub of this.subs) {
+        sub.destroy();
       }
+      super.destroy();
     }
   };
   var MapSystemComponent = class extends MapComponent {
@@ -22873,6 +25174,15 @@
     static nominalToTrueRelativeXY(nominal, size, deadZone, out) {
       return Vec2Math.set(MapSystemUtils.nominalToTrueRelativeX(nominal[0], size[0], deadZone), MapSystemUtils.nominalToTrueRelativeY(nominal[1], size[1], deadZone), out);
     }
+    static trueToNominalRelativeX(trueRelX, width, deadZone) {
+      return (trueRelX * width - deadZone[0]) / (width - deadZone[0] - deadZone[2]);
+    }
+    static trueToNominalRelativeY(trueRelY, height, deadZone) {
+      return (trueRelY * height - deadZone[1]) / (height - deadZone[1] - deadZone[3]);
+    }
+    static trueToNominalRelativeXY(nominal, size, deadZone, out) {
+      return Vec2Math.set(MapSystemUtils.trueToNominalRelativeX(nominal[0], size[0], deadZone), MapSystemUtils.trueToNominalRelativeY(nominal[1], size[1], deadZone), out);
+    }
   };
   var MapSystemWaypointsRenderer = class extends MapWaypointRenderer {
     constructor(textManager) {
@@ -23038,6 +25348,7 @@
       this.controllerFactories = /* @__PURE__ */ new Map();
       this.contextFactories = /* @__PURE__ */ new Map();
       this.initCallbacks = /* @__PURE__ */ new Map();
+      this.destroyCallbacks = /* @__PURE__ */ new Map();
       this.projectedSize = Subject.create(Vec2Math.create(100, 100));
     }
     get moduleCount() {
@@ -23098,6 +25409,10 @@
       this.initCallbacks.set(key, callback);
       return this;
     }
+    withDestroy(key, callback) {
+      this.destroyCallbacks.set(key, callback);
+      return this;
+    }
     withLayerOrder(key, order) {
       const factory = this.layerFactories.get(key);
       if (factory) {
@@ -23142,7 +25457,7 @@
     withAutopilotProps(propertiesToBind, updateFreq) {
       this.withModule(MapSystemKeys.AutopilotProps, () => new MapAutopilotPropsModule());
       if (propertiesToBind !== void 0) {
-        this.withController(MapSystemKeys.AutopilotProps, (context) => new MapAutopilotPropsController(context, propertiesToBind, typeof updateFreq === "number" ? Subject.create(updateFreq) : updateFreq));
+        this.withController(MapSystemKeys.AutopilotProps, (context) => new MapAutopilotPropsController(context, propertiesToBind, updateFreq));
       }
       return this;
     }
@@ -23344,6 +25659,16 @@
             }
           }
         }
+        for (const callback of this.destroyCallbacks.values()) {
+          try {
+            callback(context);
+          } catch (e) {
+            console.error(`MapSystem: error in destroy callback: ${e}`);
+            if (e instanceof Error) {
+              console.error(e.stack);
+            }
+          }
+        }
       };
       const map = FSComponent.buildComponent(MapSystemComponent, { ref, model: context.model, projection: context.projection, bus: context.bus, projectedSize: this.projectedSize, onAfterRender, onDeadZoneChanged, onMapProjectionChanged, onBeforeUpdated, onAfterUpdated, onWake, onSleep, onDestroy, class: cssClass }, Array.from(this.layerFactories.values()).sort((a, b) => a.order - b.order).map((factory) => {
         const node = factory.factory(context);
@@ -23356,7 +25681,14 @@
       }
       controllers.push(...controllerEntries.map(([, controller]) => controller));
       for (const callback of this.initCallbacks.values()) {
-        callback(context);
+        try {
+          callback(context);
+        } catch (e) {
+          console.error(`MapSystem: error in init callback: ${e}`);
+          if (e instanceof Error) {
+            console.error(e.stack);
+          }
+        }
       }
       return { context, map, ref };
     }
@@ -23449,6 +25781,7 @@
     APVerticalModes2[APVerticalModes2["GA"] = 10] = "GA";
     APVerticalModes2[APVerticalModes2["FPA"] = 11] = "FPA";
     APVerticalModes2[APVerticalModes2["FLARE"] = 12] = "FLARE";
+    APVerticalModes2[APVerticalModes2["LEVEL"] = 13] = "LEVEL";
   })(APVerticalModes || (APVerticalModes = {}));
   var APLateralModes;
   (function(APLateralModes2) {
@@ -24641,6 +26974,11 @@
     }
   };
   APHdgHoldDirector.MIN_BANK_THRESHOLD = 1;
+  var APNavDirectorPhase;
+  (function(APNavDirectorPhase2) {
+    APNavDirectorPhase2["Intercept"] = "Intercept";
+    APNavDirectorPhase2["Tracking"] = "Tracking";
+  })(APNavDirectorPhase || (APNavDirectorPhase = {}));
   var APTrkHoldDirector = class {
     constructor(bus, apValues, options) {
       var _a2;
@@ -25719,6 +28057,11 @@
   };
   LNavDirector.ANGULAR_TOLERANCE = GeoCircle.ANGULAR_TOLERANCE;
   LNavDirector.ANGULAR_TOLERANCE_METERS = UnitType.GA_RADIAN.convertTo(GeoCircle.ANGULAR_TOLERANCE, UnitType.METER);
+  var APBackCourseDirectorPhase;
+  (function(APBackCourseDirectorPhase2) {
+    APBackCourseDirectorPhase2["Intercept"] = "Intercept";
+    APBackCourseDirectorPhase2["Tracking"] = "Tracking";
+  })(APBackCourseDirectorPhase || (APBackCourseDirectorPhase = {}));
   var SmoothingPathCalculator = class {
     constructor(bus, flightPlanner, primaryPlanIndex, options) {
       var _a2, _b, _c, _d, _e, _f, _g, _h, _j;
@@ -26623,9 +28966,17 @@
     ["lnavdata_waypoint_distance", { name: LNavDataVars.WaypointDistance, type: SimVarValueType.NM }],
     ["lnavdata_destination_distance", { name: LNavDataVars.DestinationDistance, type: SimVarValueType.NM }]
   ]);
+  var AltitudeSelectManagerAccelFilter;
+  (function(AltitudeSelectManagerAccelFilter2) {
+    AltitudeSelectManagerAccelFilter2[AltitudeSelectManagerAccelFilter2["None"] = 0] = "None";
+    AltitudeSelectManagerAccelFilter2[AltitudeSelectManagerAccelFilter2["ZeroIncDec"] = 1] = "ZeroIncDec";
+    AltitudeSelectManagerAccelFilter2[AltitudeSelectManagerAccelFilter2["NonZeroIncDec"] = 2] = "NonZeroIncDec";
+    AltitudeSelectManagerAccelFilter2[AltitudeSelectManagerAccelFilter2["TransformedSet"] = 4] = "TransformedSet";
+    AltitudeSelectManagerAccelFilter2[AltitudeSelectManagerAccelFilter2["All"] = -1] = "All";
+  })(AltitudeSelectManagerAccelFilter || (AltitudeSelectManagerAccelFilter = {}));
   var AltitudeSelectManager = class {
     constructor(bus, settingsManager, options, stops) {
-      var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
       this.bus = bus;
       this.publisher = this.bus.getPublisher();
       this.stops = new SortedArray((a, b) => a - b);
@@ -26656,11 +29007,14 @@
       this.incrLargeMetric = Math.round(((_e = options.incrLargeMetric) !== null && _e !== void 0 ? _e : options.incrLarge).asUnit(UnitType.METER));
       this.lockAltToStepOnIncr = (_f = options.lockAltToStepOnIncr) !== null && _f !== void 0 ? _f : true;
       this.lockAltToStepOnIncrMetric = (_g = options.lockAltToStepOnIncrMetric) !== null && _g !== void 0 ? _g : this.lockAltToStepOnIncr;
-      this.accelInputCountThreshold = (_h = options.accelInputCountThreshold) !== null && _h !== void 0 ? _h : 0;
-      this.accelResetOnDirectionChange = (_j = options.accelResetOnDirectionChange) !== null && _j !== void 0 ? _j : false;
-      this.initToIndicatedAlt = (_k = options.initToIndicatedAlt) !== null && _k !== void 0 ? _k : false;
-      this.transformSetToIncDec = (_l = options.transformSetToIncDec) !== null && _l !== void 0 ? _l : true;
-      this.altimeterMetricSetting = options.supportMetric ? settingsManager.getSetting("altMetric") : void 0;
+      this.lockAltToStepOnSet = (_h = options.lockAltToStepOnSet) !== null && _h !== void 0 ? _h : false;
+      this.lockAltToStepOnSetMetric = (_j = options.lockAltToStepOnSetMetric) !== null && _j !== void 0 ? _j : this.lockAltToStepOnSet;
+      this.accelInputCountThreshold = (_k = options.accelInputCountThreshold) !== null && _k !== void 0 ? _k : 0;
+      this.accelResetOnDirectionChange = (_l = options.accelResetOnDirectionChange) !== null && _l !== void 0 ? _l : false;
+      this.accelFilter = (_m = options.accelFilter) !== null && _m !== void 0 ? _m : AltitudeSelectManagerAccelFilter.All;
+      this.initToIndicatedAlt = (_o = options.initToIndicatedAlt) !== null && _o !== void 0 ? _o : false;
+      this.transformSetToIncDec = (_p = options.transformSetToIncDec) !== null && _p !== void 0 ? _p : true;
+      this.altimeterMetricSetting = options.supportMetric && settingsManager ? settingsManager.getSetting("altMetric") : void 0;
       if (stops !== void 0) {
         if ("isSubscribableSet" in stops) {
           stops.sub((set, type, key) => {
@@ -26674,7 +29028,7 @@
           this.stops.insertAll(new Set(stops));
         }
       }
-      this.isInitialized = !((_m = options.initOnInput) !== null && _m !== void 0 ? _m : false);
+      this.isInitialized = !((_q = options.initOnInput) !== null && _q !== void 0 ? _q : false);
       KeyEventManager.getManager(bus).then((manager) => {
         this.keyEventManager = manager;
         manager.interceptKey("AP_ALT_VAR_SET_ENGLISH", false);
@@ -26744,14 +29098,25 @@
       let direction = 0;
       let useLargeIncrement = false;
       let setAltitude = void 0;
+      let accelFilterChallenge = 0;
       switch (key) {
         case "AP_ALT_VAR_INC":
           direction = 1;
           useLargeIncrement = value !== void 0 && value > this.inputIncrLargeThreshold;
+          if (value === void 0 || value === 0) {
+            accelFilterChallenge = AltitudeSelectManagerAccelFilter.ZeroIncDec;
+          } else {
+            accelFilterChallenge = AltitudeSelectManagerAccelFilter.NonZeroIncDec;
+          }
           break;
         case "AP_ALT_VAR_DEC":
           direction = -1;
           useLargeIncrement = value !== void 0 && value > this.inputIncrLargeThreshold;
+          if (value === void 0 || value === 0) {
+            accelFilterChallenge = AltitudeSelectManagerAccelFilter.ZeroIncDec;
+          } else {
+            accelFilterChallenge = AltitudeSelectManagerAccelFilter.NonZeroIncDec;
+          }
           break;
         case "AP_ALT_VAR_SET_ENGLISH":
         case "AP_ALT_VAR_SET_METRIC": {
@@ -26760,6 +29125,7 @@
               const delta = value - currentValue;
               direction = delta < 0 ? -1 : 1;
               useLargeIncrement = Math.abs(delta) > this.inputIncrLargeThreshold;
+              accelFilterChallenge = AltitudeSelectManagerAccelFilter.TransformedSet;
             } else {
               setAltitude = value;
             }
@@ -26774,10 +29140,11 @@
       if (this.accelInputCountThreshold > 0) {
         const time = Date.now();
         let isAccelActive = this.consecIncrSmallCount >= this.accelInputCountThreshold;
-        if (useLargeIncrement || direction === 0 || this.consecIncrSmallCount > 0 && time - this.lastIncrSmallInputTime > AltitudeSelectManager.CONSECUTIVE_INPUT_PERIOD || (isAccelActive ? this.accelResetOnDirectionChange : this.consecIncrSmallCount > 0) && this.lastIncrSmallDirection !== direction) {
+        const didPassFilter = BitFlags.isAny(accelFilterChallenge, this.accelFilter);
+        if (useLargeIncrement || !didPassFilter || direction === 0 || this.consecIncrSmallCount > 0 && time - this.lastIncrSmallInputTime > AltitudeSelectManager.CONSECUTIVE_INPUT_PERIOD || (isAccelActive ? this.accelResetOnDirectionChange : this.consecIncrSmallCount > 0) && this.lastIncrSmallDirection !== direction) {
           this.consecIncrSmallCount = 0;
         }
-        if (!useLargeIncrement) {
+        if (!useLargeIncrement && didPassFilter) {
           this.consecIncrSmallCount++;
           this.lastIncrSmallDirection = direction;
           this.lastIncrSmallInputTime = time;
@@ -26794,17 +29161,26 @@
     setSelectedAltitude(altitudeFeet) {
       var _a2, _b;
       const isMetric = (_b = (_a2 = this.altimeterMetricSetting) === null || _a2 === void 0 ? void 0 : _a2.value) !== null && _b !== void 0 ? _b : false;
+      let lockIncr;
       let min, max, unit;
       if (isMetric) {
         min = this.minValueMetric;
         max = this.maxValueMetric;
         unit = UnitType.METER;
+        lockIncr = this.lockAltToStepOnSetMetric ? this.incrSmallMetric : 0;
       } else {
         min = this.minValue;
         max = this.maxValue;
         unit = UnitType.FOOT;
+        lockIncr = this.lockAltToStepOnSet ? this.incrSmall : 0;
       }
-      const valueToSet = UnitType.FOOT.convertFrom(MathUtils.clamp(UnitType.FOOT.convertTo(altitudeFeet, unit), min, max), unit);
+      let altitudeInUnits = UnitType.FOOT.convertTo(altitudeFeet, unit);
+      if (lockIncr > 0) {
+        altitudeInUnits = MathUtils.clamp(MathUtils.round(altitudeInUnits, lockIncr), MathUtils.ceil(min, lockIncr), MathUtils.floor(max, lockIncr));
+      } else {
+        altitudeInUnits = MathUtils.clamp(altitudeInUnits, min, max);
+      }
+      const valueToSet = UnitType.FOOT.convertFrom(altitudeInUnits, unit);
       if (valueToSet !== SimVar.GetSimVarValue(this.altitudeHoldSlotSimVar, SimVarValueType.Feet)) {
         SimVar.SetSimVarValue(this.altitudeHoldSlotSimVar, SimVarValueType.Feet, valueToSet);
       }
@@ -26831,7 +29207,7 @@
       }
       const startValueConverted = Math.round(UnitType.FOOT.convertTo(startValue, units));
       useLargeIncrement && (useLargeIncrement = !lockAlt || startValueConverted % incrSmall === 0);
-      let valueToSet = UnitType.FOOT.convertFrom(Utils.Clamp((lockAlt ? roundFunc(startValueConverted / incrSmall) * incrSmall : startValueConverted) + direction * (useLargeIncrement ? incrLarge : incrSmall), min, max), units);
+      let valueToSet = UnitType.FOOT.convertFrom(MathUtils.clamp((lockAlt ? roundFunc(startValueConverted / incrSmall) * incrSmall : startValueConverted) + direction * (useLargeIncrement ? incrLarge : incrSmall), min, max), units);
       if (this.stops.length > 0) {
         let nextStopIndex = this.stops.matchIndex(startValue);
         if (direction === 1) {
@@ -26899,7 +29275,7 @@
   })(AutothrottleTargetMode || (AutothrottleTargetMode = {}));
   var AbstractAutothrottle = class {
     constructor(bus, airspeedIndex, throttleInfos, options, throttleLeverManager) {
-      var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
       this.bus = bus;
       this.publisher = this.bus.getPublisher();
       this.isOverspeedProtActive = Subject.create(false);
@@ -26941,6 +29317,7 @@
         isOverpowerProtEngaged: false
       };
       this.isAlive = true;
+      this.useIndicatedMach = (_a2 = options.useIndicatedMach) !== null && _a2 !== void 0 ? _a2 : false;
       this.airspeedIndex = SubscribableUtils.toSubscribable(airspeedIndex, true);
       this.airspeedIndex.sub((index) => {
         this.airspeedSimVar = `AIRSPEED INDICATED:${index}`;
@@ -26952,22 +29329,22 @@
       this.machToKiasSmoother = new ExpSmoother(options.speedSmoothingConstant);
       this.iasLookahead = SubscribableUtils.toSubscribable(options.speedLookahead, true);
       this.iasSmoother = new MultiExpSmoother(options.speedSmoothingConstant, options.speedSmoothingVelocityConstant);
-      this.lookaheadIasSmoother = new MultiExpSmoother((_a2 = options.speedLookaheadSmoothingConstant) !== null && _a2 !== void 0 ? _a2 : options.speedSmoothingConstant, (_b = options.speedLookaheadSmoothingVelocityConstant) !== null && _b !== void 0 ? _b : options.speedSmoothingVelocityConstant);
+      this.lookaheadIasSmoother = new MultiExpSmoother((_b = options.speedLookaheadSmoothingConstant) !== null && _b !== void 0 ? _b : options.speedSmoothingConstant, (_c = options.speedLookaheadSmoothingVelocityConstant) !== null && _c !== void 0 ? _c : options.speedSmoothingVelocityConstant);
       this.lastIasLookahead = this.iasLookahead.get();
       this.shouldTargetAccel = options.selectedSpeedAccelTarget !== void 0;
       this.selectedSpeedAccelTargetFunc = options.selectedSpeedAccelTarget;
-      this.overspeedAccelTargetFunc = (_c = options.overspeedAccelTarget) !== null && _c !== void 0 ? _c : options.selectedSpeedAccelTarget;
-      this.underspeedAccelTargetFunc = (_d = options.underspeedAccelTarget) !== null && _d !== void 0 ? _d : options.selectedSpeedAccelTarget;
+      this.overspeedAccelTargetFunc = (_d = options.overspeedAccelTarget) !== null && _d !== void 0 ? _d : options.selectedSpeedAccelTarget;
+      this.underspeedAccelTargetFunc = (_e = options.underspeedAccelTarget) !== null && _e !== void 0 ? _e : options.selectedSpeedAccelTarget;
       if (this.shouldTargetAccel) {
-        this.accelSmoother = new MultiExpSmoother((_e = options.accelSmoothingConstant) !== null && _e !== void 0 ? _e : 0, options.accelSmoothingVelocityConstant);
-        const accelTargetTau = (_f = options.accelTargetSmoothingConstant) !== null && _f !== void 0 ? _f : 0;
+        this.accelSmoother = new MultiExpSmoother((_f = options.accelSmoothingConstant) !== null && _f !== void 0 ? _f : 0, options.accelSmoothingVelocityConstant);
+        const accelTargetTau = (_g = options.accelTargetSmoothingConstant) !== null && _g !== void 0 ? _g : 0;
         this.selectedSpeedAccelTargetSmoother = new ExpSmoother(accelTargetTau);
         this.overspeedProtAccelTargetSmoother = new ExpSmoother(accelTargetTau);
         this.underspeedProtAccelTargetSmoother = new ExpSmoother(accelTargetTau);
       }
       this.selectedSpeedPid = AbstractAutothrottle.createPidFromParams(options.speedTargetPid);
-      this.overspeedPid = AbstractAutothrottle.createPidFromParams((_g = options.overspeedPid) !== null && _g !== void 0 ? _g : options.speedTargetPid);
-      this.underspeedPid = AbstractAutothrottle.createPidFromParams((_h = options.underspeedPid) !== null && _h !== void 0 ? _h : options.speedTargetPid);
+      this.overspeedPid = AbstractAutothrottle.createPidFromParams((_h = options.overspeedPid) !== null && _h !== void 0 ? _h : options.speedTargetPid);
+      this.underspeedPid = AbstractAutothrottle.createPidFromParams((_j = options.underspeedPid) !== null && _j !== void 0 ? _j : options.speedTargetPid);
       this.selectedPowerPids = {
         [1]: AbstractAutothrottle.createPidFromParams(options.powerTargetPid),
         [2]: AbstractAutothrottle.createPidFromParams(options.powerTargetPid),
@@ -26975,14 +29352,14 @@
         [4]: AbstractAutothrottle.createPidFromParams(options.powerTargetPid)
       };
       this.overpowerPids = {
-        [1]: AbstractAutothrottle.createPidFromParams((_j = options.overpowerPid) !== null && _j !== void 0 ? _j : options.powerTargetPid),
-        [2]: AbstractAutothrottle.createPidFromParams((_k = options.overpowerPid) !== null && _k !== void 0 ? _k : options.powerTargetPid),
-        [3]: AbstractAutothrottle.createPidFromParams((_l = options.overpowerPid) !== null && _l !== void 0 ? _l : options.powerTargetPid),
-        [4]: AbstractAutothrottle.createPidFromParams((_m = options.overpowerPid) !== null && _m !== void 0 ? _m : options.powerTargetPid)
+        [1]: AbstractAutothrottle.createPidFromParams((_k = options.overpowerPid) !== null && _k !== void 0 ? _k : options.powerTargetPid),
+        [2]: AbstractAutothrottle.createPidFromParams((_l = options.overpowerPid) !== null && _l !== void 0 ? _l : options.powerTargetPid),
+        [3]: AbstractAutothrottle.createPidFromParams((_m = options.overpowerPid) !== null && _m !== void 0 ? _m : options.powerTargetPid),
+        [4]: AbstractAutothrottle.createPidFromParams((_o = options.overpowerPid) !== null && _o !== void 0 ? _o : options.powerTargetPid)
       };
-      this.speedTargetChangeThreshold = (_o = options.speedTargetChangeThreshold) !== null && _o !== void 0 ? _o : Infinity;
-      this.overspeedChangeThreshold = (_p = options.overspeedChangeThreshold) !== null && _p !== void 0 ? _p : Infinity;
-      this.underspeedChangeThreshold = (_q = options.underspeedChangeThreshold) !== null && _q !== void 0 ? _q : Infinity;
+      this.speedTargetChangeThreshold = (_p = options.speedTargetChangeThreshold) !== null && _p !== void 0 ? _p : Infinity;
+      this.overspeedChangeThreshold = (_q = options.overspeedChangeThreshold) !== null && _q !== void 0 ? _q : Infinity;
+      this.underspeedChangeThreshold = (_r = options.underspeedChangeThreshold) !== null && _r !== void 0 ? _r : Infinity;
       this.selectedSpeedPowerTargetSmoother = new ExpSmoother(options.powerTargetSmoothingConstant);
       this.overspeedProtPowerTargetSmoother = new ExpSmoother(options.powerTargetSmoothingConstant);
       this.underspeedProtPowerTargetSmoother = new ExpSmoother(options.powerTargetSmoothingConstant);
@@ -27168,9 +29545,20 @@
       out.underspeedProtPowerTarget = void 0;
       out.isOverspeed = false;
       out.isUnderspeed = false;
+      const pressure = SimVar.GetSimVarValue("AMBIENT PRESSURE", SimVarValueType.HPA);
       const ias = SimVar.GetSimVarValue(this.airspeedSimVar, SimVarValueType.Knots);
-      const mach = SimVar.GetSimVarValue("AIRSPEED MACH", SimVarValueType.Number);
-      const currentMachToKias = ias > 1 && mach > 0 ? ias / mach : Simplane.getMachToKias(1);
+      let currentMachToKias;
+      if (this.useIndicatedMach) {
+        if (ias > 1) {
+          const iasMps = UnitType.KNOT.convertTo(ias, UnitType.MPS);
+          currentMachToKias = ias / AeroMath.casToMach(iasMps, pressure);
+        } else {
+          currentMachToKias = 1 / AeroMath.casToMach(1, pressure);
+        }
+      } else {
+        const mach = SimVar.GetSimVarValue("AIRSPEED MACH", SimVarValueType.Number);
+        currentMachToKias = ias > 1 && mach > 0 ? ias / mach : 1 / AeroMath.casToMach(1, pressure);
+      }
       const machToKias = this.machToKiasSmoother.next(isFinite(currentMachToKias) ? currentMachToKias : 1, dt);
       const lookahead = Math.max(0, this.iasLookahead.get());
       const smoothedIas = this.iasSmoother.next(ias, dt);
@@ -27817,6 +30205,9 @@
     setThrottleLeverPos(index, pos) {
       return this.setThrottleLeverPosRaw(index, pos * ThrottleLeverManager.RAW_MAX) / ThrottleLeverManager.RAW_MAX;
     }
+    getThrottleLeverPos(index) {
+      return this.getThrottleLeverPosRaw(index) / ThrottleLeverManager.RAW_MAX;
+    }
     changeThrottleLeverPos(index, delta) {
       return this.changeThrottleLeverPosRaw(index, delta * ThrottleLeverManager.RAW_MAX) / ThrottleLeverManager.RAW_MAX;
     }
@@ -27825,6 +30216,12 @@
         throw new Error(`ThrottleLeverManager: throttle index (${index}) out of bounds`);
       }
       this.setRawThrottleLeverPosition(pos, index);
+      return this.throttleLevers[index - 1].rawPosition;
+    }
+    getThrottleLeverPosRaw(index) {
+      if (index < 1 || index > ThrottleLeverManager.THROTTLE_COUNT) {
+        throw new Error(`ThrottleLeverManager: throttle index (${index}) out of bounds`);
+      }
       return this.throttleLevers[index - 1].rawPosition;
     }
     changeThrottleLeverPosRaw(index, delta) {
@@ -28009,36 +30406,6 @@
   ThrottleLeverManager.THROTTLE_COUNT = 4;
   ThrottleLeverManager.RAW_MAX = 16384;
   ThrottleLeverManager.RAW_STEP = 256;
-  var Binding = class {
-    constructor(input, valueHandler) {
-      this.input = input;
-      this.valueHandler = valueHandler;
-      this.canInitialNotify = false;
-      if ("isConsumer" in this.input) {
-        this.sub = this.input.handle((data) => this.valueHandler(data));
-      } else {
-        this.canInitialNotify = true;
-        this.sub = this.input.sub((data) => this.valueHandler(data), this.canInitialNotify, true);
-      }
-    }
-    get isPaused() {
-      return this.sub.isPaused;
-    }
-    get isAlive() {
-      return this.sub.isAlive;
-    }
-    pause() {
-      this.sub.pause();
-      return this;
-    }
-    resume() {
-      this.sub.resume(true);
-      return this;
-    }
-    destroy() {
-      this.sub.destroy();
-    }
-  };
   var FmcComponent = class {
     constructor(page, options) {
       this.page = page;
@@ -28109,7 +30476,7 @@
     }
     init() {
       this.onInit();
-      this.addBinding(new Binding(this.screen.currentSubpageIndex, () => this.invalidate()));
+      this.addBinding(this.screen.currentSubpageIndex.sub(() => this.invalidate()));
     }
     onInit() {
     }
@@ -28178,13 +30545,13 @@
                   if (!render[i + k]) {
                     render[i + k] = [];
                   }
-                  render[i + k][l] = componentRenderRow[l];
+                  componentRenderRow[l] !== "" && (render[i + k][l] = componentRenderRow[l]);
                 }
               }
-            } else {
-              renderRow[row.indexOf(col)] = componentRender;
+            } else if (componentRender !== "" || renderRow[j] === void 0) {
+              renderRow[j] = componentRender;
             }
-          } else {
+          } else if (col !== "" && renderRow[j] === void 0) {
             renderRow[j] = col;
           }
         }
@@ -28217,6 +30584,230 @@
     }
   };
   AbstractFmcPage.lifecyclePolicy = FmcPageLifecyclePolicy.Singleton;
+  var ColorUtils = class {
+    static reverseHexNumber(hex) {
+      return (hex & ColorUtils.BYTE_2_MASK) >> 16 | hex & ColorUtils.BYTE_1_MASK | (hex & ColorUtils.BYTE_0_MASK) << 16;
+    }
+    static hexStringToNumber(hex, reverse = false) {
+      if (!ColorUtils.HEX_REGEX.test(hex)) {
+        throw new Error(`ColorUtils: invalid hex string: '${hex}'`);
+      }
+      if (hex.indexOf("#") === 0) {
+        hex = hex.substring(1);
+      }
+      const value = parseInt(hex, 16);
+      if (reverse) {
+        return ColorUtils.reverseHexNumber(value);
+      } else {
+        return value;
+      }
+    }
+    static hexNumberToString(hex, reverse = false) {
+      if (reverse) {
+        hex = ColorUtils.reverseHexNumber(hex);
+      }
+      return (hex & ColorUtils.MASK_24).toString(16).padStart(6, "0");
+    }
+    static hexToRgb(hex, out, reverse = false) {
+      let hexValue;
+      if (typeof hex === "string") {
+        hexValue = ColorUtils.hexStringToNumber(hex);
+      } else {
+        hexValue = Math.abs(Math.trunc(hex));
+        if (reverse) {
+          hexValue = ColorUtils.reverseHexNumber(hex);
+        }
+      }
+      out[0] = (hexValue >> 16) % 256;
+      out[1] = (hexValue >> 8) % 256;
+      out[2] = hexValue % 256;
+      return out;
+    }
+    static rgbToHex(arg1, arg2, arg3, arg4) {
+      let r, g, b;
+      let reverse;
+      if (typeof arg1 === "number") {
+        r = arg1;
+        g = arg2;
+        b = arg3;
+        reverse = arg4;
+      } else {
+        r = arg1[0];
+        g = arg1[1];
+        b = arg1[2];
+        reverse = arg2;
+      }
+      r = MathUtils.clamp(Math.round(r), 0, 255);
+      g = MathUtils.clamp(Math.round(g), 0, 255);
+      b = MathUtils.clamp(Math.round(b), 0, 255);
+      return reverse ? b << 16 | g << 8 | r : r << 16 | g << 8 | b;
+    }
+    static rgbToHsl(arg1, arg2, arg3, arg4) {
+      let r, g, b;
+      let out;
+      if (typeof arg1 === "number") {
+        r = arg1;
+        g = arg2;
+        b = arg3;
+        out = arg4;
+      } else {
+        r = arg1[0];
+        g = arg1[1];
+        b = arg1[2];
+        out = arg2;
+      }
+      r = MathUtils.clamp(r / 255, 0, 1);
+      g = MathUtils.clamp(g / 255, 0, 1);
+      b = MathUtils.clamp(b / 255, 0, 1);
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      const chroma = max - min;
+      const l = (max + min) / 2;
+      const s = l === 0 || l === 1 ? 0 : chroma / (1 - Math.abs(max + min - 1));
+      const h = 60 * (chroma === 0 ? 0 : max === r ? (g - b) / chroma % 6 : max === g ? (b - r) / chroma + 2 : (r - g) / chroma + 4);
+      out[0] = h;
+      out[1] = s;
+      out[2] = l;
+      return out;
+    }
+    static hslToRgb(arg1, arg2, arg3, arg4) {
+      let h, s, l;
+      let out;
+      if (typeof arg1 === "number") {
+        h = arg1;
+        s = arg2;
+        l = arg3;
+        out = arg4;
+      } else {
+        h = arg1[0];
+        s = arg1[1];
+        l = arg1[2];
+        out = arg2;
+      }
+      h = h % 360;
+      s = MathUtils.clamp(s, 0, 1);
+      l = MathUtils.clamp(l, 0, 1);
+      const chroma = s * (1 - Math.abs(2 * l - 1));
+      const side = h / 60;
+      const x = chroma * (1 - Math.abs(side % 2 - 1));
+      const m = l - chroma / 2;
+      if (side <= 1) {
+        out[0] = chroma;
+        out[1] = x;
+        out[2] = 0;
+      } else if (side <= 2) {
+        out[0] = x;
+        out[1] = chroma;
+        out[2] = 0;
+      } else if (side <= 3) {
+        out[0] = 0;
+        out[1] = chroma;
+        out[2] = x;
+      } else if (side <= 4) {
+        out[0] = 0;
+        out[1] = x;
+        out[2] = chroma;
+      } else if (side <= 5) {
+        out[0] = x;
+        out[1] = 0;
+        out[2] = chroma;
+      } else {
+        out[0] = chroma;
+        out[1] = 0;
+        out[2] = x;
+      }
+      out[0] = Math.round((out[0] + m) * 255);
+      out[1] = Math.round((out[1] + m) * 255);
+      out[2] = Math.round((out[2] + m) * 255);
+      return out;
+    }
+    static hexToHsl(hex, out, reverse = false) {
+      const rgb = ColorUtils.hexToRgb(hex, ColorUtils.rgbCache, reverse);
+      return ColorUtils.rgbToHsl(rgb, out);
+    }
+    static hslToHex(arg1, arg2, arg3, arg5) {
+      if (typeof arg1 === "number") {
+        return ColorUtils.rgbToHex(ColorUtils.hslToRgb(arg1, arg2, arg3, ColorUtils.rgbCache), arg5);
+      } else {
+        return ColorUtils.rgbToHex(ColorUtils.hslToRgb(arg1, ColorUtils.rgbCache), arg2);
+      }
+    }
+    static interpolateHex(color1, color2, fraction, out) {
+      const useString = typeof color1 === "string";
+      const color1Number = useString ? ColorUtils.hexStringToNumber(color1) : color1;
+      const color2Number = useString ? ColorUtils.hexStringToNumber(color2) : color2;
+      const interp = typeof fraction === "object" ? ColorUtils.interpolateRgbSpace(color1Number, color2Number, fraction, out) : ColorUtils.interpolateRgbSpace(color1Number, color2Number, fraction);
+      if (useString) {
+        if (Array.isArray(interp)) {
+          for (let i = 0; i < interp.length; i++) {
+            interp[i] = ColorUtils.hexNumberToString(interp[i]);
+          }
+          return interp;
+        } else {
+          return ColorUtils.hexNumberToString(interp);
+        }
+      } else {
+        return interp;
+      }
+    }
+    static interpolateRgbSpace(color1, color2, fraction, out) {
+      const r1 = (color1 & ColorUtils.BYTE_2_MASK) >> 16;
+      const g1 = (color1 & ColorUtils.BYTE_1_MASK) >> 8;
+      const b1 = color1 & ColorUtils.BYTE_0_MASK;
+      const r2 = (color2 & ColorUtils.BYTE_2_MASK) >> 16;
+      const g2 = (color2 & ColorUtils.BYTE_1_MASK) >> 8;
+      const b2 = color2 & ColorUtils.BYTE_0_MASK;
+      if (typeof fraction === "number") {
+        const r = Math.round(MathUtils.lerp(fraction, 0, 1, r1, r2, true, true));
+        const g = Math.round(MathUtils.lerp(fraction, 0, 1, g1, g2, true, true));
+        const b = Math.round(MathUtils.lerp(fraction, 0, 1, b1, b2, true, true));
+        return r << 16 | g << 8 | b;
+      } else {
+        out !== null && out !== void 0 ? out : out = [];
+        for (let i = 0; i < fraction.length; i++) {
+          const r = Math.round(MathUtils.lerp(fraction[i], 0, 1, r1, r2, true, true));
+          const g = Math.round(MathUtils.lerp(fraction[i], 0, 1, g1, g2, true, true));
+          const b = Math.round(MathUtils.lerp(fraction[i], 0, 1, b1, b2, true, true));
+          out[i] = r << 16 | g << 8 | b;
+        }
+        out.length = fraction.length;
+        return out;
+      }
+    }
+    static gradientHex(color1, color2) {
+      const useString = typeof color1 === "string";
+      const color1Number = useString ? ColorUtils.hexStringToNumber(color1) : color1;
+      const color2Number = useString ? ColorUtils.hexStringToNumber(color2) : color2;
+      if (useString) {
+        const interpFunc = ColorUtils.gradientRgbSpace(color1Number, color2Number);
+        return (fraction) => {
+          return ColorUtils.hexNumberToString(interpFunc(fraction));
+        };
+      } else {
+        return ColorUtils.gradientRgbSpace(color1Number, color2Number);
+      }
+    }
+    static gradientRgbSpace(color1, color2) {
+      const r1 = (color1 & ColorUtils.BYTE_2_MASK) >> 16;
+      const g1 = (color1 & ColorUtils.BYTE_1_MASK) >> 8;
+      const b1 = color1 & ColorUtils.BYTE_0_MASK;
+      const r2 = (color2 & ColorUtils.BYTE_2_MASK) >> 16;
+      const g2 = (color2 & ColorUtils.BYTE_1_MASK) >> 8;
+      const b2 = color2 & ColorUtils.BYTE_0_MASK;
+      return (fraction) => {
+        const r = Math.round(MathUtils.lerp(fraction, 0, 1, r1, r2, true, true));
+        const g = Math.round(MathUtils.lerp(fraction, 0, 1, g1, g2, true, true));
+        const b = Math.round(MathUtils.lerp(fraction, 0, 1, b1, b2, true, true));
+        return r << 16 | g << 8 | b;
+      };
+    }
+  };
+  ColorUtils.HEX_REGEX = /^#?([0-9a-fA-F]{6})$/;
+  ColorUtils.BYTE_0_MASK = (1 << 8) - 1 << 0;
+  ColorUtils.BYTE_1_MASK = (1 << 8) - 1 << 8;
+  ColorUtils.BYTE_2_MASK = (1 << 8) - 1 << 16;
+  ColorUtils.MASK_24 = (1 << 24) - 1;
+  ColorUtils.rgbCache = new Float64Array(3);
   var ImageCache = class {
     static addToCache(key, url) {
       if (this.cache[key] === void 0) {
@@ -28863,6 +31454,185 @@
     }
   };
   UserSettingSaveManager.DATASTORE_PREFIX = "persistent-setting";
+  var SimbriefDataExtraction = class {
+    static async extractSimbriefRoute(ofp, facLoader, facRepo, latLongNaming) {
+      var _a2, _b, _c;
+      const originAirport = await this.getAirport(facLoader, ofp.origin.icao_code);
+      const originAirportRunways = RunwayUtils.getOneWayRunwaysFromAirport(originAirport);
+      const originAirportRunwayIndex = originAirportRunways.findIndex((it) => it.designation === ofp.origin.plan_rwy);
+      const destinationAirport = await this.getAirport(facLoader, ofp.destination.icao_code);
+      const destinationAirportRunways = RunwayUtils.getOneWayRunwaysFromAirport(destinationAirport);
+      const destinationAirportRunwayIndex = destinationAirportRunways.findIndex((it) => it.designation === ofp.destination.plan_rwy);
+      let alternateAirport;
+      let alternateAirportRunwayIndex;
+      if ("icao_code" in ofp.alternate) {
+        alternateAirport = await this.getAirport(facLoader, ofp.alternate.icao_code);
+        const alternateAirportRunways = RunwayUtils.getOneWayRunwaysFromAirport(alternateAirport);
+        alternateAirportRunwayIndex = alternateAirportRunways.findIndex((it) => it.designation === ofp.alternate.plan_rwy);
+      }
+      const enroute = [];
+      let enrouteIsComplete = true;
+      let pendingAirway;
+      let pendingAirwayFirstFix;
+      let pendingAirwayLastFix;
+      let lastIcao;
+      for (let i = 0; i < ofp.navlog.fix.length; i++) {
+        const fix = ofp.navlog.fix[i];
+        if (fix.ident === "TOC" || fix.ident === "TOD") {
+          continue;
+        }
+        const fixInProcedure = fix.is_sid_star === "1" || ((_a2 = ofp.navlog.fix[i + 1]) === null || _a2 === void 0 ? void 0 : _a2.is_sid_star) === "1" && fix.via_airway === ofp.navlog.fix[i + 1].via_airway;
+        let fixOnAirway = !fixInProcedure && !fix.via_airway.startsWith("DCT") && !fix.via_airway.startsWith("NAT");
+        if (fixOnAirway && ((_b = ofp.navlog.fix[i - 1]) === null || _b === void 0 ? void 0 : _b.is_sid_star) === "1" && fix.via_airway === ofp.navlog.fix[i - 1].via_airway) {
+          fix.via_airway = "DCT";
+          fixOnAirway = false;
+        }
+        if (fixOnAirway && pendingAirway && pendingAirway.name !== fix.via_airway || !fixOnAirway && pendingAirway) {
+          if (pendingAirwayFirstFix === void 0 || pendingAirwayLastFix === void 0) {
+            console.warn(`[SimbriefDataExtraction](extractSimbriefRoute) Pending airway invalid; entry=${pendingAirwayFirstFix}, exit=${pendingAirwayLastFix}`);
+            enrouteIsComplete = false;
+            continue;
+          }
+          enroute.push({ type: "airway", airwayObject: pendingAirway, entryFixIcao: pendingAirwayFirstFix, exitFixIcao: pendingAirwayLastFix });
+          pendingAirway = void 0;
+          pendingAirwayFirstFix = void 0;
+          pendingAirwayLastFix = void 0;
+        }
+        let icao;
+        const lat = parseFloat(fix.pos_lat);
+        const long = parseFloat(fix.pos_long);
+        if (fix.type === "ltlg") {
+          SimbriefDataExtraction.geoPointCache.set(lat, long);
+          const facility = UserFacilityUtils.createFromLatLon(latLongNaming(SimbriefDataExtraction.geoPointCache), lat, long);
+          facRepo.add(facility);
+          icao = facility.icao;
+        } else {
+          const searchResults = await facLoader.findNearestFacilitiesByIdent(FacilitySearchType.All, fix.ident, lat, long);
+          if (searchResults.length === 0) {
+            enrouteIsComplete = false;
+            continue;
+          }
+          icao = searchResults[0].icao;
+        }
+        if (fixOnAirway) {
+          const airwayIdent = fix.via_airway;
+          if (!pendingAirway) {
+            try {
+              pendingAirway = await facLoader.getAirway(airwayIdent, 0, lastIcao !== null && lastIcao !== void 0 ? lastIcao : icao);
+            } catch (e) {
+              enrouteIsComplete = false;
+              continue;
+            }
+            pendingAirwayFirstFix = lastIcao;
+          }
+          if (pendingAirway) {
+            const isIcaoOnAirway = pendingAirway.waypoints.find((it) => it.icao === icao);
+            if (!isIcaoOnAirway) {
+              icao = (_c = pendingAirway.waypoints.find((it) => ICAO.getIdent(it.icao) === ICAO.getIdent(icao !== null && icao !== void 0 ? icao : ""))) === null || _c === void 0 ? void 0 : _c.icao;
+            }
+            pendingAirwayLastFix = icao;
+          }
+          lastIcao = icao;
+          continue;
+        }
+        if (!fixInProcedure) {
+          enroute.push({ type: "waypoint", icao });
+        }
+        lastIcao = icao;
+      }
+      return {
+        originAirport,
+        originAirportRunwayIndex,
+        destinationAirport,
+        destinationAirportRunwayIndex,
+        alternateAirport,
+        alternateAirportRunwayIndex,
+        cruiseLevel: parseInt(ofp.general.initial_altitude),
+        flightNumber: typeof ofp.general.icao_airline === "string" && typeof ofp.general.flight_number === "string" ? ofp.general.icao_airline.substring(0, 3) + ofp.general.flight_number : void 0,
+        enroute,
+        enrouteIsComplete,
+        ofpId: ofp.params.request_id
+      };
+    }
+    static async extractSimBriefWind(ofp, facLoader, latLongNaming) {
+      var _a2, _b, _c;
+      const cruiseWind = [];
+      const climbWind = [];
+      const descentWind = [];
+      const cruiseLevels = /* @__PURE__ */ new Set();
+      let climbDistance = 0;
+      let descentDistance = 0;
+      for (const fix of ofp.navlog.fix) {
+        const winds = [];
+        if (!fix.wind_data) {
+          continue;
+        }
+        for (const level of fix.wind_data.level) {
+          winds.push({ altitude: parseInt(level.altitude), direction: parseInt(level.wind_dir), speed: parseInt(level.wind_spd), temperature: parseInt(level.oat) });
+        }
+        if (winds.length < 1) {
+          continue;
+        }
+        if (fix.stage === "CLB" || fix.ident === "TOC") {
+          climbDistance += parseInt(fix.distance);
+          climbWind.push({
+            expectedAltitude: parseInt(fix.altitude_feet),
+            cumulativeDistance: climbDistance,
+            winds
+          });
+        } else if (fix.stage === "DSC" || fix.ident === "TOD") {
+          descentDistance += fix.ident === "TOD" ? 0 : parseInt(fix.distance);
+          descentWind.push({
+            expectedAltitude: parseInt(fix.altitude_feet),
+            cumulativeDistance: descentDistance,
+            winds
+          });
+        } else {
+          cruiseLevels.add(parseInt(fix.altitude_feet));
+          let fixIcao = void 0;
+          if (fix.type === "wpt") {
+            const lat = parseFloat(fix.pos_lat);
+            const long = parseFloat(fix.pos_long);
+            const searchResults = await facLoader.findNearestFacilitiesByIdent(FacilitySearchType.All, fix.ident, lat, long);
+            fixIcao = (_a2 = searchResults[0]) === null || _a2 === void 0 ? void 0 : _a2.icao;
+          } else if (fix.type === "ltlg") {
+            const lat = parseFloat(fix.pos_lat);
+            const long = parseFloat(fix.pos_long);
+            SimbriefDataExtraction.geoPointCache.set(lat, long);
+            fixIcao = latLongNaming(SimbriefDataExtraction.geoPointCache);
+          } else {
+            continue;
+          }
+          if (fixIcao) {
+            cruiseWind.push({ fixIcao, winds });
+          }
+        }
+      }
+      return {
+        climbWind,
+        descentWind,
+        cruiseWind,
+        cruiseLevels: Array.from(cruiseLevels).sort(),
+        originElevation: typeof ((_b = ofp.origin) === null || _b === void 0 ? void 0 : _b.elevation) === "number" ? parseInt(ofp.origin.elevation) : void 0,
+        destinationElevation: typeof ((_c = ofp.destination) === null || _c === void 0 ? void 0 : _c.elevation) === "number" ? parseInt(ofp.destination.elevation) : void 0,
+        ofpId: ofp.params.request_id
+      };
+    }
+    static async getAirport(facLoader, ident) {
+      const searchResults = await facLoader.searchByIdent(FacilitySearchType.Airport, ident, 1);
+      if (searchResults.length === 0) {
+        throw new Error(`Could not find any airports with ident: ${ident}`);
+      }
+      return facLoader.getFacility(FacilityType.Airport, searchResults[0]);
+    }
+  };
+  SimbriefDataExtraction.geoPointCache = new GeoPoint(0, 0);
+  var SimbriefFlightStage;
+  (function(SimbriefFlightStage2) {
+    SimbriefFlightStage2["Climb"] = "CLB";
+    SimbriefFlightStage2["Cruise"] = "CLZ";
+    SimbriefFlightStage2["Descent"] = "DSC";
+  })(SimbriefFlightStage || (SimbriefFlightStage = {}));
   var AvionicsSystemState;
   (function(AvionicsSystemState2) {
     AvionicsSystemState2["Off"] = "Off";
@@ -29188,9 +31958,7 @@
   var AttitudeForeground = class extends DisplayComponent {
     constructor() {
       super(...arguments);
-      this.pitch = Subject.create(0);
       this.pitchRef = FSComponent.createRef();
-      this.bank = Subject.create(0);
       this.bankRef = FSComponent.createRef();
       this.markingRef = FSComponent.createRef();
       this.pitchRefDup = FSComponent.createRef();
@@ -29217,30 +31985,24 @@
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
       sub.on("bank").whenChanged().handle((bank) => {
-        this.bank.set(bank);
+        var _a2, _b;
+        (_a2 = this.bankRef.instance) == null ? void 0 : _a2.setAttribute("transform", `rotate(${bank.toString()}, 275, 255)`);
+        (_b = this.bankRefDup.instance) == null ? void 0 : _b.setAttribute("transform", `rotate(${bank.toString()}, 275, 255)`);
       });
       sub.on("pitch").whenChanged().handle((pitch) => {
-        this.pitch.set(pitch);
-      });
-      this.bank.sub((newValue) => {
-        var _a2, _b;
-        (_a2 = this.bankRef.instance) == null ? void 0 : _a2.setAttribute("transform", `rotate(${newValue.toString()}, 275, 255)`);
-        (_b = this.bankRefDup.instance) == null ? void 0 : _b.setAttribute("transform", `rotate(${newValue.toString()}, 275, 255)`);
-      }, true);
-      this.pitch.sub((newValue) => {
         var _a2, _b, _c, _d, _e;
-        (_a2 = this.pitchRef.instance) == null ? void 0 : _a2.setAttribute("transform", `translate(0,${this.getTranslation(newValue).value * 8.6})`);
-        (_b = this.pitchRefDup.instance) == null ? void 0 : _b.setAttribute("transform", `translate(0,${this.getTranslation(newValue).value * 8.6})`);
-        (_c = this.markingRef.instance) == null ? void 0 : _c.setAttribute("transform", `translate(0,${newValue * 8.6})`);
+        (_a2 = this.pitchRef.instance) == null ? void 0 : _a2.setAttribute("transform", `translate(0,${this.getTranslation(-pitch).value * 8.6})`);
+        (_b = this.pitchRefDup.instance) == null ? void 0 : _b.setAttribute("transform", `translate(0,${this.getTranslation(-pitch).value * 8.6})`);
+        (_c = this.markingRef.instance) == null ? void 0 : _c.setAttribute("transform", `translate(0,${-pitch * 8.6})`);
         (_d = this.markerActiveRef.instance) == null ? void 0 : _d.setAttribute(
           "visibility",
-          this.isHorizonMarkerActive(newValue) ? "visible" : "hidden"
+          this.isHorizonMarkerActive(-pitch) ? "visible" : "hidden"
         );
         (_e = this.markerActiveRefDup.instance) == null ? void 0 : _e.setAttribute(
           "visibility",
-          this.isHorizonMarkerActive(newValue) ? "visible" : "hidden"
+          this.isHorizonMarkerActive(-pitch) ? "visible" : "hidden"
         );
-      }, true);
+      });
     }
     render() {
       return /* @__PURE__ */ FSComponent.buildComponent("g", { class: "foreground-attitude" }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "attitude-clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" })), /* @__PURE__ */ FSComponent.buildComponent("linearGradient", { id: "SkyGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "0%", "stop-color": "#020383" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "88%", "stop-color": "#020383" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "100%", "stop-color": "#1717cf" })), /* @__PURE__ */ FSComponent.buildComponent("linearGradient", { id: "GroundGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "0%", "stop-color": "#674200" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "25%", "stop-color": "#352200" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "100%", "stop-color": "#352201" }))), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.bankRefDup }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.pitchRefDup }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", fill: "url(#SkyGradiant)" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-2000", y: "254", width: "4600", height: "2205", fill: "url(#GroundGradiant)" }), /* @__PURE__ */ FSComponent.buildComponent(
@@ -29315,10 +32077,282 @@
     }
   };
 
+  // instruments/src/PFD/Components/Altitude/AltitudeTape.tsx
+  var drawChevron = (double, y) => {
+    const offset = -y / 3.31;
+    if (double) {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+        PathWithBlackBackground,
+        {
+          d: `M 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181}`,
+          fill: "black",
+          fillTop: "white",
+          strokeWidthTop: 2,
+          StrokeWidth: 4,
+          fillTop2: "transparent",
+          forceTransparent: true,
+          forceEndCap: true
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent(
+        PathWithBlackBackground,
+        {
+          d: `M 70 ${offset + 300} L 70 ${offset + 255} L38 ${offset + 223} L 70 ${offset + 190} L 70 ${offset + 148}`,
+          fill: "black",
+          fillTop: "white",
+          strokeWidthTop: 2,
+          StrokeWidth: 4,
+          fillTop2: "transparent",
+          forceTransparent: true,
+          forceEndCap: true
+        }
+      ), drawNumber(y));
+    } else {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+        PathWithBlackBackground,
+        {
+          d: `M 70 ${offset + 300} L 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181} L 70 ${offset + 148}`,
+          fill: "black",
+          fillTop: "white",
+          strokeWidthTop: 2,
+          StrokeWidth: 4,
+          fillTop2: "transparent",
+          forceTransparent: true,
+          forceEndCap: true
+        }
+      ), drawNumber(y));
+    }
+  };
+  var drawTick2 = (y) => {
+    const offset = -y / 3.31;
+    return /* @__PURE__ */ FSComponent.buildComponent(
+      PathWithBlackBackground,
+      {
+        d: `M 30 ${offset + 222} L ${42} ${offset + 222}`,
+        fill: "black",
+        fillTop: "white",
+        strokeWidthTop: 2,
+        StrokeWidth: 4
+      }
+    );
+  };
+  var drawNumber = (y) => {
+    const offset = -y / 3.31;
+    return /* @__PURE__ */ FSComponent.buildComponent(
+      "text",
+      {
+        x: "46",
+        y: (offset + 224).toString(),
+        stroke: "black",
+        "stroke-width": "2",
+        "paint-order": "stroke",
+        fill: "white",
+        "font-size": "22px",
+        "text-anchor": "start",
+        "dominant-baseline": "middle"
+      },
+      y.toString()
+    );
+  };
+  var AltitudeTape = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.tapeRef = FSComponent.createRef();
+      this.tickMarks = createArray(600);
+      this.negativeTickMarks = createArray(30);
+      this.tape = this.tickMarks.map((tick) => {
+        if (tick % 10 === 0) {
+          return drawChevron(true, tick * 100);
+        }
+        if (tick % 5 === 0) {
+          return drawChevron(false, tick * 100);
+        }
+        return drawTick2(tick * 100);
+      });
+      this.negativeTape = this.negativeTickMarks.map((tick) => {
+        if (tick % 10 === 0) {
+          return drawChevron(true, tick * -100);
+        }
+        if (tick % 5 === 0) {
+          return drawChevron(false, tick * -100);
+        }
+        return drawTick2(tick * -100);
+      });
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("altitude").whenChanged().handle((alt) => {
+        var _a2;
+        (_a2 = this.tapeRef.instance) == null ? void 0 : _a2.setAttribute("transform", `translate(0, ${alt / 3.309})`);
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "AltitudetapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 29, y: 60, width: 83, height: 333 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#AltitudetapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tapeRef }, this.negativeTape, this.tape)), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 29 58 L 29 391", stroke: "white", "stroke-width": "2", fill: "none" }));
+    }
+  };
+
+  // instruments/src/PFD/Components/Altitude/SelectedAltitudeBox.tsx
+  var SelectedAltitudeBox = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "31", y: "1", rx: 2, ry: 2, width: "81", height: "58", stroke: "white", "stroke-width": 2, fill: "transparent" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 31 27 L 112 27", stroke: "white", "stroke-width": "2", fill: "none" }));
+    }
+  };
+
+  // instruments/src/PFD/Components/Altitude/BaroSettingBox.tsx
+  var BaroSettingBox = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "29", y: "391", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", "stroke-width": "2", fill: "black" }));
+    }
+  };
+
+  // instruments/src/PFD/Components/Altitude/Altitude.tsx
+  var Altitude = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "altitude-continer" }, /* @__PURE__ */ FSComponent.buildComponent("svg", { class: "altitude-svg", viewBox: "0 0 120 422" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "29", y: "0", width: "83", height: "422", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent(AltitudeTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAltitudeBox, null), /* @__PURE__ */ FSComponent.buildComponent(BaroSettingBox, null)));
+    }
+  };
+
+  // instruments/src/PFD/Util/ClampValue.ts
+  var ClampValue = (value, min, max) => {
+    if (value < min) {
+      return min;
+    } else if (value > max) {
+      return max;
+    } else {
+      return value;
+    }
+  };
+
+  // instruments/src/PFD/Components/Airspeed/SelectedAirspeedBox.tsx
+  var SelectedAirspeedBox = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.invalidOutput = "---";
+      this.getString = () => {
+        switch (this.props.mode) {
+          case 0 /* FMS */:
+            return {
+              element: /* @__PURE__ */ FSComponent.buildComponent("tspan", null, this.props.selectedAirspeed, this.props.mach ? /* @__PURE__ */ FSComponent.buildComponent("tspan", { fill: "white", "font-size": 14 }, "M") : ""),
+              color: "magenta"
+            };
+          case 1 /* MAN */:
+            return {
+              element: /* @__PURE__ */ FSComponent.buildComponent("tspan", null, this.props.selectedAirspeed, this.props.mach ? /* @__PURE__ */ FSComponent.buildComponent("tspan", { fill: "white", "font-size": 14 }, "M") : ""),
+              color: "cyan"
+            };
+          case 2 /* INOP */:
+            return { element: /* @__PURE__ */ FSComponent.buildComponent("tspan", null, this.invalidOutput), color: "yellow" };
+        }
+      };
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 1, y: 1, rx: 2, ry: 2, width: 80, height: 33, "stroke-width": 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 41, y: 28, "text-anchor": "middle", fill: this.getString().color, "font-size": "30" }, this.getString().element));
+    }
+  };
+
+  // instruments/src/PFD/Components/Airspeed/AirspeedTape.tsx
+  var drawTick3 = (small, y) => {
+    return /* @__PURE__ */ FSComponent.buildComponent(
+      PathWithBlackBackground,
+      {
+        d: `M 81 ${-y} L ${small ? 70 : 58} ${-y}`,
+        fill: "black",
+        fillTop: "white",
+        strokeWidthTop: 3,
+        StrokeWidth: 5
+      }
+    );
+  };
+  var AirspeedTape = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.asTapeRef = FSComponent.createRef();
+      this.tapeLength = 942;
+      this.spacing = 3.95;
+      this.startOffset = 200;
+      this.airspeedTapeScaling = 3.95;
+      this.array = createArray(this.tapeLength);
+      this.Tape = this.array.map((item, index) => {
+        if (index < 30) {
+          return null;
+        }
+        if (index < 200) {
+          if (index % 10 === 0) {
+            return /* @__PURE__ */ FSComponent.buildComponent("g", { key: index }, drawTick3(false, index * this.spacing), /* @__PURE__ */ FSComponent.buildComponent(
+              "text",
+              {
+                x: "53",
+                y: -index * this.spacing + 9,
+                stroke: "black",
+                "stroke-width": 2,
+                "paint-order": "stroke",
+                "text-anchor": "end",
+                fill: "white",
+                "font-size": "22"
+              },
+              index.toString()
+            ));
+          } else
+            return null;
+        } else {
+          if (index % 20 === 0) {
+            return /* @__PURE__ */ FSComponent.buildComponent("g", { key: index }, drawTick3(false, index * this.spacing), /* @__PURE__ */ FSComponent.buildComponent(
+              "text",
+              {
+                x: "53",
+                y: -index * this.spacing + 9,
+                stroke: "black",
+                "stroke-width": 2,
+                "paint-order": "stroke",
+                "text-anchor": "end",
+                fill: "white",
+                "font-size": "22"
+              },
+              index.toString()
+            ));
+          } else if (index % 20 === 10) {
+            return drawTick3(false, index * this.spacing);
+          } else
+            return null;
+        }
+      });
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("airspeed").whenChanged().handle((asi) => {
+        var _a2;
+        (_a2 = this.asTapeRef.instance) == null ? void 0 : _a2.setAttribute(
+          "transform",
+          `translate(0,${ClampValue(asi, 30, 900) * this.airspeedTapeScaling + this.startOffset})`
+        );
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "airspeed-container" }, /* @__PURE__ */ FSComponent.buildComponent("svg", { class: "airspeed-svg", viewBox: "0 0 82 396" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 0, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "tapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 34, width: 81, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#tapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.asTapeRef }, this.Tape)), /* @__PURE__ */ FSComponent.buildComponent(
+        PathWithBlackBackground,
+        {
+          d: "M 81 32 L 81 364",
+          fill: "black",
+          fillTop: "white",
+          strokeWidthTop: 2,
+          StrokeWidth: 3
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent(SelectedAirspeedBox, { selectedAirspeed: 0.79, mach: true, mode: 1 })));
+    }
+  };
+
+  // instruments/src/PFD/Components/Airspeed/Airspeed.tsx
+  var Airspeed = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("div", null, /* @__PURE__ */ FSComponent.buildComponent(AirspeedTape, { bus: this.props.bus }));
+    }
+  };
+
   // instruments/src/PFD/PFDRoot/PFDRoot.tsx
   var PFDRoot = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "PFD-ROOT" }, /* @__PURE__ */ FSComponent.buildComponent("div", { class: "top-component" }, /* @__PURE__ */ FSComponent.buildComponent(Attitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent("div", null, "fma"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "airspeed"), /* @__PURE__ */ FSComponent.buildComponent("div", null, "altitude")), /* @__PURE__ */ FSComponent.buildComponent("div", { class: "bottom-component" }, "bottom"));
+      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "PFD-ROOT" }, /* @__PURE__ */ FSComponent.buildComponent("div", { class: "top-component" }, /* @__PURE__ */ FSComponent.buildComponent(Attitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent("div", null, "fma"), /* @__PURE__ */ FSComponent.buildComponent(Airspeed, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("div", { class: "bottom-component" }, "bottom"));
     }
   };
 
@@ -29331,7 +32365,9 @@
   var PFDSimvarPublisher = _PFDSimvarPublisher;
   PFDSimvarPublisher.simvars = /* @__PURE__ */ new Map([
     ["pitch", { name: "PLANE PITCH DEGREES" /* pitch */, type: SimVarValueType.Degree }],
-    ["bank", { name: "PLANE BANK DEGREES" /* bank */, type: SimVarValueType.Degree }]
+    ["bank", { name: "PLANE BANK DEGREES" /* bank */, type: SimVarValueType.Degree }],
+    ["altitude", { name: "INDICATED ALTITUDE" /* altitude */, type: SimVarValueType.Feet }],
+    ["airspeed", { name: "AIRSPEED INDICATED" /* airspeed */, type: SimVarValueType.Knots }]
   ]);
 
   // instruments/src/PFD/instrument.tsx
@@ -29343,20 +32379,38 @@
       this.gameState = 0;
       this.bus = new EventBus();
       this.simVarPublisher = new PFDSimvarPublisher(this.bus);
+      this.hEventPublisher = new HEventPublisher(this.bus);
     }
     get templateID() {
       return "E170_PFD";
+    }
+    onInteractionEvent(args) {
+      this.hEventPublisher.dispatchHEvent(args[0]);
     }
     connectedCallback() {
       var _a2, _b;
       super.connectedCallback();
       this.simVarPublisher.startPublish();
+      this.simVarPublisher.subscribe("bank");
+      this.simVarPublisher.subscribe("pitch");
       FSComponent.render(/* @__PURE__ */ FSComponent.buildComponent(PFDRoot, { bus: this.bus }), document.getElementById(PFD_ID));
       !IsAce && ((_b = (_a2 = document.getElementById(PFD_ID)) == null ? void 0 : _a2.querySelector(":scope > h1")) == null ? void 0 : _b.remove());
+      !IsAce && setInterval(() => {
+        this.Update();
+      }, 50);
+      this.Update();
     }
     Update() {
       super.Update();
-      this.simVarPublisher.onUpdate();
+      if (this.gameState !== 3) {
+        const gamestate = this.getGameState();
+        if (gamestate === 3) {
+          this.simVarPublisher.startPublish();
+        }
+        this.gameState = gamestate;
+      } else {
+        this.simVarPublisher.onUpdate();
+      }
     }
   };
   var _a;
