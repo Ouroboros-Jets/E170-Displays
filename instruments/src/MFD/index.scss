@@ -1,3 +1,5 @@
+@import 'leaflet/dist/leaflet.css';
+
 @font-face {
   font-family: OuroborosMFD;
   src: url('/Fonts/Ouroboros_SCREEN_FONT.ttf') format('truetype');
@@ -17,4 +19,15 @@ div {
 }
 .system-button {
   height: 50px;
+}
+#MAP {
+  transform: rotate(265deg);
+  pointer-events: none;
+}
+#MAP > * svg {
+  pointer-events: none;
+}
+.leaflet-interactive {
+  pointer-events: none !important;
+  stroke-width: 2px !important;
 }

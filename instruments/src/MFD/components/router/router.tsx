@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useObjLocalVar } from 'instruments/common/Hooks/simVars'
 import { Status } from '../pages/Status/Status'
+import { MapLayer } from '../MapLayer/MapLayer'
+import { type T_FlightPlan } from 'instruments/common/WaypointTypes/WaypointTypes'
 
 const MfdRouter = (
   isCallingTop: boolean,
@@ -11,6 +13,29 @@ const MfdRouter = (
   const [topPage] = useObjLocalVar('MFD_ROUTER_TOP', 'Number')
   const [bottomPage] = useObjLocalVar('MFD_ROUTER_BOTTOM', 'Number')
   const [systemPage] = useObjLocalVar('MFD_ROUTER_SYSTEM', 'Number')
+
+  /**
+   * sample flight plan for testing, array[0] will be starting airport, array[1] first waypoint, etc
+   */
+  const sampleFlightPlan: T_FlightPlan = [
+    { name: 'KPHX', lon: -112.01385, lat: 33.43717, altitude: 1135 },
+    { name: 'KONTE', lon: -111.95, lat: 33.43, altitude: 5000 },
+    { name: 'KIWA', lon: -111.65405, lat: 33.30471, altitude: 1384 }
+  ]
+
+  const [flightPlanPath, setFlightPlanPath] = useState<Array<[number, number]>>([])
+  const setPathCoords = (): void => {
+    const pathCoords: Array<[number, number]> = []
+    for (let i = 0; i < sampleFlightPlan.length; i++) {
+      pathCoords.push([sampleFlightPlan[i].lat, sampleFlightPlan[i].lon])
+    }
+    setFlightPlanPath(pathCoords)
+  }
+
+  // pretty sure the best way to handle this will be in js but we may also want to try it in rust
+  useEffect(() => {
+    setPathCoords()
+  }, [])
 
   let returnPage: JSX.Element = <></>
   if (isCallingTop) {
@@ -43,7 +68,7 @@ const MfdRouter = (
     } else {
       switch (topPage) {
         case 0:
-          returnPage = <div>MAP</div>
+          returnPage = <MapLayer sampleFlightPlan={sampleFlightPlan} flightPlanPath={flightPlanPath} />
           break
         case 1:
           returnPage = <div>PLAN</div>

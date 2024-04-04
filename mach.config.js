@@ -27,7 +27,7 @@ module.exports = {
     msfsAvionicsInstrument('IES'),
     msfsAvionicsInstrument('EICAS'),
     // reactInstrument('MultifunctionControlDisplay', undefined, false), most likely needs to me in MSFS framework too
-    reactInstrument('MultifunctionDisplay', undefined, true), // needs to be converted to avionics framework
+    reactInstrument('MFD', undefined, true), // needs to be converted to avionics framework
     reactInstrument('ElectronicFlightBag', undefined, true) // only react instrument hopefully
     // reactInstrument('DU-1310-2-PFD', undefined, true),
     // reactInstrument('DU-1310-2-MFD', undefined, true),

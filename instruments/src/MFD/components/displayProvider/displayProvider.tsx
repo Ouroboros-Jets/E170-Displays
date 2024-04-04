@@ -1,10 +1,10 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import './displayProvider.scss'
 import { LowerButtonBar, SystemButtonBar, UpperButtonBar } from '../buttonBars/buttonBars'
 import { getTopPage } from '../router/router'
 
 type T_DisplayProviderProps = {
-  porportionSize: number
+  proportionSize: number
   topPage: JSX.Element
   bottomPage: JSX.Element
   setIsSystem: React.Dispatch<React.SetStateAction<boolean>>

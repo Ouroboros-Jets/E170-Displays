@@ -1,25 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './index.scss'
 import { render } from '../../common/Hooks'
 import { Mouse } from './components/mouse/mouse'
 import MfdRouter from './components/router/router'
 import DisplayProvider from './components/displayProvider/displayProvider'
 
-// we need to create seperate variables for left and right MFDs
-
 export const MultifunctionDisplayContent = (): JSX.Element => {
-  const [isSystem, setIsSystem] = React.useState<boolean>(false)
-  const [systemMenu, setSystemMenu] = React.useState<boolean>(false)
-  const [showSystems, setShowSystems] = React.useState<boolean>(false)
+  const [isSystem, setIsSystem] = useState<boolean>(false)
+  const [systemMenu, setSystemMenu] = useState<boolean>(false)
+  const [showSystems, setShowSystems] = useState<boolean>(false)
+
+  // going to store the flight plan in the MFD's state for now, since we dont have a working mcdu we will manually input waypoints
+
   return (
     <div>
       <Mouse />
+
       <DisplayProvider
         systemMenu={systemMenu}
         setSystemMenu={setSystemMenu}
         showSystems={showSystems}
         setShowSystems={setShowSystems}
-        porportionSize={0}
+        proportionSize={0}
         topPage={MfdRouter(true, showSystems)}
         setIsSystem={setIsSystem}
         bottomPage={MfdRouter(false, false)}

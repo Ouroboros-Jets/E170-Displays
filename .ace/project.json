@@ -7,58 +7,13 @@
   },
   "elements": [
     {
-      "uuid": "116009de-8aef-4d98-96fd-85310f7abe71",
-      "name": "PFD",
+      "uuid": "a002cf44-0e8d-47b5-b279-e77d9fa9ec84",
+      "name": "MFD",
       "element": "Instrument",
       "width": 600,
       "height": 800,
-      "x": 5880,
-      "y": 2220
-    },
-    {
-      "uuid": "601ee61d-c51c-4649-bc14-75c754f5cbf9",
-      "name": "Clock",
-      "element": "Instrument",
-      "width": 500,
-      "height": 500,
-      "x": 6580,
-      "y": 2140
-    },
-    {
-      "uuid": "7eb9da57-8627-4667-be7f-3033ec1f1188",
-      "name": "EICAS",
-      "element": "Instrument",
-      "width": 600,
-      "height": 800,
-      "x": 5260,
-      "y": 2220
-    },
-    {
-      "uuid": "83410f76-121f-4cee-b99c-e8dd78370c17",
-      "name": "RadioSelector",
-      "element": "Instrument",
-      "width": 500,
-      "height": 500,
-      "x": 6340,
-      "y": 3120
-    },
-    {
-      "uuid": "b4de785f-45a7-45ab-a466-9c81fe96d58e",
-      "name": "IES",
-      "element": "Instrument",
-      "width": 512,
-      "height": 512,
-      "x": 5020,
-      "y": 3160
-    },
-    {
-      "uuid": "874714c6-caca-425a-870a-9331b6ba999c",
-      "name": "MultifunctionDisplay",
-      "element": "Instrument",
-      "width": 600,
-      "height": 800,
-      "x": 7120,
-      "y": 2240
+      "x": 7140,
+      "y": 2200
     }
   ]
 }
