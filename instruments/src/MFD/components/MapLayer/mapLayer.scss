@@ -1,0 +1,19 @@
+.compass-svg {
+  position: absolute;
+  height: 455px;
+  z-index: -1;
+}
+.compass-svg-mask {
+  position: absolute;
+  height: 455px;
+  z-index: 999;
+}
+#MAP {
+  pointer-events: none;
+}
+#MAP > * svg {
+  pointer-events: none;
+}
+
+.leaflet-marker-pane > img {
+}

@@ -17,7 +17,7 @@
     "name": "OBJ_E170_MFD_ROUTER_BOTTOM",
     "index": 0,
     "unit": "Number",
-    "value": 1.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -531,5 +531,31 @@
       "max": 250.0
     },
     "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "PLANE HEADING DEGREES MAGNETIC",
+    "index": 0,
+    "unit": "radians",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 360.0
+    },
+    "pinned": true
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_MFD_MAP_ZOOM",
+    "index": 0,
+    "unit": "number",
+    "value": 11.0,
+    "control": {
+      "type": "Slider",
+      "min": 5.0,
+      "max": 14.0
+    },
+    "pinned": true
   }
 ]

@@ -18,18 +18,29 @@ const MfdRouter = (
    * sample flight plan for testing, array[0] will be starting airport, array[1] first waypoint, etc
    */
   const sampleFlightPlan: T_FlightPlan = [
-    { name: 'KPHX', lon: -112.01385, lat: 33.43717, altitude: 1135 },
-    { name: 'KONTE', lon: -111.95, lat: 33.43, altitude: 5000 },
-    { name: 'KIWA', lon: -111.65405, lat: 33.30471, altitude: 1384 }
+    { name: 'KPHX', lon: -112.01385, lat: 33.43717, altitude: 1135, active: false },
+    { name: 'KONTE', lon: -111.95, lat: 33.43, altitude: 5000, active: true },
+    { name: 'KIWA', lon: -111.65405, lat: 33.30471, altitude: 1384, active: false }
   ]
 
   const [flightPlanPath, setFlightPlanPath] = useState<Array<[number, number]>>([])
+  const [activeFlightPlanPath, setActiveFlightPlanPath] = useState<Array<[number, number]>>([])
   const setPathCoords = (): void => {
     const pathCoords: Array<[number, number]> = []
+    const activeCoords: Array<[number, number]> = []
     for (let i = 0; i < sampleFlightPlan.length; i++) {
+      if (sampleFlightPlan[i].active) {
+        if (i !== 0) {
+          activeCoords.push(
+            [sampleFlightPlan[i].lat, sampleFlightPlan[i].lon],
+            [sampleFlightPlan[i - 1].lat, sampleFlightPlan[i - 1].lon]
+          )
+        }
+      }
       pathCoords.push([sampleFlightPlan[i].lat, sampleFlightPlan[i].lon])
     }
     setFlightPlanPath(pathCoords)
+    setActiveFlightPlanPath(activeCoords)
   }
 
   // pretty sure the best way to handle this will be in js but we may also want to try it in rust
@@ -68,7 +79,13 @@ const MfdRouter = (
     } else {
       switch (topPage) {
         case 0:
-          returnPage = <MapLayer sampleFlightPlan={sampleFlightPlan} flightPlanPath={flightPlanPath} />
+          returnPage = (
+            <MapLayer
+              sampleFlightPlan={sampleFlightPlan}
+              flightPlanPath={flightPlanPath}
+              activeFlightPlanPath={activeFlightPlanPath}
+            />
+          )
           break
         case 1:
           returnPage = <div>PLAN</div>

@@ -3,6 +3,7 @@ export type T_Waypoint = {
   lat: number
   name: string
   altitude: number
+  active: boolean
 }
 // a waypoint will be a single entry in the flight plan, a flight plan will be comprised of an array of waypoints, we will draw accordingly
 

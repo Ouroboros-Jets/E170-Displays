@@ -949,7 +949,7 @@ class InstrumentLogic extends BaseInstrument {
             }
             return lazyType;
           }
-          function forwardRef4(render2) {
+          function forwardRef3(render2) {
             {
               if (render2 != null && render2.$$typeof === REACT_MEMO_TYPE) {
                 error("forwardRef requires a render function but received a `memo` component. Instead of forwardRef(memo(...)), use memo(forwardRef(...)).");
@@ -1066,11 +1066,11 @@ class InstrumentLogic extends BaseInstrument {
             var dispatcher = resolveDispatcher();
             return dispatcher.useReducer(reducer, initialArg, init);
           }
-          function useRef6(initialValue) {
+          function useRef7(initialValue) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect11(create, deps) {
+          function useEffect12(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1090,7 +1090,7 @@ class InstrumentLogic extends BaseInstrument {
             var dispatcher = resolveDispatcher();
             return dispatcher.useMemo(create, deps);
           }
-          function useImperativeHandle4(ref, create, deps) {
+          function useImperativeHandle3(ref, create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useImperativeHandle(ref, create, deps);
           }
@@ -1840,7 +1840,7 @@ class InstrumentLogic extends BaseInstrument {
           exports.createElement = createElement$1;
           exports.createFactory = createFactory;
           exports.createRef = createRef;
-          exports.forwardRef = forwardRef4;
+          exports.forwardRef = forwardRef3;
           exports.isValidElement = isValidElement;
           exports.lazy = lazy;
           exports.memo = memo;
@@ -1850,14 +1850,14 @@ class InstrumentLogic extends BaseInstrument {
           exports.useContext = useContext3;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect11;
+          exports.useEffect = useEffect12;
           exports.useId = useId;
-          exports.useImperativeHandle = useImperativeHandle4;
+          exports.useImperativeHandle = useImperativeHandle3;
           exports.useInsertionEffect = useInsertionEffect;
           exports.useLayoutEffect = useLayoutEffect;
           exports.useMemo = useMemo;
           exports.useReducer = useReducer;
-          exports.useRef = useRef6;
+          exports.useRef = useRef7;
           exports.useState = useState7;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
@@ -2354,9 +2354,9 @@ class InstrumentLogic extends BaseInstrument {
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React17 = require_react();
+          var React18 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React17.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React18.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -3877,7 +3877,7 @@ class InstrumentLogic extends BaseInstrument {
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React17.Children.forEach(props.children, function(child) {
+                  React18.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -12038,7 +12038,7 @@ class InstrumentLogic extends BaseInstrument {
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React17.Component().refs;
+          var emptyRefsObject = new React18.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -22016,7 +22016,7 @@ class InstrumentLogic extends BaseInstrument {
             return root2;
           }
           var ReactVersion = "18.2.0";
-          function createPortal3(children, containerInfo, implementation) {
+          function createPortal2(children, containerInfo, implementation) {
             var key = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : null;
             {
               checkKeyStringCoercion(key);
@@ -22841,7 +22841,7 @@ class InstrumentLogic extends BaseInstrument {
             if (!isValidContainer(container)) {
               throw new Error("Target container is not a DOM element.");
             }
-            return createPortal3(children, container, null, key);
+            return createPortal2(children, container, null, key);
           }
           function renderSubtreeIntoContainer(parentComponent, element, containerNode, callback) {
             return unstable_renderSubtreeIntoContainer(parentComponent, element, containerNode, callback);
@@ -23625,7 +23625,7 @@ class InstrumentLogic extends BaseInstrument {
           }
           return new Bounds(a, b);
         }
-        function LatLngBounds2(corner1, corner2) {
+        function LatLngBounds(corner1, corner2) {
           if (!corner1) {
             return;
           }
@@ -23634,13 +23634,13 @@ class InstrumentLogic extends BaseInstrument {
             this.extend(latlngs[i]);
           }
         }
-        LatLngBounds2.prototype = {
+        LatLngBounds.prototype = {
           extend: function(obj) {
             var sw = this._southWest, ne = this._northEast, sw2, ne2;
             if (obj instanceof LatLng) {
               sw2 = obj;
               ne2 = obj;
-            } else if (obj instanceof LatLngBounds2) {
+            } else if (obj instanceof LatLngBounds) {
               sw2 = obj._southWest;
               ne2 = obj._northEast;
               if (!sw2 || !ne2) {
@@ -23662,7 +23662,7 @@ class InstrumentLogic extends BaseInstrument {
           },
           pad: function(bufferRatio) {
             var sw = this._southWest, ne = this._northEast, heightBuffer = Math.abs(sw.lat - ne.lat) * bufferRatio, widthBuffer = Math.abs(sw.lng - ne.lng) * bufferRatio;
-            return new LatLngBounds2(
+            return new LatLngBounds(
               new LatLng(sw.lat - heightBuffer, sw.lng - widthBuffer),
               new LatLng(ne.lat + heightBuffer, ne.lng + widthBuffer)
             );
@@ -23704,7 +23704,7 @@ class InstrumentLogic extends BaseInstrument {
               obj = toLatLngBounds(obj);
             }
             var sw = this._southWest, ne = this._northEast, sw2, ne2;
-            if (obj instanceof LatLngBounds2) {
+            if (obj instanceof LatLngBounds) {
               sw2 = obj.getSouthWest();
               ne2 = obj.getNorthEast();
             } else {
@@ -23737,10 +23737,10 @@ class InstrumentLogic extends BaseInstrument {
           }
         };
         function toLatLngBounds(a, b) {
-          if (a instanceof LatLngBounds2) {
+          if (a instanceof LatLngBounds) {
             return a;
           }
-          return new LatLngBounds2(a, b);
+          return new LatLngBounds(a, b);
         }
         function LatLng(lat, lng, alt) {
           if (isNaN(lat) || isNaN(lng)) {
@@ -23847,7 +23847,7 @@ class InstrumentLogic extends BaseInstrument {
               return bounds;
             }
             var sw = bounds.getSouthWest(), ne = bounds.getNorthEast(), newSw = new LatLng(sw.lat - latShift, sw.lng - lngShift), newNe = new LatLng(ne.lat - latShift, ne.lng - lngShift);
-            return new LatLngBounds2(newSw, newNe);
+            return new LatLngBounds(newSw, newNe);
           }
         };
         var Earth = extend({}, CRS, {
@@ -25093,7 +25093,7 @@ class InstrumentLogic extends BaseInstrument {
           },
           getBounds: function() {
             var bounds = this.getPixelBounds(), sw = this.unproject(bounds.getBottomLeft()), ne = this.unproject(bounds.getTopRight());
-            return new LatLngBounds2(sw, ne);
+            return new LatLngBounds(sw, ne);
           },
           getMinZoom: function() {
             return this.options.minZoom === void 0 ? this._layersMinZoom || 0 : this.options.minZoom;
@@ -26965,7 +26965,7 @@ class InstrumentLogic extends BaseInstrument {
             return this.invoke("bringToBack");
           },
           getBounds: function() {
-            var bounds = new LatLngBounds2();
+            var bounds = new LatLngBounds();
             for (var id in this._layers) {
               var layer = this._layers[id];
               bounds.extend(layer.getBounds ? layer.getBounds() : layer.getLatLng());
@@ -27152,7 +27152,7 @@ class InstrumentLogic extends BaseInstrument {
             this._marker.fire("moveend").fire("dragend", e);
           }
         });
-        var Marker = Layer.extend({
+        var Marker2 = Layer.extend({
           options: {
             icon: new IconDefault(),
             interactive: true,
@@ -27390,7 +27390,7 @@ class InstrumentLogic extends BaseInstrument {
           }
         });
         function marker(latlng, options) {
-          return new Marker(latlng, options);
+          return new Marker2(latlng, options);
         }
         var Path = Layer.extend({
           options: {
@@ -27538,7 +27538,7 @@ class InstrumentLogic extends BaseInstrument {
           },
           getBounds: function() {
             var half = [this._radius, this._radiusY || this._radius];
-            return new LatLngBounds2(
+            return new LatLngBounds(
               this._map.layerPointToLatLng(this._point.subtract(half)),
               this._map.layerPointToLatLng(this._point.add(half))
             );
@@ -27620,7 +27620,7 @@ class InstrumentLogic extends BaseInstrument {
             return this.redraw();
           },
           _setLatLngs: function(latlngs) {
-            this._bounds = new LatLngBounds2();
+            this._bounds = new LatLngBounds();
             this._latlngs = this._convertLatLngs(latlngs);
           },
           _defaultShape: function() {
@@ -27915,7 +27915,7 @@ class InstrumentLogic extends BaseInstrument {
           }
         }
         function _pointToLayer(pointToLayerFn, geojson, latlng, options) {
-          return pointToLayerFn ? pointToLayerFn(geojson, latlng) : new Marker(latlng, options && options.markersInheritOptions && options);
+          return pointToLayerFn ? pointToLayerFn(geojson, latlng) : new Marker2(latlng, options && options.markersInheritOptions && options);
         }
         function coordsToLatLng(coords) {
           return new LatLng(coords[1], coords[0], coords[2]);
@@ -27963,7 +27963,7 @@ class InstrumentLogic extends BaseInstrument {
             });
           }
         };
-        Marker.include(PointToGeoJSON);
+        Marker2.include(PointToGeoJSON);
         Circle.include(PointToGeoJSON);
         CircleMarker.include(PointToGeoJSON);
         Polyline2.include({
@@ -28245,7 +28245,7 @@ class InstrumentLogic extends BaseInstrument {
         function videoOverlay(video, bounds, options) {
           return new VideoOverlay(video, bounds, options);
         }
-        var SVGOverlay2 = ImageOverlay.extend({
+        var SVGOverlay = ImageOverlay.extend({
           _initImage: function() {
             var el = this._image = this._url;
             addClass(el, "leaflet-image-layer");
@@ -28260,7 +28260,7 @@ class InstrumentLogic extends BaseInstrument {
           }
         });
         function svgOverlay(el, bounds, options) {
-          return new SVGOverlay2(el, bounds, options);
+          return new SVGOverlay(el, bounds, options);
         }
         var DivOverlay = Layer.extend({
           options: {
@@ -29460,7 +29460,7 @@ class InstrumentLogic extends BaseInstrument {
             return [nw, se];
           },
           _tileCoordsToBounds: function(coords) {
-            var bp = this._tileCoordsToNwSe(coords), bounds = new LatLngBounds2(bp[0], bp[1]);
+            var bp = this._tileCoordsToNwSe(coords), bounds = new LatLngBounds(bp[0], bp[1]);
             if (!this.options.noWrap) {
               bounds = this._map.wrapLatLngBounds(bounds);
             }
@@ -30546,7 +30546,7 @@ class InstrumentLogic extends BaseInstrument {
             }
             this._clearDeferredResetState();
             this._resetStateTimeout = setTimeout(bind(this._resetState, this), 0);
-            var bounds = new LatLngBounds2(
+            var bounds = new LatLngBounds(
               this._map.containerPointToLatLng(this._startPoint),
               this._map.containerPointToLatLng(this._point)
             );
@@ -31051,12 +31051,12 @@ class InstrumentLogic extends BaseInstrument {
         exports2.Icon = Icon;
         exports2.ImageOverlay = ImageOverlay;
         exports2.LatLng = LatLng;
-        exports2.LatLngBounds = LatLngBounds2;
+        exports2.LatLngBounds = LatLngBounds;
         exports2.Layer = Layer;
         exports2.LayerGroup = LayerGroup;
         exports2.LineUtil = LineUtil;
         exports2.Map = Map2;
-        exports2.Marker = Marker;
+        exports2.Marker = Marker2;
         exports2.Mixin = Mixin;
         exports2.Path = Path;
         exports2.Point = Point;
@@ -31069,7 +31069,7 @@ class InstrumentLogic extends BaseInstrument {
         exports2.Rectangle = Rectangle;
         exports2.Renderer = Renderer;
         exports2.SVG = SVG;
-        exports2.SVGOverlay = SVGOverlay2;
+        exports2.SVGOverlay = SVGOverlay;
         exports2.TileLayer = TileLayer2;
         exports2.Tooltip = Tooltip;
         exports2.Transformation = Transformation;
@@ -31290,6 +31290,11 @@ class InstrumentLogic extends BaseInstrument {
       },
       props.children
     );
+  };
+  var useSimVar = (name, unit, maxStaleness = 0) => {
+    const value = useSimVarValue(name, unit, maxStaleness);
+    const setter = useSimVarSetter(name, unit);
+    return [value, setter];
   };
   var useObjLocalVar = (name, unit, maxStaleness = 0) => {
     const value = useSimVarValue("L:OBJ_E170_" + name, unit, maxStaleness);
@@ -32052,6 +32057,11 @@ class InstrumentLogic extends BaseInstrument {
   }
 
   // node_modules/@react-leaflet/core/lib/generic.js
+  function createLayerComponent(createElement2, updateElement) {
+    const useElement = createElementHook(createElement2, updateElement);
+    const useLayer = createLayerHook(useElement);
+    return createContainerComponent(useLayer);
+  }
   function createPathComponent(createElement2, updateElement) {
     const useElement = createElementHook(createElement2, updateElement);
     const usePath = createPathHook(useElement);
@@ -32074,22 +32084,8 @@ class InstrumentLogic extends BaseInstrument {
     }
   }
 
-  // node_modules/@react-leaflet/core/lib/media-overlay.js
-  var import_leaflet = __toESM(require_leaflet_src(), 1);
-  function updateMediaOverlay(overlay, props, prevProps) {
-    if (props.bounds instanceof import_leaflet.LatLngBounds && props.bounds !== prevProps.bounds) {
-      overlay.setBounds(props.bounds);
-    }
-    if (props.opacity != null && props.opacity !== prevProps.opacity) {
-      overlay.setOpacity(props.opacity);
-    }
-    if (props.zIndex != null && props.zIndex !== prevProps.zIndex) {
-      overlay.setZIndex(props.zIndex);
-    }
-  }
-
   // node_modules/react-leaflet/lib/MapContainer.js
-  var import_leaflet2 = __toESM(require_leaflet_src(), 1);
+  var import_leaflet = __toESM(require_leaflet_src(), 1);
   var import_react16 = __toESM(require_react(), 1);
   function _extends() {
     _extends = Object.assign || function(target) {
@@ -32121,7 +32117,7 @@ class InstrumentLogic extends BaseInstrument {
     ]);
     const mapRef = (0, import_react16.useCallback)((node) => {
       if (node !== null && context2 === null) {
-        const map = new import_leaflet2.Map(node, options);
+        const map = new import_leaflet.Map(node, options);
         if (center != null && zoom != null) {
           map.setView(center, zoom);
         } else if (bounds != null) {
@@ -32149,6 +32145,36 @@ class InstrumentLogic extends BaseInstrument {
   }
   var MapContainer = /* @__PURE__ */ (0, import_react16.forwardRef)(MapContainerComponent);
 
+  // node_modules/react-leaflet/lib/Marker.js
+  var import_leaflet2 = __toESM(require_leaflet_src(), 1);
+  var Marker = createLayerComponent(function createMarker(_a, ctx) {
+    var _b = _a, { position } = _b, options = __objRest(_b, ["position"]);
+    const marker = new import_leaflet2.Marker(position, options);
+    return createElementObject(marker, extendContext(ctx, {
+      overlayContainer: marker
+    }));
+  }, function updateMarker(marker, props, prevProps) {
+    if (props.position !== prevProps.position) {
+      marker.setLatLng(props.position);
+    }
+    if (props.icon != null && props.icon !== prevProps.icon) {
+      marker.setIcon(props.icon);
+    }
+    if (props.zIndexOffset != null && props.zIndexOffset !== prevProps.zIndexOffset) {
+      marker.setZIndexOffset(props.zIndexOffset);
+    }
+    if (props.opacity != null && props.opacity !== prevProps.opacity) {
+      marker.setOpacity(props.opacity);
+    }
+    if (marker.dragging != null && props.draggable !== prevProps.draggable) {
+      if (props.draggable === true) {
+        marker.dragging.enable();
+      } else {
+        marker.dragging.disable();
+      }
+    }
+  });
+
   // node_modules/react-leaflet/lib/Polyline.js
   var import_leaflet3 = __toESM(require_leaflet_src(), 1);
   var Polyline = createPathComponent(function createPolyline(_a, ctx) {
@@ -32163,36 +32189,11 @@ class InstrumentLogic extends BaseInstrument {
     }
   });
 
-  // node_modules/react-leaflet/lib/SVGOverlay.js
-  var import_leaflet4 = __toESM(require_leaflet_src(), 1);
-  var import_react17 = __toESM(require_react(), 1);
-  var import_react_dom2 = __toESM(require_react_dom(), 1);
-  var useSVGOverlayElement = createElementHook(function createSVGOverlay(props, context2) {
-    const _a = props, { attributes, bounds } = _a, options = __objRest(_a, ["attributes", "bounds"]);
-    const container = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    container.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    if (attributes != null) {
-      Object.keys(attributes).forEach((name) => {
-        container.setAttribute(name, attributes[name]);
-      });
-    }
-    const overlay = new import_leaflet4.SVGOverlay(container, bounds, options);
-    return createElementObject(overlay, context2, container);
-  }, updateMediaOverlay);
-  var useSVGOverlay = createLayerHook(useSVGOverlayElement);
-  function SVGOverlayComponent(_a, forwardedRef) {
-    var _b = _a, { children } = _b, options = __objRest(_b, ["children"]);
-    const { instance, container } = useSVGOverlay(options).current;
-    (0, import_react17.useImperativeHandle)(forwardedRef, () => instance);
-    return container == null || children == null ? null : /* @__PURE__ */ (0, import_react_dom2.createPortal)(children, container);
-  }
-  var SVGOverlay = /* @__PURE__ */ (0, import_react17.forwardRef)(SVGOverlayComponent);
-
   // node_modules/react-leaflet/lib/TileLayer.js
-  var import_leaflet5 = __toESM(require_leaflet_src(), 1);
+  var import_leaflet4 = __toESM(require_leaflet_src(), 1);
   var TileLayer = createTileLayerComponent(function createTileLayer(_a, context2) {
     var _b = _a, { url } = _b, options = __objRest(_b, ["url"]);
-    const layer = new import_leaflet5.TileLayer(url, withPane(options, context2));
+    const layer = new import_leaflet4.TileLayer(url, withPane(options, context2));
     return createElementObject(layer, context2);
   }, function updateTileLayer(layer, props, prevProps) {
     updateGridLayer(layer, props, prevProps);
@@ -32202,64 +32203,148 @@ class InstrumentLogic extends BaseInstrument {
     }
   });
 
+  // instruments/src/MFD/components/MapLayer/Compass.tsx
+  var import_react17 = __toESM(require_react());
+
+  // instruments/common/util/createArray.ts
+  var createArray = (length) => {
+    const array = new Array(length);
+    for (let i = 0; i < length; i++) {
+      array[i] = i;
+    }
+    return array;
+  };
+
+  // instruments/src/MFD/components/MapLayer/Compass.tsx
+  var Compass = (props) => {
+    const compassArray = createArray(361);
+    let tickTypes;
+    ((tickTypes2) => {
+      tickTypes2[tickTypes2["SMALL"] = 0] = "SMALL";
+      tickTypes2[tickTypes2["LARGE"] = 1] = "LARGE";
+      tickTypes2[tickTypes2["NUMBERED"] = 2] = "NUMBERED";
+    })(tickTypes || (tickTypes = {}));
+    const drawTick = (tickType, rotation) => {
+      const fixNumbers = (input) => {
+        if (input === 360) {
+          return "N";
+        } else if (input === 270) {
+          return "W";
+        } else if (input === 180) {
+          return "S";
+        } else if (input === 90) {
+          return "E";
+        } else {
+          return (input / 10).toString();
+        }
+      };
+      switch (tickType) {
+        case 0 /* SMALL */:
+          return /* @__PURE__ */ import_react17.default.createElement("g", { transform: `rotate(${rotation}, 300, 314)` }, /* @__PURE__ */ import_react17.default.createElement("path", { d: "M 300, 49 L 300 60", stroke: "white", strokeWidth: 3 }));
+        case 1 /* LARGE */:
+          return /* @__PURE__ */ import_react17.default.createElement("g", { transform: `rotate(${rotation}, 300, 314)` }, /* @__PURE__ */ import_react17.default.createElement("path", { d: "M 300, 49 L 300 65", stroke: "white", strokeWidth: 3 }));
+        case 2 /* NUMBERED */:
+          return /* @__PURE__ */ import_react17.default.createElement("g", { transform: `rotate(${rotation}, 300, 314)` }, /* @__PURE__ */ import_react17.default.createElement("path", { d: "M 300, 49 L 300 65", stroke: "white", strokeWidth: 3 }), /* @__PURE__ */ import_react17.default.createElement("text", { textAnchor: "middle", x: 300, y: 95, fontSize: 25, fontWeight: "bold", fill: "white" }, fixNumbers(rotation)));
+      }
+    };
+    const drawCompassTicks = (array) => {
+      const ticks = [];
+      for (let a = 0; a < array.length; a++) {
+        const element = array[a];
+        if (element === 0) {
+          ticks.push();
+        } else {
+          if (element % 30 === 0) {
+            ticks.push(drawTick(2 /* NUMBERED */, element));
+          } else if (element % 10 === 0) {
+            ticks.push(drawTick(1 /* LARGE */, element));
+          } else if (element % 5 === 0) {
+            ticks.push(drawTick(0 /* SMALL */, element));
+          }
+        }
+      }
+      return ticks;
+    };
+    return /* @__PURE__ */ import_react17.default.createElement("g", null, /* @__PURE__ */ import_react17.default.createElement("g", { transform: `rotate(${-props.heading}, 300, 314)` }, /* @__PURE__ */ import_react17.default.createElement("circle", { cx: 300, cy: 314, r: 265, fill: "transparent", stroke: "white", strokeWidth: 3 }), drawCompassTicks(compassArray)), /* @__PURE__ */ import_react17.default.createElement("circle", { cx: 300, cy: 314, r: 130, fill: "transparent", stroke: "white", strokeWidth: 3 }), /* @__PURE__ */ import_react17.default.createElement("g", { transform: "rotate(-60, 300, 314)" }, /* @__PURE__ */ import_react17.default.createElement("path", { d: "M300,174 L 300 194", strokeLinecap: "round", stroke: "white", strokeWidth: 3 })), /* @__PURE__ */ import_react17.default.createElement("g", { transform: "rotate(60, 300, 314)" }, /* @__PURE__ */ import_react17.default.createElement("path", { d: "M300,174 L 300 194", strokeLinecap: "round", stroke: "white", strokeWidth: 3 })));
+  };
+
   // instruments/src/MFD/components/MapLayer/MapLayer.tsx
+  var import_leaflet5 = __toESM(require_leaflet_src());
   var MapLayer = (props) => {
+    const [heading] = useSimVar("PLANE HEADING DEGREES MAGNETIC", "radians");
+    const [zoom] = useObjLocalVar("MFD_MAP_ZOOM", "number");
+    const correctedHeading = heading;
     const mapStyle = {
-      height: "400px",
+      height: "600px",
       overflow: "hidden",
-      width: "100%",
-      backgroundColor: "black",
-      cursor: "default",
-      touchAction: "none"
+      width: "600px",
+      backgroundColor: "rgba(255,0,0,0)"
     };
     const activePathOptions = { color: "#d202d4" };
-    return /* @__PURE__ */ import_react18.default.createElement(
+    const inactivePathOptions = { color: "white" };
+    const mapRef = (0, import_react18.useRef)(null);
+    const zoomRef = (0, import_react18.useRef)(null);
+    (0, import_react18.useEffect)(() => {
+      var _a;
+      (_a = zoomRef.current) == null ? void 0 : _a.setZoom(zoom);
+    }, []);
+    (0, import_react18.useEffect)(() => {
+      if (mapRef.current)
+        mapRef.current.style.transform = `rotate(${-correctedHeading}deg)`;
+    }, [correctedHeading]);
+    (0, import_react18.useEffect)(() => {
+      var _a;
+      (_a = zoomRef.current) == null ? void 0 : _a.setZoom(zoom);
+    }, [zoom]);
+    const waypointIcon = new import_leaflet5.Icon({
+      iconUrl: "https://i.ibb.co/wRwsWpq/Untitled-1-01.png",
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      popupAnchor: [0, 0]
+    });
+    return /* @__PURE__ */ import_react18.default.createElement("div", null, /* @__PURE__ */ import_react18.default.createElement("svg", { viewBox: "0 0 600 455", className: "compass-svg" }, /* @__PURE__ */ import_react18.default.createElement(Compass, { heading: correctedHeading, range: 100 })), /* @__PURE__ */ import_react18.default.createElement("svg", { viewBox: "0 0 600 455", className: "compass-svg-mask" }, /* @__PURE__ */ import_react18.default.createElement("rect", { x: 0, y: 315, width: 600, height: 1e3 }), /* @__PURE__ */ import_react18.default.createElement("path", { d: "M 33, 315 A 265 265 0 1 1 567 315 L 600 315 L 600 0 L 0 0 L 0 315 L 33 315", fill: "black" }), /* @__PURE__ */ import_react18.default.createElement("g", { transform: "translate(275, 288)" }, /* @__PURE__ */ import_react18.default.createElement("g", { transform: "scale(0.045)" }, /* @__PURE__ */ import_react18.default.createElement(
+      "path",
+      {
+        fill: "white",
+        d: "M552.5,39v920.3l-158.2,103.8v-81.7l117.5-110.6L481,586.8l-370.8,97v-95.3l362.3-207.5V161.1\r\n	c0-34.8,11.9-68.7,34.5-95.2C519.7,51,535.3,39,552.5,39z"
+      }
+    ), /* @__PURE__ */ import_react18.default.createElement(
+      "path",
+      {
+        fill: "white",
+        d: "M552.4,39v920.3l158.2,103.8v-81.7L593.2,870.9l30.7-284.1l370.8,97v-95.3L632.4,381V124.1\r\n	C632.4,124.1,598.4,39,552.4,39z"
+      }
+    ), /* @__PURE__ */ import_react18.default.createElement(
+      "path",
+      {
+        fill: "#666666",
+        d: "M552.5,39v920.3l158.1,103.8v-43.9L579.3,911.4l14.5-47.3l30-277.3l370.8,97v-50.7L633.2,492.6l-0.7-332.5\r\n	c-0.1-34.4-11.9-67.9-34.1-94.2C585.7,51,570.1,39,552.5,39z"
+      }
+    ), /* @__PURE__ */ import_react18.default.createElement("polygon", { fill: "#666666", points: "110.2,683.7 481,586.8 472.6,492.6 110.2,633.1 " }), /* @__PURE__ */ import_react18.default.createElement("polygon", { fill: "#666666", points: "394.3,1063.1 544.2,964.8 525.5,911.4 394.3,1019.1 " })))), /* @__PURE__ */ import_react18.default.createElement("div", { className: "map-wrapper", ref: mapRef }, /* @__PURE__ */ import_react18.default.createElement(
       MapContainer,
       {
+        fadeAnimation: false,
+        zoomAnimation: false,
+        inertia: false,
+        keyboard: false,
+        tap: false,
+        zoomSnap: 0.1,
         id: "MAP",
+        ref: zoomRef,
         center: [33.43717, -112.01385],
-        zoom: 10,
+        zoom,
         attributionControl: false,
         scrollWheelZoom: true,
         style: mapStyle,
         zoomControl: false
       },
       /* @__PURE__ */ import_react18.default.createElement(TileLayer, { url: "" }),
-      /* @__PURE__ */ import_react18.default.createElement(
-        SVGOverlay,
-        {
-          attributes: { stroke: "red" },
-          bounds: [
-            [props.sampleFlightPlan[0].lat - 1e-3, props.sampleFlightPlan[0].lon - 1e-3],
-            [props.sampleFlightPlan[0].lat + 1e-3, props.sampleFlightPlan[0].lon + 1e-3]
-          ]
-        },
-        /* @__PURE__ */ import_react18.default.createElement("rect", { x: "0", y: "0", width: "100%", height: "100%", fill: "blue" })
-      ),
-      /* @__PURE__ */ import_react18.default.createElement(
-        SVGOverlay,
-        {
-          attributes: { stroke: "red" },
-          bounds: [
-            [props.sampleFlightPlan[1].lat - 1e-3, props.sampleFlightPlan[1].lon - 1e-3],
-            [props.sampleFlightPlan[1].lat + 1e-3, props.sampleFlightPlan[1].lon + 1e-3]
-          ]
-        },
-        /* @__PURE__ */ import_react18.default.createElement("rect", { x: "0", y: "0", width: "100%", height: "100%", fill: "blue" })
-      ),
-      /* @__PURE__ */ import_react18.default.createElement(
-        SVGOverlay,
-        {
-          attributes: { stroke: "red" },
-          bounds: [
-            [props.sampleFlightPlan[2].lat - 1e-3, props.sampleFlightPlan[2].lon - 1e-3],
-            [props.sampleFlightPlan[2].lat + 1e-3, props.sampleFlightPlan[2].lon + 1e-3]
-          ]
-        },
-        /* @__PURE__ */ import_react18.default.createElement("rect", { x: "0", y: "0", width: "100%", height: "100%", fill: "blue" })
-      ),
-      /* @__PURE__ */ import_react18.default.createElement(Polyline, { pathOptions: activePathOptions, positions: props.flightPlanPath })
-    );
+      /* @__PURE__ */ import_react18.default.createElement(Marker, { icon: waypointIcon, position: [props.sampleFlightPlan[0].lat, props.sampleFlightPlan[0].lon] }),
+      /* @__PURE__ */ import_react18.default.createElement(Marker, { icon: waypointIcon, position: [props.sampleFlightPlan[1].lat, props.sampleFlightPlan[1].lon] }),
+      /* @__PURE__ */ import_react18.default.createElement(Marker, { icon: waypointIcon, position: [props.sampleFlightPlan[2].lat, props.sampleFlightPlan[2].lon] }),
+      /* @__PURE__ */ import_react18.default.createElement(Polyline, { pathOptions: inactivePathOptions, positions: props.flightPlanPath }),
+      /* @__PURE__ */ import_react18.default.createElement(Polyline, { pathOptions: activePathOptions, positions: props.activeFlightPlanPath })
+    )));
   };
 
   // instruments/src/MFD/components/router/router.tsx
@@ -32268,17 +32353,28 @@ class InstrumentLogic extends BaseInstrument {
     const [bottomPage] = useObjLocalVar("MFD_ROUTER_BOTTOM", "Number");
     const [systemPage] = useObjLocalVar("MFD_ROUTER_SYSTEM", "Number");
     const sampleFlightPlan = [
-      { name: "KPHX", lon: -112.01385, lat: 33.43717, altitude: 1135 },
-      { name: "KONTE", lon: -111.95, lat: 33.43, altitude: 5e3 },
-      { name: "KIWA", lon: -111.65405, lat: 33.30471, altitude: 1384 }
+      { name: "KPHX", lon: -112.01385, lat: 33.43717, altitude: 1135, active: false },
+      { name: "KONTE", lon: -111.95, lat: 33.43, altitude: 5e3, active: true },
+      { name: "KIWA", lon: -111.65405, lat: 33.30471, altitude: 1384, active: false }
     ];
     const [flightPlanPath, setFlightPlanPath] = (0, import_react19.useState)([]);
+    const [activeFlightPlanPath, setActiveFlightPlanPath] = (0, import_react19.useState)([]);
     const setPathCoords = () => {
       const pathCoords = [];
+      const activeCoords = [];
       for (let i = 0; i < sampleFlightPlan.length; i++) {
+        if (sampleFlightPlan[i].active) {
+          if (i !== 0) {
+            activeCoords.push(
+              [sampleFlightPlan[i].lat, sampleFlightPlan[i].lon],
+              [sampleFlightPlan[i - 1].lat, sampleFlightPlan[i - 1].lon]
+            );
+          }
+        }
         pathCoords.push([sampleFlightPlan[i].lat, sampleFlightPlan[i].lon]);
       }
       setFlightPlanPath(pathCoords);
+      setActiveFlightPlanPath(activeCoords);
     };
     (0, import_react19.useEffect)(() => {
       setPathCoords();
@@ -32314,7 +32410,14 @@ class InstrumentLogic extends BaseInstrument {
       } else {
         switch (topPage) {
           case 0:
-            returnPage = /* @__PURE__ */ import_react19.default.createElement(MapLayer, { sampleFlightPlan, flightPlanPath });
+            returnPage = /* @__PURE__ */ import_react19.default.createElement(
+              MapLayer,
+              {
+                sampleFlightPlan,
+                flightPlanPath,
+                activeFlightPlanPath
+              }
+            );
             break;
           case 1:
             returnPage = /* @__PURE__ */ import_react19.default.createElement("div", null, "PLAN");

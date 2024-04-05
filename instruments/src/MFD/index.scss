@@ -10,7 +10,7 @@
   height: 800px;
   cursor: none;
   font-family: Arial, Helvetica, sans-serif;
-  // background-image: url('./mfd.png');
+  // background-image: url('./map.png');
   background-size: cover;
   user-select: none;
 }
@@ -20,13 +20,7 @@ div {
 .system-button {
   height: 50px;
 }
-#MAP {
-  transform: rotate(265deg);
-  pointer-events: none;
-}
-#MAP > * svg {
-  pointer-events: none;
-}
+
 .leaflet-interactive {
   pointer-events: none !important;
   stroke-width: 2px !important;

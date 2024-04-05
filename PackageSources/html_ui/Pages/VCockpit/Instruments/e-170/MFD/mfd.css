@@ -630,13 +630,6 @@ div {
 .system-button {
   height: 50px;
 }
-#MAP {
-  transform: rotate(265deg);
-  pointer-events: none;
-}
-#MAP > * svg {
-  pointer-events: none;
-}
 .leaflet-interactive {
   pointer-events: none !important;
   stroke-width: 2px !important;
@@ -667,6 +660,24 @@ div {
   width: 290px;
   justify-content: space-between;
   height: 450px;
+}
+
+/* temp_stylePlugin:instruments\src\MFD\components\MapLayer\mapLayer.scss */
+.compass-svg {
+  position: absolute;
+  height: 455px;
+  z-index: -1;
+}
+.compass-svg-mask {
+  position: absolute;
+  height: 455px;
+  z-index: 999;
+}
+#MAP {
+  pointer-events: none;
+}
+#MAP > * svg {
+  pointer-events: none;
 }
 
 /* temp_stylePlugin:instruments\src\MFD\components\displayProvider\displayProvider.scss */
