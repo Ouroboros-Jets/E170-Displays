@@ -1070,7 +1070,7 @@ class InstrumentLogic extends BaseInstrument {
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect12(create, deps) {
+          function useEffect13(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1850,7 +1850,7 @@ class InstrumentLogic extends BaseInstrument {
           exports.useContext = useContext3;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect12;
+          exports.useEffect = useEffect13;
           exports.useId = useId;
           exports.useImperativeHandle = useImperativeHandle3;
           exports.useInsertionEffect = useInsertionEffect;
@@ -28494,7 +28494,7 @@ class InstrumentLogic extends BaseInstrument {
             return overlay;
           }
         });
-        var Popup = DivOverlay.extend({
+        var Popup2 = DivOverlay.extend({
           options: {
             pane: "popupPane",
             offset: [0, 7],
@@ -28634,14 +28634,14 @@ class InstrumentLogic extends BaseInstrument {
           }
         });
         var popup = function(options, source) {
-          return new Popup(options, source);
+          return new Popup2(options, source);
         };
         Map2.mergeOptions({
           closePopupOnClick: true
         });
         Map2.include({
           openPopup: function(popup2, latlng, options) {
-            this._initOverlay(Popup, popup2, latlng, options).openOn(this);
+            this._initOverlay(Popup2, popup2, latlng, options).openOn(this);
             return this;
           },
           closePopup: function(popup2) {
@@ -28654,7 +28654,7 @@ class InstrumentLogic extends BaseInstrument {
         });
         Layer.include({
           bindPopup: function(content, options) {
-            this._popup = this._initOverlay(Popup, this._popup, content, options);
+            this._popup = this._initOverlay(Popup2, this._popup, content, options);
             if (!this._popupHandlersAdded) {
               this.on({
                 click: this._openPopup,
@@ -28740,7 +28740,7 @@ class InstrumentLogic extends BaseInstrument {
             }
           }
         });
-        var Tooltip = DivOverlay.extend({
+        var Tooltip2 = DivOverlay.extend({
           options: {
             pane: "tooltipPane",
             offset: [0, 0],
@@ -28836,11 +28836,11 @@ class InstrumentLogic extends BaseInstrument {
           }
         });
         var tooltip = function(options, source) {
-          return new Tooltip(options, source);
+          return new Tooltip2(options, source);
         };
         Map2.include({
           openTooltip: function(tooltip2, latlng, options) {
-            this._initOverlay(Tooltip, tooltip2, latlng, options).openOn(this);
+            this._initOverlay(Tooltip2, tooltip2, latlng, options).openOn(this);
             return this;
           },
           closeTooltip: function(tooltip2) {
@@ -28853,7 +28853,7 @@ class InstrumentLogic extends BaseInstrument {
             if (this._tooltip && this.isTooltipOpen()) {
               this.unbindTooltip();
             }
-            this._tooltip = this._initOverlay(Tooltip, this._tooltip, content, options);
+            this._tooltip = this._initOverlay(Tooltip2, this._tooltip, content, options);
             this._initTooltipInteractions();
             if (this._tooltip.options.permanent && this._map && this._map.hasLayer(this)) {
               this.openTooltip();
@@ -31063,7 +31063,7 @@ class InstrumentLogic extends BaseInstrument {
         exports2.PolyUtil = PolyUtil;
         exports2.Polygon = Polygon;
         exports2.Polyline = Polyline2;
-        exports2.Popup = Popup;
+        exports2.Popup = Popup2;
         exports2.PosAnimation = PosAnimation;
         exports2.Projection = index;
         exports2.Rectangle = Rectangle;
@@ -31071,7 +31071,7 @@ class InstrumentLogic extends BaseInstrument {
         exports2.SVG = SVG;
         exports2.SVGOverlay = SVGOverlay;
         exports2.TileLayer = TileLayer2;
-        exports2.Tooltip = Tooltip;
+        exports2.Tooltip = Tooltip2;
         exports2.Transformation = Transformation;
         exports2.Util = Util;
         exports2.VideoOverlay = VideoOverlay;
@@ -31119,7 +31119,7 @@ class InstrumentLogic extends BaseInstrument {
   });
 
   // instruments/src/MFD/index.tsx
-  var import_react24 = __toESM(require_react());
+  var import_react25 = __toESM(require_react());
 
   // instruments/common/Hooks/index.tsx
   var import_react3 = __toESM(require_react());
@@ -31419,7 +31419,7 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/MFD/components/router/router.tsx
-  var import_react19 = __toESM(require_react());
+  var import_react20 = __toESM(require_react());
 
   // instruments/src/MFD/components/pages/Status/Status.tsx
   var import_react8 = __toESM(require_react());
@@ -31865,7 +31865,7 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/MFD/components/MapLayer/MapLayer.tsx
-  var import_react18 = __toESM(require_react());
+  var import_react19 = __toESM(require_react());
 
   // node_modules/@react-leaflet/core/lib/attribution.js
   var import_react9 = __toESM(require_react(), 1);
@@ -31924,6 +31924,25 @@ class InstrumentLogic extends BaseInstrument {
     }
     return /* @__PURE__ */ (0, import_react11.forwardRef)(ContainerComponent);
   }
+  function createDivOverlayComponent(useElement) {
+    function OverlayComponent(props, forwardedRef) {
+      const [isOpen, setOpen] = (0, import_react11.useState)(false);
+      const { instance } = useElement(props, setOpen).current;
+      (0, import_react11.useImperativeHandle)(forwardedRef, () => instance);
+      (0, import_react11.useEffect)(function updateOverlay() {
+        if (isOpen) {
+          instance.update();
+        }
+      }, [
+        instance,
+        isOpen,
+        props.children
+      ]);
+      const contentNode = instance._contentNode;
+      return contentNode ? /* @__PURE__ */ (0, import_react_dom.createPortal)(props.children, contentNode) : null;
+    }
+    return /* @__PURE__ */ (0, import_react11.forwardRef)(OverlayComponent);
+  }
   function createLeafComponent(useElement) {
     function LeafComponent(props, forwardedRef) {
       const { instance } = useElement(props).current;
@@ -31961,6 +31980,18 @@ class InstrumentLogic extends BaseInstrument {
     return pane ? __spreadProps(__spreadValues({}, props), {
       pane
     }) : props;
+  }
+
+  // node_modules/@react-leaflet/core/lib/div-overlay.js
+  function createDivOverlayHook(useElement, useLifecycle) {
+    return function useDivOverlay(props, setOpen) {
+      const context2 = useLeafletContext();
+      const elementRef = useElement(withPane(props, context2), context2);
+      useAttribution(context2.map, props.attribution);
+      useEventHandlers(elementRef.current, props.eventHandlers);
+      useLifecycle(elementRef.current, context2, props, setOpen);
+      return elementRef;
+    };
   }
 
   // node_modules/@react-leaflet/core/lib/element.js
@@ -32061,6 +32092,11 @@ class InstrumentLogic extends BaseInstrument {
     const useElement = createElementHook(createElement2, updateElement);
     const useLayer = createLayerHook(useElement);
     return createContainerComponent(useLayer);
+  }
+  function createOverlayComponent(createElement2, useLifecycle) {
+    const useElement = createElementHook(createElement2);
+    const useOverlay = createDivOverlayHook(useElement, useLifecycle);
+    return createDivOverlayComponent(useOverlay);
   }
   function createPathComponent(createElement2, updateElement) {
     const useElement = createElementHook(createElement2, updateElement);
@@ -32203,8 +32239,57 @@ class InstrumentLogic extends BaseInstrument {
     }
   });
 
+  // node_modules/react-leaflet/lib/Tooltip.js
+  var import_leaflet5 = __toESM(require_leaflet_src(), 1);
+  var import_react17 = __toESM(require_react(), 1);
+  var Tooltip = createOverlayComponent(function createTooltip(props, context2) {
+    const tooltip = new import_leaflet5.Tooltip(props, context2.overlayContainer);
+    return createElementObject(tooltip, context2);
+  }, function useTooltipLifecycle(element, context2, { position }, setOpen) {
+    (0, import_react17.useEffect)(function addTooltip() {
+      const container = context2.overlayContainer;
+      if (container == null) {
+        return;
+      }
+      const { instance } = element;
+      const onTooltipOpen = (event) => {
+        if (event.tooltip === instance) {
+          if (position != null) {
+            instance.setLatLng(position);
+          }
+          instance.update();
+          setOpen(true);
+        }
+      };
+      const onTooltipClose = (event) => {
+        if (event.tooltip === instance) {
+          setOpen(false);
+        }
+      };
+      container.on({
+        tooltipopen: onTooltipOpen,
+        tooltipclose: onTooltipClose
+      });
+      container.bindTooltip(instance);
+      return function removeTooltip() {
+        container.off({
+          tooltipopen: onTooltipOpen,
+          tooltipclose: onTooltipClose
+        });
+        if (container._map != null) {
+          container.unbindTooltip();
+        }
+      };
+    }, [
+      element,
+      context2,
+      setOpen,
+      position
+    ]);
+  });
+
   // instruments/src/MFD/components/MapLayer/Compass.tsx
-  var import_react17 = __toESM(require_react());
+  var import_react18 = __toESM(require_react());
 
   // instruments/common/util/createArray.ts
   var createArray = (length) => {
@@ -32240,11 +32325,11 @@ class InstrumentLogic extends BaseInstrument {
       };
       switch (tickType) {
         case 0 /* SMALL */:
-          return /* @__PURE__ */ import_react17.default.createElement("g", { transform: `rotate(${rotation}, 300, 314)` }, /* @__PURE__ */ import_react17.default.createElement("path", { d: "M 300, 49 L 300 60", stroke: "white", strokeWidth: 3 }));
+          return /* @__PURE__ */ import_react18.default.createElement("g", { transform: `rotate(${rotation}, 300, 314)` }, /* @__PURE__ */ import_react18.default.createElement("path", { d: "M 300, 49 L 300 60", stroke: "white", strokeWidth: 3 }));
         case 1 /* LARGE */:
-          return /* @__PURE__ */ import_react17.default.createElement("g", { transform: `rotate(${rotation}, 300, 314)` }, /* @__PURE__ */ import_react17.default.createElement("path", { d: "M 300, 49 L 300 65", stroke: "white", strokeWidth: 3 }));
+          return /* @__PURE__ */ import_react18.default.createElement("g", { transform: `rotate(${rotation}, 300, 314)` }, /* @__PURE__ */ import_react18.default.createElement("path", { d: "M 300, 49 L 300 65", stroke: "white", strokeWidth: 3 }));
         case 2 /* NUMBERED */:
-          return /* @__PURE__ */ import_react17.default.createElement("g", { transform: `rotate(${rotation}, 300, 314)` }, /* @__PURE__ */ import_react17.default.createElement("path", { d: "M 300, 49 L 300 65", stroke: "white", strokeWidth: 3 }), /* @__PURE__ */ import_react17.default.createElement("text", { textAnchor: "middle", x: 300, y: 95, fontSize: 25, fontWeight: "bold", fill: "white" }, fixNumbers(rotation)));
+          return /* @__PURE__ */ import_react18.default.createElement("g", { transform: `rotate(${rotation}, 300, 314)` }, /* @__PURE__ */ import_react18.default.createElement("path", { d: "M 300, 49 L 300 65", stroke: "white", strokeWidth: 3 }), /* @__PURE__ */ import_react18.default.createElement("text", { textAnchor: "middle", x: 300, y: 95, fontSize: 25, fontWeight: "bold", fill: "white" }, fixNumbers(rotation)));
       }
     };
     const drawCompassTicks = (array) => {
@@ -32265,11 +32350,11 @@ class InstrumentLogic extends BaseInstrument {
       }
       return ticks;
     };
-    return /* @__PURE__ */ import_react17.default.createElement("g", null, /* @__PURE__ */ import_react17.default.createElement("g", { transform: `rotate(${-props.heading}, 300, 314)` }, /* @__PURE__ */ import_react17.default.createElement("circle", { cx: 300, cy: 314, r: 265, fill: "transparent", stroke: "white", strokeWidth: 3 }), drawCompassTicks(compassArray)), /* @__PURE__ */ import_react17.default.createElement("circle", { cx: 300, cy: 314, r: 130, fill: "transparent", stroke: "white", strokeWidth: 3 }), /* @__PURE__ */ import_react17.default.createElement("g", { transform: "rotate(-60, 300, 314)" }, /* @__PURE__ */ import_react17.default.createElement("path", { d: "M300,174 L 300 194", strokeLinecap: "round", stroke: "white", strokeWidth: 3 })), /* @__PURE__ */ import_react17.default.createElement("g", { transform: "rotate(60, 300, 314)" }, /* @__PURE__ */ import_react17.default.createElement("path", { d: "M300,174 L 300 194", strokeLinecap: "round", stroke: "white", strokeWidth: 3 })));
+    return /* @__PURE__ */ import_react18.default.createElement("g", null, /* @__PURE__ */ import_react18.default.createElement("g", { transform: `rotate(${-props.heading}, 300, 314)` }, /* @__PURE__ */ import_react18.default.createElement("circle", { cx: 300, cy: 314, r: 265, fill: "transparent", stroke: "white", strokeWidth: 3 }), drawCompassTicks(compassArray)), /* @__PURE__ */ import_react18.default.createElement("circle", { cx: 300, cy: 314, r: 130, fill: "transparent", stroke: "white", strokeWidth: 3 }), /* @__PURE__ */ import_react18.default.createElement("g", { transform: "rotate(-60, 300, 314)" }, /* @__PURE__ */ import_react18.default.createElement("path", { d: "M300,174 L 300 194", strokeLinecap: "round", stroke: "white", strokeWidth: 3 })), /* @__PURE__ */ import_react18.default.createElement("g", { transform: "rotate(60, 300, 314)" }, /* @__PURE__ */ import_react18.default.createElement("path", { d: "M300,174 L 300 194", strokeLinecap: "round", stroke: "white", strokeWidth: 3 })));
   };
 
   // instruments/src/MFD/components/MapLayer/MapLayer.tsx
-  var import_leaflet5 = __toESM(require_leaflet_src());
+  var import_leaflet7 = __toESM(require_leaflet_src());
   var MapLayer = (props) => {
     const [heading] = useSimVar("PLANE HEADING DEGREES MAGNETIC", "radians");
     const [zoom] = useObjLocalVar("MFD_MAP_ZOOM", "number");
@@ -32282,45 +32367,49 @@ class InstrumentLogic extends BaseInstrument {
     };
     const activePathOptions = { color: "#d202d4" };
     const inactivePathOptions = { color: "white" };
-    const mapRef = (0, import_react18.useRef)(null);
-    const zoomRef = (0, import_react18.useRef)(null);
-    (0, import_react18.useEffect)(() => {
+    const mapRef = (0, import_react19.useRef)(null);
+    const zoomRef = (0, import_react19.useRef)(null);
+    (0, import_react19.useEffect)(() => {
       var _a;
       (_a = zoomRef.current) == null ? void 0 : _a.setZoom(zoom);
     }, []);
-    (0, import_react18.useEffect)(() => {
+    (0, import_react19.useEffect)(() => {
       if (mapRef.current)
         mapRef.current.style.transform = `rotate(${-correctedHeading}deg)`;
+      return () => {
+        if (mapRef.current)
+          mapRef.current.style.transform = "none";
+      };
     }, [correctedHeading]);
-    (0, import_react18.useEffect)(() => {
+    (0, import_react19.useEffect)(() => {
       var _a;
       (_a = zoomRef.current) == null ? void 0 : _a.setZoom(zoom);
     }, [zoom]);
-    const waypointIcon = new import_leaflet5.Icon({
+    const waypointIcon = new import_leaflet7.Icon({
       iconUrl: "https://i.ibb.co/wRwsWpq/Untitled-1-01.png",
       iconSize: [32, 32],
       iconAnchor: [16, 16],
       popupAnchor: [0, 0]
     });
-    return /* @__PURE__ */ import_react18.default.createElement("div", null, /* @__PURE__ */ import_react18.default.createElement("svg", { viewBox: "0 0 600 455", className: "compass-svg" }, /* @__PURE__ */ import_react18.default.createElement(Compass, { heading: correctedHeading, range: 100 })), /* @__PURE__ */ import_react18.default.createElement("svg", { viewBox: "0 0 600 455", className: "compass-svg-mask" }, /* @__PURE__ */ import_react18.default.createElement("rect", { x: 0, y: 315, width: 600, height: 1e3 }), /* @__PURE__ */ import_react18.default.createElement("path", { d: "M 33, 315 A 265 265 0 1 1 567 315 L 600 315 L 600 0 L 0 0 L 0 315 L 33 315", fill: "black" }), /* @__PURE__ */ import_react18.default.createElement("g", { transform: "translate(275, 288)" }, /* @__PURE__ */ import_react18.default.createElement("g", { transform: "scale(0.045)" }, /* @__PURE__ */ import_react18.default.createElement(
+    return /* @__PURE__ */ import_react19.default.createElement("div", null, /* @__PURE__ */ import_react19.default.createElement("svg", { viewBox: "0 0 600 455", className: "compass-svg" }, /* @__PURE__ */ import_react19.default.createElement(Compass, { heading: correctedHeading, range: 100 })), /* @__PURE__ */ import_react19.default.createElement("svg", { viewBox: "0 0 600 455", className: "compass-svg-mask" }, /* @__PURE__ */ import_react19.default.createElement("rect", { x: 0, y: 315, width: 600, height: 1e3 }), /* @__PURE__ */ import_react19.default.createElement("path", { d: "M 33, 315 A 265 265 0 1 1 567 315 L 600 315 L 600 0 L 0 0 L 0 315 L 33 315", fill: "black" }), /* @__PURE__ */ import_react19.default.createElement("g", { transform: "translate(275, 288)" }, /* @__PURE__ */ import_react19.default.createElement("g", { transform: "scale(0.045)" }, /* @__PURE__ */ import_react19.default.createElement(
       "path",
       {
         fill: "white",
         d: "M552.5,39v920.3l-158.2,103.8v-81.7l117.5-110.6L481,586.8l-370.8,97v-95.3l362.3-207.5V161.1\r\n	c0-34.8,11.9-68.7,34.5-95.2C519.7,51,535.3,39,552.5,39z"
       }
-    ), /* @__PURE__ */ import_react18.default.createElement(
+    ), /* @__PURE__ */ import_react19.default.createElement(
       "path",
       {
         fill: "white",
         d: "M552.4,39v920.3l158.2,103.8v-81.7L593.2,870.9l30.7-284.1l370.8,97v-95.3L632.4,381V124.1\r\n	C632.4,124.1,598.4,39,552.4,39z"
       }
-    ), /* @__PURE__ */ import_react18.default.createElement(
+    ), /* @__PURE__ */ import_react19.default.createElement(
       "path",
       {
         fill: "#666666",
         d: "M552.5,39v920.3l158.1,103.8v-43.9L579.3,911.4l14.5-47.3l30-277.3l370.8,97v-50.7L633.2,492.6l-0.7-332.5\r\n	c-0.1-34.4-11.9-67.9-34.1-94.2C585.7,51,570.1,39,552.5,39z"
       }
-    ), /* @__PURE__ */ import_react18.default.createElement("polygon", { fill: "#666666", points: "110.2,683.7 481,586.8 472.6,492.6 110.2,633.1 " }), /* @__PURE__ */ import_react18.default.createElement("polygon", { fill: "#666666", points: "394.3,1063.1 544.2,964.8 525.5,911.4 394.3,1019.1 " })))), /* @__PURE__ */ import_react18.default.createElement("div", { className: "map-wrapper", ref: mapRef }, /* @__PURE__ */ import_react18.default.createElement(
+    ), /* @__PURE__ */ import_react19.default.createElement("polygon", { fill: "#666666", points: "110.2,683.7 481,586.8 472.6,492.6 110.2,633.1 " }), /* @__PURE__ */ import_react19.default.createElement("polygon", { fill: "#666666", points: "394.3,1063.1 544.2,964.8 525.5,911.4 394.3,1019.1 " })))), /* @__PURE__ */ import_react19.default.createElement("div", { className: "map-wrapper", ref: mapRef }, /* @__PURE__ */ import_react19.default.createElement(
       MapContainer,
       {
         fadeAnimation: false,
@@ -32338,12 +32427,12 @@ class InstrumentLogic extends BaseInstrument {
         style: mapStyle,
         zoomControl: false
       },
-      /* @__PURE__ */ import_react18.default.createElement(TileLayer, { url: "" }),
-      /* @__PURE__ */ import_react18.default.createElement(Marker, { icon: waypointIcon, position: [props.sampleFlightPlan[0].lat, props.sampleFlightPlan[0].lon] }),
-      /* @__PURE__ */ import_react18.default.createElement(Marker, { icon: waypointIcon, position: [props.sampleFlightPlan[1].lat, props.sampleFlightPlan[1].lon] }),
-      /* @__PURE__ */ import_react18.default.createElement(Marker, { icon: waypointIcon, position: [props.sampleFlightPlan[2].lat, props.sampleFlightPlan[2].lon] }),
-      /* @__PURE__ */ import_react18.default.createElement(Polyline, { pathOptions: inactivePathOptions, positions: props.flightPlanPath }),
-      /* @__PURE__ */ import_react18.default.createElement(Polyline, { pathOptions: activePathOptions, positions: props.activeFlightPlanPath })
+      /* @__PURE__ */ import_react19.default.createElement(TileLayer, { url: "" }),
+      /* @__PURE__ */ import_react19.default.createElement(Marker, { icon: waypointIcon, position: [props.sampleFlightPlan[0].lat, props.sampleFlightPlan[0].lon] }, /* @__PURE__ */ import_react19.default.createElement(Tooltip, { direction: "top", offset: [0, -15], permanent: true }, /* @__PURE__ */ import_react19.default.createElement("div", { style: { color: "#d202d4", transform: `rotate(${correctedHeading}deg)` } }, props.sampleFlightPlan[0].name))),
+      /* @__PURE__ */ import_react19.default.createElement(Marker, { icon: waypointIcon, position: [props.sampleFlightPlan[1].lat, props.sampleFlightPlan[1].lon] }, /* @__PURE__ */ import_react19.default.createElement(Tooltip, { direction: "top", offset: [0, -15], permanent: true }, /* @__PURE__ */ import_react19.default.createElement("div", { style: { color: "#d202d4", transform: `rotate(${correctedHeading}deg)` } }, props.sampleFlightPlan[1].name))),
+      /* @__PURE__ */ import_react19.default.createElement(Marker, { icon: waypointIcon, position: [props.sampleFlightPlan[2].lat, props.sampleFlightPlan[2].lon] }, /* @__PURE__ */ import_react19.default.createElement(Tooltip, { direction: "top", offset: [0, -20], permanent: true }, /* @__PURE__ */ import_react19.default.createElement("div", { style: { color: "#d202d4", transform: `rotate(${correctedHeading}deg)` } }, props.sampleFlightPlan[2].name))),
+      /* @__PURE__ */ import_react19.default.createElement(Polyline, { pathOptions: inactivePathOptions, positions: props.flightPlanPath }),
+      /* @__PURE__ */ import_react19.default.createElement(Polyline, { pathOptions: activePathOptions, positions: props.activeFlightPlanPath })
     )));
   };
 
@@ -32357,8 +32446,8 @@ class InstrumentLogic extends BaseInstrument {
       { name: "KONTE", lon: -111.95, lat: 33.43, altitude: 5e3, active: true },
       { name: "KIWA", lon: -111.65405, lat: 33.30471, altitude: 1384, active: false }
     ];
-    const [flightPlanPath, setFlightPlanPath] = (0, import_react19.useState)([]);
-    const [activeFlightPlanPath, setActiveFlightPlanPath] = (0, import_react19.useState)([]);
+    const [flightPlanPath, setFlightPlanPath] = (0, import_react20.useState)([]);
+    const [activeFlightPlanPath, setActiveFlightPlanPath] = (0, import_react20.useState)([]);
     const setPathCoords = () => {
       const pathCoords = [];
       const activeCoords = [];
@@ -32376,41 +32465,41 @@ class InstrumentLogic extends BaseInstrument {
       setFlightPlanPath(pathCoords);
       setActiveFlightPlanPath(activeCoords);
     };
-    (0, import_react19.useEffect)(() => {
+    (0, import_react20.useEffect)(() => {
       setPathCoords();
     }, []);
-    let returnPage = /* @__PURE__ */ import_react19.default.createElement(import_react19.default.Fragment, null);
+    let returnPage = /* @__PURE__ */ import_react20.default.createElement(import_react20.default.Fragment, null);
     if (isCallingTop) {
       if (system) {
         switch (systemPage) {
           case 0:
-            returnPage = /* @__PURE__ */ import_react19.default.createElement(Status, null);
+            returnPage = /* @__PURE__ */ import_react20.default.createElement(Status, null);
             break;
           case 1:
-            returnPage = /* @__PURE__ */ import_react19.default.createElement("div", null, "FLIGHT CTRL");
+            returnPage = /* @__PURE__ */ import_react20.default.createElement("div", null, "FLIGHT CTRL");
             break;
           case 2:
-            returnPage = /* @__PURE__ */ import_react19.default.createElement("div", null, "HYDRAULICS");
+            returnPage = /* @__PURE__ */ import_react20.default.createElement("div", null, "HYDRAULICS");
             break;
           case 3:
-            returnPage = /* @__PURE__ */ import_react19.default.createElement("div", null, "FUEL");
+            returnPage = /* @__PURE__ */ import_react20.default.createElement("div", null, "FUEL");
             break;
           case 4:
-            returnPage = /* @__PURE__ */ import_react19.default.createElement("div", null, "ELECTRICAL");
+            returnPage = /* @__PURE__ */ import_react20.default.createElement("div", null, "ELECTRICAL");
             break;
           case 5:
-            returnPage = /* @__PURE__ */ import_react19.default.createElement("div", null, "ECS");
+            returnPage = /* @__PURE__ */ import_react20.default.createElement("div", null, "ECS");
             break;
           case 6:
-            returnPage = /* @__PURE__ */ import_react19.default.createElement("div", null, "ANTI-ICE");
+            returnPage = /* @__PURE__ */ import_react20.default.createElement("div", null, "ANTI-ICE");
             break;
           default:
-            returnPage = /* @__PURE__ */ import_react19.default.createElement(import_react19.default.Fragment, null);
+            returnPage = /* @__PURE__ */ import_react20.default.createElement(import_react20.default.Fragment, null);
         }
       } else {
         switch (topPage) {
           case 0:
-            returnPage = /* @__PURE__ */ import_react19.default.createElement(
+            returnPage = /* @__PURE__ */ import_react20.default.createElement(
               MapLayer,
               {
                 sampleFlightPlan,
@@ -32420,28 +32509,28 @@ class InstrumentLogic extends BaseInstrument {
             );
             break;
           case 1:
-            returnPage = /* @__PURE__ */ import_react19.default.createElement("div", null, "PLAN");
+            returnPage = /* @__PURE__ */ import_react20.default.createElement("div", null, "PLAN");
             break;
           case 2:
-            returnPage = /* @__PURE__ */ import_react19.default.createElement("div", null, "SYSTEM");
+            returnPage = /* @__PURE__ */ import_react20.default.createElement("div", null, "SYSTEM");
             break;
           default:
-            returnPage = /* @__PURE__ */ import_react19.default.createElement(import_react19.default.Fragment, null);
+            returnPage = /* @__PURE__ */ import_react20.default.createElement(import_react20.default.Fragment, null);
         }
       }
     } else {
       switch (bottomPage) {
         case 0:
-          returnPage = /* @__PURE__ */ import_react19.default.createElement("div", null, "TCAS");
+          returnPage = /* @__PURE__ */ import_react20.default.createElement("div", null, "TCAS");
           break;
         case 1:
-          returnPage = /* @__PURE__ */ import_react19.default.createElement("div", null, "WEATHER");
+          returnPage = /* @__PURE__ */ import_react20.default.createElement("div", null, "WEATHER");
           break;
         case 2:
-          returnPage = /* @__PURE__ */ import_react19.default.createElement("div", null, "CHECKLIST");
+          returnPage = /* @__PURE__ */ import_react20.default.createElement("div", null, "CHECKLIST");
           break;
         default:
-          returnPage = /* @__PURE__ */ import_react19.default.createElement(import_react19.default.Fragment, null);
+          returnPage = /* @__PURE__ */ import_react20.default.createElement(import_react20.default.Fragment, null);
       }
     }
     return returnPage;
@@ -32453,13 +32542,13 @@ class InstrumentLogic extends BaseInstrument {
   var router_default = MfdRouter;
 
   // instruments/src/MFD/components/displayProvider/displayProvider.tsx
-  var import_react23 = __toESM(require_react());
+  var import_react24 = __toESM(require_react());
 
   // instruments/src/MFD/components/buttonBars/buttonBars.tsx
-  var import_react22 = __toESM(require_react());
+  var import_react23 = __toESM(require_react());
 
   // instruments/src/MFD/components/buttonBars/buttonBarButton/buttonBarButton.tsx
-  var import_react20 = __toESM(require_react());
+  var import_react21 = __toESM(require_react());
   var ButtonBarButton = (props) => {
     const [topPage, setTopPage] = useObjLocalVar("MFD_ROUTER_TOP", "Number");
     const [systemPage] = useObjLocalVar("MFD_ROUTER_SYSTEM", "Number");
@@ -32500,7 +32589,7 @@ class InstrumentLogic extends BaseInstrument {
           return "";
       }
     };
-    return /* @__PURE__ */ import_react20.default.createElement(
+    return /* @__PURE__ */ import_react21.default.createElement(
       "div",
       {
         onClick: () => {
@@ -32508,13 +32597,13 @@ class InstrumentLogic extends BaseInstrument {
         },
         className: "button-container"
       },
-      /* @__PURE__ */ import_react20.default.createElement("div", { className: "button-center" }, /* @__PURE__ */ import_react20.default.createElement("div", { className: "button-children" }, props.text, props.isSystemButton && /* @__PURE__ */ import_react20.default.createElement("div", { className: "system-button-current-page" }, getSystemText(systemPage)))),
-      /* @__PURE__ */ import_react20.default.createElement("div", { className: "button-background" })
+      /* @__PURE__ */ import_react21.default.createElement("div", { className: "button-center" }, /* @__PURE__ */ import_react21.default.createElement("div", { className: "button-children" }, props.text, props.isSystemButton && /* @__PURE__ */ import_react21.default.createElement("div", { className: "system-button-current-page" }, getSystemText(systemPage)))),
+      /* @__PURE__ */ import_react21.default.createElement("div", { className: "button-background" })
     );
   };
 
   // instruments/src/MFD/components/buttonBars/systemButton/systemButton.tsx
-  var import_react21 = __toESM(require_react());
+  var import_react22 = __toESM(require_react());
   var SystemButton = (props) => {
     const [systemPage, setSystemPage] = useObjLocalVar("MFD_ROUTER_SYSTEM", "Number");
     const handleSystemButtonClick = (route) => {
@@ -32522,8 +32611,8 @@ class InstrumentLogic extends BaseInstrument {
       props.setShown(false);
     };
     const isActive = systemPage === props.routeTo;
-    const [isHovered, setIsHovered] = import_react21.default.useState(false);
-    return /* @__PURE__ */ import_react21.default.createElement(
+    const [isHovered, setIsHovered] = import_react22.default.useState(false);
+    return /* @__PURE__ */ import_react22.default.createElement(
       "div",
       {
         onMouseEnter: () => {
@@ -32534,7 +32623,7 @@ class InstrumentLogic extends BaseInstrument {
         },
         className: "system-button-wrapper"
       },
-      isHovered && /* @__PURE__ */ import_react21.default.createElement(
+      isHovered && /* @__PURE__ */ import_react22.default.createElement(
         "div",
         {
           onClick: () => {
@@ -32543,10 +32632,10 @@ class InstrumentLogic extends BaseInstrument {
           className: "system-menu-close-button",
           style: { top: `${props.routeTo * 45}px` }
         },
-        /* @__PURE__ */ import_react21.default.createElement("div", { className: "system-button-center-close" }, /* @__PURE__ */ import_react21.default.createElement("div", { className: "system-button-children-close" }, "X")),
-        /* @__PURE__ */ import_react21.default.createElement("div", { className: "system-button-background-close" })
+        /* @__PURE__ */ import_react22.default.createElement("div", { className: "system-button-center-close" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "system-button-children-close" }, "X")),
+        /* @__PURE__ */ import_react22.default.createElement("div", { className: "system-button-background-close" })
       ),
-      /* @__PURE__ */ import_react21.default.createElement(
+      /* @__PURE__ */ import_react22.default.createElement(
         "div",
         {
           className: `system-button-container`,
@@ -32555,8 +32644,8 @@ class InstrumentLogic extends BaseInstrument {
             handleSystemButtonClick(props.routeTo);
           }
         },
-        /* @__PURE__ */ import_react21.default.createElement("div", { className: "system-button-center" }, /* @__PURE__ */ import_react21.default.createElement("div", { className: "system-button-children" }, props.text, /* @__PURE__ */ import_react21.default.createElement("div", { className: "active-circle-outer" }, isActive && /* @__PURE__ */ import_react21.default.createElement("div", { className: "active-circle-inner" })))),
-        /* @__PURE__ */ import_react21.default.createElement("div", { className: "system-button-background" })
+        /* @__PURE__ */ import_react22.default.createElement("div", { className: "system-button-center" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "system-button-children" }, props.text, /* @__PURE__ */ import_react22.default.createElement("div", { className: "active-circle-outer" }, isActive && /* @__PURE__ */ import_react22.default.createElement("div", { className: "active-circle-inner" })))),
+        /* @__PURE__ */ import_react22.default.createElement("div", { className: "system-button-background" })
       )
     );
   };
@@ -32564,15 +32653,15 @@ class InstrumentLogic extends BaseInstrument {
   // instruments/src/MFD/components/buttonBars/buttonBars.tsx
   var SystemButtonBar = (props) => {
     if (!props.isShown) {
-      return /* @__PURE__ */ import_react22.default.createElement(import_react22.default.Fragment, null);
+      return /* @__PURE__ */ import_react23.default.createElement(import_react23.default.Fragment, null);
     } else {
-      return /* @__PURE__ */ import_react22.default.createElement("div", { className: `system-button-bar-container ${props.isShown ? "shown" : "hidden"}` }, props.text.map((text, index) => {
-        return /* @__PURE__ */ import_react22.default.createElement(SystemButton, { setShown: props.setShown, text, key: index, routeTo: index });
+      return /* @__PURE__ */ import_react23.default.createElement("div", { className: `system-button-bar-container ${props.isShown ? "shown" : "hidden"}` }, props.text.map((text, index) => {
+        return /* @__PURE__ */ import_react23.default.createElement(SystemButton, { setShown: props.setShown, text, key: index, routeTo: index });
       }));
     }
   };
   var UpperButtonBar = (props) => {
-    return /* @__PURE__ */ import_react22.default.createElement("div", { className: "upper-button-bar-container" }, /* @__PURE__ */ import_react22.default.createElement(
+    return /* @__PURE__ */ import_react23.default.createElement("div", { className: "upper-button-bar-container" }, /* @__PURE__ */ import_react23.default.createElement(
       ButtonBarButton,
       {
         text: "Map",
@@ -32585,7 +32674,7 @@ class InstrumentLogic extends BaseInstrument {
         isTop: true,
         routeTo: 0
       }
-    ), /* @__PURE__ */ import_react22.default.createElement(
+    ), /* @__PURE__ */ import_react23.default.createElement(
       ButtonBarButton,
       {
         text: "Plan",
@@ -32598,7 +32687,7 @@ class InstrumentLogic extends BaseInstrument {
         isTop: true,
         routeTo: 1
       }
-    ), /* @__PURE__ */ import_react22.default.createElement(
+    ), /* @__PURE__ */ import_react23.default.createElement(
       ButtonBarButton,
       {
         text: "Systems",
@@ -32613,7 +32702,7 @@ class InstrumentLogic extends BaseInstrument {
     ));
   };
   var LowerButtonBar = () => {
-    return /* @__PURE__ */ import_react22.default.createElement("div", { className: "lower-button-bar-container" }, /* @__PURE__ */ import_react22.default.createElement(
+    return /* @__PURE__ */ import_react23.default.createElement("div", { className: "lower-button-bar-container" }, /* @__PURE__ */ import_react23.default.createElement(
       ButtonBarButton,
       {
         text: "TCAS",
@@ -32627,7 +32716,7 @@ class InstrumentLogic extends BaseInstrument {
         isTop: false,
         routeTo: 0
       }
-    ), /* @__PURE__ */ import_react22.default.createElement(
+    ), /* @__PURE__ */ import_react23.default.createElement(
       ButtonBarButton,
       {
         text: "Weather",
@@ -32641,7 +32730,7 @@ class InstrumentLogic extends BaseInstrument {
         isTop: false,
         routeTo: 1
       }
-    ), /* @__PURE__ */ import_react22.default.createElement(
+    ), /* @__PURE__ */ import_react23.default.createElement(
       ButtonBarButton,
       {
         text: "Checklist",
@@ -32660,8 +32749,8 @@ class InstrumentLogic extends BaseInstrument {
 
   // instruments/src/MFD/components/displayProvider/displayProvider.tsx
   var DisplayProvider = (props) => {
-    const [systemMenu, setSystemMenu] = import_react23.default.useState(false);
-    return /* @__PURE__ */ import_react23.default.createElement("div", { className: "MFD-container" }, /* @__PURE__ */ import_react23.default.createElement(
+    const [systemMenu, setSystemMenu] = import_react24.default.useState(false);
+    return /* @__PURE__ */ import_react24.default.createElement("div", { className: "MFD-container" }, /* @__PURE__ */ import_react24.default.createElement(
       UpperButtonBar,
       {
         setShowSystems: props.setShowSystems,
@@ -32670,23 +32759,23 @@ class InstrumentLogic extends BaseInstrument {
         systemMenu,
         currentPage: getTopPage()
       }
-    ), /* @__PURE__ */ import_react23.default.createElement("div", { className: "upper-content-container" }, /* @__PURE__ */ import_react23.default.createElement(
+    ), /* @__PURE__ */ import_react24.default.createElement("div", { className: "upper-content-container" }, /* @__PURE__ */ import_react24.default.createElement(
       SystemButtonBar,
       {
         isShown: systemMenu,
         setShown: setSystemMenu,
         text: ["Status", "Flight Ctrl", "Hydraulics", "Fuel", "Electrical", "ECS", "Anti-Ice"]
       }
-    ), props.topPage), /* @__PURE__ */ import_react23.default.createElement("div", { className: "center-divider" }), /* @__PURE__ */ import_react23.default.createElement("div", { className: "lower-content-container" }, props.bottomPage), /* @__PURE__ */ import_react23.default.createElement(LowerButtonBar, null));
+    ), props.topPage), /* @__PURE__ */ import_react24.default.createElement("div", { className: "center-divider" }), /* @__PURE__ */ import_react24.default.createElement("div", { className: "lower-content-container" }, props.bottomPage), /* @__PURE__ */ import_react24.default.createElement(LowerButtonBar, null));
   };
   var displayProvider_default = DisplayProvider;
 
   // instruments/src/MFD/index.tsx
   var MultifunctionDisplayContent = () => {
-    const [isSystem, setIsSystem] = (0, import_react24.useState)(false);
-    const [systemMenu, setSystemMenu] = (0, import_react24.useState)(false);
-    const [showSystems, setShowSystems] = (0, import_react24.useState)(false);
-    return /* @__PURE__ */ import_react24.default.createElement("div", null, /* @__PURE__ */ import_react24.default.createElement(Mouse, null), /* @__PURE__ */ import_react24.default.createElement(
+    const [isSystem, setIsSystem] = (0, import_react25.useState)(false);
+    const [systemMenu, setSystemMenu] = (0, import_react25.useState)(false);
+    const [showSystems, setShowSystems] = (0, import_react25.useState)(false);
+    return /* @__PURE__ */ import_react25.default.createElement("div", null, /* @__PURE__ */ import_react25.default.createElement(Mouse, null), /* @__PURE__ */ import_react25.default.createElement(
       displayProvider_default,
       {
         systemMenu,
@@ -32700,7 +32789,7 @@ class InstrumentLogic extends BaseInstrument {
       }
     ));
   };
-  render(/* @__PURE__ */ import_react24.default.createElement(MultifunctionDisplayContent, null));
+  render(/* @__PURE__ */ import_react25.default.createElement(MultifunctionDisplayContent, null));
 })();
 /* @preserve
  * Leaflet 1.9.4, a JS library for interactive maps. https://leafletjs.com

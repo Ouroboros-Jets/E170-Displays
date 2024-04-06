@@ -537,25 +537,25 @@
     "name": "PLANE HEADING DEGREES MAGNETIC",
     "index": 0,
     "unit": "radians",
-    "value": 0.0,
+    "value": 46.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 360.0
+      "max": 250.0
     },
-    "pinned": true
+    "pinned": null
   },
   {
     "type": "L",
     "name": "OBJ_E170_MFD_MAP_ZOOM",
     "index": 0,
     "unit": "number",
-    "value": 11.0,
+    "value": 9.0,
     "control": {
       "type": "Slider",
-      "min": 5.0,
-      "max": 14.0
+      "min": 0.0,
+      "max": 250.0
     },
-    "pinned": true
+    "pinned": null
   }
 ]

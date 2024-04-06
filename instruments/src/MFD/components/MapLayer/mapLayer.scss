@@ -17,3 +17,12 @@
 
 .leaflet-marker-pane > img {
 }
+.leaflet-tooltip {
+  background-color: transparent !important;
+  border: none !important;
+  font-weight: bold !important;
+  &::before {
+    visibility: hidden !important;
+    background-color: transparent !important;
+  }
+}

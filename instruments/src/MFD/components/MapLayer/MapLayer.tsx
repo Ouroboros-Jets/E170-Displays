@@ -1,8 +1,9 @@
 import { type T_FlightPlan } from 'instruments/common/WaypointTypes/WaypointTypes'
 import React, { useEffect, useRef, type FC } from 'react'
-import { MapContainer, TileLayer, Polyline, Marker } from 'react-leaflet'
+import { MapContainer, TileLayer, Polyline, Marker, Popup, Tooltip } from 'react-leaflet'
 import { Compass } from './Compass'
 import './mapLayer.scss'
+import 'leaflet/dist/leaflet.css'
 import { useObjLocalVar, useSimVar } from 'instruments/common/Hooks/simVars'
 import { Icon as OgIcon, type Map } from 'leaflet'
 
@@ -38,6 +39,10 @@ export const MapLayer: FC<T_MapLayerProps> = (props: T_MapLayerProps) => {
 
   useEffect(() => {
     if (mapRef.current) mapRef.current.style.transform = `rotate(${-correctedHeading}deg)`
+
+    return () => {
+      if (mapRef.current) mapRef.current.style.transform = 'none'
+    }
   }, [correctedHeading])
 
   // useEffect(() => {
@@ -103,10 +108,28 @@ export const MapLayer: FC<T_MapLayerProps> = (props: T_MapLayerProps) => {
           zoomControl={false}
         >
           <TileLayer url="" />
-          <Marker icon={waypointIcon} position={[props.sampleFlightPlan[0].lat, props.sampleFlightPlan[0].lon]} />
-          <Marker icon={waypointIcon} position={[props.sampleFlightPlan[1].lat, props.sampleFlightPlan[1].lon]} />
-          <Marker icon={waypointIcon} position={[props.sampleFlightPlan[2].lat, props.sampleFlightPlan[2].lon]} />
 
+          <Marker icon={waypointIcon} position={[props.sampleFlightPlan[0].lat, props.sampleFlightPlan[0].lon]}>
+            <Tooltip direction="top" offset={[0, -15]} permanent>
+              <div style={{ color: '#d202d4', transform: `rotate(${correctedHeading}deg)` }}>
+                {props.sampleFlightPlan[0].name}
+              </div>
+            </Tooltip>
+          </Marker>
+          <Marker icon={waypointIcon} position={[props.sampleFlightPlan[1].lat, props.sampleFlightPlan[1].lon]}>
+            <Tooltip direction="top" offset={[0, -15]} permanent>
+              <div style={{ color: '#d202d4', transform: `rotate(${correctedHeading}deg)` }}>
+                {props.sampleFlightPlan[1].name}
+              </div>
+            </Tooltip>
+          </Marker>
+          <Marker icon={waypointIcon} position={[props.sampleFlightPlan[2].lat, props.sampleFlightPlan[2].lon]}>
+            <Tooltip direction="top" offset={[0, -20]} permanent>
+              <div style={{ color: '#d202d4', transform: `rotate(${correctedHeading}deg)` }}>
+                {props.sampleFlightPlan[2].name}
+              </div>
+            </Tooltip>
+          </Marker>
           <Polyline pathOptions={inactivePathOptions} positions={props.flightPlanPath} />
           <Polyline pathOptions={activePathOptions} positions={props.activeFlightPlanPath} />
         </MapContainer>
