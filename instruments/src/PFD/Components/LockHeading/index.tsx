@@ -13,7 +13,7 @@ export default class LockHdgIndicator extends DisplayComponent<T_LockHdgIndicato
 
     const sub = this.props.bus.getSubscriber<PFDSimvars>()
     sub
-      .on('lock_heading')
+      .on('heading_lock')
       .whenChanged()
       .handle((alt) => {
         this.hdgRef.instance.textContent = alt.toString().padStart(3, '0')

@@ -32070,12 +32070,13 @@
     }
   };
 
-  // instruments/src/PFD/Components/AttitudeDisplay/AttitudeDisplay.tsx
+  // instruments/src/PFD/Components/AttitudeDisplay/index.tsx
   var Attitude = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "attitude-continer" }, /* @__PURE__ */ FSComponent.buildComponent("svg", { class: "attitude-svg", viewBox: "0 0 600 460", width: "100%", height: "100%" }, /* @__PURE__ */ FSComponent.buildComponent(AttitudeForeground, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(AttitudeMarkers, null), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "100", y: "100", "font-size": "20", fill: "white", "text-anchor": "middle" })));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(AttitudeForeground, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(AttitudeMarkers, null), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "100", y: "100", "font-size": "20", fill: "white", "text-anchor": "middle" }));
     }
   };
+  var AttitudeDisplay_default = Attitude;
 
   // instruments/src/PFD/Components/Altitude/AltitudeTape.tsx
   var drawChevron = (double, y) => {
@@ -32205,12 +32206,13 @@
     }
   };
 
-  // instruments/src/PFD/Components/Altitude/Altitude.tsx
+  // instruments/src/PFD/Components/Altitude/index.tsx
   var Altitude = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "altitude-continer" }, /* @__PURE__ */ FSComponent.buildComponent("svg", { class: "altitude-svg", viewBox: "0 0 120 422" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "29", y: "0", width: "83", height: "422", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent(AltitudeTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAltitudeBox, null), /* @__PURE__ */ FSComponent.buildComponent(BaroSettingBox, null)));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(426 28)" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "29", y: "0", width: "83", height: "422", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent(AltitudeTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAltitudeBox, null), /* @__PURE__ */ FSComponent.buildComponent(BaroSettingBox, null));
     }
   };
+  var Altitude_default = Altitude;
 
   // instruments/src/PFD/Util/ClampValue.ts
   var ClampValue = (value, min, max) => {
@@ -32329,25 +32331,17 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "airspeed-container" }, /* @__PURE__ */ FSComponent.buildComponent("svg", { class: "airspeed-svg", viewBox: "0 0 82 396" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 0, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "tapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 34, width: 81, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#tapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.asTapeRef }, this.Tape)), /* @__PURE__ */ FSComponent.buildComponent(
-        PathWithBlackBackground,
-        {
-          d: "M 81 32 L 81 364",
-          fill: "black",
-          fillTop: "white",
-          strokeWidthTop: 2,
-          StrokeWidth: 3
-        }
-      ), /* @__PURE__ */ FSComponent.buildComponent(SelectedAirspeedBox, { selectedAirspeed: 0.79, mach: true, mode: 1 })));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(0 54)" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 0, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "tapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 34, width: 81, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#tapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.asTapeRef }, this.Tape)), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 32 L 81 364", fill: "black", fillTop: "white", strokeWidthTop: 2, StrokeWidth: 3 }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAirspeedBox, { selectedAirspeed: 0.79, mach: true, mode: 1 }));
     }
   };
 
-  // instruments/src/PFD/Components/Airspeed/Airspeed.tsx
+  // instruments/src/PFD/Components/Airspeed/index.tsx
   var Airspeed = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", null, /* @__PURE__ */ FSComponent.buildComponent(AirspeedTape, { bus: this.props.bus }));
+      return /* @__PURE__ */ FSComponent.buildComponent(AirspeedTape, { bus: this.props.bus });
     }
   };
+  var Airspeed_default = Airspeed;
 
   // instruments/src/PFD/Components/Compass/RealHdgIndicator.tsx
   var RealHdgIndicator = class extends DisplayComponent {
@@ -32380,17 +32374,22 @@
   var LockHdgIndicator = class extends DisplayComponent {
     constructor() {
       super(...arguments);
+      this.heading = 0;
       this.hdgRef = FSComponent.createRef();
     }
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("lock_heading").whenChanged().handle((alt) => {
-        this.hdgRef.instance.setAttribute("transform", `translate(275, 188) rotate(${alt})`);
+      sub.on("heading").whenChanged().handle((alt) => {
+        this.heading = alt;
+      });
+      sub.on("heading_lock").handle((alt) => {
+        var _a2;
+        (_a2 = this.hdgRef.instance) == null ? void 0 : _a2.setAttribute("transform", `translate(275, 188) rotate(${(-this.heading + alt) % 360})`);
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 188) rotate(0)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(0, -128)" }, /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 188) rotate(0)", ref: this.hdgRef }, /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(0, -128)" }, /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           d: "M 0 -1 L -15 -1 L -15 -10 L -9 -10 L 0 -3 L 9 -10 L 15 -10 L 15 -1 L 0 -1",
@@ -32468,7 +32467,7 @@
     }
   };
 
-  // instruments/src/PFD/Components/GspdIndicator/index.tsx
+  // instruments/src/PFD/Components/Groundspeed/index.tsx
   var GspdIndicator = class extends DisplayComponent {
     constructor() {
       super(...arguments);
@@ -32494,7 +32493,7 @@
     }
   };
 
-  // instruments/src/PFD/Components/LockHdgIndicator/index.tsx
+  // instruments/src/PFD/Components/LockHeading/index.tsx
   var LockHdgIndicator2 = class extends DisplayComponent {
     constructor() {
       super(...arguments);
@@ -32503,7 +32502,7 @@
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("lock_heading").whenChanged().handle((alt) => {
+      sub.on("heading_lock").whenChanged().handle((alt) => {
         this.hdgRef.instance.textContent = alt.toString().padStart(3, "0");
       });
     }
@@ -32512,10 +32511,43 @@
     }
   };
 
+  // instruments/src/PFD/Components/VerticalSpeed/index.tsx
+  var VerticalSpeedIndicator = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.verticalSpeed = 0;
+      this.constrainedVSpeed = 0;
+      this.vsiReadout = 0;
+      this.vsiReadoutBox = false;
+      this.vsiWarning = false;
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 545 100 L 545 400 L 570 400 L 595 350 L 595 150 L 570 100 L 545 100",
+          stroke: "white",
+          "stroke-width": 3,
+          fill: "transparent",
+          "stroke-linecap": "round"
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 545 100 L 545 400 L 570 400 L 595 350 L 595 150 L 570 100 L 545 100",
+          fill: "black",
+          stroke: "white",
+          "stroke-width": 3,
+          opacity: 0.3
+        }
+      ));
+    }
+  };
+
   // instruments/src/PFD/index.tsx
   var PFDRoot = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "PFD-ROOT" }, /* @__PURE__ */ FSComponent.buildComponent("div", { class: "top-component" }, /* @__PURE__ */ FSComponent.buildComponent(Attitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent("div", null, "fma"), /* @__PURE__ */ FSComponent.buildComponent(Airspeed, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("div", { class: "bottom-component" }, /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 800" }, /* @__PURE__ */ FSComponent.buildComponent(GspdIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator2, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Compass, { bus: this.props.bus }))));
+      return /* @__PURE__ */ FSComponent.buildComponent(FSComponent.Fragment, null, /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 460" }, /* @__PURE__ */ FSComponent.buildComponent(AttitudeDisplay_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Airspeed_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(VerticalSpeedIndicator, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 340" }, /* @__PURE__ */ FSComponent.buildComponent(GspdIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator2, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Compass, { bus: this.props.bus })));
     }
   };
 
@@ -32533,7 +32565,8 @@
     ["airspeed", { name: "AIRSPEED INDICATED" /* airspeed */, type: SimVarValueType.Knots }],
     ["heading", { name: "PLANE HEADING DEGREES MAGNETIC" /* heading */, type: SimVarValueType.Degree }],
     ["ground_speed", { name: "GROUND VELOCITY" /* ground_speed */, type: SimVarValueType.Knots }],
-    ["heading_lock", { name: "AUTOPILOT HEADING LOCK DIR" /* heading_lock */, type: SimVarValueType.Degree }]
+    ["heading_lock", { name: "AUTOPILOT HEADING LOCK DIR" /* heading_lock */, type: SimVarValueType.Degree }],
+    ["vertical_speed", { name: "VERTICAL SPEED" /* vertical_speed */, type: SimVarValueType.Feet }]
   ]);
 
   // instruments/src/PFD/instrument.tsx

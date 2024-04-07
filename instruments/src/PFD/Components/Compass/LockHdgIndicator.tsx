@@ -6,23 +6,29 @@ type T_LockHdgIndicator = ComponentProps & {
 }
 
 export default class LockHdgIndicator extends DisplayComponent<T_LockHdgIndicator> {
-  private readonly hdgRef = FSComponent.createRef<SVGTextElement>()
+  heading = 0
+
+  private readonly hdgRef = FSComponent.createRef<SVGElement>()
 
   public onAfterRender(node: VNode): void {
     super.onAfterRender(node)
 
     const sub = this.props.bus.getSubscriber<PFDSimvars>()
     sub
-      .on('lock_heading')
+      .on('heading')
       .whenChanged()
       .handle((alt) => {
-        this.hdgRef.instance.setAttribute('transform', `translate(275, 188) rotate(${alt})`)
+        this.heading = alt
       })
+
+    sub.on('heading_lock').handle((alt) => {
+      this.hdgRef.instance?.setAttribute('transform', `translate(275, 188) rotate(${(-this.heading + alt) % 360})`)
+    })
   }
 
   public render(): VNode {
     return (
-      <g transform="translate(275, 188) rotate(0)">
+      <g transform="translate(275, 188) rotate(0)" ref={this.hdgRef}>
         <g transform="translate(0, -128)">
           <path
             d="M 0 -1 L -15 -1 L -15 -10 L -9 -10 L 0 -3 L 9 -10 L 15 -10 L 15 -1 L 0 -1"
