@@ -1,9 +1,9 @@
 import { FSComponent, DisplayComponent, type VNode, type EventBus, type ComponentProps } from '@microsoft/msfs-sdk'
-import './pfdRoot.scss'
-import '../index.css'
-import { Attitude } from '../Components/AttitudeDisplay/AttitudeDisplay'
-import { Altitude } from '../Components/Altitude/Altitude'
-import { Airspeed } from '../Components/Airspeed/Airspeed'
+import './index.scss'
+import { Attitude } from './Components/AttitudeDisplay/AttitudeDisplay'
+import { Altitude } from './Components/Altitude/Altitude'
+import { Airspeed } from './Components/Airspeed/Airspeed'
+import Compass from './Components/Compass'
 
 type PFDProps = ComponentProps & {
   bus: EventBus
@@ -19,7 +19,9 @@ export class PFDRoot extends DisplayComponent<PFDProps> {
           <div>fma</div>
           <Airspeed bus={this.props.bus} />
         </div>
-        <div class="bottom-component">bottom</div>
+        <div class="bottom-component">
+          <Compass bus={this.props.bus} />
+        </div>
       </div>
     )
   }

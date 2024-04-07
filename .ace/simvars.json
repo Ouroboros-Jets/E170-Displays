@@ -17,7 +17,7 @@
     "name": "OBJ_E170_MFD_ROUTER_BOTTOM",
     "index": 0,
     "unit": "Number",
-    "value": 0.0,
+    "value": 2.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -108,7 +108,7 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 17.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -537,7 +537,7 @@
     "name": "PLANE HEADING DEGREES MAGNETIC",
     "index": 0,
     "unit": "radians",
-    "value": 46.0,
+    "value": 170.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

@@ -32349,10 +32349,57 @@
     }
   };
 
-  // instruments/src/PFD/PFDRoot/PFDRoot.tsx
+  // instruments/src/PFD/Components/Compass/index.tsx
+  var compassFigures = {
+    0: "N",
+    30: "3",
+    60: "6",
+    90: "E",
+    120: "12",
+    150: "15",
+    180: "S",
+    210: "21",
+    240: "24",
+    270: "W",
+    300: "30",
+    330: "33"
+  };
+  var drawCompassTicks = () => {
+    const ticks = [];
+    for (let i = 0; i < 360; i++) {
+      if (i % 5 === 0) {
+        ticks.push(
+          /* @__PURE__ */ FSComponent.buildComponent("g", { transform: `rotate(${i}, 275, 188)` }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 275, 60 L 275 70", stroke: "white", "stroke-width": 2.25 }))
+        );
+      }
+      if (i % 10 === 0) {
+        ticks.push(
+          /* @__PURE__ */ FSComponent.buildComponent("g", { transform: `rotate(${i}, 275, 188)` }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 275, 60 L 275 80", stroke: "white", "stroke-width": 2.25 }))
+        );
+      }
+      if (i % 45 === 0) {
+        ticks.push(
+          /* @__PURE__ */ FSComponent.buildComponent("g", { transform: `rotate(${i}, 275, 188)` }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 275, 48 L 275 58", stroke: "white", "stroke-width": 2.25 }))
+        );
+      }
+      if (i in compassFigures) {
+        ticks.push(
+          /* @__PURE__ */ FSComponent.buildComponent("g", { transform: `rotate(${i}, 275, 188)` }, /* @__PURE__ */ FSComponent.buildComponent("text", { "text-anchor": "middle", x: 275, y: 95, "font-size": 15, "font-weight": "bold", fill: "white" }, compassFigures[i]))
+        );
+      }
+    }
+    return ticks;
+  };
+  var Compass = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 800" }, /* @__PURE__ */ FSComponent.buildComponent("g", null, drawCompassTicks()));
+    }
+  };
+
+  // instruments/src/PFD/index.tsx
   var PFDRoot = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "PFD-ROOT" }, /* @__PURE__ */ FSComponent.buildComponent("div", { class: "top-component" }, /* @__PURE__ */ FSComponent.buildComponent(Attitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent("div", null, "fma"), /* @__PURE__ */ FSComponent.buildComponent(Airspeed, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("div", { class: "bottom-component" }, "bottom"));
+      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "PFD-ROOT" }, /* @__PURE__ */ FSComponent.buildComponent("div", { class: "top-component" }, /* @__PURE__ */ FSComponent.buildComponent(Attitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent("div", null, "fma"), /* @__PURE__ */ FSComponent.buildComponent(Airspeed, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("div", { class: "bottom-component" }, /* @__PURE__ */ FSComponent.buildComponent(Compass, { bus: this.props.bus })));
     }
   };
 

@@ -1,8 +1,8 @@
 /// <reference types="@microsoft/msfs-types/Pages/VCockpit/Core/VCockpit" />
 import { FSComponent, EventBus, HEventPublisher } from '@microsoft/msfs-sdk'
-import { PFDRoot } from './PFDRoot/PFDRoot'
+import { PFDRoot } from './index'
 import { PFDSimvarPublisher } from './Components/PFDSimVarPublisher'
-import './index.css'
+import './index.scss'
 
 const IsAce = Object.prototype.hasOwnProperty.call(window, 'ACE_ENGINE_HANDLE')
 const PFD_ID = 'PFD_CONTENT'

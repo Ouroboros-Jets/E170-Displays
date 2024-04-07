@@ -1,4 +1,10 @@
-/* temp_stylePlugin:instruments\src\PFD\PFDRoot\pfdRoot.scss */
+/* temp_stylePlugin:instruments\src\PFD\index.scss */
+text {
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
 .top-component {
   height: 460px;
   width: 600px;
@@ -6,34 +12,6 @@
 .bottom-component {
   height: 340px;
   width: 600px;
-  background-color: rgba(255, 0, 0, 0.1);
-}
-
-/* temp_stylePlugin:instruments\src\PFD\index.css */
-div {
-  color: white;
-}
-.PFD-ROOT {
-  height: 800px;
-  width: 600px;
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-  color: white;
-  background-color: transparent !important;
-}
-.horizon {
-  color: white;
-  width: 100%;
-  height: 100%;
-  background-color: red;
-}
-text {
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
 }
 
 /* temp_stylePlugin:instruments\src\PFD\Components\AttitudeDisplay\Attitude.scss */
@@ -92,3 +70,5 @@ text {
   width: 81px;
   height: 100%;
 }
+
+/* temp_stylePlugin:instruments\src\PFD\Components\Compass\index.scss */
