@@ -12,8 +12,17 @@
       "element": "Instrument",
       "width": 600,
       "height": 800,
-      "x": 8380,
-      "y": 1740
+      "x": 8420,
+      "y": 1660
+    },
+    {
+      "uuid": "9a01d170-f34a-4789-9337-2ecd343b7d3f",
+      "name": "MFD",
+      "element": "Instrument",
+      "width": 600,
+      "height": 800,
+      "x": 9100,
+      "y": 1660
     }
   ]
 }

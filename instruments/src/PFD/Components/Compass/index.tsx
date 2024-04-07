@@ -1,8 +1,7 @@
 import type { PFDSimvars } from '../PFDSimVarPublisher'
-import './index.scss'
 import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
 
-type CompassProps = ComponentProps & {
+type T_CompassProps = ComponentProps & {
   bus: EventBus
 }
 
@@ -68,7 +67,7 @@ const drawStaticCompassTicks = (): JSX.Element[] => {
   return ticks
 }
 
-export default class Compass extends DisplayComponent<CompassProps> {
+export default class Compass extends DisplayComponent<T_CompassProps> {
   private readonly compassRef = FSComponent.createRef<SVGElement>()
 
   public onAfterRender(node: VNode): void {
@@ -85,10 +84,10 @@ export default class Compass extends DisplayComponent<CompassProps> {
 
   public render(): VNode {
     return (
-      <svg viewBox="0 0 600 800">
+      <g>
         <g ref={this.compassRef}>{drawCompassTicks()}</g>
         <g>{drawStaticCompassTicks()}</g>
-      </svg>
+      </g>
     )
   }
 }

@@ -32410,14 +32410,58 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 800" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.compassRef }, drawCompassTicks()), /* @__PURE__ */ FSComponent.buildComponent("g", null, drawStaticCompassTicks()));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.compassRef }, drawCompassTicks()), /* @__PURE__ */ FSComponent.buildComponent("g", null, drawStaticCompassTicks()));
+    }
+  };
+
+  // instruments/src/PFD/Components/GspdIndicator/index.tsx
+  var GspdIndicator = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.grndSpdRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("ground_speed").whenChanged().handle((alt) => {
+        if (alt > 999) {
+          this.grndSpdRef.instance.textContent = "999";
+          return;
+        }
+        if (alt < -99) {
+          this.grndSpdRef.instance.textContent = "-99";
+          return;
+        }
+        this.grndSpdRef.instance.textContent = alt.toString();
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(35, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "GSPD"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: -11, y: 18, "text-anchor": "middle", "font-size": 17, fill: "#04E304", ref: this.grndSpdRef }, "0"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 18, "text-anchor": "right", "font-size": 17, fill: "white" }, "KT"));
+    }
+  };
+
+  // instruments/src/PFD/Components/HdgIndicator/index.tsx
+  var HdgIndicator = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.hdgRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("lock_heading").whenChanged().handle((alt) => {
+        this.hdgRef.instance.textContent = alt.toString().padStart(3, "0");
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(110, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "HDG"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 24, "text-anchor": "middle", "font-size": 25, fill: "#00FEFE", ref: this.hdgRef }, "000"));
     }
   };
 
   // instruments/src/PFD/index.tsx
   var PFDRoot = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "PFD-ROOT" }, /* @__PURE__ */ FSComponent.buildComponent("div", { class: "top-component" }, /* @__PURE__ */ FSComponent.buildComponent(Attitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent("div", null, "fma"), /* @__PURE__ */ FSComponent.buildComponent(Airspeed, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("div", { class: "bottom-component" }, /* @__PURE__ */ FSComponent.buildComponent(Compass, { bus: this.props.bus })));
+      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "PFD-ROOT" }, /* @__PURE__ */ FSComponent.buildComponent("div", { class: "top-component" }, /* @__PURE__ */ FSComponent.buildComponent(Attitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent("div", null, "fma"), /* @__PURE__ */ FSComponent.buildComponent(Airspeed, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("div", { class: "bottom-component" }, /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 800" }, /* @__PURE__ */ FSComponent.buildComponent(GspdIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(HdgIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Compass, { bus: this.props.bus }))));
     }
   };
 
@@ -32433,7 +32477,9 @@
     ["bank", { name: "PLANE BANK DEGREES" /* bank */, type: SimVarValueType.Degree }],
     ["altitude", { name: "INDICATED ALTITUDE" /* altitude */, type: SimVarValueType.Feet }],
     ["airspeed", { name: "AIRSPEED INDICATED" /* airspeed */, type: SimVarValueType.Knots }],
-    ["heading", { name: "PLANE HEADING DEGREES TRUE" /* heading */, type: SimVarValueType.Degree }]
+    ["heading", { name: "PLANE HEADING DEGREES TRUE" /* heading */, type: SimVarValueType.Degree }],
+    ["ground_speed", { name: "GROUND VELOCITY" /* ground_speed */, type: SimVarValueType.Knots }],
+    ["heading_lock", { name: "AUTOPILOT HEADING LOCK DIR" /* heading_lock */, type: SimVarValueType.Degree }]
   ]);
 
   // instruments/src/PFD/instrument.tsx
