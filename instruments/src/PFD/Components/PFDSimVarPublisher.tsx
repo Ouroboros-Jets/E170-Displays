@@ -11,7 +11,8 @@ export enum PFDVars {
   pitch = 'PLANE PITCH DEGREES',
   bank = 'PLANE BANK DEGREES',
   altitude = 'INDICATED ALTITUDE',
-  airspeed = 'AIRSPEED INDICATED'
+  airspeed = 'AIRSPEED INDICATED',
+  heading = 'PLANE HEADING DEGREES TRUE'
 }
 
 export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
@@ -19,7 +20,8 @@ export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
     ['pitch', { name: PFDVars.pitch, type: SimVarValueType.Degree }],
     ['bank', { name: PFDVars.bank, type: SimVarValueType.Degree }],
     ['altitude', { name: PFDVars.altitude, type: SimVarValueType.Feet }],
-    ['airspeed', { name: PFDVars.airspeed, type: SimVarValueType.Knots }]
+    ['airspeed', { name: PFDVars.airspeed, type: SimVarValueType.Knots }],
+    ['heading', { name: PFDVars.heading, type: SimVarValueType.Degree }]
   ])
 
   public constructor(bus: EventBus) {

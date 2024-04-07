@@ -1,3 +1,4 @@
+import type { PFDSimvars } from '../PFDSimVarPublisher'
 import './index.scss'
 import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
 
@@ -38,14 +39,6 @@ const drawCompassTicks = (): JSX.Element[] => {
       )
     }
 
-    if (i % 45 === 0) {
-      ticks.push(
-        <g transform={`rotate(${i}, 275, 188)`}>
-          <path d="M 275, 48 L 275 58" stroke="white" stroke-width={2.25} />
-        </g>
-      )
-    }
-
     if (i in compassFigures) {
       ticks.push(
         <g transform={`rotate(${i}, 275, 188)`}>
@@ -60,11 +53,41 @@ const drawCompassTicks = (): JSX.Element[] => {
   return ticks
 }
 
+const drawStaticCompassTicks = (): JSX.Element[] => {
+  const ticks: JSX.Element[] = []
+  for (let i = 0; i < 360; i++) {
+    if (i % 45 === 0) {
+      ticks.push(
+        <g transform={`rotate(${i}, 275, 188)`}>
+          <path d="M 275, 48 L 275 58" stroke="white" stroke-width={2.25} />
+        </g>
+      )
+    }
+  }
+
+  return ticks
+}
+
 export default class Compass extends DisplayComponent<CompassProps> {
+  private readonly compassRef = FSComponent.createRef<SVGElement>()
+
+  public onAfterRender(node: VNode): void {
+    super.onAfterRender(node)
+
+    const sub = this.props.bus.getSubscriber<PFDSimvars>()
+    sub
+      .on('heading')
+      .whenChanged()
+      .handle((alt) => {
+        this.compassRef.instance?.setAttribute('transform', `rotate(${-alt}, 275, 188)`)
+      })
+  }
+
   public render(): VNode {
     return (
       <svg viewBox="0 0 600 800">
-        <g>{drawCompassTicks()}</g>
+        <g ref={this.compassRef}>{drawCompassTicks()}</g>
+        <g>{drawStaticCompassTicks()}</g>
       </svg>
     )
   }

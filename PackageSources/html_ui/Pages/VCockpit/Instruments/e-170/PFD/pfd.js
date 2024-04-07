@@ -32377,11 +32377,6 @@
           /* @__PURE__ */ FSComponent.buildComponent("g", { transform: `rotate(${i}, 275, 188)` }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 275, 60 L 275 80", stroke: "white", "stroke-width": 2.25 }))
         );
       }
-      if (i % 45 === 0) {
-        ticks.push(
-          /* @__PURE__ */ FSComponent.buildComponent("g", { transform: `rotate(${i}, 275, 188)` }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 275, 48 L 275 58", stroke: "white", "stroke-width": 2.25 }))
-        );
-      }
       if (i in compassFigures) {
         ticks.push(
           /* @__PURE__ */ FSComponent.buildComponent("g", { transform: `rotate(${i}, 275, 188)` }, /* @__PURE__ */ FSComponent.buildComponent("text", { "text-anchor": "middle", x: 275, y: 95, "font-size": 15, "font-weight": "bold", fill: "white" }, compassFigures[i]))
@@ -32390,9 +32385,32 @@
     }
     return ticks;
   };
+  var drawStaticCompassTicks = () => {
+    const ticks = [];
+    for (let i = 0; i < 360; i++) {
+      if (i % 45 === 0) {
+        ticks.push(
+          /* @__PURE__ */ FSComponent.buildComponent("g", { transform: `rotate(${i}, 275, 188)` }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 275, 48 L 275 58", stroke: "white", "stroke-width": 2.25 }))
+        );
+      }
+    }
+    return ticks;
+  };
   var Compass = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.compassRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("heading").whenChanged().handle((alt) => {
+        var _a2;
+        (_a2 = this.compassRef.instance) == null ? void 0 : _a2.setAttribute("transform", `rotate(${-alt}, 275, 188)`);
+      });
+    }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 800" }, /* @__PURE__ */ FSComponent.buildComponent("g", null, drawCompassTicks()));
+      return /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 800" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.compassRef }, drawCompassTicks()), /* @__PURE__ */ FSComponent.buildComponent("g", null, drawStaticCompassTicks()));
     }
   };
 
@@ -32414,7 +32432,8 @@
     ["pitch", { name: "PLANE PITCH DEGREES" /* pitch */, type: SimVarValueType.Degree }],
     ["bank", { name: "PLANE BANK DEGREES" /* bank */, type: SimVarValueType.Degree }],
     ["altitude", { name: "INDICATED ALTITUDE" /* altitude */, type: SimVarValueType.Feet }],
-    ["airspeed", { name: "AIRSPEED INDICATED" /* airspeed */, type: SimVarValueType.Knots }]
+    ["airspeed", { name: "AIRSPEED INDICATED" /* airspeed */, type: SimVarValueType.Knots }],
+    ["heading", { name: "PLANE HEADING DEGREES TRUE" /* heading */, type: SimVarValueType.Degree }]
   ]);
 
   // instruments/src/PFD/instrument.tsx

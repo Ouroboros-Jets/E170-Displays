@@ -557,5 +557,18 @@
       "max": 250.0
     },
     "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "PLANE HEADING DEGREES TRUE",
+    "index": 0,
+    "unit": "degrees",
+    "value": 17.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
   }
 ]

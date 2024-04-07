@@ -51,7 +51,7 @@ const drawChevron = (double: boolean, y: number): JSX.Element => {
   }
 }
 
-const drawTick = (y: number) => {
+const drawTick = (y: number): JSX.Element => {
   const offset = -y / 3.31
   return (
     <PathWithBlackBackground
@@ -63,7 +63,7 @@ const drawTick = (y: number) => {
     />
   )
 }
-const drawNumber = (y: number) => {
+const drawNumber = (y: number): JSX.Element => {
   const offset = -y / 3.31
   return (
     <text
