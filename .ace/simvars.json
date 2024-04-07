@@ -95,7 +95,7 @@
     "name": "INDICATED ALTITUDE",
     "index": 0,
     "unit": "Feet",
-    "value": 6.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -563,7 +563,20 @@
     "name": "PLANE HEADING DEGREES TRUE",
     "index": 0,
     "unit": "degrees",
-    "value": 77.0,
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "GROUND VELOCITY",
+    "index": 0,
+    "unit": "knots",
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

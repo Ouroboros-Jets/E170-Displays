@@ -32349,6 +32349,60 @@
     }
   };
 
+  // instruments/src/PFD/Components/Compass/RealHdgIndicator.tsx
+  var RealHdgIndicator = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.hdgRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("heading").whenChanged().handle((alt) => {
+        this.hdgRef.instance.textContent = alt.toString().padStart(3, "0");
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 42.5)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.hdgRef, "text-anchor": "middle", "font-size": 25, fill: "#04E304" }, "000"), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20",
+          fill: "transparent",
+          "stroke-width": 3,
+          stroke: "white",
+          "stroke-linecap": "round"
+        }
+      ));
+    }
+  };
+
+  // instruments/src/PFD/Components/Compass/LockHdgIndicator.tsx
+  var LockHdgIndicator = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.hdgRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("lock_heading").whenChanged().handle((alt) => {
+        this.hdgRef.instance.setAttribute("transform", `translate(275, 188) rotate(${alt})`);
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 188) rotate(0)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(0, -128)" }, /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 0 -1 L -15 -1 L -15 -10 L -9 -10 L 0 -3 L 9 -10 L 15 -10 L 15 -1 L 0 -1",
+          fill: "#00FEFE",
+          "stroke-width": 2,
+          stroke: "#00FEFE",
+          "stroke-linecap": "round"
+        }
+      )));
+    }
+  };
+
   // instruments/src/PFD/Components/Compass/index.tsx
   var compassFigures = {
     0: "N",
@@ -32387,7 +32441,7 @@
   };
   var drawStaticCompassTicks = () => {
     const ticks = [];
-    for (let i = 0; i < 360; i++) {
+    for (let i = 1; i < 360; i++) {
       if (i % 45 === 0) {
         ticks.push(
           /* @__PURE__ */ FSComponent.buildComponent("g", { transform: `rotate(${i}, 275, 188)` }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 275, 48 L 275 58", stroke: "white", "stroke-width": 2.25 }))
@@ -32410,7 +32464,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.compassRef }, drawCompassTicks()), /* @__PURE__ */ FSComponent.buildComponent("g", null, drawStaticCompassTicks()));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.compassRef }, drawCompassTicks()), /* @__PURE__ */ FSComponent.buildComponent("g", null, drawStaticCompassTicks()), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(RealHdgIndicator, { bus: this.props.bus }));
     }
   };
 
@@ -32440,8 +32494,8 @@
     }
   };
 
-  // instruments/src/PFD/Components/HdgIndicator/index.tsx
-  var HdgIndicator = class extends DisplayComponent {
+  // instruments/src/PFD/Components/LockHdgIndicator/index.tsx
+  var LockHdgIndicator2 = class extends DisplayComponent {
     constructor() {
       super(...arguments);
       this.hdgRef = FSComponent.createRef();
@@ -32461,7 +32515,7 @@
   // instruments/src/PFD/index.tsx
   var PFDRoot = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "PFD-ROOT" }, /* @__PURE__ */ FSComponent.buildComponent("div", { class: "top-component" }, /* @__PURE__ */ FSComponent.buildComponent(Attitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent("div", null, "fma"), /* @__PURE__ */ FSComponent.buildComponent(Airspeed, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("div", { class: "bottom-component" }, /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 800" }, /* @__PURE__ */ FSComponent.buildComponent(GspdIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(HdgIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Compass, { bus: this.props.bus }))));
+      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "PFD-ROOT" }, /* @__PURE__ */ FSComponent.buildComponent("div", { class: "top-component" }, /* @__PURE__ */ FSComponent.buildComponent(Attitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent("div", null, "fma"), /* @__PURE__ */ FSComponent.buildComponent(Airspeed, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("div", { class: "bottom-component" }, /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 800" }, /* @__PURE__ */ FSComponent.buildComponent(GspdIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator2, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Compass, { bus: this.props.bus }))));
     }
   };
 
@@ -32477,7 +32531,7 @@
     ["bank", { name: "PLANE BANK DEGREES" /* bank */, type: SimVarValueType.Degree }],
     ["altitude", { name: "INDICATED ALTITUDE" /* altitude */, type: SimVarValueType.Feet }],
     ["airspeed", { name: "AIRSPEED INDICATED" /* airspeed */, type: SimVarValueType.Knots }],
-    ["heading", { name: "PLANE HEADING DEGREES TRUE" /* heading */, type: SimVarValueType.Degree }],
+    ["heading", { name: "PLANE HEADING DEGREES MAGNETIC" /* heading */, type: SimVarValueType.Degree }],
     ["ground_speed", { name: "GROUND VELOCITY" /* ground_speed */, type: SimVarValueType.Knots }],
     ["heading_lock", { name: "AUTOPILOT HEADING LOCK DIR" /* heading_lock */, type: SimVarValueType.Degree }]
   ]);

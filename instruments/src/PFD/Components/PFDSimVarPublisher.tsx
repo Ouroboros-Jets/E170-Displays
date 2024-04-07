@@ -12,7 +12,7 @@ export enum PFDVars {
   bank = 'PLANE BANK DEGREES',
   altitude = 'INDICATED ALTITUDE',
   airspeed = 'AIRSPEED INDICATED',
-  heading = 'PLANE HEADING DEGREES TRUE',
+  heading = 'PLANE HEADING DEGREES MAGNETIC',
   ground_speed = 'GROUND VELOCITY',
   heading_lock = 'AUTOPILOT HEADING LOCK DIR'
 }

@@ -5,7 +5,7 @@ import { Altitude } from './Components/Altitude/Altitude'
 import { Airspeed } from './Components/Airspeed/Airspeed'
 import Compass from './Components/Compass'
 import GspdIndicator from './Components/GspdIndicator'
-import HdgIndicator from './Components/HdgIndicator'
+import LockHdgIndicator from './Components/LockHdgIndicator'
 
 type PFDProps = ComponentProps & {
   bus: EventBus
@@ -24,7 +24,7 @@ export class PFDRoot extends DisplayComponent<PFDProps> {
         <div class="bottom-component">
           <svg viewBox="0 0 600 800">
             <GspdIndicator bus={this.props.bus} />
-            <HdgIndicator bus={this.props.bus} />
+            <LockHdgIndicator bus={this.props.bus} />
             <Compass bus={this.props.bus} />
           </svg>
         </div>

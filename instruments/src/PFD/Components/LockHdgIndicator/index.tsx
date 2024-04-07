@@ -1,11 +1,11 @@
 import type { PFDSimvars } from '../PFDSimVarPublisher'
 import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
 
-type T_HdgIndicator = ComponentProps & {
+type T_LockHdgIndicator = ComponentProps & {
   bus: EventBus
 }
 
-export default class HdgIndicator extends DisplayComponent<T_HdgIndicator> {
+export default class LockHdgIndicator extends DisplayComponent<T_LockHdgIndicator> {
   private readonly hdgRef = FSComponent.createRef<SVGTextElement>()
 
   public onAfterRender(node: VNode): void {

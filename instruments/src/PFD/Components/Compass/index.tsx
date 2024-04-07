@@ -1,5 +1,7 @@
 import type { PFDSimvars } from '../PFDSimVarPublisher'
 import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
+import RealHdgIndicator from './RealHdgIndicator'
+import LockHdgIndicator from './LockHdgIndicator'
 
 type T_CompassProps = ComponentProps & {
   bus: EventBus
@@ -54,7 +56,7 @@ const drawCompassTicks = (): JSX.Element[] => {
 
 const drawStaticCompassTicks = (): JSX.Element[] => {
   const ticks: JSX.Element[] = []
-  for (let i = 0; i < 360; i++) {
+  for (let i = 1; i < 360; i++) {
     if (i % 45 === 0) {
       ticks.push(
         <g transform={`rotate(${i}, 275, 188)`}>
@@ -87,6 +89,8 @@ export default class Compass extends DisplayComponent<T_CompassProps> {
       <g>
         <g ref={this.compassRef}>{drawCompassTicks()}</g>
         <g>{drawStaticCompassTicks()}</g>
+        <LockHdgIndicator bus={this.props.bus} />
+        <RealHdgIndicator bus={this.props.bus} />
       </g>
     )
   }
