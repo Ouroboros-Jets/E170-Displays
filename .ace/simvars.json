@@ -557,5 +557,18 @@
       "max": 250.0
     },
     "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "WT_CJ4_MFD1_PFD1",
+    "index": 0,
+    "unit": "Bool",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
   }
 ]

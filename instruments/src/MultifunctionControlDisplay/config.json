@@ -1,5 +1,5 @@
 {
-  "index": "./main.tsx",
+  "index": "./index.tsx",
   "isInteractive": true,
   "name": "MultifunctionControlDisplay",
   "dimensions": {

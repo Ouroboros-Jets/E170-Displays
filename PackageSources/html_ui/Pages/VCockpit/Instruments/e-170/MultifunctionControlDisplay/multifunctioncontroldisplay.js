@@ -39,18 +39,30 @@ class InstrumentLogic extends BaseInstrument {
   var __hasOwnProp = Object.prototype.hasOwnProperty;
   var __propIsEnum = Object.prototype.propertyIsEnumerable;
   var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-  var __spreadValues = (a, b) => {
-    for (var prop in b || (b = {}))
-      if (__hasOwnProp.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
+  var __spreadValues = (a, b2) => {
+    for (var prop in b2 || (b2 = {}))
+      if (__hasOwnProp.call(b2, prop))
+        __defNormalProp(a, prop, b2[prop]);
     if (__getOwnPropSymbols)
-      for (var prop of __getOwnPropSymbols(b)) {
-        if (__propIsEnum.call(b, prop))
-          __defNormalProp(a, prop, b[prop]);
+      for (var prop of __getOwnPropSymbols(b2)) {
+        if (__propIsEnum.call(b2, prop))
+          __defNormalProp(a, prop, b2[prop]);
       }
     return a;
   };
-  var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+  var __spreadProps = (a, b2) => __defProps(a, __getOwnPropDescs(b2));
+  var __objRest = (source, exclude) => {
+    var target = {};
+    for (var prop in source)
+      if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
+        target[prop] = source[prop];
+    if (source != null && __getOwnPropSymbols)
+      for (var prop of __getOwnPropSymbols(source)) {
+        if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
+          target[prop] = source[prop];
+      }
+    return target;
+  };
   var __commonJS = (cb, mod) => function __require() {
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
@@ -297,7 +309,7 @@ class InstrumentLogic extends BaseInstrument {
               try {
                 testStringCoercion(value);
                 return false;
-              } catch (e) {
+              } catch (e2) {
                 return true;
               }
             }
@@ -375,7 +387,7 @@ class InstrumentLogic extends BaseInstrument {
                   var init = lazyComponent._init;
                   try {
                     return getComponentNameFromType(init(payload));
-                  } catch (x) {
+                  } catch (x2) {
                     return null;
                   }
                 }
@@ -526,8 +538,8 @@ class InstrumentLogic extends BaseInstrument {
               props.children = children;
             } else if (childrenLength > 1) {
               var childArray = Array(childrenLength);
-              for (var i = 0; i < childrenLength; i++) {
-                childArray[i] = arguments[i + 2];
+              for (var i2 = 0; i2 < childrenLength; i2++) {
+                childArray[i2] = arguments[i2 + 2];
               }
               {
                 if (Object.freeze) {
@@ -602,8 +614,8 @@ class InstrumentLogic extends BaseInstrument {
               props.children = children;
             } else if (childrenLength > 1) {
               var childArray = Array(childrenLength);
-              for (var i = 0; i < childrenLength; i++) {
-                childArray[i] = arguments[i + 2];
+              for (var i2 = 0; i2 < childrenLength; i2++) {
+                childArray[i2] = arguments[i2 + 2];
               }
               props.children = childArray;
             }
@@ -670,8 +682,8 @@ class InstrumentLogic extends BaseInstrument {
                 if (childKey != null) {
                   escapedChildKey = escapeUserProvidedKey(childKey) + "/";
                 }
-                mapIntoArray(mappedChild, array, escapedChildKey, "", function(c) {
-                  return c;
+                mapIntoArray(mappedChild, array, escapedChildKey, "", function(c2) {
+                  return c2;
                 });
               } else if (mappedChild != null) {
                 if (isValidElement(mappedChild)) {
@@ -694,9 +706,9 @@ class InstrumentLogic extends BaseInstrument {
             var subtreeCount = 0;
             var nextNamePrefix = nameSoFar === "" ? SEPARATOR : nameSoFar + SUBSEPARATOR;
             if (isArray(children)) {
-              for (var i = 0; i < children.length; i++) {
-                child = children[i];
-                nextName = nextNamePrefix + getElementKey(child, i);
+              for (var i2 = 0; i2 < children.length; i2++) {
+                child = children[i2];
+                nextName = nextNamePrefix + getElementKey(child, i2);
                 subtreeCount += mapIntoArray(child, array, escapedPrefix, nextName, callback);
               }
             } else {
@@ -738,11 +750,11 @@ class InstrumentLogic extends BaseInstrument {
             return result;
           }
           function countChildren(children) {
-            var n = 0;
+            var n2 = 0;
             mapChildren(children, function() {
-              n++;
+              n2++;
             });
-            return n;
+            return n2;
           }
           function forEachChildren(children, forEachFunc, forEachContext) {
             mapChildren(children, function() {
@@ -1189,8 +1201,8 @@ class InstrumentLogic extends BaseInstrument {
               if (prefix === void 0) {
                 try {
                   throw Error();
-                } catch (x) {
-                  var match = x.stack.trim().match(/\n( *(at )?)/);
+                } catch (x2) {
+                  var match = x2.stack.trim().match(/\n( *(at )?)/);
                   prefix = match && match[1] || "";
                 }
               }
@@ -1236,23 +1248,23 @@ class InstrumentLogic extends BaseInstrument {
                 if (typeof Reflect === "object" && Reflect.construct) {
                   try {
                     Reflect.construct(Fake, []);
-                  } catch (x) {
-                    control = x;
+                  } catch (x2) {
+                    control = x2;
                   }
                   Reflect.construct(fn, [], Fake);
                 } else {
                   try {
                     Fake.call();
-                  } catch (x) {
-                    control = x;
+                  } catch (x2) {
+                    control = x2;
                   }
                   fn.call(Fake.prototype);
                 }
               } else {
                 try {
                   throw Error();
-                } catch (x) {
-                  control = x;
+                } catch (x2) {
+                  control = x2;
                 }
                 fn();
               }
@@ -1260,19 +1272,19 @@ class InstrumentLogic extends BaseInstrument {
               if (sample && control && typeof sample.stack === "string") {
                 var sampleLines = sample.stack.split("\n");
                 var controlLines = control.stack.split("\n");
-                var s = sampleLines.length - 1;
-                var c = controlLines.length - 1;
-                while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
-                  c--;
+                var s2 = sampleLines.length - 1;
+                var c2 = controlLines.length - 1;
+                while (s2 >= 1 && c2 >= 0 && sampleLines[s2] !== controlLines[c2]) {
+                  c2--;
                 }
-                for (; s >= 1 && c >= 0; s--, c--) {
-                  if (sampleLines[s] !== controlLines[c]) {
-                    if (s !== 1 || c !== 1) {
+                for (; s2 >= 1 && c2 >= 0; s2--, c2--) {
+                  if (sampleLines[s2] !== controlLines[c2]) {
+                    if (s2 !== 1 || c2 !== 1) {
                       do {
-                        s--;
-                        c--;
-                        if (c < 0 || sampleLines[s] !== controlLines[c]) {
-                          var _frame = "\n" + sampleLines[s].replace(" at new ", " at ");
+                        s2--;
+                        c2--;
+                        if (c2 < 0 || sampleLines[s2] !== controlLines[c2]) {
+                          var _frame = "\n" + sampleLines[s2].replace(" at new ", " at ");
                           if (fn.displayName && _frame.includes("<anonymous>")) {
                             _frame = _frame.replace("<anonymous>", fn.displayName);
                           }
@@ -1283,7 +1295,7 @@ class InstrumentLogic extends BaseInstrument {
                           }
                           return _frame;
                         }
-                      } while (s >= 1 && c >= 0);
+                      } while (s2 >= 1 && c2 >= 0);
                     }
                     break;
                   }
@@ -1345,7 +1357,7 @@ class InstrumentLogic extends BaseInstrument {
                   var init = lazyComponent._init;
                   try {
                     return describeUnknownElementTypeFrameInDEV(init(payload), source, ownerFn);
-                  } catch (x) {
+                  } catch (x2) {
                   }
                 }
               }
@@ -1470,8 +1482,8 @@ class InstrumentLogic extends BaseInstrument {
               return;
             }
             if (isArray(node)) {
-              for (var i = 0; i < node.length; i++) {
-                var child = node[i];
+              for (var i2 = 0; i2 < node.length; i2++) {
+                var child = node[i2];
                 if (isValidElement(child)) {
                   validateExplicitKey(child, parentType);
                 }
@@ -1525,8 +1537,8 @@ class InstrumentLogic extends BaseInstrument {
           function validateFragmentProps(fragment) {
             {
               var keys = Object.keys(fragment.props);
-              for (var i = 0; i < keys.length; i++) {
-                var key = keys[i];
+              for (var i2 = 0; i2 < keys.length; i2++) {
+                var key = keys[i2];
                 if (key !== "children" && key !== "key") {
                   setCurrentlyValidatingElement$1(fragment);
                   error("Invalid prop `%s` supplied to `React.Fragment`. React.Fragment can only have `key` and `children` props.", key);
@@ -1574,8 +1586,8 @@ class InstrumentLogic extends BaseInstrument {
               return element;
             }
             if (validType) {
-              for (var i = 2; i < arguments.length; i++) {
-                validateChildKeys(arguments[i], type);
+              for (var i2 = 2; i2 < arguments.length; i2++) {
+                validateChildKeys(arguments[i2], type);
               }
             }
             if (type === REACT_FRAGMENT_TYPE) {
@@ -1609,8 +1621,8 @@ class InstrumentLogic extends BaseInstrument {
           }
           function cloneElementWithValidation(element, props, children) {
             var newElement = cloneElement.apply(this, arguments);
-            for (var i = 2; i < arguments.length; i++) {
-              validateChildKeys(arguments[i], newElement.type);
+            for (var i2 = 2; i2 < arguments.length; i2++) {
+              validateChildKeys(arguments[i2], newElement.type);
             }
             validatePropTypes(newElement);
             return newElement;
@@ -1787,17 +1799,17 @@ class InstrumentLogic extends BaseInstrument {
             {
               if (!isFlushing) {
                 isFlushing = true;
-                var i = 0;
+                var i2 = 0;
                 try {
-                  for (; i < queue.length; i++) {
-                    var callback = queue[i];
+                  for (; i2 < queue.length; i2++) {
+                    var callback = queue[i2];
                     do {
                       callback = callback(true);
                     } while (callback !== null);
                   }
                   queue.length = 0;
                 } catch (error2) {
-                  queue = queue.slice(i + 1);
+                  queue = queue.slice(i2 + 1);
                   throw error2;
                 } finally {
                   isFlushing = false;
@@ -2014,7 +2026,7 @@ class InstrumentLogic extends BaseInstrument {
                   var init = lazyComponent._init;
                   try {
                     return getComponentNameFromType(init(payload));
-                  } catch (x) {
+                  } catch (x2) {
                     return null;
                   }
                 }
@@ -2108,8 +2120,8 @@ class InstrumentLogic extends BaseInstrument {
               if (prefix === void 0) {
                 try {
                   throw Error();
-                } catch (x) {
-                  var match = x.stack.trim().match(/\n( *(at )?)/);
+                } catch (x2) {
+                  var match = x2.stack.trim().match(/\n( *(at )?)/);
                   prefix = match && match[1] || "";
                 }
               }
@@ -2155,23 +2167,23 @@ class InstrumentLogic extends BaseInstrument {
                 if (typeof Reflect === "object" && Reflect.construct) {
                   try {
                     Reflect.construct(Fake, []);
-                  } catch (x) {
-                    control = x;
+                  } catch (x2) {
+                    control = x2;
                   }
                   Reflect.construct(fn, [], Fake);
                 } else {
                   try {
                     Fake.call();
-                  } catch (x) {
-                    control = x;
+                  } catch (x2) {
+                    control = x2;
                   }
                   fn.call(Fake.prototype);
                 }
               } else {
                 try {
                   throw Error();
-                } catch (x) {
-                  control = x;
+                } catch (x2) {
+                  control = x2;
                 }
                 fn();
               }
@@ -2179,19 +2191,19 @@ class InstrumentLogic extends BaseInstrument {
               if (sample && control && typeof sample.stack === "string") {
                 var sampleLines = sample.stack.split("\n");
                 var controlLines = control.stack.split("\n");
-                var s = sampleLines.length - 1;
-                var c = controlLines.length - 1;
-                while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
-                  c--;
+                var s2 = sampleLines.length - 1;
+                var c2 = controlLines.length - 1;
+                while (s2 >= 1 && c2 >= 0 && sampleLines[s2] !== controlLines[c2]) {
+                  c2--;
                 }
-                for (; s >= 1 && c >= 0; s--, c--) {
-                  if (sampleLines[s] !== controlLines[c]) {
-                    if (s !== 1 || c !== 1) {
+                for (; s2 >= 1 && c2 >= 0; s2--, c2--) {
+                  if (sampleLines[s2] !== controlLines[c2]) {
+                    if (s2 !== 1 || c2 !== 1) {
                       do {
-                        s--;
-                        c--;
-                        if (c < 0 || sampleLines[s] !== controlLines[c]) {
-                          var _frame = "\n" + sampleLines[s].replace(" at new ", " at ");
+                        s2--;
+                        c2--;
+                        if (c2 < 0 || sampleLines[s2] !== controlLines[c2]) {
+                          var _frame = "\n" + sampleLines[s2].replace(" at new ", " at ");
                           if (fn.displayName && _frame.includes("<anonymous>")) {
                             _frame = _frame.replace("<anonymous>", fn.displayName);
                           }
@@ -2202,7 +2214,7 @@ class InstrumentLogic extends BaseInstrument {
                           }
                           return _frame;
                         }
-                      } while (s >= 1 && c >= 0);
+                      } while (s2 >= 1 && c2 >= 0);
                     }
                     break;
                   }
@@ -2264,7 +2276,7 @@ class InstrumentLogic extends BaseInstrument {
                   var init = lazyComponent._init;
                   try {
                     return describeUnknownElementTypeFrameInDEV(init(payload), source, ownerFn);
-                  } catch (x) {
+                  } catch (x2) {
                   }
                 }
               }
@@ -2332,7 +2344,7 @@ class InstrumentLogic extends BaseInstrument {
               try {
                 testStringCoercion(value);
                 return false;
-              } catch (e) {
+              } catch (e2) {
                 return true;
               }
             }
@@ -2589,8 +2601,8 @@ class InstrumentLogic extends BaseInstrument {
                 return;
               }
               if (isArray(node)) {
-                for (var i = 0; i < node.length; i++) {
-                  var child = node[i];
+                for (var i2 = 0; i2 < node.length; i2++) {
+                  var child = node[i2];
                   if (isValidElement(child)) {
                     validateExplicitKey(child, parentType);
                   }
@@ -2645,8 +2657,8 @@ class InstrumentLogic extends BaseInstrument {
           function validateFragmentProps(fragment) {
             {
               var keys = Object.keys(fragment.props);
-              for (var i = 0; i < keys.length; i++) {
-                var key = keys[i];
+              for (var i2 = 0; i2 < keys.length; i2++) {
+                var key = keys[i2];
                 if (key !== "children" && key !== "key") {
                   setCurrentlyValidatingElement$1(fragment);
                   error("Invalid prop `%s` supplied to `React.Fragment`. React.Fragment can only have `key` and `children` props.", key);
@@ -2697,8 +2709,8 @@ class InstrumentLogic extends BaseInstrument {
                 if (children !== void 0) {
                   if (isStaticChildren) {
                     if (isArray(children)) {
-                      for (var i = 0; i < children.length; i++) {
-                        validateChildKeys(children[i], type);
+                      for (var i2 = 0; i2 < children.length; i2++) {
+                        validateChildKeys(children[i2], type);
                       }
                       if (Object.freeze) {
                         Object.freeze(children);
@@ -2729,11 +2741,11 @@ class InstrumentLogic extends BaseInstrument {
               return jsxWithValidation(type, props, key, false);
             }
           }
-          var jsx5 = jsxWithValidationDynamic;
-          var jsxs = jsxWithValidationStatic;
+          var jsx8 = jsxWithValidationDynamic;
+          var jsxs2 = jsxWithValidationStatic;
           exports.Fragment = REACT_FRAGMENT_TYPE;
-          exports.jsx = jsx5;
-          exports.jsxs = jsxs;
+          exports.jsx = jsx8;
+          exports.jsxs = jsxs2;
         })();
       }
     }
@@ -2784,8 +2796,8 @@ class InstrumentLogic extends BaseInstrument {
             }
             return first;
           }
-          function siftUp(heap, node, i) {
-            var index = i;
+          function siftUp(heap, node, i2) {
+            var index = i2;
             while (index > 0) {
               var parentIndex = index - 1 >>> 1;
               var parent = heap[parentIndex];
@@ -2798,8 +2810,8 @@ class InstrumentLogic extends BaseInstrument {
               }
             }
           }
-          function siftDown(heap, node, i) {
-            var index = i;
+          function siftDown(heap, node, i2) {
+            var index = i2;
             var length = heap.length;
             var halfLength = length >>> 1;
             while (index < halfLength) {
@@ -2826,9 +2838,9 @@ class InstrumentLogic extends BaseInstrument {
               }
             }
           }
-          function compare(a, b) {
-            var diff = a.sortIndex - b.sortIndex;
-            return diff !== 0 ? diff : a.id - b.id;
+          function compare(a, b2) {
+            var diff = a.sortIndex - b2.sortIndex;
+            return diff !== 0 ? diff : a.id - b2.id;
           }
           var ImmediatePriority = 1;
           var UserBlockingPriority = 2;
@@ -3324,8 +3336,8 @@ class InstrumentLogic extends BaseInstrument {
                 possibleRegistrationNames.ondblclick = registrationName;
               }
             }
-            for (var i = 0; i < dependencies.length; i++) {
-              allNativeEvents.add(dependencies[i]);
+            for (var i2 = 0; i2 < dependencies.length; i2++) {
+              allNativeEvents.add(dependencies[i2]);
             }
           }
           var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined");
@@ -3342,7 +3354,7 @@ class InstrumentLogic extends BaseInstrument {
               try {
                 testStringCoercion(value);
                 return false;
-              } catch (e) {
+              } catch (e2) {
                 return true;
               }
             }
@@ -4054,8 +4066,8 @@ class InstrumentLogic extends BaseInstrument {
               if (prefix === void 0) {
                 try {
                   throw Error();
-                } catch (x) {
-                  var match = x.stack.trim().match(/\n( *(at )?)/);
+                } catch (x2) {
+                  var match = x2.stack.trim().match(/\n( *(at )?)/);
                   prefix = match && match[1] || "";
                 }
               }
@@ -4101,23 +4113,23 @@ class InstrumentLogic extends BaseInstrument {
                 if (typeof Reflect === "object" && Reflect.construct) {
                   try {
                     Reflect.construct(Fake, []);
-                  } catch (x) {
-                    control = x;
+                  } catch (x2) {
+                    control = x2;
                   }
                   Reflect.construct(fn, [], Fake);
                 } else {
                   try {
                     Fake.call();
-                  } catch (x) {
-                    control = x;
+                  } catch (x2) {
+                    control = x2;
                   }
                   fn.call(Fake.prototype);
                 }
               } else {
                 try {
                   throw Error();
-                } catch (x) {
-                  control = x;
+                } catch (x2) {
+                  control = x2;
                 }
                 fn();
               }
@@ -4125,19 +4137,19 @@ class InstrumentLogic extends BaseInstrument {
               if (sample && control && typeof sample.stack === "string") {
                 var sampleLines = sample.stack.split("\n");
                 var controlLines = control.stack.split("\n");
-                var s = sampleLines.length - 1;
-                var c = controlLines.length - 1;
-                while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
-                  c--;
+                var s2 = sampleLines.length - 1;
+                var c2 = controlLines.length - 1;
+                while (s2 >= 1 && c2 >= 0 && sampleLines[s2] !== controlLines[c2]) {
+                  c2--;
                 }
-                for (; s >= 1 && c >= 0; s--, c--) {
-                  if (sampleLines[s] !== controlLines[c]) {
-                    if (s !== 1 || c !== 1) {
+                for (; s2 >= 1 && c2 >= 0; s2--, c2--) {
+                  if (sampleLines[s2] !== controlLines[c2]) {
+                    if (s2 !== 1 || c2 !== 1) {
                       do {
-                        s--;
-                        c--;
-                        if (c < 0 || sampleLines[s] !== controlLines[c]) {
-                          var _frame = "\n" + sampleLines[s].replace(" at new ", " at ");
+                        s2--;
+                        c2--;
+                        if (c2 < 0 || sampleLines[s2] !== controlLines[c2]) {
+                          var _frame = "\n" + sampleLines[s2].replace(" at new ", " at ");
                           if (fn.displayName && _frame.includes("<anonymous>")) {
                             _frame = _frame.replace("<anonymous>", fn.displayName);
                           }
@@ -4148,7 +4160,7 @@ class InstrumentLogic extends BaseInstrument {
                           }
                           return _frame;
                         }
-                      } while (s >= 1 && c >= 0);
+                      } while (s2 >= 1 && c2 >= 0);
                     }
                     break;
                   }
@@ -4215,7 +4227,7 @@ class InstrumentLogic extends BaseInstrument {
                   var init = lazyComponent._init;
                   try {
                     return describeUnknownElementTypeFrameInDEV(init(payload), source, ownerFn);
-                  } catch (x) {
+                  } catch (x2) {
                   }
                 }
               }
@@ -4255,8 +4267,8 @@ class InstrumentLogic extends BaseInstrument {
                 node = node.return;
               } while (node);
               return info;
-            } catch (x) {
-              return "\nError generating stack: " + x.message + "\n" + x.stack;
+            } catch (x2) {
+              return "\nError generating stack: " + x2.message + "\n" + x2.stack;
             }
           }
           function getWrappedName(outerType, innerType, wrapperName) {
@@ -4321,7 +4333,7 @@ class InstrumentLogic extends BaseInstrument {
                   var init = lazyComponent._init;
                   try {
                     return getComponentNameFromType(init(payload));
-                  } catch (x) {
+                  } catch (x2) {
                     return null;
                   }
                 }
@@ -4577,7 +4589,7 @@ class InstrumentLogic extends BaseInstrument {
             }
             try {
               return doc.activeElement || doc.body;
-            } catch (e) {
+            } catch (e2) {
               return doc.body;
             }
           }
@@ -4716,8 +4728,8 @@ class InstrumentLogic extends BaseInstrument {
                 checkAttributeStringCoercion(name, "name");
               }
               var group = queryRoot.querySelectorAll("input[name=" + JSON.stringify("" + name) + '][type="radio"]');
-              for (var i = 0; i < group.length; i++) {
-                var otherNode = group[i];
+              for (var i2 = 0; i2 < group.length; i2++) {
+                var otherNode = group[i2];
                 if (otherNode === rootNode || otherNode.form !== rootNode.form) {
                   continue;
                 }
@@ -4795,8 +4807,8 @@ class InstrumentLogic extends BaseInstrument {
           function checkSelectPropTypes(props) {
             {
               checkControlledValueProps("select", props);
-              for (var i = 0; i < valuePropNames.length; i++) {
-                var propName = valuePropNames[i];
+              for (var i2 = 0; i2 < valuePropNames.length; i2++) {
+                var propName = valuePropNames[i2];
                 if (props[propName] == null) {
                   continue;
                 }
@@ -4814,8 +4826,8 @@ class InstrumentLogic extends BaseInstrument {
             if (multiple) {
               var selectedValues = propValue;
               var selectedValue = {};
-              for (var i = 0; i < selectedValues.length; i++) {
-                selectedValue["$" + selectedValues[i]] = true;
+              for (var i2 = 0; i2 < selectedValues.length; i2++) {
+                selectedValue["$" + selectedValues[i2]] = true;
               }
               for (var _i = 0; _i < options2.length; _i++) {
                 var selected = selectedValue.hasOwnProperty("$" + options2[_i].value);
@@ -5177,7 +5189,7 @@ class InstrumentLogic extends BaseInstrument {
             var warnedForNaNValue = false;
             var warnedForInfinityValue = false;
             var camelize = function(string) {
-              return string.replace(hyphenPattern, function(_, character) {
+              return string.replace(hyphenPattern, function(_2, character) {
                 return character.toUpperCase();
               });
             };
@@ -5287,8 +5299,8 @@ class InstrumentLogic extends BaseInstrument {
             var expanded = {};
             for (var key in styles) {
               var longhands = shorthandToLonghand[key] || [key];
-              for (var i = 0; i < longhands.length; i++) {
-                expanded[longhands[i]] = key;
+              for (var i2 = 0; i2 < longhands.length; i2++) {
+                expanded[longhands[i2]] = key;
               }
             }
             return expanded;
@@ -6199,8 +6211,8 @@ class InstrumentLogic extends BaseInstrument {
             restoreQueue = null;
             restoreStateOfTarget(target);
             if (queuedTargets) {
-              for (var i = 0; i < queuedTargets.length; i++) {
-                restoreStateOfTarget(queuedTargets[i]);
+              for (var i2 = 0; i2 < queuedTargets.length; i2++) {
+                restoreStateOfTarget(queuedTargets[i2]);
               }
             }
           }
@@ -6217,13 +6229,13 @@ class InstrumentLogic extends BaseInstrument {
               restoreStateIfNeeded();
             }
           }
-          function batchedUpdates(fn, a, b) {
+          function batchedUpdates(fn, a, b2) {
             if (isInsideEventHandler) {
-              return fn(a, b);
+              return fn(a, b2);
             }
             isInsideEventHandler = true;
             try {
-              return batchedUpdatesImpl(fn, a, b);
+              return batchedUpdatesImpl(fn, a, b2);
             } finally {
               isInsideEventHandler = false;
               finishEventHandler();
@@ -6283,11 +6295,11 @@ class InstrumentLogic extends BaseInstrument {
               });
               window.addEventListener("test", options, options);
               window.removeEventListener("test", options, options);
-            } catch (e) {
+            } catch (e2) {
               passiveBrowserEventsSupported = false;
             }
           }
-          function invokeGuardedCallbackProd(name, func, context2, a, b, c, d, e, f) {
+          function invokeGuardedCallbackProd(name, func, context2, a, b2, c2, d2, e2, f) {
             var funcArgs = Array.prototype.slice.call(arguments, 3);
             try {
               func.apply(context2, funcArgs);
@@ -6299,7 +6311,7 @@ class InstrumentLogic extends BaseInstrument {
           {
             if (typeof window !== "undefined" && typeof window.dispatchEvent === "function" && typeof document !== "undefined" && typeof document.createEvent === "function") {
               var fakeNode = document.createElement("react");
-              invokeGuardedCallbackImpl = function invokeGuardedCallbackDev(name, func, context2, a, b, c, d, e, f) {
+              invokeGuardedCallbackImpl = function invokeGuardedCallbackDev(name, func, context2, a, b2, c2, d2, e2, f) {
                 if (typeof document === "undefined" || document === null) {
                   throw new Error("The `document` global was defined when React was initialized, but is not defined anymore. This can happen in a test environment if a component schedules an update from an asynchronous callback, but the test has already finished running. To solve this, you can either unmount the component at the end of your test (and ensure that any asynchronous operations get canceled in `componentWillUnmount`), or you can change the test itself to be asynchronous.");
                 }
@@ -6374,12 +6386,12 @@ class InstrumentLogic extends BaseInstrument {
               caughtError = error2;
             }
           };
-          function invokeGuardedCallback(name, func, context2, a, b, c, d, e, f) {
+          function invokeGuardedCallback(name, func, context2, a, b2, c2, d2, e2, f) {
             hasError = false;
             caughtError = null;
             invokeGuardedCallbackImpl$1.apply(reporter, arguments);
           }
-          function invokeGuardedCallbackAndCatchFirstError(name, func, context2, a, b, c, d, e, f) {
+          function invokeGuardedCallbackAndCatchFirstError(name, func, context2, a, b2, c2, d2, e2, f) {
             invokeGuardedCallback.apply(this, arguments);
             if (hasError) {
               var error2 = clearCaughtError();
@@ -6530,7 +6542,7 @@ class InstrumentLogic extends BaseInstrument {
               return fiber;
             }
             var a = fiber;
-            var b = alternate;
+            var b2 = alternate;
             while (true) {
               var parentA = a.return;
               if (parentA === null) {
@@ -6540,7 +6552,7 @@ class InstrumentLogic extends BaseInstrument {
               if (parentB === null) {
                 var nextParent = parentA.return;
                 if (nextParent !== null) {
-                  a = b = nextParent;
+                  a = b2 = nextParent;
                   continue;
                 }
                 break;
@@ -6552,7 +6564,7 @@ class InstrumentLogic extends BaseInstrument {
                     assertIsMounted(parentA);
                     return fiber;
                   }
-                  if (child === b) {
+                  if (child === b2) {
                     assertIsMounted(parentA);
                     return alternate;
                   }
@@ -6560,9 +6572,9 @@ class InstrumentLogic extends BaseInstrument {
                 }
                 throw new Error("Unable to find node on an unmounted component.");
               }
-              if (a.return !== b.return) {
+              if (a.return !== b2.return) {
                 a = parentA;
-                b = parentB;
+                b2 = parentB;
               } else {
                 var didFindChild = false;
                 var _child = parentA.child;
@@ -6570,12 +6582,12 @@ class InstrumentLogic extends BaseInstrument {
                   if (_child === a) {
                     didFindChild = true;
                     a = parentA;
-                    b = parentB;
+                    b2 = parentB;
                     break;
                   }
-                  if (_child === b) {
+                  if (_child === b2) {
                     didFindChild = true;
-                    b = parentA;
+                    b2 = parentA;
                     a = parentB;
                     break;
                   }
@@ -6587,12 +6599,12 @@ class InstrumentLogic extends BaseInstrument {
                     if (_child === a) {
                       didFindChild = true;
                       a = parentB;
-                      b = parentA;
+                      b2 = parentA;
                       break;
                     }
-                    if (_child === b) {
+                    if (_child === b2) {
                       didFindChild = true;
-                      b = parentB;
+                      b2 = parentB;
                       a = parentA;
                       break;
                     }
@@ -6603,7 +6615,7 @@ class InstrumentLogic extends BaseInstrument {
                   }
                 }
               }
-              if (a.alternate !== b) {
+              if (a.alternate !== b2) {
                 throw new Error("Return fibers should always be each others' alternates. This error is likely caused by a bug in React. Please file an issue.");
               }
             }
@@ -6995,8 +7007,8 @@ class InstrumentLogic extends BaseInstrument {
           var clz32 = Math.clz32 ? Math.clz32 : clz32Fallback;
           var log = Math.log;
           var LN2 = Math.LN2;
-          function clz32Fallback(x) {
-            var asUint = x >>> 0;
+          function clz32Fallback(x2) {
+            var asUint = x2 >>> 0;
             if (asUint === 0) {
               return 32;
             }
@@ -7335,30 +7347,30 @@ class InstrumentLogic extends BaseInstrument {
           function laneToIndex(lane) {
             return pickArbitraryLaneIndex(lane);
           }
-          function includesSomeLane(a, b) {
-            return (a & b) !== NoLanes;
+          function includesSomeLane(a, b2) {
+            return (a & b2) !== NoLanes;
           }
           function isSubsetOfLanes(set2, subset) {
             return (set2 & subset) === subset;
           }
-          function mergeLanes(a, b) {
-            return a | b;
+          function mergeLanes(a, b2) {
+            return a | b2;
           }
           function removeLanes(set2, subset) {
             return set2 & ~subset;
           }
-          function intersectLanes(a, b) {
-            return a & b;
+          function intersectLanes(a, b2) {
+            return a & b2;
           }
           function laneToLanes(lane) {
             return lane;
           }
-          function higherPriorityLane(a, b) {
-            return a !== NoLane && a < b ? a : b;
+          function higherPriorityLane(a, b2) {
+            return a !== NoLane && a < b2 ? a : b2;
           }
           function createLaneMap(initial) {
             var laneMap = [];
-            for (var i = 0; i < TotalLanes; i++) {
+            for (var i2 = 0; i2 < TotalLanes; i2++) {
               laneMap.push(initial);
             }
             return laneMap;
@@ -7527,14 +7539,14 @@ class InstrumentLogic extends BaseInstrument {
               currentUpdatePriority = previousPriority;
             }
           }
-          function higherEventPriority(a, b) {
-            return a !== 0 && a < b ? a : b;
+          function higherEventPriority(a, b2) {
+            return a !== 0 && a < b2 ? a : b2;
           }
-          function lowerEventPriority(a, b) {
-            return a === 0 || a > b ? a : b;
+          function lowerEventPriority(a, b2) {
+            return a === 0 || a > b2 ? a : b2;
           }
-          function isHigherEventPriority(a, b) {
-            return a !== 0 && a < b;
+          function isHigherEventPriority(a, b2) {
+            return a !== 0 && a < b2;
           }
           function lanesToEventPriority(lanes) {
             var lane = getHighestPriorityLane(lanes);
@@ -7737,14 +7749,14 @@ class InstrumentLogic extends BaseInstrument {
               target,
               priority: updatePriority
             };
-            var i = 0;
-            for (; i < queuedExplicitHydrationTargets.length; i++) {
-              if (!isHigherEventPriority(updatePriority, queuedExplicitHydrationTargets[i].priority)) {
+            var i2 = 0;
+            for (; i2 < queuedExplicitHydrationTargets.length; i2++) {
+              if (!isHigherEventPriority(updatePriority, queuedExplicitHydrationTargets[i2].priority)) {
                 break;
               }
             }
-            queuedExplicitHydrationTargets.splice(i, 0, queuedTarget);
-            if (i === 0) {
+            queuedExplicitHydrationTargets.splice(i2, 0, queuedTarget);
+            if (i2 === 0) {
               attemptExplicitHydrationTarget(queuedTarget);
             }
           }
@@ -7807,8 +7819,8 @@ class InstrumentLogic extends BaseInstrument {
           function retryIfBlockedOn(unblocked) {
             if (queuedDiscreteEvents.length > 0) {
               scheduleCallbackIfUnblocked(queuedDiscreteEvents[0], unblocked);
-              for (var i = 1; i < queuedDiscreteEvents.length; i++) {
-                var queuedEvent = queuedDiscreteEvents[i];
+              for (var i2 = 1; i2 < queuedDiscreteEvents.length; i2++) {
+                var queuedEvent = queuedDiscreteEvents[i2];
                 if (queuedEvent.blockedOn === unblocked) {
                   queuedEvent.blockedOn = null;
                 }
@@ -8880,8 +8892,8 @@ class InstrumentLogic extends BaseInstrument {
             }
             accumulateEnterLeaveTwoPhaseListeners(dispatchQueue, leave, enter, from, to);
           }
-          function is(x, y) {
-            return x === y && (x !== 0 || 1 / x === 1 / y) || x !== x && y !== y;
+          function is(x2, y2) {
+            return x2 === y2 && (x2 !== 0 || 1 / x2 === 1 / y2) || x2 !== x2 && y2 !== y2;
           }
           var objectIs = typeof Object.is === "function" ? Object.is : is;
           function shallowEqual(objA, objB) {
@@ -8896,8 +8908,8 @@ class InstrumentLogic extends BaseInstrument {
             if (keysA.length !== keysB.length) {
               return false;
             }
-            for (var i = 0; i < keysA.length; i++) {
-              var currentKey = keysA[i];
+            for (var i2 = 0; i2 < keysA.length; i2++) {
+              var currentKey = keysA[i2];
               if (!hasOwnProperty.call(objB, currentKey) || !objectIs(objA[currentKey], objB[currentKey])) {
                 return false;
               }
@@ -8947,7 +8959,7 @@ class InstrumentLogic extends BaseInstrument {
             try {
               anchorNode.nodeType;
               focusNode.nodeType;
-            } catch (e) {
+            } catch (e2) {
               return null;
             }
             return getModernOffsetsFromPoints(outerNode, anchorNode, anchorOffset, focusNode, focusOffset);
@@ -9114,8 +9126,8 @@ class InstrumentLogic extends BaseInstrument {
               if (typeof priorFocusedElem.focus === "function") {
                 priorFocusedElem.focus();
               }
-              for (var i = 0; i < ancestors.length; i++) {
-                var info = ancestors[i];
+              for (var i2 = 0; i2 < ancestors.length; i2++) {
+                var info = ancestors[i2];
                 info.element.scrollLeft = info.left;
                 info.element.scrollTop = info.top;
               }
@@ -9280,8 +9292,8 @@ class InstrumentLogic extends BaseInstrument {
             registerTwoPhaseEvent(reactName, [domEventName]);
           }
           function registerSimpleEvents() {
-            for (var i = 0; i < simpleEventPluginEvents.length; i++) {
-              var eventName = simpleEventPluginEvents[i];
+            for (var i2 = 0; i2 < simpleEventPluginEvents.length; i2++) {
+              var eventName = simpleEventPluginEvents[i2];
               var domEventName = eventName.toLowerCase();
               var capitalizedEvent = eventName[0].toUpperCase() + eventName.slice(1);
               registerSimpleEvent(domEventName, "on" + capitalizedEvent);
@@ -9421,8 +9433,8 @@ class InstrumentLogic extends BaseInstrument {
           function processDispatchQueueItemsInOrder(event, dispatchListeners, inCapturePhase) {
             var previousInstance;
             if (inCapturePhase) {
-              for (var i = dispatchListeners.length - 1; i >= 0; i--) {
-                var _dispatchListeners$i = dispatchListeners[i], instance = _dispatchListeners$i.instance, currentTarget = _dispatchListeners$i.currentTarget, listener = _dispatchListeners$i.listener;
+              for (var i2 = dispatchListeners.length - 1; i2 >= 0; i2--) {
+                var _dispatchListeners$i = dispatchListeners[i2], instance = _dispatchListeners$i.instance, currentTarget = _dispatchListeners$i.currentTarget, listener = _dispatchListeners$i.listener;
                 if (instance !== previousInstance && event.isPropagationStopped()) {
                   return;
                 }
@@ -9442,8 +9454,8 @@ class InstrumentLogic extends BaseInstrument {
           }
           function processDispatchQueue(dispatchQueue, eventSystemFlags) {
             var inCapturePhase = (eventSystemFlags & IS_CAPTURE_PHASE) !== 0;
-            for (var i = 0; i < dispatchQueue.length; i++) {
-              var _dispatchQueue$i = dispatchQueue[i], event = _dispatchQueue$i.event, listeners = _dispatchQueue$i.listeners;
+            for (var i2 = 0; i2 < dispatchQueue.length; i2++) {
+              var _dispatchQueue$i = dispatchQueue[i2], event = _dispatchQueue$i.event, listeners = _dispatchQueue$i.listeners;
               processDispatchQueueItemsInOrder(event, listeners, inCapturePhase);
             }
             rethrowCaughtError();
@@ -9865,9 +9877,9 @@ class InstrumentLogic extends BaseInstrument {
             }
           }
           function updateDOMProperties(domElement, updatePayload, wasCustomComponentTag, isCustomComponentTag) {
-            for (var i = 0; i < updatePayload.length; i += 2) {
-              var propKey = updatePayload[i];
-              var propValue = updatePayload[i + 1];
+            for (var i2 = 0; i2 < updatePayload.length; i2 += 2) {
+              var propKey = updatePayload[i2];
+              var propValue = updatePayload[i2 + 1];
               if (propKey === STYLE) {
                 setValueForStyles(domElement, propValue);
               } else if (propKey === DANGEROUSLY_SET_INNER_HTML) {
@@ -9950,8 +9962,8 @@ class InstrumentLogic extends BaseInstrument {
                 break;
               case "video":
               case "audio":
-                for (var i = 0; i < mediaEventTypes.length; i++) {
-                  listenToNonDelegatedEvent(mediaEventTypes[i], domElement);
+                for (var i2 = 0; i2 < mediaEventTypes.length; i2++) {
+                  listenToNonDelegatedEvent(mediaEventTypes[i2], domElement);
                 }
                 props = rawProps;
                 break;
@@ -10202,8 +10214,8 @@ class InstrumentLogic extends BaseInstrument {
                 break;
               case "video":
               case "audio":
-                for (var i = 0; i < mediaEventTypes.length; i++) {
-                  listenToNonDelegatedEvent(mediaEventTypes[i], domElement);
+                for (var i2 = 0; i2 < mediaEventTypes.length; i2++) {
+                  listenToNonDelegatedEvent(mediaEventTypes[i2], domElement);
                 }
                 break;
               case "source":
@@ -11510,14 +11522,14 @@ class InstrumentLogic extends BaseInstrument {
           function flushSyncCallbacks() {
             if (!isFlushingSyncQueue && syncQueue !== null) {
               isFlushingSyncQueue = true;
-              var i = 0;
+              var i2 = 0;
               var previousUpdatePriority = getCurrentUpdatePriority();
               try {
                 var isSync = true;
                 var queue = syncQueue;
                 setCurrentUpdatePriority(DiscreteEventPriority);
-                for (; i < queue.length; i++) {
-                  var callback = queue[i];
+                for (; i2 < queue.length; i2++) {
+                  var callback = queue[i2];
                   do {
                     callback = callback(isSync);
                   } while (callback !== null);
@@ -11526,7 +11538,7 @@ class InstrumentLogic extends BaseInstrument {
                 includesLegacySyncCallbacks = false;
               } catch (error2) {
                 if (syncQueue !== null) {
-                  syncQueue = syncQueue.slice(i + 1);
+                  syncQueue = syncQueue.slice(i2 + 1);
                 }
                 scheduleCallback(ImmediatePriority, flushSyncCallbacks);
                 throw error2;
@@ -12458,8 +12470,8 @@ class InstrumentLogic extends BaseInstrument {
           }
           function finishQueueingConcurrentUpdates() {
             if (concurrentQueues !== null) {
-              for (var i = 0; i < concurrentQueues.length; i++) {
-                var queue = concurrentQueues[i];
+              for (var i2 = 0; i2 < concurrentQueues.length; i2++) {
+                var queue = concurrentQueues[i2];
                 var lastInterleavedUpdate = queue.interleaved;
                 if (lastInterleavedUpdate !== null) {
                   queue.interleaved = null;
@@ -12896,8 +12908,8 @@ class InstrumentLogic extends BaseInstrument {
             var effects = finishedQueue.effects;
             finishedQueue.effects = null;
             if (effects !== null) {
-              for (var i = 0; i < effects.length; i++) {
-                var effect = effects[i];
+              for (var i2 = 0; i2 < effects.length; i2++) {
+                var effect = effects[i2];
                 var callback = effect.callback;
                 if (callback !== null) {
                   effect.callback = null;
@@ -13879,8 +13891,8 @@ class InstrumentLogic extends BaseInstrument {
             function reconcileChildrenArray(returnFiber, currentFirstChild, newChildren, lanes) {
               {
                 var knownKeys = null;
-                for (var i = 0; i < newChildren.length; i++) {
-                  var child = newChildren[i];
+                for (var i2 = 0; i2 < newChildren.length; i2++) {
+                  var child = newChildren[i2];
                   knownKeys = warnOnInvalidKey(child, knownKeys, returnFiber);
                 }
               }
@@ -14249,11 +14261,11 @@ class InstrumentLogic extends BaseInstrument {
           var contextStackCursor$1 = createCursor(NO_CONTEXT);
           var contextFiberStackCursor = createCursor(NO_CONTEXT);
           var rootInstanceStackCursor = createCursor(NO_CONTEXT);
-          function requiredContext(c) {
-            if (c === NO_CONTEXT) {
+          function requiredContext(c2) {
+            if (c2 === NO_CONTEXT) {
               throw new Error("Expected host context to exist. This error is likely caused by a bug in React. Please file an issue.");
             }
-            return c;
+            return c2;
           }
           function getRootHostContainer() {
             var rootInstance = requiredContext(rootInstanceStackCursor.current);
@@ -14371,8 +14383,8 @@ class InstrumentLogic extends BaseInstrument {
           var Passive$1 = 8;
           var workInProgressSources = [];
           function resetWorkInProgressVersions() {
-            for (var i = 0; i < workInProgressSources.length; i++) {
-              var mutableSource = workInProgressSources[i];
+            for (var i2 = 0; i2 < workInProgressSources.length; i2++) {
+              var mutableSource = workInProgressSources[i2];
               {
                 mutableSource._workInProgressVersionPrimary = null;
               }
@@ -14443,10 +14455,10 @@ class InstrumentLogic extends BaseInstrument {
                 if (hookTypesDev !== null) {
                   var table = "";
                   var secondColumnStart = 30;
-                  for (var i = 0; i <= hookTypesUpdateIndexDev; i++) {
-                    var oldHookName = hookTypesDev[i];
-                    var newHookName = i === hookTypesUpdateIndexDev ? currentHookName : oldHookName;
-                    var row = i + 1 + ". " + oldHookName;
+                  for (var i2 = 0; i2 <= hookTypesUpdateIndexDev; i2++) {
+                    var oldHookName = hookTypesDev[i2];
+                    var newHookName = i2 === hookTypesUpdateIndexDev ? currentHookName : oldHookName;
+                    var row = i2 + 1 + ". " + oldHookName;
                     while (row.length < secondColumnStart) {
                       row += " ";
                     }
@@ -14478,8 +14490,8 @@ class InstrumentLogic extends BaseInstrument {
                 error("The final argument passed to %s changed size between renders. The order and size of this array must remain constant.\n\nPrevious: %s\nIncoming: %s", currentHookNameInDev, "[" + prevDeps.join(", ") + "]", "[" + nextDeps.join(", ") + "]");
               }
             }
-            for (var i = 0; i < prevDeps.length && i < nextDeps.length; i++) {
-              if (objectIs(nextDeps[i], prevDeps[i])) {
+            for (var i2 = 0; i2 < prevDeps.length && i2 < nextDeps.length; i2++) {
+              if (objectIs(nextDeps[i2], prevDeps[i2])) {
                 continue;
               }
               return false;
@@ -16364,9 +16376,9 @@ class InstrumentLogic extends BaseInstrument {
               } else {
                 console["error"](error2);
               }
-            } catch (e) {
+            } catch (e2) {
               setTimeout(function() {
-                throw e;
+                throw e2;
               });
             }
           }
@@ -16748,7 +16760,7 @@ class InstrumentLogic extends BaseInstrument {
                   var init = lazyComponent._init;
                   try {
                     outerMemoType = init(payload);
-                  } catch (x) {
+                  } catch (x2) {
                     outerMemoType = null;
                   }
                   var outerPropTypes = outerMemoType && outerMemoType.propTypes;
@@ -17769,8 +17781,8 @@ class InstrumentLogic extends BaseInstrument {
             {
               if ((revealOrder === "forwards" || revealOrder === "backwards") && children !== void 0 && children !== null && children !== false) {
                 if (isArray(children)) {
-                  for (var i = 0; i < children.length; i++) {
-                    if (!validateSuspenseListNestedChild(children[i], i)) {
+                  for (var i2 = 0; i2 < children.length; i2++) {
+                    if (!validateSuspenseListNestedChild(children[i2], i2)) {
                       return;
                     }
                   }
@@ -19941,8 +19953,8 @@ class InstrumentLogic extends BaseInstrument {
           function recursivelyTraverseMutationEffects(root2, parentFiber, lanes) {
             var deletions = parentFiber.deletions;
             if (deletions !== null) {
-              for (var i = 0; i < deletions.length; i++) {
-                var childToDelete = deletions[i];
+              for (var i2 = 0; i2 < deletions.length; i2++) {
+                var childToDelete = deletions[i2];
                 try {
                   commitDeletionEffects(root2, parentFiber, childToDelete);
                 } catch (error2) {
@@ -20444,8 +20456,8 @@ class InstrumentLogic extends BaseInstrument {
               if ((nextEffect.flags & ChildDeletion) !== NoFlags) {
                 var deletions = fiber.deletions;
                 if (deletions !== null) {
-                  for (var i = 0; i < deletions.length; i++) {
-                    var fiberToDelete = deletions[i];
+                  for (var i2 = 0; i2 < deletions.length; i2++) {
+                    var fiberToDelete = deletions[i2];
                     nextEffect = fiberToDelete;
                     commitPassiveUnmountEffectsInsideOfDeletedTree_begin(fiberToDelete, fiber);
                   }
@@ -21060,8 +21072,8 @@ class InstrumentLogic extends BaseInstrument {
                 if (updateQueue !== null) {
                   var checks = updateQueue.stores;
                   if (checks !== null) {
-                    for (var i = 0; i < checks.length; i++) {
-                      var check = checks[i];
+                    for (var i2 = 0; i2 < checks.length; i2++) {
+                      var check = checks[i2];
                       var getSnapshot = check.getSnapshot;
                       var renderedValue = check.value;
                       try {
@@ -21161,13 +21173,13 @@ class InstrumentLogic extends BaseInstrument {
               }
             }
           }
-          function discreteUpdates(fn, a, b, c, d) {
+          function discreteUpdates(fn, a, b2, c2, d2) {
             var previousPriority = getCurrentUpdatePriority();
             var prevTransition = ReactCurrentBatchConfig$3.transition;
             try {
               ReactCurrentBatchConfig$3.transition = null;
               setCurrentUpdatePriority(DiscreteEventPriority);
-              return fn(a, b, c, d);
+              return fn(a, b2, c2, d2);
             } finally {
               setCurrentUpdatePriority(previousPriority);
               ReactCurrentBatchConfig$3.transition = prevTransition;
@@ -21637,8 +21649,8 @@ class InstrumentLogic extends BaseInstrument {
             ensureRootIsScheduled(root2, now());
             if (recoverableErrors !== null) {
               var onRecoverableError = root2.onRecoverableError;
-              for (var i = 0; i < recoverableErrors.length; i++) {
-                var recoverableError = recoverableErrors[i];
+              for (var i2 = 0; i2 < recoverableErrors.length; i2++) {
+                var recoverableError = recoverableErrors[i2];
                 var componentStack = recoverableError.stack;
                 var digest = recoverableError.digest;
                 onRecoverableError(recoverableError.value, {
@@ -21732,8 +21744,8 @@ class InstrumentLogic extends BaseInstrument {
             {
               var profilerEffects = pendingPassiveProfilerEffects;
               pendingPassiveProfilerEffects = [];
-              for (var i = 0; i < profilerEffects.length; i++) {
-                var _fiber = profilerEffects[i];
+              for (var i2 = 0; i2 < profilerEffects.length; i2++) {
+                var _fiber = profilerEffects[i2];
                 commitPassiveEffectDurations(root2, _fiber);
               }
             }
@@ -22416,7 +22428,7 @@ class InstrumentLogic extends BaseInstrument {
               var nonExtensibleObject = Object.preventExtensions({});
               /* @__PURE__ */ new Map([[nonExtensibleObject, null]]);
               /* @__PURE__ */ new Set([nonExtensibleObject]);
-            } catch (e) {
+            } catch (e2) {
               hasBadMapPolyfill = true;
             }
           }
@@ -23162,8 +23174,8 @@ class InstrumentLogic extends BaseInstrument {
                 warn("copyWithRename() expects paths of the same length");
                 return;
               } else {
-                for (var i = 0; i < newPath.length - 1; i++) {
-                  if (oldPath[i] !== newPath[i]) {
+                for (var i2 = 0; i2 < newPath.length - 1; i2++) {
+                  if (oldPath[i2] !== newPath[i2]) {
                     warn("copyWithRename() expects paths to be the same except for the deepest key");
                     return;
                   }
@@ -23445,8 +23457,8 @@ class InstrumentLogic extends BaseInstrument {
             markContainerAsRoot(root2.current, container);
             listenToAllSupportedEvents(container);
             if (mutableSources) {
-              for (var i = 0; i < mutableSources.length; i++) {
-                var mutableSource = mutableSources[i];
+              for (var i2 = 0; i2 < mutableSources.length; i2++) {
+                var mutableSource = mutableSources[i2];
                 registerMutableSourceForHydration(root2, mutableSource);
               }
             }
@@ -23796,30 +23808,30 @@ class InstrumentLogic extends BaseInstrument {
   var require_client = __commonJS({
     "node_modules/react-dom/client.js"(exports) {
       "use strict";
-      var m = require_react_dom();
+      var m2 = require_react_dom();
       if (false) {
-        exports.createRoot = m.createRoot;
-        exports.hydrateRoot = m.hydrateRoot;
+        exports.createRoot = m2.createRoot;
+        exports.hydrateRoot = m2.hydrateRoot;
       } else {
-        i = m.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
-        exports.createRoot = function(c, o) {
-          i.usingClientEntryPoint = true;
+        i2 = m2.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+        exports.createRoot = function(c2, o2) {
+          i2.usingClientEntryPoint = true;
           try {
-            return m.createRoot(c, o);
+            return m2.createRoot(c2, o2);
           } finally {
-            i.usingClientEntryPoint = false;
+            i2.usingClientEntryPoint = false;
           }
         };
-        exports.hydrateRoot = function(c, h, o) {
-          i.usingClientEntryPoint = true;
+        exports.hydrateRoot = function(c2, h, o2) {
+          i2.usingClientEntryPoint = true;
           try {
-            return m.hydrateRoot(c, h, o);
+            return m2.hydrateRoot(c2, h, o2);
           } finally {
-            i.usingClientEntryPoint = false;
+            i2.usingClientEntryPoint = false;
           }
         };
       }
-      var i;
+      var i2;
     }
   });
 
@@ -24008,12 +24020,226 @@ class InstrumentLogic extends BaseInstrument {
     return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(ScratchpadContext.Provider, { value: { value: "Hello, world!" }, children });
   }
 
-  // instruments/src/MultifunctionControlDisplay/index.tsx
+  // instruments/src/MultifunctionControlDisplay/src/layouts/index/index.layout.tsx
   var import_jsx_runtime4 = __toESM(require_jsx_runtime());
-  var MultifunctionControlDisplay = () => {
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(ScratchpadProvider, { children: "hellos" });
+  function IndexLayout({ children }) {
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { id: "index-layout", children });
+  }
+  function IndexLayoutTitle({ children }) {
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "title", children });
+  }
+
+  // node_modules/ts-pattern/dist/index.js
+  var t = Symbol.for("@ts-pattern/matcher");
+  var e = Symbol.for("@ts-pattern/isVariadic");
+  var n = "@ts-pattern/anonymous-select-key";
+  var r = (t2) => Boolean(t2 && "object" == typeof t2);
+  var i = (e2) => e2 && !!e2[t];
+  var o = (n2, s2, c2) => {
+    if (i(n2)) {
+      const e2 = n2[t](), { matched: r2, selections: i2 } = e2.match(s2);
+      return r2 && i2 && Object.keys(i2).forEach((t2) => c2(t2, i2[t2])), r2;
+    }
+    if (r(n2)) {
+      if (!r(s2))
+        return false;
+      if (Array.isArray(n2)) {
+        if (!Array.isArray(s2))
+          return false;
+        let t2 = [], r2 = [], a = [];
+        for (const o2 of n2.keys()) {
+          const s3 = n2[o2];
+          i(s3) && s3[e] ? a.push(s3) : a.length ? r2.push(s3) : t2.push(s3);
+        }
+        if (a.length) {
+          if (a.length > 1)
+            throw new Error("Pattern error: Using `...P.array(...)` several times in a single pattern is not allowed.");
+          if (s2.length < t2.length + r2.length)
+            return false;
+          const e2 = s2.slice(0, t2.length), n3 = 0 === r2.length ? [] : s2.slice(-r2.length), i2 = s2.slice(t2.length, 0 === r2.length ? Infinity : -r2.length);
+          return t2.every((t3, n4) => o(t3, e2[n4], c2)) && r2.every((t3, e3) => o(t3, n3[e3], c2)) && (0 === a.length || o(a[0], i2, c2));
+        }
+        return n2.length === s2.length && n2.every((t3, e2) => o(t3, s2[e2], c2));
+      }
+      return Object.keys(n2).every((e2) => {
+        const r2 = n2[e2];
+        return (e2 in s2 || i(a = r2) && "optional" === a[t]().matcherType) && o(r2, s2[e2], c2);
+        var a;
+      });
+    }
+    return Object.is(s2, n2);
   };
-  render(/* @__PURE__ */ (0, import_jsx_runtime4.jsx)(MultifunctionControlDisplay, {}));
+  var s = (e2) => {
+    var n2, o2, a;
+    return r(e2) ? i(e2) ? null != (n2 = null == (o2 = (a = e2[t]()).getSelectionKeys) ? void 0 : o2.call(a)) ? n2 : [] : Array.isArray(e2) ? c(e2, s) : c(Object.values(e2), s) : [];
+  };
+  var c = (t2, e2) => t2.reduce((t3, n2) => t3.concat(e2(n2)), []);
+  function u(t2) {
+    return Object.assign(t2, { optional: () => l(t2), and: (e2) => m(t2, e2), or: (e2) => d(t2, e2), select: (e2) => void 0 === e2 ? p(t2) : p(e2, t2) });
+  }
+  function l(e2) {
+    return u({ [t]: () => ({ match: (t2) => {
+      let n2 = {};
+      const r2 = (t3, e3) => {
+        n2[t3] = e3;
+      };
+      return void 0 === t2 ? (s(e2).forEach((t3) => r2(t3, void 0)), { matched: true, selections: n2 }) : { matched: o(e2, t2, r2), selections: n2 };
+    }, getSelectionKeys: () => s(e2), matcherType: "optional" }) });
+  }
+  function m(...e2) {
+    return u({ [t]: () => ({ match: (t2) => {
+      let n2 = {};
+      const r2 = (t3, e3) => {
+        n2[t3] = e3;
+      };
+      return { matched: e2.every((e3) => o(e3, t2, r2)), selections: n2 };
+    }, getSelectionKeys: () => c(e2, s), matcherType: "and" }) });
+  }
+  function d(...e2) {
+    return u({ [t]: () => ({ match: (t2) => {
+      let n2 = {};
+      const r2 = (t3, e3) => {
+        n2[t3] = e3;
+      };
+      return c(e2, s).forEach((t3) => r2(t3, void 0)), { matched: e2.some((e3) => o(e3, t2, r2)), selections: n2 };
+    }, getSelectionKeys: () => c(e2, s), matcherType: "or" }) });
+  }
+  function y(e2) {
+    return { [t]: () => ({ match: (t2) => ({ matched: Boolean(e2(t2)) }) }) };
+  }
+  function p(...e2) {
+    const r2 = "string" == typeof e2[0] ? e2[0] : void 0, i2 = 2 === e2.length ? e2[1] : "string" == typeof e2[0] ? void 0 : e2[0];
+    return u({ [t]: () => ({ match: (t2) => {
+      let e3 = { [null != r2 ? r2 : n]: t2 };
+      return { matched: void 0 === i2 || o(i2, t2, (t3, n2) => {
+        e3[t3] = n2;
+      }), selections: e3 };
+    }, getSelectionKeys: () => [null != r2 ? r2 : n].concat(void 0 === i2 ? [] : s(i2)) }) });
+  }
+  function v(t2) {
+    return "number" == typeof t2;
+  }
+  function b(t2) {
+    return "string" == typeof t2;
+  }
+  function w(t2) {
+    return "bigint" == typeof t2;
+  }
+  var S = u(y(function(t2) {
+    return true;
+  }));
+  var j = (t2) => Object.assign(u(t2), { startsWith: (e2) => {
+    return j(m(t2, (n2 = e2, y((t3) => b(t3) && t3.startsWith(n2)))));
+    var n2;
+  }, endsWith: (e2) => {
+    return j(m(t2, (n2 = e2, y((t3) => b(t3) && t3.endsWith(n2)))));
+    var n2;
+  }, minLength: (e2) => j(m(t2, ((t3) => y((e3) => b(e3) && e3.length >= t3))(e2))), maxLength: (e2) => j(m(t2, ((t3) => y((e3) => b(e3) && e3.length <= t3))(e2))), includes: (e2) => {
+    return j(m(t2, (n2 = e2, y((t3) => b(t3) && t3.includes(n2)))));
+    var n2;
+  }, regex: (e2) => {
+    return j(m(t2, (n2 = e2, y((t3) => b(t3) && Boolean(t3.match(n2))))));
+    var n2;
+  } });
+  var E = j(y(b));
+  var K = (t2) => Object.assign(u(t2), { between: (e2, n2) => K(m(t2, ((t3, e3) => y((n3) => v(n3) && t3 <= n3 && e3 >= n3))(e2, n2))), lt: (e2) => K(m(t2, ((t3) => y((e3) => v(e3) && e3 < t3))(e2))), gt: (e2) => K(m(t2, ((t3) => y((e3) => v(e3) && e3 > t3))(e2))), lte: (e2) => K(m(t2, ((t3) => y((e3) => v(e3) && e3 <= t3))(e2))), gte: (e2) => K(m(t2, ((t3) => y((e3) => v(e3) && e3 >= t3))(e2))), int: () => K(m(t2, y((t3) => v(t3) && Number.isInteger(t3)))), finite: () => K(m(t2, y((t3) => v(t3) && Number.isFinite(t3)))), positive: () => K(m(t2, y((t3) => v(t3) && t3 > 0))), negative: () => K(m(t2, y((t3) => v(t3) && t3 < 0))) });
+  var x = K(y(v));
+  var A = (t2) => Object.assign(u(t2), { between: (e2, n2) => A(m(t2, ((t3, e3) => y((n3) => w(n3) && t3 <= n3 && e3 >= n3))(e2, n2))), lt: (e2) => A(m(t2, ((t3) => y((e3) => w(e3) && e3 < t3))(e2))), gt: (e2) => A(m(t2, ((t3) => y((e3) => w(e3) && e3 > t3))(e2))), lte: (e2) => A(m(t2, ((t3) => y((e3) => w(e3) && e3 <= t3))(e2))), gte: (e2) => A(m(t2, ((t3) => y((e3) => w(e3) && e3 >= t3))(e2))), positive: () => A(m(t2, y((t3) => w(t3) && t3 > 0))), negative: () => A(m(t2, y((t3) => w(t3) && t3 < 0))) });
+  var P = A(y(w));
+  var T = u(y(function(t2) {
+    return "boolean" == typeof t2;
+  }));
+  var k = u(y(function(t2) {
+    return "symbol" == typeof t2;
+  }));
+  var B = u(y(function(t2) {
+    return null == t2;
+  }));
+  var _ = u(y(function(t2) {
+    return null != t2;
+  }));
+  var W = { matched: false, value: void 0 };
+  function $(t2) {
+    return new z(t2, W);
+  }
+  var z = class {
+    constructor(t2, e2) {
+      this.input = void 0, this.state = void 0, this.input = t2, this.state = e2;
+    }
+    with(...t2) {
+      if (this.state.matched)
+        return this;
+      const e2 = t2[t2.length - 1], r2 = [t2[0]];
+      let i2;
+      3 === t2.length && "function" == typeof t2[1] ? i2 = t2[1] : t2.length > 2 && r2.push(...t2.slice(1, t2.length - 1));
+      let s2 = false, c2 = {};
+      const a = (t3, e3) => {
+        s2 = true, c2[t3] = e3;
+      }, u2 = !r2.some((t3) => o(t3, this.input, a)) || i2 && !Boolean(i2(this.input)) ? W : { matched: true, value: e2(s2 ? n in c2 ? c2[n] : c2 : this.input, this.input) };
+      return new z(this.input, u2);
+    }
+    when(t2, e2) {
+      if (this.state.matched)
+        return this;
+      const n2 = Boolean(t2(this.input));
+      return new z(this.input, n2 ? { matched: true, value: e2(this.input, this.input) } : W);
+    }
+    otherwise(t2) {
+      return this.state.matched ? this.state.value : t2(this.input);
+    }
+    exhaustive() {
+      if (this.state.matched)
+        return this.state.value;
+      let t2;
+      try {
+        t2 = JSON.stringify(this.input);
+      } catch (e2) {
+        t2 = this.input;
+      }
+      throw new Error(`Pattern matching error: no pattern matches value ${t2}`);
+    }
+    run() {
+      return this.exhaustive();
+    }
+    returnType() {
+      return this;
+    }
+  };
+
+  // instruments/src/MultifunctionControlDisplay/src/components/symbol.tsx
+  var import_jsx_runtime5 = __toESM(require_jsx_runtime());
+  var symbols = {
+    left: {
+      bold: "e",
+      long: "c",
+      small: "a"
+    },
+    right: {
+      bold: "f",
+      long: "d",
+      small: "b"
+    }
+  };
+  function Arrow(_a) {
+    var _b = _a, { children, variant = "small" } = _b, props = __objRest(_b, ["children", "variant"]);
+    return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("span", { className: "font-symbols", children: $(props).with({ left: true }, { right: true }, () => symbols["right" in props ? "right" : "left"][variant]).otherwise(() => children) });
+  }
+
+  // instruments/src/MultifunctionControlDisplay/src/app.tsx
+  var import_jsx_runtime6 = __toESM(require_jsx_runtime());
+  function App() {
+    return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { id: "root", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(IndexLayout, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(IndexLayoutTitle, { children: "PERF\u2002INDEX" }),
+      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: "font-symbols", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(Arrow, { left: true, variant: "bold" }) })
+    ] }) });
+  }
+
+  // instruments/src/MultifunctionControlDisplay/index.tsx
+  var import_jsx_runtime7 = __toESM(require_jsx_runtime());
+  var MultifunctionControlDisplay = () => {
+    return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(ScratchpadProvider, { children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(App, {}) });
+  };
+  render(/* @__PURE__ */ (0, import_jsx_runtime7.jsx)(MultifunctionControlDisplay, {}));
 })();
 /**
  * @license React

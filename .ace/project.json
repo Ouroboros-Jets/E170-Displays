@@ -16,13 +16,13 @@
       "y": 1680
     },
     {
-      "uuid": "24572ab8-839d-44be-ba93-efd9cef0e88d",
+      "uuid": "417667c7-14a5-4ba0-af07-aaf95cd444af",
       "name": "MultifunctionControlDisplay",
       "element": "Instrument",
       "width": 900,
       "height": 800,
-      "x": 6240,
-      "y": 1800
+      "x": 6360,
+      "y": 1820
     }
   ]
 }

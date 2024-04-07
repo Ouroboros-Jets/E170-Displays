@@ -67,6 +67,7 @@
     "react-toggle-button": "2.2.0",
     "sass": "1.74.1",
     "sunrise-sunset-js": "2.2.1",
+    "ts-pattern": "^5.1.1",
     "tz-lookup": "6.1.25",
     "usehooks-ts": "3.1.0"
   }
