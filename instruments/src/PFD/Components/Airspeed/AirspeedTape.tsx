@@ -1,4 +1,4 @@
-import './airspeed.scss'
+import './index.scss'
 import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
 import { ClampValue } from '../../Util/ClampValue'
 import { PathWithBlackBackground } from '../../Util/PathWithBlackBackground'
@@ -96,30 +96,22 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
 
   public render(): VNode {
     return (
-      <div class="airspeed-container">
-        <svg class="airspeed-svg" viewBox="0 0 82 396">
-          <rect x={0} y={0} width={82} height={396} fill="black" opacity={0.3} />
+      <g transform="translate(0 54)">
+        <rect x={0} y={0} width={82} height={396} fill="black" opacity={0.3} />
 
-          <defs>
-            <clipPath id="tapeClip">
-              <rect x={0} y={34} width={81} height={330} />
-            </clipPath>
-          </defs>
+        <defs>
+          <clipPath id="tapeClip">
+            <rect x={0} y={34} width={81} height={330} />
+          </clipPath>
+        </defs>
 
-          <g clip-path="url(#tapeClip)">
-            <g ref={this.asTapeRef}>{this.Tape}</g>
-          </g>
-          <PathWithBlackBackground
-            d="M 81 32 L 81 364"
-            fill="black"
-            fillTop="white"
-            strokeWidthTop={2}
-            StrokeWidth={3}
-          />
+        <g clip-path="url(#tapeClip)">
+          <g ref={this.asTapeRef}>{this.Tape}</g>
+        </g>
+        <PathWithBlackBackground d="M 81 32 L 81 364" fill="black" fillTop="white" strokeWidthTop={2} StrokeWidth={3} />
 
-          <SelectedAirspeedBox selectedAirspeed={0.79} mach={true} mode={1} />
-        </svg>
-      </div>
+        <SelectedAirspeedBox selectedAirspeed={0.79} mach={true} mode={1} />
+      </g>
     )
   }
 }

@@ -2,7 +2,7 @@ import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type Ev
 import { createArray } from '../../../../../instruments/common/util/createArray'
 import { PathWithBlackBackground } from '../../Util/PathWithBlackBackground'
 import { type PFDSimvars } from '../PFDSimVarPublisher'
-import './Attitude.scss'
+import './index.scss'
 
 enum TickType {
   TWO_FIVE = 0,

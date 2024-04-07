@@ -199,7 +199,7 @@
     "name": "VERTICAL SPEED",
     "index": 0,
     "unit": "Feet per second",
-    "value": 0.0,
+    "value": 114.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -537,7 +537,7 @@
     "name": "PLANE HEADING DEGREES MAGNETIC",
     "index": 0,
     "unit": "radians",
-    "value": 170.0,
+    "value": 62.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -576,6 +576,19 @@
     "name": "GROUND VELOCITY",
     "index": 0,
     "unit": "knots",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "AUTOPILOT HEADING LOCK DIR",
+    "index": 0,
+    "unit": "degrees",
     "value": 0.0,
     "control": {
       "type": "Slider",

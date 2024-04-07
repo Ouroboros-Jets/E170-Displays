@@ -5,27 +5,12 @@ text {
     Helvetica,
     sans-serif;
 }
-.top-component {
-  height: 460px;
-  width: 600px;
-}
-.bottom-component {
-  height: 340px;
-  width: 600px;
-}
 
-/* temp_stylePlugin:instruments\src\PFD\Components\AttitudeDisplay\Attitude.scss */
+/* temp_stylePlugin:instruments\src\PFD\Components\AttitudeDisplay\index.scss */
 :root {
   --attitude-dark-brown: #794f00;
   --attitude-light-brown: #8f5d00;
   --attitude-blue: #0001d8;
-}
-.attitude-continer {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  height: 460px;
-  width: 600px;
 }
 .attitude-sky {
   fill: var(--attitude-blue);
@@ -41,32 +26,13 @@ text {
   position: absolute;
 }
 
-/* temp_stylePlugin:instruments\src\PFD\Components\Altitude\Altitude.scss */
-.altitude-continer {
-  position: absolute;
-  top: 28px;
-  right: 54px;
-  width: 120px;
-  height: 422px;
-}
-.altitude-svg {
-  position: absolute;
-  left: 0px;
-  width: 120px;
-  height: 100%;
-}
+/* temp_stylePlugin:instruments\src\PFD\Components\Airspeed\index.scss */
 
-/* temp_stylePlugin:instruments\src\PFD\Components\Airspeed\airspeed.scss */
-.airspeed-container {
-  position: absolute;
-  top: 54px;
-  left: 0px;
-  width: 140px;
-  height: 396px;
-}
-.airspeed-svg {
-  position: absolute;
-  left: 0px;
-  width: 81px;
-  height: 100%;
+/* temp_stylePlugin:instruments\src\PFD\Components\VerticalSpeed\index.scss */
+.vsText {
+  stroke: black;
+  stroke-width: 2px;
+  paint-order: stroke;
+  font-size: 36px;
+  fill: white;
 }

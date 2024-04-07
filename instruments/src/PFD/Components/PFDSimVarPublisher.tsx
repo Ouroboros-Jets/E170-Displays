@@ -5,6 +5,10 @@ export type PFDSimvars = {
   bank: number
   altitude: number
   airspeed: number
+  heading: number
+  ground_speed: number
+  heading_lock: number
+  vertical_speed: number
 }
 
 export enum PFDVars {
@@ -14,7 +18,8 @@ export enum PFDVars {
   airspeed = 'AIRSPEED INDICATED',
   heading = 'PLANE HEADING DEGREES MAGNETIC',
   ground_speed = 'GROUND VELOCITY',
-  heading_lock = 'AUTOPILOT HEADING LOCK DIR'
+  heading_lock = 'AUTOPILOT HEADING LOCK DIR',
+  vertical_speed = 'VERTICAL SPEED'
 }
 
 export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
@@ -25,7 +30,8 @@ export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
     ['airspeed', { name: PFDVars.airspeed, type: SimVarValueType.Knots }],
     ['heading', { name: PFDVars.heading, type: SimVarValueType.Degree }],
     ['ground_speed', { name: PFDVars.ground_speed, type: SimVarValueType.Knots }],
-    ['heading_lock', { name: PFDVars.heading_lock, type: SimVarValueType.Degree }]
+    ['heading_lock', { name: PFDVars.heading_lock, type: SimVarValueType.Degree }],
+    ['vertical_speed', { name: PFDVars.vertical_speed, type: SimVarValueType.Feet }]
   ])
 
   public constructor(bus: EventBus) {
