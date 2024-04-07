@@ -7,7 +7,7 @@
     "resolveJsonModule": true,
     "strictNullChecks": true,
     "moduleResolution": "node",
-    "jsx": "react",
+    "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true,
     "paths": {
       "@instruments/common/*": ["./instruments/src/Common/*"]

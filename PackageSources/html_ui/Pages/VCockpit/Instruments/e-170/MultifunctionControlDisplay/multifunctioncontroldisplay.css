@@ -1,0 +1,11 @@
+/* temp_stylePlugin:instruments\src\MultifunctionControlDisplay\index.scss */
+@font-face {
+  font-family: OuroborosMCDU;
+  src: url(/Fonts/Ouroboros-MCDU-5.0-BOLDER-TTF) format("opentype");
+}
+html,
+body,
+#root {
+  font-family: "OuroborosMCDU";
+  color: white;
+}

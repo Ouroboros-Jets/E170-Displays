@@ -7,13 +7,22 @@
   },
   "elements": [
     {
-      "uuid": "a002cf44-0e8d-47b5-b279-e77d9fa9ec84",
-      "name": "MFD",
+      "uuid": "037dab35-1dab-41ce-8c12-bca36b59825c",
+      "name": "RadioSelector",
       "element": "Instrument",
-      "width": 600,
+      "width": 500,
+      "height": 500,
+      "x": 2640,
+      "y": 1680
+    },
+    {
+      "uuid": "24572ab8-839d-44be-ba93-efd9cef0e88d",
+      "name": "MultifunctionControlDisplay",
+      "element": "Instrument",
+      "width": 900,
       "height": 800,
-      "x": 7140,
-      "y": 2200
+      "x": 6240,
+      "y": 1800
     }
   ]
 }

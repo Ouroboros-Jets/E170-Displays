@@ -493,7 +493,7 @@ class InstrumentLogic extends BaseInstrument {
             }
             return element;
           };
-          function createElement3(type, config2, children) {
+          function createElement2(type, config2, children) {
             var propName;
             var props = {};
             var key = null;
@@ -1569,7 +1569,7 @@ class InstrumentLogic extends BaseInstrument {
                 error("React.createElement: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s", typeString, info);
               }
             }
-            var element = createElement3.apply(this, arguments);
+            var element = createElement2.apply(this, arguments);
             if (element == null) {
               return element;
             }
@@ -1866,6 +1866,887 @@ class InstrumentLogic extends BaseInstrument {
         module2.exports = null;
       } else {
         module2.exports = require_react_development();
+      }
+    }
+  });
+
+  // node_modules/react/cjs/react-jsx-runtime.development.js
+  var require_react_jsx_runtime_development = __commonJS({
+    "node_modules/react/cjs/react-jsx-runtime.development.js"(exports2) {
+      "use strict";
+      if (true) {
+        (function() {
+          "use strict";
+          var React73 = require_react();
+          var REACT_ELEMENT_TYPE = Symbol.for("react.element");
+          var REACT_PORTAL_TYPE = Symbol.for("react.portal");
+          var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
+          var REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode");
+          var REACT_PROFILER_TYPE = Symbol.for("react.profiler");
+          var REACT_PROVIDER_TYPE = Symbol.for("react.provider");
+          var REACT_CONTEXT_TYPE = Symbol.for("react.context");
+          var REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref");
+          var REACT_SUSPENSE_TYPE = Symbol.for("react.suspense");
+          var REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list");
+          var REACT_MEMO_TYPE = Symbol.for("react.memo");
+          var REACT_LAZY_TYPE = Symbol.for("react.lazy");
+          var REACT_OFFSCREEN_TYPE = Symbol.for("react.offscreen");
+          var MAYBE_ITERATOR_SYMBOL = Symbol.iterator;
+          var FAUX_ITERATOR_SYMBOL = "@@iterator";
+          function getIteratorFn(maybeIterable) {
+            if (maybeIterable === null || typeof maybeIterable !== "object") {
+              return null;
+            }
+            var maybeIterator = MAYBE_ITERATOR_SYMBOL && maybeIterable[MAYBE_ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL];
+            if (typeof maybeIterator === "function") {
+              return maybeIterator;
+            }
+            return null;
+          }
+          var ReactSharedInternals = React73.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          function error(format2) {
+            {
+              {
+                for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+                  args[_key2 - 1] = arguments[_key2];
+                }
+                printWarning("error", format2, args);
+              }
+            }
+          }
+          function printWarning(level, format2, args) {
+            {
+              var ReactDebugCurrentFrame2 = ReactSharedInternals.ReactDebugCurrentFrame;
+              var stack = ReactDebugCurrentFrame2.getStackAddendum();
+              if (stack !== "") {
+                format2 += "%s";
+                args = args.concat([stack]);
+              }
+              var argsWithFormat = args.map(function(item) {
+                return String(item);
+              });
+              argsWithFormat.unshift("Warning: " + format2);
+              Function.prototype.apply.call(console[level], console, argsWithFormat);
+            }
+          }
+          var enableScopeAPI = false;
+          var enableCacheElement = false;
+          var enableTransitionTracing = false;
+          var enableLegacyHidden = false;
+          var enableDebugTracing = false;
+          var REACT_MODULE_REFERENCE;
+          {
+            REACT_MODULE_REFERENCE = Symbol.for("react.module.reference");
+          }
+          function isValidElementType(type) {
+            if (typeof type === "string" || typeof type === "function") {
+              return true;
+            }
+            if (type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || enableDebugTracing || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || enableLegacyHidden || type === REACT_OFFSCREEN_TYPE || enableScopeAPI || enableCacheElement || enableTransitionTracing) {
+              return true;
+            }
+            if (typeof type === "object" && type !== null) {
+              if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_MODULE_REFERENCE || type.getModuleId !== void 0) {
+                return true;
+              }
+            }
+            return false;
+          }
+          function getWrappedName(outerType, innerType, wrapperName) {
+            var displayName = outerType.displayName;
+            if (displayName) {
+              return displayName;
+            }
+            var functionName = innerType.displayName || innerType.name || "";
+            return functionName !== "" ? wrapperName + "(" + functionName + ")" : wrapperName;
+          }
+          function getContextName(type) {
+            return type.displayName || "Context";
+          }
+          function getComponentNameFromType(type) {
+            if (type == null) {
+              return null;
+            }
+            {
+              if (typeof type.tag === "number") {
+                error("Received an unexpected object in getComponentNameFromType(). This is likely a bug in React. Please file an issue.");
+              }
+            }
+            if (typeof type === "function") {
+              return type.displayName || type.name || null;
+            }
+            if (typeof type === "string") {
+              return type;
+            }
+            switch (type) {
+              case REACT_FRAGMENT_TYPE:
+                return "Fragment";
+              case REACT_PORTAL_TYPE:
+                return "Portal";
+              case REACT_PROFILER_TYPE:
+                return "Profiler";
+              case REACT_STRICT_MODE_TYPE:
+                return "StrictMode";
+              case REACT_SUSPENSE_TYPE:
+                return "Suspense";
+              case REACT_SUSPENSE_LIST_TYPE:
+                return "SuspenseList";
+            }
+            if (typeof type === "object") {
+              switch (type.$$typeof) {
+                case REACT_CONTEXT_TYPE:
+                  var context2 = type;
+                  return getContextName(context2) + ".Consumer";
+                case REACT_PROVIDER_TYPE:
+                  var provider = type;
+                  return getContextName(provider._context) + ".Provider";
+                case REACT_FORWARD_REF_TYPE:
+                  return getWrappedName(type, type.render, "ForwardRef");
+                case REACT_MEMO_TYPE:
+                  var outerName = type.displayName || null;
+                  if (outerName !== null) {
+                    return outerName;
+                  }
+                  return getComponentNameFromType(type.type) || "Memo";
+                case REACT_LAZY_TYPE: {
+                  var lazyComponent = type;
+                  var payload = lazyComponent._payload;
+                  var init = lazyComponent._init;
+                  try {
+                    return getComponentNameFromType(init(payload));
+                  } catch (x) {
+                    return null;
+                  }
+                }
+              }
+            }
+            return null;
+          }
+          var assign = Object.assign;
+          var disabledDepth = 0;
+          var prevLog;
+          var prevInfo;
+          var prevWarn;
+          var prevError;
+          var prevGroup;
+          var prevGroupCollapsed;
+          var prevGroupEnd;
+          function disabledLog() {
+          }
+          disabledLog.__reactDisabledLog = true;
+          function disableLogs() {
+            {
+              if (disabledDepth === 0) {
+                prevLog = console.log;
+                prevInfo = console.info;
+                prevWarn = console.warn;
+                prevError = console.error;
+                prevGroup = console.group;
+                prevGroupCollapsed = console.groupCollapsed;
+                prevGroupEnd = console.groupEnd;
+                var props = {
+                  configurable: true,
+                  enumerable: true,
+                  value: disabledLog,
+                  writable: true
+                };
+                Object.defineProperties(console, {
+                  info: props,
+                  log: props,
+                  warn: props,
+                  error: props,
+                  group: props,
+                  groupCollapsed: props,
+                  groupEnd: props
+                });
+              }
+              disabledDepth++;
+            }
+          }
+          function reenableLogs() {
+            {
+              disabledDepth--;
+              if (disabledDepth === 0) {
+                var props = {
+                  configurable: true,
+                  enumerable: true,
+                  writable: true
+                };
+                Object.defineProperties(console, {
+                  log: assign({}, props, {
+                    value: prevLog
+                  }),
+                  info: assign({}, props, {
+                    value: prevInfo
+                  }),
+                  warn: assign({}, props, {
+                    value: prevWarn
+                  }),
+                  error: assign({}, props, {
+                    value: prevError
+                  }),
+                  group: assign({}, props, {
+                    value: prevGroup
+                  }),
+                  groupCollapsed: assign({}, props, {
+                    value: prevGroupCollapsed
+                  }),
+                  groupEnd: assign({}, props, {
+                    value: prevGroupEnd
+                  })
+                });
+              }
+              if (disabledDepth < 0) {
+                error("disabledDepth fell below zero. This is a bug in React. Please file an issue.");
+              }
+            }
+          }
+          var ReactCurrentDispatcher = ReactSharedInternals.ReactCurrentDispatcher;
+          var prefix;
+          function describeBuiltInComponentFrame(name, source, ownerFn) {
+            {
+              if (prefix === void 0) {
+                try {
+                  throw Error();
+                } catch (x) {
+                  var match = x.stack.trim().match(/\n( *(at )?)/);
+                  prefix = match && match[1] || "";
+                }
+              }
+              return "\n" + prefix + name;
+            }
+          }
+          var reentry = false;
+          var componentFrameCache;
+          {
+            var PossiblyWeakMap = typeof WeakMap === "function" ? WeakMap : Map;
+            componentFrameCache = new PossiblyWeakMap();
+          }
+          function describeNativeComponentFrame(fn, construct) {
+            if (!fn || reentry) {
+              return "";
+            }
+            {
+              var frame = componentFrameCache.get(fn);
+              if (frame !== void 0) {
+                return frame;
+              }
+            }
+            var control;
+            reentry = true;
+            var previousPrepareStackTrace = Error.prepareStackTrace;
+            Error.prepareStackTrace = void 0;
+            var previousDispatcher;
+            {
+              previousDispatcher = ReactCurrentDispatcher.current;
+              ReactCurrentDispatcher.current = null;
+              disableLogs();
+            }
+            try {
+              if (construct) {
+                var Fake = function() {
+                  throw Error();
+                };
+                Object.defineProperty(Fake.prototype, "props", {
+                  set: function() {
+                    throw Error();
+                  }
+                });
+                if (typeof Reflect === "object" && Reflect.construct) {
+                  try {
+                    Reflect.construct(Fake, []);
+                  } catch (x) {
+                    control = x;
+                  }
+                  Reflect.construct(fn, [], Fake);
+                } else {
+                  try {
+                    Fake.call();
+                  } catch (x) {
+                    control = x;
+                  }
+                  fn.call(Fake.prototype);
+                }
+              } else {
+                try {
+                  throw Error();
+                } catch (x) {
+                  control = x;
+                }
+                fn();
+              }
+            } catch (sample) {
+              if (sample && control && typeof sample.stack === "string") {
+                var sampleLines = sample.stack.split("\n");
+                var controlLines = control.stack.split("\n");
+                var s = sampleLines.length - 1;
+                var c = controlLines.length - 1;
+                while (s >= 1 && c >= 0 && sampleLines[s] !== controlLines[c]) {
+                  c--;
+                }
+                for (; s >= 1 && c >= 0; s--, c--) {
+                  if (sampleLines[s] !== controlLines[c]) {
+                    if (s !== 1 || c !== 1) {
+                      do {
+                        s--;
+                        c--;
+                        if (c < 0 || sampleLines[s] !== controlLines[c]) {
+                          var _frame = "\n" + sampleLines[s].replace(" at new ", " at ");
+                          if (fn.displayName && _frame.includes("<anonymous>")) {
+                            _frame = _frame.replace("<anonymous>", fn.displayName);
+                          }
+                          {
+                            if (typeof fn === "function") {
+                              componentFrameCache.set(fn, _frame);
+                            }
+                          }
+                          return _frame;
+                        }
+                      } while (s >= 1 && c >= 0);
+                    }
+                    break;
+                  }
+                }
+              }
+            } finally {
+              reentry = false;
+              {
+                ReactCurrentDispatcher.current = previousDispatcher;
+                reenableLogs();
+              }
+              Error.prepareStackTrace = previousPrepareStackTrace;
+            }
+            var name = fn ? fn.displayName || fn.name : "";
+            var syntheticFrame = name ? describeBuiltInComponentFrame(name) : "";
+            {
+              if (typeof fn === "function") {
+                componentFrameCache.set(fn, syntheticFrame);
+              }
+            }
+            return syntheticFrame;
+          }
+          function describeFunctionComponentFrame(fn, source, ownerFn) {
+            {
+              return describeNativeComponentFrame(fn, false);
+            }
+          }
+          function shouldConstruct(Component6) {
+            var prototype = Component6.prototype;
+            return !!(prototype && prototype.isReactComponent);
+          }
+          function describeUnknownElementTypeFrameInDEV(type, source, ownerFn) {
+            if (type == null) {
+              return "";
+            }
+            if (typeof type === "function") {
+              {
+                return describeNativeComponentFrame(type, shouldConstruct(type));
+              }
+            }
+            if (typeof type === "string") {
+              return describeBuiltInComponentFrame(type);
+            }
+            switch (type) {
+              case REACT_SUSPENSE_TYPE:
+                return describeBuiltInComponentFrame("Suspense");
+              case REACT_SUSPENSE_LIST_TYPE:
+                return describeBuiltInComponentFrame("SuspenseList");
+            }
+            if (typeof type === "object") {
+              switch (type.$$typeof) {
+                case REACT_FORWARD_REF_TYPE:
+                  return describeFunctionComponentFrame(type.render);
+                case REACT_MEMO_TYPE:
+                  return describeUnknownElementTypeFrameInDEV(type.type, source, ownerFn);
+                case REACT_LAZY_TYPE: {
+                  var lazyComponent = type;
+                  var payload = lazyComponent._payload;
+                  var init = lazyComponent._init;
+                  try {
+                    return describeUnknownElementTypeFrameInDEV(init(payload), source, ownerFn);
+                  } catch (x) {
+                  }
+                }
+              }
+            }
+            return "";
+          }
+          var hasOwnProperty13 = Object.prototype.hasOwnProperty;
+          var loggedTypeFailures = {};
+          var ReactDebugCurrentFrame = ReactSharedInternals.ReactDebugCurrentFrame;
+          function setCurrentlyValidatingElement(element) {
+            {
+              if (element) {
+                var owner = element._owner;
+                var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
+                ReactDebugCurrentFrame.setExtraStackFrame(stack);
+              } else {
+                ReactDebugCurrentFrame.setExtraStackFrame(null);
+              }
+            }
+          }
+          function checkPropTypes(typeSpecs, values, location, componentName, element) {
+            {
+              var has = Function.call.bind(hasOwnProperty13);
+              for (var typeSpecName in typeSpecs) {
+                if (has(typeSpecs, typeSpecName)) {
+                  var error$1 = void 0;
+                  try {
+                    if (typeof typeSpecs[typeSpecName] !== "function") {
+                      var err = Error((componentName || "React class") + ": " + location + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
+                      err.name = "Invariant Violation";
+                      throw err;
+                    }
+                    error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
+                  } catch (ex) {
+                    error$1 = ex;
+                  }
+                  if (error$1 && !(error$1 instanceof Error)) {
+                    setCurrentlyValidatingElement(element);
+                    error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location, typeSpecName, typeof error$1);
+                    setCurrentlyValidatingElement(null);
+                  }
+                  if (error$1 instanceof Error && !(error$1.message in loggedTypeFailures)) {
+                    loggedTypeFailures[error$1.message] = true;
+                    setCurrentlyValidatingElement(element);
+                    error("Failed %s type: %s", location, error$1.message);
+                    setCurrentlyValidatingElement(null);
+                  }
+                }
+              }
+            }
+          }
+          var isArrayImpl = Array.isArray;
+          function isArray2(a) {
+            return isArrayImpl(a);
+          }
+          function typeName(value) {
+            {
+              var hasToStringTag = typeof Symbol === "function" && Symbol.toStringTag;
+              var type = hasToStringTag && value[Symbol.toStringTag] || value.constructor.name || "Object";
+              return type;
+            }
+          }
+          function willCoercionThrow(value) {
+            {
+              try {
+                testStringCoercion(value);
+                return false;
+              } catch (e) {
+                return true;
+              }
+            }
+          }
+          function testStringCoercion(value) {
+            return "" + value;
+          }
+          function checkKeyStringCoercion(value) {
+            {
+              if (willCoercionThrow(value)) {
+                error("The provided key is an unsupported type %s. This value must be coerced to a string before before using it here.", typeName(value));
+                return testStringCoercion(value);
+              }
+            }
+          }
+          var ReactCurrentOwner = ReactSharedInternals.ReactCurrentOwner;
+          var RESERVED_PROPS = {
+            key: true,
+            ref: true,
+            __self: true,
+            __source: true
+          };
+          var specialPropKeyWarningShown;
+          var specialPropRefWarningShown;
+          var didWarnAboutStringRefs;
+          {
+            didWarnAboutStringRefs = {};
+          }
+          function hasValidRef(config2) {
+            {
+              if (hasOwnProperty13.call(config2, "ref")) {
+                var getter = Object.getOwnPropertyDescriptor(config2, "ref").get;
+                if (getter && getter.isReactWarning) {
+                  return false;
+                }
+              }
+            }
+            return config2.ref !== void 0;
+          }
+          function hasValidKey(config2) {
+            {
+              if (hasOwnProperty13.call(config2, "key")) {
+                var getter = Object.getOwnPropertyDescriptor(config2, "key").get;
+                if (getter && getter.isReactWarning) {
+                  return false;
+                }
+              }
+            }
+            return config2.key !== void 0;
+          }
+          function warnIfStringRefCannotBeAutoConverted(config2, self2) {
+            {
+              if (typeof config2.ref === "string" && ReactCurrentOwner.current && self2 && ReactCurrentOwner.current.stateNode !== self2) {
+                var componentName = getComponentNameFromType(ReactCurrentOwner.current.type);
+                if (!didWarnAboutStringRefs[componentName]) {
+                  error('Component "%s" contains the string ref "%s". Support for string refs will be removed in a future major release. This case cannot be automatically converted to an arrow function. We ask you to manually fix this case by using useRef() or createRef() instead. Learn more about using refs safely here: https://reactjs.org/link/strict-mode-string-ref', getComponentNameFromType(ReactCurrentOwner.current.type), config2.ref);
+                  didWarnAboutStringRefs[componentName] = true;
+                }
+              }
+            }
+          }
+          function defineKeyPropWarningGetter(props, displayName) {
+            {
+              var warnAboutAccessingKey = function() {
+                if (!specialPropKeyWarningShown) {
+                  specialPropKeyWarningShown = true;
+                  error("%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)", displayName);
+                }
+              };
+              warnAboutAccessingKey.isReactWarning = true;
+              Object.defineProperty(props, "key", {
+                get: warnAboutAccessingKey,
+                configurable: true
+              });
+            }
+          }
+          function defineRefPropWarningGetter(props, displayName) {
+            {
+              var warnAboutAccessingRef = function() {
+                if (!specialPropRefWarningShown) {
+                  specialPropRefWarningShown = true;
+                  error("%s: `ref` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://reactjs.org/link/special-props)", displayName);
+                }
+              };
+              warnAboutAccessingRef.isReactWarning = true;
+              Object.defineProperty(props, "ref", {
+                get: warnAboutAccessingRef,
+                configurable: true
+              });
+            }
+          }
+          var ReactElement = function(type, key, ref, self2, source, owner, props) {
+            var element = {
+              $$typeof: REACT_ELEMENT_TYPE,
+              type,
+              key,
+              ref,
+              props,
+              _owner: owner
+            };
+            {
+              element._store = {};
+              Object.defineProperty(element._store, "validated", {
+                configurable: false,
+                enumerable: false,
+                writable: true,
+                value: false
+              });
+              Object.defineProperty(element, "_self", {
+                configurable: false,
+                enumerable: false,
+                writable: false,
+                value: self2
+              });
+              Object.defineProperty(element, "_source", {
+                configurable: false,
+                enumerable: false,
+                writable: false,
+                value: source
+              });
+              if (Object.freeze) {
+                Object.freeze(element.props);
+                Object.freeze(element);
+              }
+            }
+            return element;
+          };
+          function jsxDEV(type, config2, maybeKey, source, self2) {
+            {
+              var propName;
+              var props = {};
+              var key = null;
+              var ref = null;
+              if (maybeKey !== void 0) {
+                {
+                  checkKeyStringCoercion(maybeKey);
+                }
+                key = "" + maybeKey;
+              }
+              if (hasValidKey(config2)) {
+                {
+                  checkKeyStringCoercion(config2.key);
+                }
+                key = "" + config2.key;
+              }
+              if (hasValidRef(config2)) {
+                ref = config2.ref;
+                warnIfStringRefCannotBeAutoConverted(config2, self2);
+              }
+              for (propName in config2) {
+                if (hasOwnProperty13.call(config2, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
+                  props[propName] = config2[propName];
+                }
+              }
+              if (type && type.defaultProps) {
+                var defaultProps = type.defaultProps;
+                for (propName in defaultProps) {
+                  if (props[propName] === void 0) {
+                    props[propName] = defaultProps[propName];
+                  }
+                }
+              }
+              if (key || ref) {
+                var displayName = typeof type === "function" ? type.displayName || type.name || "Unknown" : type;
+                if (key) {
+                  defineKeyPropWarningGetter(props, displayName);
+                }
+                if (ref) {
+                  defineRefPropWarningGetter(props, displayName);
+                }
+              }
+              return ReactElement(type, key, ref, self2, source, ReactCurrentOwner.current, props);
+            }
+          }
+          var ReactCurrentOwner$1 = ReactSharedInternals.ReactCurrentOwner;
+          var ReactDebugCurrentFrame$1 = ReactSharedInternals.ReactDebugCurrentFrame;
+          function setCurrentlyValidatingElement$1(element) {
+            {
+              if (element) {
+                var owner = element._owner;
+                var stack = describeUnknownElementTypeFrameInDEV(element.type, element._source, owner ? owner.type : null);
+                ReactDebugCurrentFrame$1.setExtraStackFrame(stack);
+              } else {
+                ReactDebugCurrentFrame$1.setExtraStackFrame(null);
+              }
+            }
+          }
+          var propTypesMisspellWarningShown;
+          {
+            propTypesMisspellWarningShown = false;
+          }
+          function isValidElement2(object) {
+            {
+              return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+            }
+          }
+          function getDeclarationErrorAddendum() {
+            {
+              if (ReactCurrentOwner$1.current) {
+                var name = getComponentNameFromType(ReactCurrentOwner$1.current.type);
+                if (name) {
+                  return "\n\nCheck the render method of `" + name + "`.";
+                }
+              }
+              return "";
+            }
+          }
+          function getSourceInfoErrorAddendum(source) {
+            {
+              if (source !== void 0) {
+                var fileName = source.fileName.replace(/^.*[\\\/]/, "");
+                var lineNumber = source.lineNumber;
+                return "\n\nCheck your code at " + fileName + ":" + lineNumber + ".";
+              }
+              return "";
+            }
+          }
+          var ownerHasKeyUseWarning = {};
+          function getCurrentComponentErrorInfo(parentType) {
+            {
+              var info = getDeclarationErrorAddendum();
+              if (!info) {
+                var parentName = typeof parentType === "string" ? parentType : parentType.displayName || parentType.name;
+                if (parentName) {
+                  info = "\n\nCheck the top-level render call using <" + parentName + ">.";
+                }
+              }
+              return info;
+            }
+          }
+          function validateExplicitKey(element, parentType) {
+            {
+              if (!element._store || element._store.validated || element.key != null) {
+                return;
+              }
+              element._store.validated = true;
+              var currentComponentErrorInfo = getCurrentComponentErrorInfo(parentType);
+              if (ownerHasKeyUseWarning[currentComponentErrorInfo]) {
+                return;
+              }
+              ownerHasKeyUseWarning[currentComponentErrorInfo] = true;
+              var childOwner = "";
+              if (element && element._owner && element._owner !== ReactCurrentOwner$1.current) {
+                childOwner = " It was passed a child from " + getComponentNameFromType(element._owner.type) + ".";
+              }
+              setCurrentlyValidatingElement$1(element);
+              error('Each child in a list should have a unique "key" prop.%s%s See https://reactjs.org/link/warning-keys for more information.', currentComponentErrorInfo, childOwner);
+              setCurrentlyValidatingElement$1(null);
+            }
+          }
+          function validateChildKeys(node, parentType) {
+            {
+              if (typeof node !== "object") {
+                return;
+              }
+              if (isArray2(node)) {
+                for (var i = 0; i < node.length; i++) {
+                  var child = node[i];
+                  if (isValidElement2(child)) {
+                    validateExplicitKey(child, parentType);
+                  }
+                }
+              } else if (isValidElement2(node)) {
+                if (node._store) {
+                  node._store.validated = true;
+                }
+              } else if (node) {
+                var iteratorFn = getIteratorFn(node);
+                if (typeof iteratorFn === "function") {
+                  if (iteratorFn !== node.entries) {
+                    var iterator = iteratorFn.call(node);
+                    var step;
+                    while (!(step = iterator.next()).done) {
+                      if (isValidElement2(step.value)) {
+                        validateExplicitKey(step.value, parentType);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          function validatePropTypes(element) {
+            {
+              var type = element.type;
+              if (type === null || type === void 0 || typeof type === "string") {
+                return;
+              }
+              var propTypes;
+              if (typeof type === "function") {
+                propTypes = type.propTypes;
+              } else if (typeof type === "object" && (type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_MEMO_TYPE)) {
+                propTypes = type.propTypes;
+              } else {
+                return;
+              }
+              if (propTypes) {
+                var name = getComponentNameFromType(type);
+                checkPropTypes(propTypes, element.props, "prop", name, element);
+              } else if (type.PropTypes !== void 0 && !propTypesMisspellWarningShown) {
+                propTypesMisspellWarningShown = true;
+                var _name = getComponentNameFromType(type);
+                error("Component %s declared `PropTypes` instead of `propTypes`. Did you misspell the property assignment?", _name || "Unknown");
+              }
+              if (typeof type.getDefaultProps === "function" && !type.getDefaultProps.isReactClassApproved) {
+                error("getDefaultProps is only used on classic React.createClass definitions. Use a static property named `defaultProps` instead.");
+              }
+            }
+          }
+          function validateFragmentProps(fragment) {
+            {
+              var keys3 = Object.keys(fragment.props);
+              for (var i = 0; i < keys3.length; i++) {
+                var key = keys3[i];
+                if (key !== "children" && key !== "key") {
+                  setCurrentlyValidatingElement$1(fragment);
+                  error("Invalid prop `%s` supplied to `React.Fragment`. React.Fragment can only have `key` and `children` props.", key);
+                  setCurrentlyValidatingElement$1(null);
+                  break;
+                }
+              }
+              if (fragment.ref !== null) {
+                setCurrentlyValidatingElement$1(fragment);
+                error("Invalid attribute `ref` supplied to `React.Fragment`.");
+                setCurrentlyValidatingElement$1(null);
+              }
+            }
+          }
+          function jsxWithValidation(type, props, key, isStaticChildren, source, self2) {
+            {
+              var validType = isValidElementType(type);
+              if (!validType) {
+                var info = "";
+                if (type === void 0 || typeof type === "object" && type !== null && Object.keys(type).length === 0) {
+                  info += " You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.";
+                }
+                var sourceInfo = getSourceInfoErrorAddendum(source);
+                if (sourceInfo) {
+                  info += sourceInfo;
+                } else {
+                  info += getDeclarationErrorAddendum();
+                }
+                var typeString;
+                if (type === null) {
+                  typeString = "null";
+                } else if (isArray2(type)) {
+                  typeString = "array";
+                } else if (type !== void 0 && type.$$typeof === REACT_ELEMENT_TYPE) {
+                  typeString = "<" + (getComponentNameFromType(type.type) || "Unknown") + " />";
+                  info = " Did you accidentally export a JSX literal instead of a component?";
+                } else {
+                  typeString = typeof type;
+                }
+                error("React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s", typeString, info);
+              }
+              var element = jsxDEV(type, props, key, source, self2);
+              if (element == null) {
+                return element;
+              }
+              if (validType) {
+                var children = props.children;
+                if (children !== void 0) {
+                  if (isStaticChildren) {
+                    if (isArray2(children)) {
+                      for (var i = 0; i < children.length; i++) {
+                        validateChildKeys(children[i], type);
+                      }
+                      if (Object.freeze) {
+                        Object.freeze(children);
+                      }
+                    } else {
+                      error("React.jsx: Static children should always be an array. You are likely explicitly calling React.jsxs or React.jsxDEV. Use the Babel transform instead.");
+                    }
+                  } else {
+                    validateChildKeys(children, type);
+                  }
+                }
+              }
+              if (type === REACT_FRAGMENT_TYPE) {
+                validateFragmentProps(element);
+              } else {
+                validatePropTypes(element);
+              }
+              return element;
+            }
+          }
+          function jsxWithValidationStatic(type, props, key) {
+            {
+              return jsxWithValidation(type, props, key, true);
+            }
+          }
+          function jsxWithValidationDynamic(type, props, key) {
+            {
+              return jsxWithValidation(type, props, key, false);
+            }
+          }
+          var jsx58 = jsxWithValidationDynamic;
+          var jsxs43 = jsxWithValidationStatic;
+          exports2.Fragment = REACT_FRAGMENT_TYPE;
+          exports2.jsx = jsx58;
+          exports2.jsxs = jsxs43;
+        })();
+      }
+    }
+  });
+
+  // node_modules/react/jsx-runtime.js
+  var require_jsx_runtime = __commonJS({
+    "node_modules/react/jsx-runtime.js"(exports2, module2) {
+      "use strict";
+      if (false) {
+        module2.exports = null;
+      } else {
+        module2.exports = require_react_jsx_runtime_development();
       }
     }
   });
@@ -2342,9 +3223,9 @@ class InstrumentLogic extends BaseInstrument {
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React108 = require_react();
+          var React73 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React108.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React73.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -2393,7 +3274,7 @@ class InstrumentLogic extends BaseInstrument {
           var HostPortal = 4;
           var HostComponent = 5;
           var HostText = 6;
-          var Fragment2 = 7;
+          var Fragment9 = 7;
           var Mode = 8;
           var ContextConsumer = 9;
           var ContextProvider = 10;
@@ -3470,7 +4351,7 @@ class InstrumentLogic extends BaseInstrument {
                 return "DehydratedFragment";
               case ForwardRef:
                 return getWrappedName$1(type, type.render, "ForwardRef");
-              case Fragment2:
+              case Fragment9:
                 return "Fragment";
               case HostComponent:
                 return type;
@@ -3865,7 +4746,7 @@ class InstrumentLogic extends BaseInstrument {
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React108.Children.forEach(props.children, function(child) {
+                  React73.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -8998,7 +9879,7 @@ class InstrumentLogic extends BaseInstrument {
               }
             }
           }
-          function createElement3(type, props, rootContainerElement, parentNamespace) {
+          function createElement2(type, props, rootContainerElement, parentNamespace) {
             var isCustomComponentTag;
             var ownerDocument = getOwnerDocumentFromRootContainer(rootContainerElement);
             var domElement;
@@ -9850,7 +10731,7 @@ class InstrumentLogic extends BaseInstrument {
               }
               parentNamespace = hostContextDev.namespace;
             }
-            var domElement = createElement3(type, props, rootContainerInstance, parentNamespace);
+            var domElement = createElement2(type, props, rootContainerInstance, parentNamespace);
             precacheFiberNode(internalInstanceHandle, domElement);
             updateFiberProps(domElement, props);
             return domElement;
@@ -12026,7 +12907,7 @@ class InstrumentLogic extends BaseInstrument {
             }
           }
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React108.Component().refs;
+          var emptyRefsObject = new React73.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -12835,7 +13716,7 @@ class InstrumentLogic extends BaseInstrument {
               }
             }
             function updateFragment2(returnFiber, current2, fragment, lanes, key) {
-              if (current2 === null || current2.tag !== Fragment2) {
+              if (current2 === null || current2.tag !== Fragment9) {
                 var created = createFiberFromFragment(fragment, returnFiber.mode, lanes, key);
                 created.return = returnFiber;
                 return created;
@@ -13237,7 +14118,7 @@ class InstrumentLogic extends BaseInstrument {
                 if (child.key === key) {
                   var elementType = element.type;
                   if (elementType === REACT_FRAGMENT_TYPE) {
-                    if (child.tag === Fragment2) {
+                    if (child.tag === Fragment9) {
                       deleteRemainingChildren(returnFiber, child.sibling);
                       var existing = useFiber(child, element.props.children);
                       existing.return = returnFiber;
@@ -17343,7 +18224,7 @@ class InstrumentLogic extends BaseInstrument {
                 var _resolvedProps2 = workInProgress2.elementType === type ? _unresolvedProps2 : resolveDefaultProps(type, _unresolvedProps2);
                 return updateForwardRef(current2, workInProgress2, type, _resolvedProps2, renderLanes2);
               }
-              case Fragment2:
+              case Fragment9:
                 return updateFragment(current2, workInProgress2, renderLanes2);
               case Mode:
                 return updateMode(current2, workInProgress2, renderLanes2);
@@ -17615,7 +18496,7 @@ class InstrumentLogic extends BaseInstrument {
               case SimpleMemoComponent:
               case FunctionComponent:
               case ForwardRef:
-              case Fragment2:
+              case Fragment9:
               case Mode:
               case Profiler:
               case ContextConsumer:
@@ -21829,7 +22710,7 @@ class InstrumentLogic extends BaseInstrument {
             return fiber;
           }
           function createFiberFromFragment(elements, mode, lanes, key) {
-            var fiber = createFiber(Fragment2, elements, key, mode);
+            var fiber = createFiber(Fragment9, elements, key, mode);
             fiber.lanes = lanes;
             return fiber;
           }
@@ -23920,6 +24801,7 @@ class InstrumentLogic extends BaseInstrument {
         const stringReplace = unapply(String.prototype.replace);
         const stringIndexOf = unapply(String.prototype.indexOf);
         const stringTrim = unapply(String.prototype.trim);
+        const objectHasOwnProperty = unapply(Object.prototype.hasOwnProperty);
         const regExpTest = unapply(RegExp.prototype.test);
         const typeErrorCreate = unconstruct(TypeError);
         function unapply(func) {
@@ -23961,7 +24843,8 @@ class InstrumentLogic extends BaseInstrument {
         }
         function cleanArray(array) {
           for (let index = 0; index < array.length; index++) {
-            if (getOwnPropertyDescriptor(array, index) === void 0) {
+            const isPropertyExist = objectHasOwnProperty(array, index);
+            if (!isPropertyExist) {
               array[index] = null;
             }
           }
@@ -23970,7 +24853,8 @@ class InstrumentLogic extends BaseInstrument {
         function clone2(object) {
           const newObject = create(null);
           for (const [property2, value] of entries(object)) {
-            if (getOwnPropertyDescriptor(object, property2) !== void 0) {
+            const isPropertyExist = objectHasOwnProperty(object, property2);
+            if (isPropertyExist) {
               if (Array.isArray(value)) {
                 newObject[property2] = cleanArray(value);
               } else if (value && typeof value === "object" && value.constructor === Object) {
@@ -23995,8 +24879,7 @@ class InstrumentLogic extends BaseInstrument {
             }
             object = getPrototypeOf(object);
           }
-          function fallbackValue(element) {
-            console.warn("fallback value for", element);
+          function fallbackValue() {
             return null;
           }
           return fallbackValue;
@@ -24025,6 +24908,7 @@ class InstrumentLogic extends BaseInstrument {
           /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205F\u3000]/g
         );
         const DOCTYPE_NAME = seal(/^html$/i);
+        const CUSTOM_ELEMENT = seal(/^[a-z][.\w]*(-[.\w]+)+$/i);
         var EXPRESSIONS = /* @__PURE__ */ Object.freeze({
           __proto__: null,
           MUSTACHE_EXPR,
@@ -24035,7 +24919,8 @@ class InstrumentLogic extends BaseInstrument {
           IS_ALLOWED_URI,
           IS_SCRIPT_OR_DATA,
           ATTR_WHITESPACE,
-          DOCTYPE_NAME
+          DOCTYPE_NAME,
+          CUSTOM_ELEMENT
         });
         const getGlobal = function getGlobal2() {
           return typeof window === "undefined" ? null : window;
@@ -24067,7 +24952,7 @@ class InstrumentLogic extends BaseInstrument {
         function createDOMPurify() {
           let window2 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : getGlobal();
           const DOMPurify2 = (root2) => createDOMPurify(root2);
-          DOMPurify2.version = "3.0.8";
+          DOMPurify2.version = "3.0.11";
           DOMPurify2.removed = [];
           if (!window2 || !window2.document || window2.document.nodeType !== 9) {
             DOMPurify2.isSupported = false;
@@ -24120,7 +25005,8 @@ class InstrumentLogic extends BaseInstrument {
             DATA_ATTR: DATA_ATTR2,
             ARIA_ATTR: ARIA_ATTR2,
             IS_SCRIPT_OR_DATA: IS_SCRIPT_OR_DATA2,
-            ATTR_WHITESPACE: ATTR_WHITESPACE2
+            ATTR_WHITESPACE: ATTR_WHITESPACE2,
+            CUSTOM_ELEMENT: CUSTOM_ELEMENT2
           } = EXPRESSIONS;
           let {
             IS_ALLOWED_URI: IS_ALLOWED_URI$1
@@ -24201,23 +25087,23 @@ class InstrumentLogic extends BaseInstrument {
             cfg = clone2(cfg);
             PARSER_MEDIA_TYPE = SUPPORTED_PARSER_MEDIA_TYPES.indexOf(cfg.PARSER_MEDIA_TYPE) === -1 ? DEFAULT_PARSER_MEDIA_TYPE : cfg.PARSER_MEDIA_TYPE;
             transformCaseFunc = PARSER_MEDIA_TYPE === "application/xhtml+xml" ? stringToString : stringToLowerCase;
-            ALLOWED_TAGS = "ALLOWED_TAGS" in cfg ? addToSet({}, cfg.ALLOWED_TAGS, transformCaseFunc) : DEFAULT_ALLOWED_TAGS;
-            ALLOWED_ATTR = "ALLOWED_ATTR" in cfg ? addToSet({}, cfg.ALLOWED_ATTR, transformCaseFunc) : DEFAULT_ALLOWED_ATTR;
-            ALLOWED_NAMESPACES = "ALLOWED_NAMESPACES" in cfg ? addToSet({}, cfg.ALLOWED_NAMESPACES, stringToString) : DEFAULT_ALLOWED_NAMESPACES;
-            URI_SAFE_ATTRIBUTES = "ADD_URI_SAFE_ATTR" in cfg ? addToSet(
+            ALLOWED_TAGS = objectHasOwnProperty(cfg, "ALLOWED_TAGS") ? addToSet({}, cfg.ALLOWED_TAGS, transformCaseFunc) : DEFAULT_ALLOWED_TAGS;
+            ALLOWED_ATTR = objectHasOwnProperty(cfg, "ALLOWED_ATTR") ? addToSet({}, cfg.ALLOWED_ATTR, transformCaseFunc) : DEFAULT_ALLOWED_ATTR;
+            ALLOWED_NAMESPACES = objectHasOwnProperty(cfg, "ALLOWED_NAMESPACES") ? addToSet({}, cfg.ALLOWED_NAMESPACES, stringToString) : DEFAULT_ALLOWED_NAMESPACES;
+            URI_SAFE_ATTRIBUTES = objectHasOwnProperty(cfg, "ADD_URI_SAFE_ATTR") ? addToSet(
               clone2(DEFAULT_URI_SAFE_ATTRIBUTES),
               cfg.ADD_URI_SAFE_ATTR,
               transformCaseFunc
             ) : DEFAULT_URI_SAFE_ATTRIBUTES;
-            DATA_URI_TAGS = "ADD_DATA_URI_TAGS" in cfg ? addToSet(
+            DATA_URI_TAGS = objectHasOwnProperty(cfg, "ADD_DATA_URI_TAGS") ? addToSet(
               clone2(DEFAULT_DATA_URI_TAGS),
               cfg.ADD_DATA_URI_TAGS,
               transformCaseFunc
             ) : DEFAULT_DATA_URI_TAGS;
-            FORBID_CONTENTS = "FORBID_CONTENTS" in cfg ? addToSet({}, cfg.FORBID_CONTENTS, transformCaseFunc) : DEFAULT_FORBID_CONTENTS;
-            FORBID_TAGS = "FORBID_TAGS" in cfg ? addToSet({}, cfg.FORBID_TAGS, transformCaseFunc) : {};
-            FORBID_ATTR = "FORBID_ATTR" in cfg ? addToSet({}, cfg.FORBID_ATTR, transformCaseFunc) : {};
-            USE_PROFILES = "USE_PROFILES" in cfg ? cfg.USE_PROFILES : false;
+            FORBID_CONTENTS = objectHasOwnProperty(cfg, "FORBID_CONTENTS") ? addToSet({}, cfg.FORBID_CONTENTS, transformCaseFunc) : DEFAULT_FORBID_CONTENTS;
+            FORBID_TAGS = objectHasOwnProperty(cfg, "FORBID_TAGS") ? addToSet({}, cfg.FORBID_TAGS, transformCaseFunc) : {};
+            FORBID_ATTR = objectHasOwnProperty(cfg, "FORBID_ATTR") ? addToSet({}, cfg.FORBID_ATTR, transformCaseFunc) : {};
+            USE_PROFILES = objectHasOwnProperty(cfg, "USE_PROFILES") ? cfg.USE_PROFILES : false;
             ALLOW_ARIA_ATTR = cfg.ALLOW_ARIA_ATTR !== false;
             ALLOW_DATA_ATTR = cfg.ALLOW_DATA_ATTR !== false;
             ALLOW_UNKNOWN_PROTOCOLS = cfg.ALLOW_UNKNOWN_PROTOCOLS || false;
@@ -24452,7 +25338,7 @@ class InstrumentLogic extends BaseInstrument {
             return createNodeIterator.call(
               root2.ownerDocument || root2,
               root2,
-              NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT | NodeFilter.SHOW_TEXT,
+              NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT | NodeFilter.SHOW_TEXT | NodeFilter.SHOW_PROCESSING_INSTRUCTION | NodeFilter.SHOW_CDATA_SECTION,
               null
             );
           };
@@ -24483,6 +25369,10 @@ class InstrumentLogic extends BaseInstrument {
               allowedTags: ALLOWED_TAGS
             });
             if (currentNode.hasChildNodes() && !_isNode(currentNode.firstElementChild) && regExpTest(/<[/\w]/g, currentNode.innerHTML) && regExpTest(/<[/\w]/g, currentNode.textContent)) {
+              _forceRemove(currentNode);
+              return true;
+            }
+            if (currentNode.nodeType === 7) {
               _forceRemove(currentNode);
               return true;
             }
@@ -24560,7 +25450,7 @@ class InstrumentLogic extends BaseInstrument {
             return true;
           };
           const _isBasicCustomElement = function _isBasicCustomElement2(tagName) {
-            return tagName.indexOf("-") > 0;
+            return tagName !== "annotation-xml" && stringMatch(tagName, CUSTOM_ELEMENT2);
           };
           const _sanitizeAttributes = function _sanitizeAttributes2(currentNode) {
             _executeHook("beforeSanitizeAttributes", currentNode, null);
@@ -28075,7 +28965,7 @@ class InstrumentLogic extends BaseInstrument {
           var ContextProvider = REACT_PROVIDER_TYPE;
           var Element2 = REACT_ELEMENT_TYPE;
           var ForwardRef = REACT_FORWARD_REF_TYPE;
-          var Fragment2 = REACT_FRAGMENT_TYPE;
+          var Fragment9 = REACT_FRAGMENT_TYPE;
           var Lazy = REACT_LAZY_TYPE;
           var Memo = REACT_MEMO_TYPE;
           var Portal = REACT_PORTAL_TYPE;
@@ -28134,7 +29024,7 @@ class InstrumentLogic extends BaseInstrument {
           exports2.ContextProvider = ContextProvider;
           exports2.Element = Element2;
           exports2.ForwardRef = ForwardRef;
-          exports2.Fragment = Fragment2;
+          exports2.Fragment = Fragment9;
           exports2.Lazy = Lazy;
           exports2.Memo = Memo;
           exports2.Portal = Portal;
@@ -37044,12 +37934,6 @@ class InstrumentLogic extends BaseInstrument {
     }
   });
 
-  // instruments/src/ElectronicFlightBag/index.tsx
-  var import_react107 = __toESM(require_react());
-
-  // instruments/common/Hooks/index.tsx
-  var import_react3 = __toESM(require_react());
-
   // instruments/common/Hooks/defaults.tsx
   var reactMount = document.getElementById("MSFS_REACT_MOUNT");
   var getRenderTarget = () => reactMount;
@@ -37083,6 +37967,7 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/common/Hooks/simVars.tsx
+  var import_jsx_runtime = __toESM(require_jsx_runtime());
   var normalizeUnitName = (unit) => {
     switch (unit) {
       case "bool":
@@ -37204,7 +38089,7 @@ class InstrumentLogic extends BaseInstrument {
         listeners.current[key].splice(index, 1);
       }
     };
-    return /* @__PURE__ */ React2.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
       InternalProvider,
       {
         value: {
@@ -37212,28 +38097,30 @@ class InstrumentLogic extends BaseInstrument {
           update,
           register,
           unregister
-        }
-      },
-      props.children
+        },
+        children: props.children
+      }
     );
   };
 
   // instruments/common/Hooks/index.tsx
   var import_client = __toESM(require_client());
+  var import_jsx_runtime2 = __toESM(require_jsx_runtime());
   var render = (Slot) => {
     const root2 = (0, import_client.createRoot)(getRenderTarget());
-    root2.render(/* @__PURE__ */ import_react3.default.createElement(SimVarProvider, null, Slot));
+    root2.render(/* @__PURE__ */ (0, import_jsx_runtime2.jsx)(SimVarProvider, { children: Slot }));
   };
 
   // instruments/src/ElectronicFlightBag/hooks/OsRouter.tsx
-  var import_react4 = __toESM(require_react());
-  var OsRouterContext = (0, import_react4.createContext)(0);
+  var import_react3 = __toESM(require_react());
+  var import_jsx_runtime3 = __toESM(require_jsx_runtime());
+  var OsRouterContext = (0, import_react3.createContext)(0);
   var EFBRouter = (props) => {
-    const [page, setPage] = (0, import_react4.useState)(0);
-    return /* @__PURE__ */ import_react4.default.createElement(OsRouterContext.Provider, { value: { page, setPage } }, props.children);
+    const [page, setPage] = (0, import_react3.useState)(0);
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(OsRouterContext.Provider, { value: { page, setPage }, children: props.children });
   };
   var LoadContext = (context2) => {
-    const { page, setPage } = (0, import_react4.useContext)(OsRouterContext);
+    const { page, setPage } = (0, import_react3.useContext)(OsRouterContext);
     return { page, setPage };
   };
   var UseNaigate = (context2, to) => {
@@ -37243,70 +38130,78 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/OS/DisplayProvider/DisplayProvider.tsx
-  var import_react105 = __toESM(require_react());
-
-  // instruments/src/ElectronicFlightBag/components/OS/Home/Home.tsx
-  var import_react8 = __toESM(require_react());
-
-  // instruments/src/ElectronicFlightBag/components/OS/AppDock/AppDock.tsx
-  var import_react7 = __toESM(require_react());
+  var import_react72 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/OS/AppIcon/AppIcon.tsx
-  var import_react5 = __toESM(require_react());
+  var import_jsx_runtime4 = __toESM(require_jsx_runtime());
   var AppIcon = (props) => {
     const OSContext = LoadContext(OsRouterContext);
-    return /* @__PURE__ */ import_react5.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
       "div",
       {
         onClick: () => {
           UseNaigate(OSContext, props.to);
         },
-        className: "app-icon-wrapper"
-      },
-      /* @__PURE__ */ import_react5.default.createElement("div", { className: "app-icon-image-container" }, props.icon),
-      props.showText !== null && props.showText !== void 0 && props.showText && /* @__PURE__ */ import_react5.default.createElement("div", { className: "app-icon-text" }, props.text)
+        className: "app-icon-wrapper",
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "app-icon-image-container", children: props.icon }),
+          props.showText !== null && props.showText !== void 0 && props.showText && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "app-icon-text", children: props.text })
+        ]
+      }
     );
   };
-
-  // instruments/src/ElectronicFlightBag/components/common/icons/Icons.tsx
-  var import_react6 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/common/icons/airports.svg
   var airports_default = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIGlkPSJDYW1hZGFfMiIgeD0iMHB4IiB5PSIwcHgiIHZpZXdCb3g9IjAgMCAxMDgwIDEwODAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDEwODAgMTA4MDsiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxsaW5rIHhtbG5zPSIiIHR5cGU9InRleHQvY3NzIiByZWw9InN0eWxlc2hlZXQiIGlkPSJkYXJrLW1vZGUtY3VzdG9tLWxpbmsiLz48bGluayB4bWxucz0iIiB0eXBlPSJ0ZXh0L2NzcyIgcmVsPSJzdHlsZXNoZWV0IiBpZD0iZGFyay1tb2RlLWdlbmVyYWwtbGluayIvPjxzdHlsZSB4bWxucz0iIiBsYW5nPSJlbiIgdHlwZT0idGV4dC9jc3MiIGlkPSJkYXJrLW1vZGUtY3VzdG9tLXN0eWxlIi8+PHN0eWxlIHhtbG5zPSIiIGxhbmc9ImVuIiB0eXBlPSJ0ZXh0L2NzcyIgaWQ9ImRhcmstbW9kZS1uYXRpdmUtc3R5bGUiLz48c3R5bGUgeG1sbnM9IiIgbGFuZz0iZW4iIHR5cGU9InRleHQvY3NzIiBpZD0iZGFyay1tb2RlLW5hdGl2ZS1zaGVldCIvPg0KPHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMDQ1LjUsNDgzLjZoLTMyLjdDOTg3LjEsMjY1LjcsODE0LjMsOTIuOSw1OTYuNCw2Ny4yVjM0LjVjMC0xMy42LTExLTI0LjYtMjQuNi0yNC42aC02My42Yy0xMy42LDAtMjQuNiwxMS0yNC42LDI0LjYgIHYzMi43QzI2NS43LDkyLjksOTIuOSwyNjUuNyw2Ny4yLDQ4My42SDM0LjVjLTEzLjYsMC0yNC42LDExLTI0LjYsMjQuNnY2My42YzAsMTMuNiwxMSwyNC42LDI0LjYsMjQuNmgzMi43ICBjMjUuNywyMTcuOSwxOTguNSwzOTAuNyw0MTYuNCw0MTYuNHYzMi43YzAsMTMuNiwxMSwyNC42LDI0LjYsMjQuNmg2My42YzEzLjYsMCwyNC42LTExLDI0LjYtMjQuNnYtMzIuNyAgYzIxNy45LTI1LjcsMzkwLjctMTk4LjUsNDE2LjQtNDE2LjRoMzIuN2MxMy42LDAsMjQuNi0xMSwyNC42LTI0LjZ2LTYzLjZDMTA3MC4xLDQ5NC42LDEwNTkuMSw0ODMuNiwxMDQ1LjUsNDgzLjZ6IE03NzQuNCw0MDAuNyAgTDQwMC43LDc3NC40Yy0xNi44LDE2LjgtNDQuMiwxNi44LTYwLjksMGwtMzQuMi0zNC4yYy0xNi44LTE2LjgtMTYuOC00NC4yLDAtNjAuOWwzNzMuNy0zNzMuN2MxNi44LTE2LjgsNDQuMi0xNi44LDYwLjksMCAgbDM0LjIsMzQuMkM3OTEuMiwzNTYuNSw3OTEuMiwzODQsNzc0LjQsNDAwLjd6Ii8+DQo8L3N2Zz4=";
 
   // instruments/src/ElectronicFlightBag/components/common/icons/Icons.tsx
+  var import_jsx_runtime5 = __toESM(require_jsx_runtime());
   var AirportsIcon = (props) => {
-    return /* @__PURE__ */ import_react6.default.createElement("div", null, /* @__PURE__ */ import_react6.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime5.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime5.jsx)(
       "img",
       {
         style: { width: `${props.width}px` },
         src: airports_default,
         alt: "airports"
       }
-    ));
+    ) });
   };
 
   // instruments/src/ElectronicFlightBag/components/OS/AppDock/AppDock.tsx
+  var import_jsx_runtime6 = __toESM(require_jsx_runtime());
   var AppDock = () => {
-    return /* @__PURE__ */ import_react7.default.createElement("div", { className: "app-dock-positioner" }, /* @__PURE__ */ import_react7.default.createElement("div", { className: "app-dock-container" }, /* @__PURE__ */ import_react7.default.createElement(AppIcon, { icon: /* @__PURE__ */ import_react7.default.createElement(AirportsIcon, { width: 50 }), text: "OBJ Flight", to: 1 }), /* @__PURE__ */ import_react7.default.createElement(AppIcon, { icon: /* @__PURE__ */ import_react7.default.createElement(AirportsIcon, { width: 50 }), text: "Chrome", to: 2 }), /* @__PURE__ */ import_react7.default.createElement(AppIcon, { icon: /* @__PURE__ */ import_react7.default.createElement(AirportsIcon, { width: 50 }), text: "Configurator", to: 3 })));
+    return /* @__PURE__ */ (0, import_jsx_runtime6.jsx)("div", { className: "app-dock-positioner", children: /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)("div", { className: "app-dock-container", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(AppIcon, { icon: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(AirportsIcon, { width: 50 }), text: "OBJ Flight", to: 1 }),
+      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(AppIcon, { icon: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(AirportsIcon, { width: 50 }), text: "Chrome", to: 2 }),
+      /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(AppIcon, { icon: /* @__PURE__ */ (0, import_jsx_runtime6.jsx)(AirportsIcon, { width: 50 }), text: "Configurator", to: 3 })
+    ] }) });
   };
 
   // instruments/src/ElectronicFlightBag/components/OS/Home/Home.tsx
+  var import_jsx_runtime7 = __toESM(require_jsx_runtime());
   var OsHome = () => {
-    return /* @__PURE__ */ import_react8.default.createElement("div", { className: "home-container" }, /* @__PURE__ */ import_react8.default.createElement("div", { className: "home-grid" }, /* @__PURE__ */ import_react8.default.createElement(AppIcon, { showText: true, icon: /* @__PURE__ */ import_react8.default.createElement(AirportsIcon, { width: 50 }), text: "OBJ Flight", to: 1 }), /* @__PURE__ */ import_react8.default.createElement(AppIcon, { showText: true, icon: /* @__PURE__ */ import_react8.default.createElement(AirportsIcon, { width: 50 }), text: "Chrome", to: 2 }), /* @__PURE__ */ import_react8.default.createElement(AppIcon, { showText: true, icon: /* @__PURE__ */ import_react8.default.createElement(AirportsIcon, { width: 50 }), text: "Configurator", to: 3 })), /* @__PURE__ */ import_react8.default.createElement(AppDock, null));
+    return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "home-container", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "home-grid", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(AppIcon, { showText: true, icon: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(AirportsIcon, { width: 50 }), text: "OBJ Flight", to: 1 }),
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(AppIcon, { showText: true, icon: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(AirportsIcon, { width: 50 }), text: "Chrome", to: 2 }),
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(AppIcon, { showText: true, icon: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(AirportsIcon, { width: 50 }), text: "Configurator", to: 3 })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(AppDock, {})
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/OuroborosFlight.tsx
-  var import_react101 = __toESM(require_react());
+  var import_react69 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Components/ButtonBar/buttonBar.tsx
-  var import_react12 = __toESM(require_react());
+  var import_react6 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Components/ButtonBar/button.tsx
-  var import_react10 = __toESM(require_react());
+  var import_react5 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/appRouter/appRouter.tsx
-  var import_react9 = __toESM(require_react());
+  var import_react4 = __toESM(require_react());
+  var import_jsx_runtime8 = __toESM(require_jsx_runtime());
   var defaultAppContextValues = {
     ouroborosFlight: {
       page: 0,
@@ -37341,18 +38236,19 @@ class InstrumentLogic extends BaseInstrument {
     updateState: (newState) => {
     }
   };
-  var AppContext = (0, import_react9.createContext)(defaultState);
+  var AppContext = (0, import_react4.createContext)(defaultState);
   var AppRouter = (props) => {
-    const [appState, setAppState] = (0, import_react9.useState)(defaultAppContextValues);
+    const [appState, setAppState] = (0, import_react4.useState)(defaultAppContextValues);
     const updateState = (newState) => {
       setAppState(__spreadValues(__spreadValues({}, appState), newState));
     };
-    return /* @__PURE__ */ import_react9.default.createElement(AppContext.Provider, { value: __spreadProps(__spreadValues({}, appState), { updateState }) }, props.children);
+    return /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(AppContext.Provider, { value: __spreadProps(__spreadValues({}, appState), { updateState }), children: props.children });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Components/ButtonBar/button.tsx
+  var import_jsx_runtime9 = __toESM(require_jsx_runtime());
   var ButtonBarButton = (props) => {
-    const { state, updateState } = (0, import_react10.useContext)(AppContext);
+    const { state, updateState } = (0, import_react5.useContext)(AppContext);
     const isActive = () => {
       if (props.to === (state == null ? void 0 : state.ouroborosFlight.page))
         return true;
@@ -37379,47 +38275,53 @@ class InstrumentLogic extends BaseInstrument {
         })
       });
     };
-    return /* @__PURE__ */ import_react10.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
       "div",
       {
         onClick: () => {
           clickHandler(props.to);
           props.setActiveButton(props.to);
         },
-        className: `${isActive() ? "active" : ""} button`
-      },
-      /* @__PURE__ */ import_react10.default.createElement("div", { className: "button-contents" }, props.icon, props.text)
+        className: `${isActive() ? "active" : ""} button`,
+        children: /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("div", { className: "button-contents", children: [
+          props.icon,
+          props.text
+        ] })
+      }
     );
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Components/ButtonBar/icons/buttonBarIcons.tsx
-  var import_react11 = __toESM(require_react());
+  var import_jsx_runtime10 = __toESM(require_jsx_runtime());
   var AirportsIcon2 = (props) => {
-    return /* @__PURE__ */ import_react11.default.createElement("svg", { viewBox: "0 0 1096.7 1096.7", fill: "none" }, /* @__PURE__ */ import_react11.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("svg", { viewBox: "0 0 1096.7 1096.7", fill: "none", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
       "path",
       {
         fill: "white",
         d: "M1045.5,483.6h-32.7C987.1,265.7,814.3,92.9,596.4,67.2V34.5c0-13.6-11-24.6-24.6-24.6h-63.6c-13.6,0-24.6,11-24.6,24.6  v32.7C265.7,92.9,92.9,265.7,67.2,483.6H34.5c-13.6,0-24.6,11-24.6,24.6v63.6c0,13.6,11,24.6,24.6,24.6h32.7  c25.7,217.9,198.5,390.7,416.4,416.4v32.7c0,13.6,11,24.6,24.6,24.6h63.6c13.6,0,24.6-11,24.6-24.6v-32.7  c217.9-25.7,390.7-198.5,416.4-416.4h32.7c13.6,0,24.6-11,24.6-24.6v-63.6C1070.1,494.6,1059.1,483.6,1045.5,483.6z M774.4,400.7  L400.7,774.4c-16.8,16.8-44.2,16.8-60.9,0l-34.2-34.2c-16.8-16.8-16.8-44.2,0-60.9l373.7-373.7c16.8-16.8,44.2-16.8,60.9,0  l34.2,34.2C791.2,356.5,791.2,384,774.4,400.7z"
       }
-    ));
+    ) });
   };
   var ScratchpadsIcon = (props) => {
-    return /* @__PURE__ */ import_react11.default.createElement("svg", { width: `${props.width}px`, version: "1.1", viewBox: "0 0 282.837 282.837", fill: "none" }, /* @__PURE__ */ import_react11.default.createElement("g", null, /* @__PURE__ */ import_react11.default.createElement(
-      "path",
-      {
-        fill: "white",
-        d: "M19.539,246.006c-1.412-1.413-2.995-2.159-4.576-2.159c-2.361,0-4.33,1.676-5.266,4.482l-9.24,27.723   c-0.701,2.103-0.591,3.95,0.309,5.201c0.736,1.021,1.959,1.584,3.443,1.584c0.79,0,1.655-0.155,2.571-0.461l27.722-9.241   c2.36-0.786,3.907-2.267,4.355-4.167c0.448-1.9-0.273-3.916-2.032-5.675L19.539,246.006z"
-      }
-    ), /* @__PURE__ */ import_react11.default.createElement(
-      "path",
-      {
-        fill: "white",
-        d: "M280.205,48.279L234.553,2.627C232.86,0.934,230.599,0,228.189,0c-2.41,0-4.67,0.934-6.363,2.627L51.892,172.561   c-3.212,3.212-6.993,9.33-8.429,13.638l-7.417,22.252c-1.503,4.508,0.008,10.909,3.368,14.27l20.697,20.697   c2.403,2.403,6.48,3.957,10.388,3.957c0,0,0,0,0.001,0c1.404,0,2.71-0.198,3.881-0.589l22.253-7.417   c4.309-1.436,10.426-5.217,13.637-8.428L280.205,61.007C283.714,57.498,283.714,51.788,280.205,48.279z M252.535,70.896   L166.8,156.631c-2.929,2.929-6.768,4.393-10.607,4.393s-7.678-1.465-10.606-4.393c-5.858-5.857-5.858-15.355,0-21.213   l85.735-85.735c5.857-5.857,15.355-5.857,21.213,0C258.393,55.54,258.393,65.038,252.535,70.896z"
-      }
-    )));
+    return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("svg", { width: `${props.width}px`, version: "1.1", viewBox: "0 0 282.837 282.837", fill: "none", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("g", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+        "path",
+        {
+          fill: "white",
+          d: "M19.539,246.006c-1.412-1.413-2.995-2.159-4.576-2.159c-2.361,0-4.33,1.676-5.266,4.482l-9.24,27.723   c-0.701,2.103-0.591,3.95,0.309,5.201c0.736,1.021,1.959,1.584,3.443,1.584c0.79,0,1.655-0.155,2.571-0.461l27.722-9.241   c2.36-0.786,3.907-2.267,4.355-4.167c0.448-1.9-0.273-3.916-2.032-5.675L19.539,246.006z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+        "path",
+        {
+          fill: "white",
+          d: "M280.205,48.279L234.553,2.627C232.86,0.934,230.599,0,228.189,0c-2.41,0-4.67,0.934-6.363,2.627L51.892,172.561   c-3.212,3.212-6.993,9.33-8.429,13.638l-7.417,22.252c-1.503,4.508,0.008,10.909,3.368,14.27l20.697,20.697   c2.403,2.403,6.48,3.957,10.388,3.957c0,0,0,0,0.001,0c1.404,0,2.71-0.198,3.881-0.589l22.253-7.417   c4.309-1.436,10.426-5.217,13.637-8.428L280.205,61.007C283.714,57.498,283.714,51.788,280.205,48.279z M252.535,70.896   L166.8,156.631c-2.929,2.929-6.768,4.393-10.607,4.393s-7.678-1.465-10.606-4.393c-5.858-5.857-5.858-15.355,0-21.213   l85.735-85.735c5.857-5.857,15.355-5.857,21.213,0C258.393,55.54,258.393,65.038,252.535,70.896z"
+        }
+      )
+    ] }) });
   };
   var ChecklistsIcon = (props) => {
-    return /* @__PURE__ */ import_react11.default.createElement("svg", { width: `${props.width}px`, viewBox: "0 0 24 24", fill: "none" }, /* @__PURE__ */ import_react11.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("svg", { width: `${props.width}px`, viewBox: "0 0 24 24", fill: "none", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
       "path",
       {
         d: "M4 12.6111L8.92308 17.5L20 6.5",
@@ -37428,40 +38330,46 @@ class InstrumentLogic extends BaseInstrument {
         strokeLinecap: "round",
         strokeLinejoin: "round"
       }
-    ));
+    ) });
   };
   var WnBIcon = (props) => {
-    return /* @__PURE__ */ import_react11.default.createElement("svg", { width: `${props.width}px`, viewBox: "0 0 24 24", fill: "none" }, /* @__PURE__ */ import_react11.default.createElement(
-      "path",
-      {
-        d: "M17.1801 18C19.5801 18 20.1801 16.65 20.1801 15V9C20.1801 7.35 19.5801 6 17.1801 6C14.7801 6 14.1801 7.35 14.1801 9V15C14.1801 16.65 14.7801 18 17.1801 18Z",
-        stroke: "white",
-        strokeWidth: "1.5",
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      }
-    ), /* @__PURE__ */ import_react11.default.createElement(
-      "path",
-      {
-        d: "M6.81995 18C4.41995 18 3.81995 16.65 3.81995 15V9C3.81995 7.35 4.41995 6 6.81995 6C9.21995 6 9.81995 7.35 9.81995 9V15C9.81995 16.65 9.21995 18 6.81995 18Z",
-        stroke: "white",
-        strokeWidth: "1.5",
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      }
-    ), /* @__PURE__ */ import_react11.default.createElement("path", { d: "M9.81995 12H14.1799", stroke: "white", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" }), /* @__PURE__ */ import_react11.default.createElement("path", { d: "M22.5 14.5V9.5", stroke: "white", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" }), /* @__PURE__ */ import_react11.default.createElement("path", { d: "M1.5 14.5V9.5", stroke: "white", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" }));
+    return /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("svg", { width: `${props.width}px`, viewBox: "0 0 24 24", fill: "none", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+        "path",
+        {
+          d: "M17.1801 18C19.5801 18 20.1801 16.65 20.1801 15V9C20.1801 7.35 19.5801 6 17.1801 6C14.7801 6 14.1801 7.35 14.1801 9V15C14.1801 16.65 14.7801 18 17.1801 18Z",
+          stroke: "white",
+          strokeWidth: "1.5",
+          strokeLinecap: "round",
+          strokeLinejoin: "round"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+        "path",
+        {
+          d: "M6.81995 18C4.41995 18 3.81995 16.65 3.81995 15V9C3.81995 7.35 4.41995 6 6.81995 6C9.21995 6 9.81995 7.35 9.81995 9V15C9.81995 16.65 9.21995 18 6.81995 18Z",
+          stroke: "white",
+          strokeWidth: "1.5",
+          strokeLinecap: "round",
+          strokeLinejoin: "round"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("path", { d: "M9.81995 12H14.1799", stroke: "white", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" }),
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("path", { d: "M22.5 14.5V9.5", stroke: "white", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" }),
+      /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("path", { d: "M1.5 14.5V9.5", stroke: "white", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" })
+    ] });
   };
   var GroundOpsIcon = (props) => {
-    return /* @__PURE__ */ import_react11.default.createElement("svg", { width: `${props.width}px`, viewBox: "0 0 24 24", fill: "none" }, /* @__PURE__ */ import_react11.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("svg", { width: `${props.width}px`, viewBox: "0 0 24 24", fill: "none", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
       "path",
       {
         d: "M17.5 6.75H15.5V6C15.5 5.04 14.71 4.25 13.75 4.25H4.5C3.54 4.25 2.75 5.04 2.75 6V15C2.75 15.96 3.54 16.75 4.5 16.75H4.78C4.91 18.42 6.3 19.75 8 19.75C9.7 19.75 11.09 18.42 11.22 16.75H12.77C12.9 18.42 14.29 19.75 15.99 19.75C17.69 19.75 19.08 18.42 19.21 16.75H19.49C20.45 16.75 21.24 15.96 21.24 15V10.5C21.24 8.43 19.56 6.75 17.49 6.75H17.5ZM4.25 15V6C4.25 5.86 4.36 5.75 4.5 5.75H13.75C13.89 5.75 14 5.86 14 6V13.94C14 13.94 13.95 14 13.92 14.02C13.77 14.15 13.63 14.29 13.5 14.44C13.46 14.49 13.42 14.53 13.39 14.58C13.24 14.79 13.1 15 13.01 15.24H11.01C11.01 15.24 11.01 15.24 11.01 15.23C10.94 15.06 10.84 14.89 10.74 14.74C10.71 14.7 10.68 14.66 10.65 14.61C10.57 14.49 10.48 14.39 10.38 14.28C10.34 14.24 10.31 14.2 10.27 14.16C10.14 14.04 10.01 13.93 9.87 13.83C9.85 13.82 9.84 13.8 9.82 13.79C9.67 13.69 9.51 13.61 9.35 13.53C9.29 13.5 9.23 13.48 9.17 13.46C9.04 13.41 8.92 13.37 8.79 13.34C8.73 13.33 8.67 13.31 8.61 13.3C8.42 13.26 8.22 13.24 8.02 13.24C7.82 13.24 7.63 13.26 7.43 13.3C7.37 13.31 7.31 13.33 7.25 13.34C7.12 13.37 6.99 13.41 6.87 13.46C6.81 13.48 6.75 13.5 6.69 13.53C6.53 13.6 6.37 13.69 6.22 13.79C6.2 13.8 6.19 13.81 6.17 13.83C6.03 13.93 5.89 14.04 5.77 14.16C5.73 14.2 5.69 14.24 5.66 14.28C5.56 14.38 5.47 14.49 5.39 14.61C5.36 14.65 5.33 14.69 5.3 14.74C5.2 14.9 5.11 15.06 5.03 15.23C5.03 15.23 5.03 15.23 5.03 15.24H4.53C4.39 15.24 4.28 15.13 4.28 14.99L4.25 15ZM8 18.25C7.04 18.25 6.25 17.46 6.25 16.5C6.25 16.38 6.26 16.26 6.29 16.15C6.33 15.97 6.4 15.8 6.49 15.65C6.5 15.62 6.52 15.6 6.53 15.57C6.62 15.43 6.73 15.3 6.86 15.19C6.89 15.17 6.91 15.15 6.94 15.13C7.07 15.03 7.22 14.94 7.38 14.88C7.4 14.88 7.43 14.86 7.46 14.86C7.63 14.8 7.82 14.76 8.01 14.76C8.2 14.76 8.38 14.8 8.56 14.86C8.59 14.86 8.61 14.87 8.64 14.88C8.8 14.94 8.95 15.03 9.08 15.13C9.11 15.15 9.13 15.17 9.16 15.19C9.29 15.3 9.4 15.43 9.49 15.57C9.51 15.59 9.52 15.62 9.53 15.65C9.62 15.81 9.69 15.97 9.73 16.15C9.75 16.26 9.77 16.38 9.77 16.5C9.77 17.46 8.98 18.25 8.02 18.25H8ZM16 18.25C15.04 18.25 14.25 17.46 14.25 16.5C14.25 16.38 14.26 16.26 14.29 16.15C14.32 16.03 14.35 15.91 14.4 15.8C14.4 15.8 14.4 15.79 14.4 15.78C14.45 15.68 14.5 15.58 14.57 15.49C14.58 15.47 14.6 15.46 14.61 15.44C14.67 15.36 14.73 15.29 14.8 15.22C14.82 15.2 14.84 15.19 14.86 15.17C14.93 15.11 15.01 15.05 15.09 15C15.11 14.99 15.14 14.97 15.17 14.96C15.26 14.91 15.36 14.87 15.46 14.84C15.5 14.83 15.54 14.81 15.59 14.8C15.72 14.77 15.86 14.75 16 14.75C16.19 14.75 16.37 14.79 16.55 14.85C16.58 14.85 16.6 14.86 16.63 14.87C16.79 14.93 16.94 15.02 17.07 15.12C17.1 15.14 17.12 15.16 17.15 15.18C17.28 15.29 17.39 15.42 17.48 15.56C17.5 15.58 17.51 15.61 17.52 15.64C17.61 15.8 17.68 15.96 17.72 16.14C17.74 16.25 17.76 16.37 17.76 16.49C17.76 17.45 16.97 18.24 16.01 18.24L16 18.25ZM15.5 11.25V8.25H17.5C18.74 8.25 19.75 9.26 19.75 10.5V11.25H15.5Z",
         fill: "white"
       }
-    ));
+    ) });
   };
   var AirplaneIcon = (props) => {
-    return /* @__PURE__ */ import_react11.default.createElement("svg", { width: `${props.width}px`, viewBox: "0 0 24 24", fill: "none" }, /* @__PURE__ */ import_react11.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("svg", { width: `${props.width}px`, viewBox: "0 0 24 24", fill: "none", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
       "path",
       {
         fillRule: "evenodd",
@@ -37469,58 +38377,67 @@ class InstrumentLogic extends BaseInstrument {
         d: "M18.8286 1.72758C19.618 1.37176 21.0449 0.981099 22.1457 2.08172C23.2466 3.18244 22.8558 4.60949 22.5 5.39885C22.2409 5.97353 21.8851 6.58498 21.4343 7.03586L18.3035 10.1667L20.75 19.9527C21.0686 21.2273 19.4017 22.0136 18.6208 20.957L13.9001 14.5701L11.0678 17.4024L10.4818 21.504C10.326 22.5944 8.90642 22.9164 8.29541 21.9999L5.86325 18.3517L1.89476 15.6042C0.960857 14.9577 1.36456 13.4958 2.49799 13.4203L6.85509 13.1298L9.65741 10.3275L3.27054 5.60674C2.21395 4.82579 3.00021 3.1589 4.27485 3.47756L14.0608 5.92406L17.1916 2.7933C17.6424 2.34244 18.254 1.98663 18.8286 1.72758ZM18.5828 4.23053L15.1548 7.65856C14.8567 7.95662 14.4241 8.07643 14.0152 7.9742L7.70352 6.39628L11.5932 9.27129C12.1832 9.70735 12.2473 10.5661 11.7285 11.0848L8.05676 14.7566C7.85123 14.9621 7.57808 15.086 7.28807 15.1054L4.91621 15.2635L7.31557 16.9246L8.79804 19.1483L9.12556 16.8556C9.16228 16.5986 9.28139 16.3604 9.46498 16.1768L13.1427 12.499C13.6615 11.9803 14.5202 12.0443 14.9562 12.6343L17.8312 16.524L16.2533 10.2123C16.1511 9.80342 16.2709 9.37083 16.569 9.07277L19.997 5.64474C20.0811 5.54456 20.4407 5.10051 20.6767 4.57691C20.9648 3.93787 20.8835 3.64788 20.7316 3.49604C20.5796 3.34411 20.2895 3.26286 19.6505 3.5509C19.127 3.78691 18.683 4.14648 18.5828 4.23053Z",
         fill: "white"
       }
-    ));
+    ) });
   };
   var FlightPlanIcon = (props) => {
-    return /* @__PURE__ */ import_react11.default.createElement("svg", { width: `${props.width}px`, viewBox: "0 0 46.484 46.484", fill: "none" }, /* @__PURE__ */ import_react11.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("svg", { width: `${props.width}px`, viewBox: "0 0 46.484 46.484", fill: "none", children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
       "path",
       {
         fill: "white",
         d: "M3.749,37.402c0.79,0.392,1.636,0.59,2.513,0.59c2.169,0,4.113-1.205,5.076-3.146c1.156-2.33,0.548-5.076-1.302-6.732    l12.508-16.937c0.423,0.1,0.857,0.151,1.3,0.151c1.555,0,2.988-0.628,4.034-1.696l7.713,5.886    c-0.164,0.235-0.315,0.481-0.446,0.744c-1.188,2.392-0.515,5.225,1.453,6.864l-3.841,12.106c-0.284-0.045-0.571-0.074-0.863-0.074    c-2.168,0-4.112,1.205-5.075,3.146c-1.388,2.799-0.24,6.202,2.557,7.59c0.789,0.391,1.636,0.59,2.513,0.59    c2.169,0,4.112-1.205,5.076-3.146c1.187-2.393,0.515-5.225-1.453-6.864l3.841-12.106c0.284,0.045,0.571,0.074,0.864,0.074    c2.167,0,4.112-1.205,5.075-3.146c1.388-2.796,0.24-6.201-2.557-7.589c-0.791-0.392-1.637-0.591-2.514-0.591    c-0.787,0-1.542,0.163-2.232,0.458L29.35,6.981c0.6-2.508-0.58-5.195-2.986-6.39C25.572,0.199,24.727,0,23.85,0    c-2.168,0-4.112,1.206-5.076,3.147c-1.117,2.252-0.589,4.897,1.12,6.567L7.299,26.768c-0.338-0.062-0.681-0.104-1.03-0.104    c-2.168,0-4.112,1.207-5.075,3.148C-0.195,32.609,0.952,36.014,3.749,37.402z M34.275,42.006c-0.453,0.913-1.369,1.48-2.39,1.48    c-0.41,0-0.808-0.094-1.181-0.278c-1.314-0.652-1.854-2.253-1.2-3.569c0.452-0.912,1.366-1.48,2.388-1.48    c0.411,0,0.809,0.095,1.18,0.279C34.388,39.089,34.928,40.689,34.275,42.006z M41.4,16.394c1.314,0.653,1.854,2.254,1.202,3.568    c-0.452,0.913-1.368,1.48-2.389,1.48c-0.411,0-0.81-0.094-1.181-0.278c-1.315-0.652-1.854-2.253-1.203-3.568    c0.453-0.913,1.369-1.48,2.39-1.48C40.632,16.115,41.027,16.209,41.4,16.394z M21.461,4.482c0.453-0.913,1.368-1.48,2.389-1.48    c0.411,0,0.809,0.094,1.18,0.278c1.315,0.653,1.855,2.254,1.203,3.568c-0.453,0.913-1.367,1.48-2.389,1.48    c-0.411,0-0.809-0.094-1.181-0.278C21.347,7.398,20.808,5.797,21.461,4.482z M3.881,31.145c0.453-0.912,1.367-1.48,2.388-1.48    c0.411,0,0.808,0.095,1.18,0.279c1.315,0.651,1.854,2.252,1.202,3.568c-0.636,1.28-2.269,1.846-3.569,1.202    C3.766,34.062,3.228,32.461,3.881,31.145z"
       }
-    ));
+    ) });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Components/ButtonBar/buttonBar.tsx
+  var import_jsx_runtime11 = __toESM(require_jsx_runtime());
   var ButtonBar = (props) => {
-    const [activeButton, setActiveButton] = import_react12.default.useState(0);
-    return /* @__PURE__ */ import_react12.default.createElement("div", { className: "button-bar" }, /* @__PURE__ */ import_react12.default.createElement(ButtonBarButton, { setActiveButton, text: "Airports", to: 0, icon: /* @__PURE__ */ import_react12.default.createElement(AirportsIcon2, { width: 20 }) }), /* @__PURE__ */ import_react12.default.createElement(ButtonBarButton, { setActiveButton, text: "Maps", to: 1 }), /* @__PURE__ */ import_react12.default.createElement(
-      ButtonBarButton,
-      {
-        setActiveButton,
-        text: "ScratchPads",
-        to: 4,
-        icon: /* @__PURE__ */ import_react12.default.createElement(ScratchpadsIcon, { width: 50 })
-      }
-    ), /* @__PURE__ */ import_react12.default.createElement(
-      ButtonBarButton,
-      {
-        setActiveButton,
-        text: "Checklists",
-        to: 5,
-        icon: /* @__PURE__ */ import_react12.default.createElement(ChecklistsIcon, { width: 50 })
-      }
-    ), /* @__PURE__ */ import_react12.default.createElement(ButtonBarButton, { setActiveButton, text: "W & B", to: 6, icon: /* @__PURE__ */ import_react12.default.createElement(WnBIcon, { width: 50 }) }), /* @__PURE__ */ import_react12.default.createElement(
-      ButtonBarButton,
-      {
-        setActiveButton,
-        text: "Ground Service",
-        to: 7,
-        icon: /* @__PURE__ */ import_react12.default.createElement(GroundOpsIcon, { width: 50 })
-      }
-    ), /* @__PURE__ */ import_react12.default.createElement(
-      ButtonBarButton,
-      {
-        setActiveButton,
-        text: "Flight Plan",
-        to: 8,
-        icon: /* @__PURE__ */ import_react12.default.createElement(FlightPlanIcon, { width: 50 })
-      }
-    ));
+    const [activeButton, setActiveButton] = import_react6.default.useState(0);
+    return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: "button-bar", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(ButtonBarButton, { setActiveButton, text: "Airports", to: 0, icon: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(AirportsIcon2, { width: 20 }) }),
+      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(ButtonBarButton, { setActiveButton, text: "Maps", to: 1 }),
+      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+        ButtonBarButton,
+        {
+          setActiveButton,
+          text: "ScratchPads",
+          to: 4,
+          icon: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(ScratchpadsIcon, { width: 50 })
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+        ButtonBarButton,
+        {
+          setActiveButton,
+          text: "Checklists",
+          to: 5,
+          icon: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(ChecklistsIcon, { width: 50 })
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(ButtonBarButton, { setActiveButton, text: "W & B", to: 6, icon: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(WnBIcon, { width: 50 }) }),
+      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+        ButtonBarButton,
+        {
+          setActiveButton,
+          text: "Ground Service",
+          to: 7,
+          icon: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(GroundOpsIcon, { width: 50 })
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+        ButtonBarButton,
+        {
+          setActiveButton,
+          text: "Flight Plan",
+          to: 8,
+          icon: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(FlightPlanIcon, { width: 50 })
+        }
+      )
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Airports.tsx
-  var import_react33 = __toESM(require_react());
+  var import_react14 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/airportApiData.ts
   var ApiReturn = {
@@ -37625,7 +38542,7 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Info/info.tsx
-  var import_react15 = __toESM(require_react());
+  var import_react7 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Frequencies/enums.ts
   var getStringFromFreqType = (type) => {
@@ -37648,48 +38565,66 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Frequencies/frequencies.tsx
-  var import_react13 = __toESM(require_react());
+  var import_jsx_runtime12 = __toESM(require_jsx_runtime());
   var Frequencies = (props) => {
-    let content = /* @__PURE__ */ import_react13.default.createElement(import_react13.default.Fragment, null);
+    let content = /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_jsx_runtime12.Fragment, {});
     switch (props.filter) {
       case "GROUND CONTROL" /* GROUND_CONTROL */:
         if (props.frequency.type === "GND") {
-          content = /* @__PURE__ */ import_react13.default.createElement("div", null, /* @__PURE__ */ import_react13.default.createElement("div", { className: "frequency-type-box" }, /* @__PURE__ */ import_react13.default.createElement("div", { className: "frequency-box" }, /* @__PURE__ */ import_react13.default.createElement("div", null, props.frequency.description), /* @__PURE__ */ import_react13.default.createElement("div", null, props.frequency.frequency_mhz))));
+          content = /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { className: "frequency-type-box", children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)("div", { className: "frequency-box", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: props.frequency.description }),
+            /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: props.frequency.frequency_mhz })
+          ] }) }) });
         }
         break;
       case "TOWER" /* TOWER */:
         if (props.frequency.type === "TWR") {
-          content = /* @__PURE__ */ import_react13.default.createElement("div", null, /* @__PURE__ */ import_react13.default.createElement("div", { className: "frequency-type-box" }, /* @__PURE__ */ import_react13.default.createElement("div", { className: "frequency-box" }, /* @__PURE__ */ import_react13.default.createElement("div", null, props.frequency.description), /* @__PURE__ */ import_react13.default.createElement("div", null, props.frequency.frequency_mhz))));
+          content = /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { className: "frequency-type-box", children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)("div", { className: "frequency-box", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: props.frequency.description }),
+            /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: props.frequency.frequency_mhz })
+          ] }) }) });
         }
         break;
       case "WEATHER AND ADVISORY" /* WEATHER_AND_ADVISORY */:
         if (props.frequency.type === "ATIS" || props.frequency.type === "AWOS" || props.frequency.type === "ASOS") {
-          content = /* @__PURE__ */ import_react13.default.createElement("div", null, /* @__PURE__ */ import_react13.default.createElement("div", { className: "frequency-type-box" }, /* @__PURE__ */ import_react13.default.createElement("div", { className: "frequency-box" }, /* @__PURE__ */ import_react13.default.createElement("div", null, props.frequency.description), /* @__PURE__ */ import_react13.default.createElement("div", null, props.frequency.frequency_mhz))));
+          content = /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { className: "frequency-type-box", children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)("div", { className: "frequency-box", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: props.frequency.description }),
+            /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: props.frequency.frequency_mhz })
+          ] }) }) });
         }
         break;
       case "APPROACH/DEPARTURE" /* APPROACH_DEPARTURE */:
         if (props.frequency.type === "A/D") {
-          content = /* @__PURE__ */ import_react13.default.createElement("div", null, /* @__PURE__ */ import_react13.default.createElement("div", { className: "frequency-type-box" }, /* @__PURE__ */ import_react13.default.createElement("div", { className: "frequency-box" }, /* @__PURE__ */ import_react13.default.createElement("div", null, props.frequency.description), /* @__PURE__ */ import_react13.default.createElement("div", null, props.frequency.frequency_mhz))));
+          content = /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { className: "frequency-type-box", children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)("div", { className: "frequency-box", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: props.frequency.description }),
+            /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: props.frequency.frequency_mhz })
+          ] }) }) });
         }
         break;
       case "EMERGENCY" /* EMERGENCY */:
         if (props.emergency === void 0)
-          return /* @__PURE__ */ import_react13.default.createElement(import_react13.default.Fragment, null);
+          return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(import_jsx_runtime12.Fragment, {});
         if (props.emergency) {
-          content = /* @__PURE__ */ import_react13.default.createElement("div", null, /* @__PURE__ */ import_react13.default.createElement("div", { className: "frequency-type-box" }, /* @__PURE__ */ import_react13.default.createElement("div", { className: "frequency-box" }, /* @__PURE__ */ import_react13.default.createElement("div", null, "Gaurd"), /* @__PURE__ */ import_react13.default.createElement("div", null, "121.500"))));
+          content = /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { className: "frequency-type-box", children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)("div", { className: "frequency-box", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: "Gaurd" }),
+            /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: "121.500" })
+          ] }) }) });
         }
         break;
       case "CLEARANCE DELIVERY" /* CLEARANCE_DELIVERY */:
         if (props.frequency.type === "CLD") {
-          content = /* @__PURE__ */ import_react13.default.createElement("div", null, /* @__PURE__ */ import_react13.default.createElement("div", { className: "frequency-type-box" }, /* @__PURE__ */ import_react13.default.createElement("div", { className: "frequency-box" }, /* @__PURE__ */ import_react13.default.createElement("div", null, props.frequency.frequency_mhz), /* @__PURE__ */ import_react13.default.createElement("div", null, props.frequency.description))));
+          content = /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { className: "frequency-type-box", children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)("div", { className: "frequency-box", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: props.frequency.frequency_mhz }),
+            /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: props.frequency.description })
+          ] }) }) });
         }
         break;
     }
-    return /* @__PURE__ */ import_react13.default.createElement("div", null, content);
+    return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { children: content });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Frequencies/frequenciesButton.tsx
-  var import_react14 = __toESM(require_react());
+  var import_jsx_runtime13 = __toESM(require_jsx_runtime());
   var FrequenciesButton = (props) => {
     const isActive = () => {
       if (props.state === props.to) {
@@ -37697,21 +38632,28 @@ class InstrumentLogic extends BaseInstrument {
       }
       return false;
     };
-    return /* @__PURE__ */ import_react14.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
       "div",
       {
         className: `frequency-button ${isActive() ? "active-freq" : ""}`,
         onClick: () => {
           props.setState(props.to);
-        }
-      },
-      /* @__PURE__ */ import_react14.default.createElement("div", { className: "frequency-text" }, /* @__PURE__ */ import_react14.default.createElement("div", null, " ", props.text), /* @__PURE__ */ import_react14.default.createElement("div", null, ">"))
+        },
+        children: /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { className: "frequency-text", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { children: [
+            " ",
+            props.text
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("div", { children: ">" })
+        ] })
+      }
     );
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Info/info.tsx
+  var import_jsx_runtime14 = __toESM(require_jsx_runtime());
   var Info = (props) => {
-    const [frequencyType, setFrequencyType] = (0, import_react15.useState)("WEATHER AND ADVISORY" /* WEATHER_AND_ADVISORY */);
+    const [frequencyType, setFrequencyType] = (0, import_react7.useState)("WEATHER AND ADVISORY" /* WEATHER_AND_ADVISORY */);
     const updateFrequencyType = (type) => {
       setFrequencyType(type);
     };
@@ -37725,167 +38667,202 @@ class InstrumentLogic extends BaseInstrument {
     };
     const getFrequenies = (type) => {
       if (type === "EMERGENCY" /* EMERGENCY */) {
-        return /* @__PURE__ */ import_react15.default.createElement(Frequencies, { frequency: emergencyFrequency, emergency: true, filter: type });
+        return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Frequencies, { frequency: emergencyFrequency, emergency: true, filter: type });
       }
       return props.data.freqs.map((freq, index) => {
-        return /* @__PURE__ */ import_react15.default.createElement(Frequencies, { key: index, frequency: freq, filter: type });
+        return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Frequencies, { frequency: freq, filter: type }, index);
       });
     };
-    return /* @__PURE__ */ import_react15.default.createElement("div", { className: "info-wrapper" }, /* @__PURE__ */ import_react15.default.createElement("div", { className: "info-buttons-wrapper" }, /* @__PURE__ */ import_react15.default.createElement("div", { className: "info-buttons-title" }, "Frequencies"), /* @__PURE__ */ import_react15.default.createElement(
-      FrequenciesButton,
-      {
-        state: frequencyType,
-        setState: updateFrequencyType,
-        text: "Weather",
-        to: "WEATHER AND ADVISORY" /* WEATHER_AND_ADVISORY */
-      }
-    ), /* @__PURE__ */ import_react15.default.createElement(
-      FrequenciesButton,
-      {
-        state: frequencyType,
-        setState: updateFrequencyType,
-        text: "Clearance",
-        to: "CLEARANCE DELIVERY" /* CLEARANCE_DELIVERY */
-      }
-    ), /* @__PURE__ */ import_react15.default.createElement(
-      FrequenciesButton,
-      {
-        state: frequencyType,
-        setState: updateFrequencyType,
-        text: "Ground",
-        to: "GROUND CONTROL" /* GROUND_CONTROL */
-      }
-    ), /* @__PURE__ */ import_react15.default.createElement(
-      FrequenciesButton,
-      {
-        state: frequencyType,
-        setState: updateFrequencyType,
-        text: "Tower",
-        to: "TOWER" /* TOWER */
-      }
-    ), /* @__PURE__ */ import_react15.default.createElement(
-      FrequenciesButton,
-      {
-        state: frequencyType,
-        setState: updateFrequencyType,
-        text: "Common",
-        to: "COMMON" /* COMMON */
-      }
-    ), /* @__PURE__ */ import_react15.default.createElement(
-      FrequenciesButton,
-      {
-        state: frequencyType,
-        setState: updateFrequencyType,
-        text: "Approach/Departure",
-        to: "APPROACH/DEPARTURE" /* APPROACH_DEPARTURE */
-      }
-    ), /* @__PURE__ */ import_react15.default.createElement(
-      FrequenciesButton,
-      {
-        state: frequencyType,
-        setState: updateFrequencyType,
-        text: "Emergency",
-        to: "EMERGENCY" /* EMERGENCY */
-      }
-    )), /* @__PURE__ */ import_react15.default.createElement("div", { className: "frequency-display" }, /* @__PURE__ */ import_react15.default.createElement("div", { className: "frequency-type-title" }, " ", getStringFromFreqType(frequencyType)), getFrequenies(frequencyType)));
+    return /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "info-wrapper", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "info-buttons-wrapper", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { className: "info-buttons-title", children: "Frequencies" }),
+        /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+          FrequenciesButton,
+          {
+            state: frequencyType,
+            setState: updateFrequencyType,
+            text: "Weather",
+            to: "WEATHER AND ADVISORY" /* WEATHER_AND_ADVISORY */
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+          FrequenciesButton,
+          {
+            state: frequencyType,
+            setState: updateFrequencyType,
+            text: "Clearance",
+            to: "CLEARANCE DELIVERY" /* CLEARANCE_DELIVERY */
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+          FrequenciesButton,
+          {
+            state: frequencyType,
+            setState: updateFrequencyType,
+            text: "Ground",
+            to: "GROUND CONTROL" /* GROUND_CONTROL */
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+          FrequenciesButton,
+          {
+            state: frequencyType,
+            setState: updateFrequencyType,
+            text: "Tower",
+            to: "TOWER" /* TOWER */
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+          FrequenciesButton,
+          {
+            state: frequencyType,
+            setState: updateFrequencyType,
+            text: "Common",
+            to: "COMMON" /* COMMON */
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+          FrequenciesButton,
+          {
+            state: frequencyType,
+            setState: updateFrequencyType,
+            text: "Approach/Departure",
+            to: "APPROACH/DEPARTURE" /* APPROACH_DEPARTURE */
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+          FrequenciesButton,
+          {
+            state: frequencyType,
+            setState: updateFrequencyType,
+            text: "Emergency",
+            to: "EMERGENCY" /* EMERGENCY */
+          }
+        )
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "frequency-display", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "frequency-type-title", children: [
+          " ",
+          getStringFromFreqType(frequencyType)
+        ] }),
+        getFrequenies(frequencyType)
+      ] })
+    ] });
   };
 
-  // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/InfoButtonBar/infoButtonBarButton.tsx
-  var import_react17 = __toESM(require_react());
-
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/InfoButtonBar/infoButtonBar.tsx
-  var import_react16 = __toESM(require_react());
+  var import_jsx_runtime15 = __toESM(require_jsx_runtime());
   var InfoButtonBarButton = (props) => {
-    return /* @__PURE__ */ import_react16.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
       "div",
       {
         onClick: () => {
           props.setState(props.to);
         },
-        className: `info-button-bar-button ${props.state === props.to ? "info-button-bar-button-active" : ""}`
-      },
-      props.text
+        className: `info-button-bar-button ${props.state === props.to ? "info-button-bar-button-active" : ""}`,
+        children: props.text
+      }
     );
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/InfoButtonBar/infoButtonBarButton.tsx
+  var import_jsx_runtime16 = __toESM(require_jsx_runtime());
   var InfoButtonBar = (props) => {
-    return /* @__PURE__ */ import_react17.default.createElement("div", { className: "airports-button-bar" }, /* @__PURE__ */ import_react17.default.createElement(InfoButtonBarButton, { state: props.state, setState: props.setState, text: "Info", to: 0 }), /* @__PURE__ */ import_react17.default.createElement(InfoButtonBarButton, { state: props.state, setState: props.setState, text: "Weather", to: 1 }), /* @__PURE__ */ import_react17.default.createElement(InfoButtonBarButton, { state: props.state, setState: props.setState, text: "Runway", to: 2 }), /* @__PURE__ */ import_react17.default.createElement(InfoButtonBarButton, { state: props.state, setState: props.setState, text: "Procedure", to: 3 }));
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)("div", { className: "airports-button-bar", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(InfoButtonBarButton, { state: props.state, setState: props.setState, text: "Info", to: 0 }),
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(InfoButtonBarButton, { state: props.state, setState: props.setState, text: "Weather", to: 1 }),
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(InfoButtonBarButton, { state: props.state, setState: props.setState, text: "Runway", to: 2 }),
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(InfoButtonBarButton, { state: props.state, setState: props.setState, text: "Procedure", to: 3 })
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/AirportsHeader/AirportsHeader.tsx
-  var import_react18 = __toESM(require_react());
+  var import_jsx_runtime17 = __toESM(require_jsx_runtime());
   var AirportsHeader = (props) => {
-    return /* @__PURE__ */ import_react18.default.createElement("div", { className: "airports-header" }, /* @__PURE__ */ import_react18.default.createElement("div", { className: "airports-header-title" }, /* @__PURE__ */ import_react18.default.createElement(AirplaneIcon, { width: 70 }), " FlightBag ", /* @__PURE__ */ import_react18.default.createElement("sub", { style: { fontSize: "30px" } }, "PRO")), /* @__PURE__ */ import_react18.default.createElement("div", { className: "airports-header-search-group" }, /* @__PURE__ */ import_react18.default.createElement(
-      "div",
-      {
-        className: "settings-cog-container",
-        onClick: () => {
-          props.settingsButtonCallback(true);
-        }
-      },
-      /* @__PURE__ */ import_react18.default.createElement(
-        "svg",
-        {
-          height: "512px",
-          id: "Layer_1",
-          version: "1.1",
-          viewBox: "0 0 512 512",
-          width: "70px",
-          xmlns: "http://www.w3.org/2000/svg"
-        },
-        /* @__PURE__ */ import_react18.default.createElement(
-          "path",
+    return /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "airports-header", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "airports-header-title", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(AirplaneIcon, { width: 70 }),
+        " FlightBag ",
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("sub", { style: { fontSize: "30px" }, children: "PRO" })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("div", { className: "airports-header-search-group", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+          "div",
           {
-            className: "settings-cog-svg",
-            d: "M424.5,216.5h-15.2c-12.4,0-22.8-10.7-22.8-23.4c0-6.4,2.7-12.2,7.5-16.5l9.8-9.6c9.7-9.6,9.7-25.3,0-34.9l-22.3-22.1  c-4.4-4.4-10.9-7-17.5-7c-6.6,0-13,2.6-17.5,7l-9.4,9.4c-4.5,5-10.5,7.7-17,7.7c-12.8,0-23.5-10.4-23.5-22.7V89.1  c0-13.5-10.9-25.1-24.5-25.1h-30.4c-13.6,0-24.4,11.5-24.4,25.1v15.2c0,12.3-10.7,22.7-23.5,22.7c-6.4,0-12.3-2.7-16.6-7.4l-9.7-9.6  c-4.4-4.5-10.9-7-17.5-7s-13,2.6-17.5,7L110,132c-9.6,9.6-9.6,25.3,0,34.8l9.4,9.4c5,4.5,7.8,10.5,7.8,16.9  c0,12.8-10.4,23.4-22.8,23.4H89.2c-13.7,0-25.2,10.7-25.2,24.3V256v15.2c0,13.5,11.5,24.3,25.2,24.3h15.2  c12.4,0,22.8,10.7,22.8,23.4c0,6.4-2.8,12.4-7.8,16.9l-9.4,9.3c-9.6,9.6-9.6,25.3,0,34.8l22.3,22.2c4.4,4.5,10.9,7,17.5,7  c6.6,0,13-2.6,17.5-7l9.7-9.6c4.2-4.7,10.2-7.4,16.6-7.4c12.8,0,23.5,10.4,23.5,22.7v15.2c0,13.5,10.8,25.1,24.5,25.1h30.4  c13.6,0,24.4-11.5,24.4-25.1v-15.2c0-12.3,10.7-22.7,23.5-22.7c6.4,0,12.4,2.8,17,7.7l9.4,9.4c4.5,4.4,10.9,7,17.5,7  c6.6,0,13-2.6,17.5-7l22.3-22.2c9.6-9.6,9.6-25.3,0-34.9l-9.8-9.6c-4.8-4.3-7.5-10.2-7.5-16.5c0-12.8,10.4-23.4,22.8-23.4h15.2  c13.6,0,23.3-10.7,23.3-24.3V256v-15.2C447.8,227.2,438.1,216.5,424.5,216.5z M336.8,256L336.8,256c0,44.1-35.7,80-80,80  c-44.3,0-80-35.9-80-80l0,0l0,0c0-44.1,35.7-80,80-80C301.1,176,336.8,211.9,336.8,256L336.8,256z"
+            className: "settings-cog-container",
+            onClick: () => {
+              props.settingsButtonCallback(true);
+            },
+            children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+              "svg",
+              {
+                height: "512px",
+                id: "Layer_1",
+                version: "1.1",
+                viewBox: "0 0 512 512",
+                width: "70px",
+                xmlns: "http://www.w3.org/2000/svg",
+                children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+                  "path",
+                  {
+                    className: "settings-cog-svg",
+                    d: "M424.5,216.5h-15.2c-12.4,0-22.8-10.7-22.8-23.4c0-6.4,2.7-12.2,7.5-16.5l9.8-9.6c9.7-9.6,9.7-25.3,0-34.9l-22.3-22.1  c-4.4-4.4-10.9-7-17.5-7c-6.6,0-13,2.6-17.5,7l-9.4,9.4c-4.5,5-10.5,7.7-17,7.7c-12.8,0-23.5-10.4-23.5-22.7V89.1  c0-13.5-10.9-25.1-24.5-25.1h-30.4c-13.6,0-24.4,11.5-24.4,25.1v15.2c0,12.3-10.7,22.7-23.5,22.7c-6.4,0-12.3-2.7-16.6-7.4l-9.7-9.6  c-4.4-4.5-10.9-7-17.5-7s-13,2.6-17.5,7L110,132c-9.6,9.6-9.6,25.3,0,34.8l9.4,9.4c5,4.5,7.8,10.5,7.8,16.9  c0,12.8-10.4,23.4-22.8,23.4H89.2c-13.7,0-25.2,10.7-25.2,24.3V256v15.2c0,13.5,11.5,24.3,25.2,24.3h15.2  c12.4,0,22.8,10.7,22.8,23.4c0,6.4-2.8,12.4-7.8,16.9l-9.4,9.3c-9.6,9.6-9.6,25.3,0,34.8l22.3,22.2c4.4,4.5,10.9,7,17.5,7  c6.6,0,13-2.6,17.5-7l9.7-9.6c4.2-4.7,10.2-7.4,16.6-7.4c12.8,0,23.5,10.4,23.5,22.7v15.2c0,13.5,10.8,25.1,24.5,25.1h30.4  c13.6,0,24.4-11.5,24.4-25.1v-15.2c0-12.3,10.7-22.7,23.5-22.7c6.4,0,12.4,2.8,17,7.7l9.4,9.4c4.5,4.4,10.9,7,17.5,7  c6.6,0,13-2.6,17.5-7l22.3-22.2c9.6-9.6,9.6-25.3,0-34.9l-9.8-9.6c-4.8-4.3-7.5-10.2-7.5-16.5c0-12.8,10.4-23.4,22.8-23.4h15.2  c13.6,0,23.3-10.7,23.3-24.3V256v-15.2C447.8,227.2,438.1,216.5,424.5,216.5z M336.8,256L336.8,256c0,44.1-35.7,80-80,80  c-44.3,0-80-35.9-80-80l0,0l0,0c0-44.1,35.7-80,80-80C301.1,176,336.8,211.9,336.8,256L336.8,256z"
+                  }
+                )
+              }
+            )
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("form", { children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("label", { children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+          "input",
+          {
+            type: "text",
+            className: "airports-header-search-input",
+            style: { fontSize: "30px" },
+            value: props.airport,
+            onChange: (e) => {
+              props.setAirport(e.target.value);
+            }
+          }
+        ) }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+          "div",
+          {
+            className: "airports-header-search-button",
+            onClick: () => {
+              props.changeAirport(props.airport);
+            },
+            children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("svg", { xmlns: "http://www.w3.org/2000/svg", fill: "#000000", height: "65px", width: "65px", viewBox: "0 0 490.4 490.4", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)("g", { children: [
+              /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+                "rect",
+                {
+                  className: "search-button-svg",
+                  x: "0",
+                  y: "0",
+                  width: "490.4",
+                  height: "490.4",
+                  fill: "#2a2fff",
+                  rx: 50,
+                  ry: 50
+                }
+              ),
+              /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("g", { transform: "scale(0.6)", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("g", { transform: "translate(172,172)", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+                "path",
+                {
+                  className: "search-button-hourglass",
+                  fill: "white",
+                  d: "M484.1,454.796l-110.5-110.6c29.8-36.3,47.6-82.8,47.6-133.4c0-116.3-94.3-210.6-210.6-210.6S0,94.496,0,210.796   s94.3,210.6,210.6,210.6c50.8,0,97.4-18,133.8-48l110.5,110.5c12.9,11.8,25,4.2,29.2,0C492.5,475.596,492.5,463.096,484.1,454.796z    M41.1,210.796c0-93.6,75.9-169.5,169.5-169.5s169.6,75.9,169.6,169.5s-75.9,169.5-169.5,169.5S41.1,304.396,41.1,210.796z"
+                }
+              ) }) })
+            ] }) })
           }
         )
-      )
-    ), /* @__PURE__ */ import_react18.default.createElement("form", null, /* @__PURE__ */ import_react18.default.createElement("label", null, /* @__PURE__ */ import_react18.default.createElement(
-      "input",
-      {
-        type: "text",
-        className: "airports-header-search-input",
-        style: { fontSize: "30px" },
-        value: props.airport,
-        onChange: (e) => {
-          props.setAirport(e.target.value);
-        }
-      }
-    ))), /* @__PURE__ */ import_react18.default.createElement(
-      "div",
-      {
-        className: "airports-header-search-button",
-        onClick: () => {
-          props.changeAirport(props.airport);
-        }
-      },
-      /* @__PURE__ */ import_react18.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", fill: "#000000", height: "65px", width: "65px", viewBox: "0 0 490.4 490.4" }, /* @__PURE__ */ import_react18.default.createElement("g", null, /* @__PURE__ */ import_react18.default.createElement(
-        "rect",
-        {
-          className: "search-button-svg",
-          x: "0",
-          y: "0",
-          width: "490.4",
-          height: "490.4",
-          fill: "#2a2fff",
-          rx: 50,
-          ry: 50
-        }
-      ), /* @__PURE__ */ import_react18.default.createElement("g", { transform: "scale(0.6)" }, /* @__PURE__ */ import_react18.default.createElement("g", { transform: "translate(172,172)" }, /* @__PURE__ */ import_react18.default.createElement(
-        "path",
-        {
-          className: "search-button-hourglass",
-          fill: "white",
-          d: "M484.1,454.796l-110.5-110.6c29.8-36.3,47.6-82.8,47.6-133.4c0-116.3-94.3-210.6-210.6-210.6S0,94.496,0,210.796   s94.3,210.6,210.6,210.6c50.8,0,97.4-18,133.8-48l110.5,110.5c12.9,11.8,25,4.2,29.2,0C492.5,475.596,492.5,463.096,484.1,454.796z    M41.1,210.796c0-93.6,75.9-169.5,169.5-169.5s169.6,75.9,169.6,169.5s-75.9,169.5-169.5,169.5S41.1,304.396,41.1,210.796z"
-        }
-      )))))
-    )));
+      ] })
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/FavoriteAirports/FavoriteAirports.tsx
-  var import_react19 = __toESM(require_react());
+  var import_react8 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/avwxApi.ts
   var sampleMetar = {
@@ -38192,19 +39169,20 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/FavoriteAirports/FavoriteAirports.tsx
+  var import_jsx_runtime18 = __toESM(require_jsx_runtime());
   var AirportsFavorites = (props) => {
-    const [favoritesNearest, setFavoritesNearest] = import_react19.default.useState(1);
-    const [coordinates] = import_react19.default.useState([40.73061, -73.935242]);
-    const [minimumRunwayLength, setMinimumRunwayLength] = import_react19.default.useState(5e3);
-    const [sortingMethod, setSortingMethod] = import_react19.default.useState(0);
-    const [nearestAirports, setNearestAirports] = import_react19.default.useState(sampleNearest);
+    const [favoritesNearest, setFavoritesNearest] = import_react8.default.useState(1);
+    const [coordinates] = import_react8.default.useState([40.73061, -73.935242]);
+    const [minimumRunwayLength, setMinimumRunwayLength] = import_react8.default.useState(5e3);
+    const [sortingMethod, setSortingMethod] = import_react8.default.useState(0);
+    const [nearestAirports, setNearestAirports] = import_react8.default.useState(sampleNearest);
     const getFavorites = () => {
       if (props.favorites.length > 0)
         return props.favorites;
       else
         return ["No Airports Favorited"];
     };
-    const prevCoords = import_react19.default.useRef(coordinates);
+    const prevCoords = import_react8.default.useRef(coordinates);
     const fetchNearest = async () => {
       try {
         const response = await fetch(nearestUrlBuilder(coordinates));
@@ -38214,7 +39192,7 @@ class InstrumentLogic extends BaseInstrument {
         console.error(e);
       }
     };
-    import_react19.default.useEffect(() => {
+    import_react8.default.useEffect(() => {
       const distance = calculateDistanceLatLonToNM(prevCoords.current, coordinates);
       const minDistance = 10;
       if (Math.abs(distance) > minDistance) {
@@ -38224,7 +39202,7 @@ class InstrumentLogic extends BaseInstrument {
       }
       prevCoords.current = coordinates;
     }, [coordinates]);
-    import_react19.default.useEffect(() => {
+    import_react8.default.useEffect(() => {
       fetchNearest().catch((e) => {
         console.error(e);
       });
@@ -38242,23 +39220,23 @@ class InstrumentLogic extends BaseInstrument {
     };
     const renderNearest = () => {
       if (nearestAirports === void 0)
-        return /* @__PURE__ */ import_react19.default.createElement("div", null);
+        return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", {});
       const sortedAirports = nearestAirports.slice().sort((a, b) => {
         const longestRunwayA = getLongestRunway(a.station);
         const longestRunwayB = getLongestRunway(b.station);
         return longestRunwayB.longestRunwayLength - longestRunwayA.longestRunwayLength;
       });
       if (sortingMethod === 0) {
-        return /* @__PURE__ */ import_react19.default.createElement("div", null, nearestAirports.map((airport, key) => {
+        return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { children: nearestAirports.map((airport, key) => {
           const longestRunway = getLongestRunway(airport.station).longestRunwayLength;
           if (longestRunway < minimumRunwayLength)
-            return /* @__PURE__ */ import_react19.default.createElement("div", null);
+            return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", {});
           if (airport.station.icao === null)
-            return /* @__PURE__ */ import_react19.default.createElement("div", null);
+            return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", {});
           const distanceFromAirport = Math.abs(
             calculateDistanceLatLonToNM([airport.station.latitude, airport.station.longitude], coordinates)
           );
-          return /* @__PURE__ */ import_react19.default.createElement(
+          return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(
             "div",
             {
               onClick: () => {
@@ -38266,23 +39244,34 @@ class InstrumentLogic extends BaseInstrument {
                   props.setAirport(airport.station.icao);
               },
               className: "airports-favorites-list-item",
-              key
+              children: [
+                airport.station.icao,
+                ": ",
+                airport.station.name,
+                /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { children: [
+                  distanceFromAirport.toFixed(0),
+                  " NM"
+                ] }),
+                /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { children: [
+                  "longest runway: ",
+                  getLongestRunway(airport.station).longestRunwayLength,
+                  " ft",
+                  " ",
+                  getLongestRunway(airport.station).longestNumberSurface
+                ] })
+              ]
             },
-            airport.station.icao,
-            ": ",
-            airport.station.name,
-            /* @__PURE__ */ import_react19.default.createElement("div", null, distanceFromAirport.toFixed(0), " NM"),
-            /* @__PURE__ */ import_react19.default.createElement("div", null, "longest runway: ", getLongestRunway(airport.station).longestRunwayLength, " ft", " ", getLongestRunway(airport.station).longestNumberSurface)
+            key
           );
-        }));
+        }) });
       } else {
-        return /* @__PURE__ */ import_react19.default.createElement("div", null, sortedAirports.map((airport, key) => {
+        return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { children: sortedAirports.map((airport, key) => {
           const longestRunway = getLongestRunway(airport.station).longestRunwayLength;
           if (longestRunway < minimumRunwayLength)
-            return /* @__PURE__ */ import_react19.default.createElement("div", null);
+            return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", {});
           if (airport.station.icao === null)
-            return /* @__PURE__ */ import_react19.default.createElement("div", { key });
-          return /* @__PURE__ */ import_react19.default.createElement(
+            return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", {}, key);
+          return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(
             "div",
             {
               onClick: () => {
@@ -38290,104 +39279,137 @@ class InstrumentLogic extends BaseInstrument {
                   props.setAirport(airport.station.icao);
               },
               className: "airports-favorites-list-item",
-              key
+              children: [
+                airport.station.icao,
+                /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { children: airport.station.name }),
+                /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { children: [
+                  calculateDistanceLatLonToNM(
+                    [airport.station.latitude, airport.station.longitude],
+                    coordinates
+                  ).toFixed(0),
+                  " ",
+                  "NM"
+                ] }),
+                " ",
+                /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { children: [
+                  "Longest runway: ",
+                  getLongestRunway(airport.station).longestRunwayLength,
+                  " ft",
+                  " ",
+                  getLongestRunway(airport.station).longestNumberSurface
+                ] })
+              ]
             },
-            airport.station.icao,
-            /* @__PURE__ */ import_react19.default.createElement("div", null, airport.station.name),
-            /* @__PURE__ */ import_react19.default.createElement("div", null, calculateDistanceLatLonToNM(
-              [airport.station.latitude, airport.station.longitude],
-              coordinates
-            ).toFixed(0), " ", "NM"),
-            " ",
-            /* @__PURE__ */ import_react19.default.createElement("div", null, "Longest runway: ", getLongestRunway(airport.station).longestRunwayLength, " ft", " ", getLongestRunway(airport.station).longestNumberSurface)
+            key
           );
-        }));
+        }) });
       }
     };
-    return /* @__PURE__ */ import_react19.default.createElement("div", { className: "airports-favorites" }, /* @__PURE__ */ import_react19.default.createElement("div", { className: "airports-favorites-tabs" }, /* @__PURE__ */ import_react19.default.createElement(
-      "div",
-      {
-        className: `airports-favorites-tab-button ${favoritesNearest === 0 ? "airports-favorites-tab-button-active" : ""}`,
-        onClick: () => {
-          setFavoritesNearest(0);
-        }
-      },
-      "Favorites"
-    ), /* @__PURE__ */ import_react19.default.createElement(
-      "div",
-      {
-        className: `airports-favorites-tab-button ${favoritesNearest === 1 ? "airports-favorites-tab-button-active" : ""}`,
-        onClick: () => {
-          setFavoritesNearest(1);
-        }
-      },
-      "Nearest"
-    )), favoritesNearest === 0 ? /* @__PURE__ */ import_react19.default.createElement("div", null, /* @__PURE__ */ import_react19.default.createElement("div", { className: "airports-favorites-title" }, "Favorites"), /* @__PURE__ */ import_react19.default.createElement("div", { className: "airports-favorites-list" }, getFavorites().map((airport, key) => {
-      return /* @__PURE__ */ import_react19.default.createElement(
-        "div",
-        {
-          style: { fontStyle: airport === "No Airports Favorited" ? "italic" : "" },
-          onClick: () => {
-            if (airport !== "No Airports Favorited") {
-              props.setAirport(airport);
+    return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "airports-favorites", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "airports-favorites-tabs", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+          "div",
+          {
+            className: `airports-favorites-tab-button ${favoritesNearest === 0 ? "airports-favorites-tab-button-active" : ""}`,
+            onClick: () => {
+              setFavoritesNearest(0);
+            },
+            children: "Favorites"
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+          "div",
+          {
+            className: `airports-favorites-tab-button ${favoritesNearest === 1 ? "airports-favorites-tab-button-active" : ""}`,
+            onClick: () => {
+              setFavoritesNearest(1);
+            },
+            children: "Nearest"
+          }
+        )
+      ] }),
+      favoritesNearest === 0 ? /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "airports-favorites-title", children: "Favorites" }),
+        /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "airports-favorites-list", children: getFavorites().map((airport, key) => {
+          return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+            "div",
+            {
+              style: { fontStyle: airport === "No Airports Favorited" ? "italic" : "" },
+              onClick: () => {
+                if (airport !== "No Airports Favorited") {
+                  props.setAirport(airport);
+                }
+              },
+              className: "airports-favorites-list-item",
+              children: airport
+            },
+            key
+          );
+        }) })
+      ] }) : /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "airports-favorites-title", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+            "div",
+            {
+              onClick: () => {
+                minimumRunwayLength === 5e3 ? setMinimumRunwayLength(0) : setMinimumRunwayLength(5e3);
+              },
+              style: { fontSize: "25px" },
+              children: "Min?"
             }
-          },
-          key,
-          className: "airports-favorites-list-item"
-        },
-        airport
-      );
-    }))) : /* @__PURE__ */ import_react19.default.createElement("div", null, /* @__PURE__ */ import_react19.default.createElement("div", { className: "airports-favorites-title" }, /* @__PURE__ */ import_react19.default.createElement(
-      "div",
-      {
-        onClick: () => {
-          minimumRunwayLength === 5e3 ? setMinimumRunwayLength(0) : setMinimumRunwayLength(5e3);
-        },
-        style: { fontSize: "25px" }
-      },
-      "Min?"
-    ), /* @__PURE__ */ import_react19.default.createElement("div", null, "Nearest"), /* @__PURE__ */ import_react19.default.createElement(
-      "div",
-      {
-        onClick: () => {
-          setSortingMethod(sortingMethod === 0 ? 1 : 0);
-        },
-        style: { fontSize: "25px" }
-      },
-      "Filter"
-    )), /* @__PURE__ */ import_react19.default.createElement("div", { className: "airports-nearest-list" }, /* @__PURE__ */ import_react19.default.createElement("div", null, renderNearest()))));
+          ),
+          /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { children: "Nearest" }),
+          /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+            "div",
+            {
+              onClick: () => {
+                setSortingMethod(sortingMethod === 0 ? 1 : 0);
+              },
+              style: { fontSize: "25px" },
+              children: "Filter"
+            }
+          )
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "airports-nearest-list", children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { children: renderNearest() }) })
+      ] })
+    ] });
   };
 
-  // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/AirportsDisplay/AirportsDisplay.tsx
-  var import_react21 = __toESM(require_react());
-
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/AirportsDisplay/AptInformationProvider/AptInformationProvider.tsx
-  var import_react20 = __toESM(require_react());
+  var import_jsx_runtime19 = __toESM(require_jsx_runtime());
   var AirportInformationProvider = (props) => {
     var _a, _b, _c, _d, _e;
     if (props.isWeather == null || !props.isWeather) {
-      return /* @__PURE__ */ import_react20.default.createElement("div", { className: "airport-information-provider" }, /* @__PURE__ */ import_react20.default.createElement("div", { className: "airport-information-provider-field" }, props.field), /* @__PURE__ */ import_react20.default.createElement("div", { className: "airport-information-provider-content", style: { color: (_a = props.color) != null ? _a : "" } }, props.content));
+      return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "airport-information-provider", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "airport-information-provider-field", children: props.field }),
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "airport-information-provider-content", style: { color: (_a = props.color) != null ? _a : "" }, children: props.content })
+      ] });
     } else {
-      return /* @__PURE__ */ import_react20.default.createElement("div", { className: "airport-information-provider-weather" }, /* @__PURE__ */ import_react20.default.createElement("div", { className: "airport-information-provider-field-weather" }, props.field), /* @__PURE__ */ import_react20.default.createElement(
-        "div",
-        {
-          className: "airport-information-provider-content-weather",
-          style: { color: (_b = props.color) != null ? _b : "", backgroundColor: (_c = props.backgroundColor) != null ? _c : "" }
-        },
-        props.content
-      ), /* @__PURE__ */ import_react20.default.createElement(
-        "div",
-        {
-          className: "airport-information-provider-metar",
-          style: { color: (_d = props.color) != null ? _d : "", backgroundColor: (_e = props.backgroundColor) != null ? _e : "" }
-        },
-        props.metarRaw
-      ));
+      return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "airport-information-provider-weather", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "airport-information-provider-field-weather", children: props.field }),
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
+          "div",
+          {
+            className: "airport-information-provider-content-weather",
+            style: { color: (_b = props.color) != null ? _b : "", backgroundColor: (_c = props.backgroundColor) != null ? _c : "" },
+            children: props.content
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
+          "div",
+          {
+            className: "airport-information-provider-metar",
+            style: { color: (_d = props.color) != null ? _d : "", backgroundColor: (_e = props.backgroundColor) != null ? _e : "" },
+            children: props.metarRaw
+          }
+        )
+      ] });
     }
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/AirportsDisplay/AirportsDisplay.tsx
   var import_sunrise_sunset_js = __toESM(require_dist());
+  var import_jsx_runtime20 = __toESM(require_jsx_runtime());
   var AirportDisplay = (props) => {
     var _a, _b, _c, _d;
     const sunrise = (0, import_sunrise_sunset_js.getSunrise)(props.coordnates.lat, props.coordnates.lon);
@@ -38396,59 +39418,78 @@ class InstrumentLogic extends BaseInstrument {
     const UtcDateArray = UtcStringArray.map((utcString) => new Date(utcString));
     const UtcHoursArray = UtcDateArray.map((utcDate) => utcDate.getUTCHours());
     const UtcMinutesArray = UtcDateArray.map((utcDate) => utcDate.getUTCMinutes());
-    return /* @__PURE__ */ import_react21.default.createElement("div", { className: "airport-display" }, /* @__PURE__ */ import_react21.default.createElement("div", { className: "airport-display-title-group" }, /* @__PURE__ */ import_react21.default.createElement("div", { className: "airport-display-airport" }, props.airport, ": ", props.name), /* @__PURE__ */ import_react21.default.createElement(
-      "div",
-      {
-        onClick: () => {
-          if (props.favorites.includes(props.airport)) {
-            props.removeFavorite(props.airport);
-          } else {
-            if (props.favorites.length >= 12) {
-              return;
-            }
-            props.addFavorite(props.airport);
+    return /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "airport-display", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "airport-display-title-group", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "airport-display-airport", children: [
+          props.airport,
+          ": ",
+          props.name
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
+          "div",
+          {
+            onClick: () => {
+              if (props.favorites.includes(props.airport)) {
+                props.removeFavorite(props.airport);
+              } else {
+                if (props.favorites.length >= 12) {
+                  return;
+                }
+                props.addFavorite(props.airport);
+              }
+            },
+            className: "airports-favorite-button",
+            children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("svg", { viewBox: "0 0 65 60", width: 50, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
+              "path",
+              {
+                stroke: "yellow",
+                strokeWidth: 5,
+                fill: props.favorites.includes(props.airport) ? "yellow" : "none",
+                d: "M 46.296296,51.906272 L 31.916351,42.474649 L 17.502712,51.8547 L 22.029072,35.264028 L 8.654054,24.454438 L 25.831443,23.632463 L 31.978866,7.5717174 L 38.068716,23.65438 L 55.243051,24.537884 L 41.829396,35.299492 L 46.296296,51.906272 z "
+              }
+            ) })
           }
-        },
-        className: "airports-favorite-button"
-      },
-      /* @__PURE__ */ import_react21.default.createElement("svg", { viewBox: "0 0 65 60", width: 50 }, /* @__PURE__ */ import_react21.default.createElement(
-        "path",
+        )
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { children: [
+        props.city,
+        ", ",
+        props.country
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
+        AirportInformationProvider,
         {
-          stroke: "yellow",
-          strokeWidth: 5,
-          fill: props.favorites.includes(props.airport) ? "yellow" : "none",
-          d: "M 46.296296,51.906272 L 31.916351,42.474649 L 17.502712,51.8547 L 22.029072,35.264028 L 8.654054,24.454438 L 25.831443,23.632463 L 31.978866,7.5717174 L 38.068716,23.65438 L 55.243051,24.537884 L 41.829396,35.299492 L 46.296296,51.906272 z "
+          field: "Latest Weather",
+          content: (_b = (_a = props.flightCategory) == null ? void 0 : _a.flightCategory) != null ? _b : "unknown",
+          color: (_d = (_c = props.flightCategory) == null ? void 0 : _c.color) != null ? _d : "grey",
+          metarRaw: props.metarRaw,
+          isWeather: true
         }
-      ))
-    )), /* @__PURE__ */ import_react21.default.createElement("div", null, props.city, ", ", props.country), /* @__PURE__ */ import_react21.default.createElement(
-      AirportInformationProvider,
-      {
-        field: "Latest Weather",
-        content: (_b = (_a = props.flightCategory) == null ? void 0 : _a.flightCategory) != null ? _b : "unknown",
-        color: (_d = (_c = props.flightCategory) == null ? void 0 : _c.color) != null ? _d : "grey",
-        metarRaw: props.metarRaw,
-        isWeather: true
-      }
-    ), /* @__PURE__ */ import_react21.default.createElement("div", { className: "airport-display-divider" }, /* @__PURE__ */ import_react21.default.createElement("div", { className: "airport-display-left-content" }, /* @__PURE__ */ import_react21.default.createElement(AirportInformationProvider, { field: "Elevation", content: props.fieldElevation.toString() + "' MSL" }), /* @__PURE__ */ import_react21.default.createElement(
-      AirportInformationProvider,
-      {
-        field: "Sunrise / Sunset",
-        content: UtcHoursArray[0].toString().padStart(2, "0") + ":" + UtcMinutesArray[0].toString().padStart(2, "0") + " / " + UtcHoursArray[1].toString().padStart(2, "0") + ":" + UtcMinutesArray[1].toString().padStart(2, "0") + "Z"
-      }
-    )), /* @__PURE__ */ import_react21.default.createElement("div", { className: "airport-display-right-content" }, /* @__PURE__ */ import_react21.default.createElement(
-      AirportInformationProvider,
-      {
-        field: "Pattern Altitude: Turbine / Light",
-        content: (props.fieldElevation + 2e3).toString() + " / " + (props.fieldElevation + 1e3).toString() + "' MSL"
-      }
-    ))));
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "airport-display-divider", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "airport-display-left-content", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(AirportInformationProvider, { field: "Elevation", content: props.fieldElevation.toString() + "' MSL" }),
+          /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
+            AirportInformationProvider,
+            {
+              field: "Sunrise / Sunset",
+              content: UtcHoursArray[0].toString().padStart(2, "0") + ":" + UtcMinutesArray[0].toString().padStart(2, "0") + " / " + UtcHoursArray[1].toString().padStart(2, "0") + ":" + UtcMinutesArray[1].toString().padStart(2, "0") + "Z"
+            }
+          )
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "airport-display-right-content", children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
+          AirportInformationProvider,
+          {
+            field: "Pattern Altitude: Turbine / Light",
+            content: (props.fieldElevation + 2e3).toString() + " / " + (props.fieldElevation + 1e3).toString() + "' MSL"
+          }
+        ) })
+      ] })
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Weather/weather.tsx
-  var import_react25 = __toESM(require_react());
-
-  // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Weather/METAR/metarProvider.tsx
-  var import_react22 = __toESM(require_react());
+  var import_react9 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/common/getFlightCategory.ts
   var getFlightCategory = (cielings, visibility) => {
@@ -38470,16 +39511,23 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Weather/METAR/metarProvider.tsx
+  var import_jsx_runtime21 = __toESM(require_jsx_runtime());
   var MetarOrganizer = (props) => {
     var _a;
-    return /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-organizer-container" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-organizer-field" }, " ", props.field), /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-organizer-content", style: { color: (_a = props.colorOvrd) != null ? _a : "" } }, props.text));
+    return /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "metar-organizer-container", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "metar-organizer-field", children: [
+        " ",
+        props.field
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "metar-organizer-content", style: { color: (_a = props.colorOvrd) != null ? _a : "" }, children: props.text })
+    ] });
   };
   var MetarProvider = (props) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B;
     if (props.metar === void 0)
-      return /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-wrapper" }, "Loading...");
+      return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "metar-wrapper", children: "Loading..." });
     if (props.parsedMetar === void 0)
-      return /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-wrapper" }, "Loading...");
+      return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "metar-wrapper", children: "Loading..." });
     const flightCategory = getFlightCategory(
       {
         type: (_c = (_b = (_a = props.parsedMetar) == null ? void 0 : _a.clouds[props.parsedMetar.clouds.length - 1]) == null ? void 0 : _b.quantity) != null ? _c : "",
@@ -38609,63 +39657,123 @@ class InstrumentLogic extends BaseInstrument {
     const clouds = props.parsedMetar.clouds;
     const formattedHumidity = humidity != null && !isNaN(humidity) ? humidity.toFixed(0) + "%" : "N/A";
     const formattedDegrees = String(degrees).padStart(3, "0");
-    return /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-wrapper" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-header" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "flight-cat-group" }, /* @__PURE__ */ import_react22.default.createElement("div", { className: "flight-cat-bubble", style: { backgroundColor: flightCategory.color } }), /* @__PURE__ */ import_react22.default.createElement("div", { style: { color: flightCategory.color } }, flightCategory.flightCategory))), /* @__PURE__ */ import_react22.default.createElement("div", { className: "metar-raw", style: { color: flightCategory.color } }, props.metar), /* @__PURE__ */ import_react22.default.createElement(
-      MetarOrganizer,
-      {
-        field: "Time:",
-        text: /* @__PURE__ */ import_react22.default.createElement("div", null, padNumber(props.parsedMetar.hour) + ":" + padNumber(props.parsedMetar.minute) + "z")
-      }
-    ), /* @__PURE__ */ import_react22.default.createElement(
-      MetarOrganizer,
-      {
-        field: "Wind:",
-        text: /* @__PURE__ */ import_react22.default.createElement("div", null, ((_l = props.parsedMetar.wind) == null ? void 0 : _l.degrees) === 0 ? /* @__PURE__ */ import_react22.default.createElement("div", null, "Calm") : /* @__PURE__ */ import_react22.default.createElement("div", null, ((_m = props.parsedMetar.wind) == null ? void 0 : _m.direction) === "VRB" ? /* @__PURE__ */ import_react22.default.createElement("div", null, "Variable at ", (_n = props.parsedMetar.wind) == null ? void 0 : _n.speed, ((_o = props.parsedMetar.wind) == null ? void 0 : _o.gust) !== void 0 ? " - " + ((_p = props.parsedMetar.wind) == null ? void 0 : _p.gust) + " " : " ", "knots") : /* @__PURE__ */ import_react22.default.createElement("div", null, formattedDegrees, "\xB0 at ", (_q = props.parsedMetar.wind) == null ? void 0 : _q.speed, ((_r = props.parsedMetar.wind) == null ? void 0 : _r.gust) !== void 0 ? " - " + ((_s = props.parsedMetar.wind) == null ? void 0 : _s.gust) + " " : " ", "knots")))
-      }
-    ), /* @__PURE__ */ import_react22.default.createElement(MetarOrganizer, { field: "Visibility:", text: /* @__PURE__ */ import_react22.default.createElement("div", null, " ", (_t = props.parsedMetar.visibility) == null ? void 0 : _t.value, " sm") }), Array.isArray(clouds) && clouds.length > 0 ? /* @__PURE__ */ import_react22.default.createElement(
-      MetarOrganizer,
-      {
-        field: " Clouds (AGL):",
-        text: /* @__PURE__ */ import_react22.default.createElement("div", null, (_v = (_u = props.parsedMetar) == null ? void 0 : _u.clouds[props.parsedMetar.clouds.length - 1]) == null ? void 0 : _v.quantity, " ", (_x = (_w = props.parsedMetar) == null ? void 0 : _w.clouds[props.parsedMetar.clouds.length - 1]) == null ? void 0 : _x.height, "\u2019")
-      }
-    ) : "", Array.isArray(weatherConditions) && weatherConditions.length > 0 ? /* @__PURE__ */ import_react22.default.createElement(
-      MetarOrganizer,
-      {
-        field: " Weather:",
-        colorOvrd: "#ff0066",
-        text: /* @__PURE__ */ import_react22.default.createElement("div", null, props.parsedMetar.weatherConditions.map((c, index) => {
-          var _a2, _b2;
-          return /* @__PURE__ */ import_react22.default.createElement("div", { key: index, style: { display: "flex", flexDirection: "row" } }, decodeWeatherIndensity((_a2 = c.intensity) != null ? _a2 : ""), " ", decodeWeatherDescriptor((_b2 = c.descriptive) != null ? _b2 : ""), " ", c.phenomenons.map((w) => decodeWeatherType(w)));
-        }))
-      }
-    ) : "", /* @__PURE__ */ import_react22.default.createElement(
-      MetarOrganizer,
-      {
-        field: "Temperature: ",
-        text: /* @__PURE__ */ import_react22.default.createElement("div", null, props.parsedMetar.temperature, "\xB0C (", cToF((_y = props.parsedMetar.temperature) != null ? _y : 999), ")\xB0F")
-      }
-    ), /* @__PURE__ */ import_react22.default.createElement(
-      MetarOrganizer,
-      {
-        field: "Dewpoint:",
-        text: /* @__PURE__ */ import_react22.default.createElement("div", null, props.parsedMetar.dewPoint, "\xB0C (", cToF((_z = props.parsedMetar.dewPoint) != null ? _z : 999), ")\xB0F")
-      }
-    ), /* @__PURE__ */ import_react22.default.createElement(
-      MetarOrganizer,
-      {
-        field: " Altimeter: ",
-        text: /* @__PURE__ */ import_react22.default.createElement("div", null, (_A = props.parsedMetar.altimeter) == null ? void 0 : _A.value, " ", (_B = props.parsedMetar.altimeter) == null ? void 0 : _B.unit)
-      }
-    ), /* @__PURE__ */ import_react22.default.createElement(MetarOrganizer, { field: "Humidity: ", text: /* @__PURE__ */ import_react22.default.createElement("div", null, formattedHumidity) }), /* @__PURE__ */ import_react22.default.createElement(MetarOrganizer, { field: "Density Altitude:", text: /* @__PURE__ */ import_react22.default.createElement("div", null, " ", DA, "\u2019") }));
+    return /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "metar-wrapper", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "metar-header", children: /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "flight-cat-group", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "flight-cat-bubble", style: { backgroundColor: flightCategory.color } }),
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { style: { color: flightCategory.color }, children: flightCategory.flightCategory })
+      ] }) }),
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "metar-raw", style: { color: flightCategory.color }, children: props.metar }),
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
+        MetarOrganizer,
+        {
+          field: "Time:",
+          text: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { children: padNumber(props.parsedMetar.hour) + ":" + padNumber(props.parsedMetar.minute) + "z" })
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
+        MetarOrganizer,
+        {
+          field: "Wind:",
+          text: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { children: ((_l = props.parsedMetar.wind) == null ? void 0 : _l.degrees) === 0 ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { children: "Calm" }) : /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { children: ((_m = props.parsedMetar.wind) == null ? void 0 : _m.direction) === "VRB" ? /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { children: [
+            "Variable at ",
+            (_n = props.parsedMetar.wind) == null ? void 0 : _n.speed,
+            ((_o = props.parsedMetar.wind) == null ? void 0 : _o.gust) !== void 0 ? " - " + ((_p = props.parsedMetar.wind) == null ? void 0 : _p.gust) + " " : " ",
+            "knots"
+          ] }) : /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { children: [
+            formattedDegrees,
+            "\xB0 at ",
+            (_q = props.parsedMetar.wind) == null ? void 0 : _q.speed,
+            ((_r = props.parsedMetar.wind) == null ? void 0 : _r.gust) !== void 0 ? " - " + ((_s = props.parsedMetar.wind) == null ? void 0 : _s.gust) + " " : " ",
+            "knots"
+          ] }) }) })
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(MetarOrganizer, { field: "Visibility:", text: /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { children: [
+        " ",
+        (_t = props.parsedMetar.visibility) == null ? void 0 : _t.value,
+        " sm"
+      ] }) }),
+      Array.isArray(clouds) && clouds.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
+        MetarOrganizer,
+        {
+          field: " Clouds (AGL):",
+          text: /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { children: [
+            (_v = (_u = props.parsedMetar) == null ? void 0 : _u.clouds[props.parsedMetar.clouds.length - 1]) == null ? void 0 : _v.quantity,
+            " ",
+            (_x = (_w = props.parsedMetar) == null ? void 0 : _w.clouds[props.parsedMetar.clouds.length - 1]) == null ? void 0 : _x.height,
+            "\u2019"
+          ] })
+        }
+      ) : "",
+      Array.isArray(weatherConditions) && weatherConditions.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
+        MetarOrganizer,
+        {
+          field: " Weather:",
+          colorOvrd: "#ff0066",
+          text: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { children: props.parsedMetar.weatherConditions.map((c, index) => {
+            var _a2, _b2;
+            return /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { style: { display: "flex", flexDirection: "row" }, children: [
+              decodeWeatherIndensity((_a2 = c.intensity) != null ? _a2 : ""),
+              " ",
+              decodeWeatherDescriptor((_b2 = c.descriptive) != null ? _b2 : ""),
+              " ",
+              c.phenomenons.map((w) => decodeWeatherType(w))
+            ] }, index);
+          }) })
+        }
+      ) : "",
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
+        MetarOrganizer,
+        {
+          field: "Temperature: ",
+          text: /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { children: [
+            props.parsedMetar.temperature,
+            "\xB0C (",
+            cToF((_y = props.parsedMetar.temperature) != null ? _y : 999),
+            ")\xB0F"
+          ] })
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
+        MetarOrganizer,
+        {
+          field: "Dewpoint:",
+          text: /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { children: [
+            props.parsedMetar.dewPoint,
+            "\xB0C (",
+            cToF((_z = props.parsedMetar.dewPoint) != null ? _z : 999),
+            ")\xB0F"
+          ] })
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
+        MetarOrganizer,
+        {
+          field: " Altimeter: ",
+          text: /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { children: [
+            (_A = props.parsedMetar.altimeter) == null ? void 0 : _A.value,
+            " ",
+            (_B = props.parsedMetar.altimeter) == null ? void 0 : _B.unit
+          ] })
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(MetarOrganizer, { field: "Humidity: ", text: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { children: formattedHumidity }) }),
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(MetarOrganizer, { field: "Density Altitude:", text: /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { children: [
+        " ",
+        DA,
+        "\u2019"
+      ] }) })
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Weather/TAF/tafProvider.tsx
-  var import_react23 = __toESM(require_react());
+  var import_jsx_runtime22 = __toESM(require_jsx_runtime());
   var TafProvider = (props) => {
-    return /* @__PURE__ */ import_react23.default.createElement("div", null, /* @__PURE__ */ import_react23.default.createElement("div", null, props.taf));
+    return /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { children: props.taf }) });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Weather/weatherButton.tsx
-  var import_react24 = __toESM(require_react());
+  var import_jsx_runtime23 = __toESM(require_jsx_runtime());
   var WeatherButton = (props) => {
     const isActive = () => {
       if (props.state === props.to) {
@@ -38673,28 +39781,89 @@ class InstrumentLogic extends BaseInstrument {
       }
       return false;
     };
-    return /* @__PURE__ */ import_react24.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(
       "div",
       {
         className: `weather-button ${isActive() ? "active-weather" : ""}`,
         onClick: () => {
           props.setState(props.to);
-        }
-      },
-      /* @__PURE__ */ import_react24.default.createElement("div", { className: "weather-text" }, /* @__PURE__ */ import_react24.default.createElement("div", null, " ", props.text), /* @__PURE__ */ import_react24.default.createElement("div", null, ">"))
+        },
+        children: /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { className: "weather-text", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { children: [
+            " ",
+            props.text
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { children: ">" })
+        ] })
+      }
     );
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Weather/weather.tsx
+  var import_jsx_runtime24 = __toESM(require_jsx_runtime());
   var Weather = (props) => {
-    const [weatherPage, setWeatherPage] = import_react25.default.useState(0);
-    return /* @__PURE__ */ import_react25.default.createElement("div", { className: "weather-wrapper" }, /* @__PURE__ */ import_react25.default.createElement("div", { className: "weather-buttons-wrapper" }, /* @__PURE__ */ import_react25.default.createElement("div", { className: "weather-buttons-title" }, "Weather"), /* @__PURE__ */ import_react25.default.createElement(WeatherButton, { to: 0, setState: setWeatherPage, state: weatherPage, text: "METAR" }), /* @__PURE__ */ import_react25.default.createElement(WeatherButton, { to: 1, setState: setWeatherPage, state: weatherPage, text: "TAF" })), /* @__PURE__ */ import_react25.default.createElement("div", { className: "weather-display" }, weatherPage === 0 ? /* @__PURE__ */ import_react25.default.createElement(MetarProvider, { metar: props.metar.raw, parsedMetar: props.parsedMetar, fieldElev: props.fieldElev }) : /* @__PURE__ */ import_react25.default.createElement(TafProvider, { taf: props.taf.raw, parsedTaf: props.parsedTaf })));
+    const [weatherPage, setWeatherPage] = import_react9.default.useState(0);
+    return /* @__PURE__ */ (0, import_jsx_runtime24.jsxs)("div", { className: "weather-wrapper", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime24.jsxs)("div", { className: "weather-buttons-wrapper", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime24.jsx)("div", { className: "weather-buttons-title", children: "Weather" }),
+        /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(WeatherButton, { to: 0, setState: setWeatherPage, state: weatherPage, text: "METAR" }),
+        /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(WeatherButton, { to: 1, setState: setWeatherPage, state: weatherPage, text: "TAF" })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime24.jsx)("div", { className: "weather-display", children: weatherPage === 0 ? /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(MetarProvider, { metar: props.metar.raw, parsedMetar: props.parsedMetar, fieldElev: props.fieldElev }) : /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(TafProvider, { taf: props.taf.raw, parsedTaf: props.parsedTaf }) })
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Runway/runway.tsx
-  var import_react26 = __toESM(require_react());
+  var import_jsx_runtime25 = __toESM(require_jsx_runtime());
   var RunwayDisplay = (props) => {
-    return /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-container" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-left" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-left-ident" }, props.ident.ident1, " - ", props.ident.ident2), /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-left-dimensions" }, props.dimensions.length, "' x ", props.dimensions.width, "'")), /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-right" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-top" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-right-ident" }, "Rwy ", props.ident.ident1), !props.isCalm ? /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-right-winds" }, " ", props.winds.cw, " kts", " ", /* @__PURE__ */ import_react26.default.createElement("div", { style: { color: props.winds.isTw ? "#ff0066" : "#00ffb4" } }, props.winds.hw, " kts")) : /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-right-winds" }, "Clm")), /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-bottom" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-right-ident" }, " Rwy ", props.ident.ident2), !props.isCalm ? /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-right-winds" }, props.winds2.cw, " kts", " ", /* @__PURE__ */ import_react26.default.createElement("div", { style: { color: props.winds2.isTw ? "#ff0066" : "#00ffb4" } }, props.winds2.hw, " kts")) : /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-display-right-winds" }, "Clm "))));
+    return /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "runway-display-container", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "runway-display-left", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "runway-display-left-ident", children: [
+          props.ident.ident1,
+          " - ",
+          props.ident.ident2
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "runway-display-left-dimensions", children: [
+          props.dimensions.length,
+          "' x ",
+          props.dimensions.width,
+          "'"
+        ] })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "runway-display-right", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "runway-top", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "runway-display-right-ident", children: [
+            "Rwy ",
+            props.ident.ident1
+          ] }),
+          !props.isCalm ? /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "runway-display-right-winds", children: [
+            " ",
+            props.winds.cw,
+            " kts",
+            " ",
+            /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { style: { color: props.winds.isTw ? "#ff0066" : "#00ffb4" }, children: [
+              props.winds.hw,
+              " kts"
+            ] })
+          ] }) : /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "runway-display-right-winds", children: "Clm" })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "runway-bottom", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "runway-display-right-ident", children: [
+            " Rwy ",
+            props.ident.ident2
+          ] }),
+          !props.isCalm ? /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "runway-display-right-winds", children: [
+            props.winds2.cw,
+            " kts",
+            " ",
+            /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { style: { color: props.winds2.isTw ? "#ff0066" : "#00ffb4" }, children: [
+              props.winds2.hw,
+              " kts"
+            ] })
+          ] }) : /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "runway-display-right-winds", children: "Clm " })
+        ] })
+      ] })
+    ] });
   };
   var Runway = (props) => {
     const formatRunwayInput = (rw) => {
@@ -38726,34 +39895,37 @@ class InstrumentLogic extends BaseInstrument {
           cW: Math.abs(getCW(dif, windV)).toFixed(0)
         };
     };
-    return /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-wrapper" }, /* @__PURE__ */ import_react26.default.createElement("div", { className: "runway-content-wrapper" }, /* @__PURE__ */ import_react26.default.createElement("div", { style: { padding: "20px" } }, "Runways"), props.runways.map((rw) => {
-      if (rw.ident1.startsWith("H"))
-        return /* @__PURE__ */ import_react26.default.createElement(import_react26.default.Fragment, null);
-      const winds1 = calculateCrosswindComponents(
-        Number(formatRunwayInput(rw.ident1)),
-        props.wind.direction,
-        props.wind.velocity
-      );
-      const winds2 = calculateCrosswindComponents(
-        Number(formatRunwayInput(rw.ident2)),
-        props.wind.direction,
-        props.wind.velocity
-      );
-      return /* @__PURE__ */ import_react26.default.createElement(
-        RunwayDisplay,
-        {
-          ident: { ident1: rw.ident1, ident2: rw.ident2 },
-          dimensions: { width: rw.width_ft, length: rw.length_ft },
-          winds: { hw: winds1.hW, cw: winds1.cW, isTw: winds1.isTailwind },
-          winds2: { hw: winds2.hW, cw: winds2.cW, isTw: winds2.isTailwind },
-          isCalm: props.wind.velocity === 0
-        }
-      );
-    })));
+    return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "runway-wrapper", children: /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "runway-content-wrapper", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { style: { padding: "20px" }, children: "Runways" }),
+      props.runways.map((rw) => {
+        if (rw.ident1.startsWith("H"))
+          return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(import_jsx_runtime25.Fragment, {});
+        const winds1 = calculateCrosswindComponents(
+          Number(formatRunwayInput(rw.ident1)),
+          props.wind.direction,
+          props.wind.velocity
+        );
+        const winds2 = calculateCrosswindComponents(
+          Number(formatRunwayInput(rw.ident2)),
+          props.wind.direction,
+          props.wind.velocity
+        );
+        return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(
+          RunwayDisplay,
+          {
+            ident: { ident1: rw.ident1, ident2: rw.ident2 },
+            dimensions: { width: rw.width_ft, length: rw.length_ft },
+            winds: { hw: winds1.hW, cw: winds1.cW, isTw: winds1.isTailwind },
+            winds2: { hw: winds2.hW, cw: winds2.cW, isTw: winds2.isTailwind },
+            isCalm: props.wind.velocity === 0
+          }
+        );
+      })
+    ] }) });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Procedure/procedure.tsx
-  var import_react30 = __toESM(require_react());
+  var import_react12 = __toESM(require_react());
 
   // node_modules/@navigraph/app/dist/index.esm.js
   var __defProp2 = Object.defineProperty;
@@ -40901,8 +42073,9 @@ class InstrumentLogic extends BaseInstrument {
   var packages = getPackagesAPI();
 
   // instruments/src/ElectronicFlightBag/hooks/useNavigraphAuth.tsx
-  var import_react27 = __toESM(require_react());
-  var authContext = (0, import_react27.createContext)({
+  var import_react10 = __toESM(require_react());
+  var import_jsx_runtime26 = __toESM(require_jsx_runtime());
+  var authContext = (0, import_react10.createContext)({
     isInitialized: false,
     user: null,
     signIn: () => Promise.reject("Not initialized"),
@@ -40910,13 +42083,13 @@ class InstrumentLogic extends BaseInstrument {
   });
   var NavigraphAuthProvider = ({ children }) => {
     const auth2 = useProvideAuth();
-    return /* @__PURE__ */ import_react27.default.createElement(authContext.Provider, { value: auth2 }, children);
+    return /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(authContext.Provider, { value: auth2, children });
   };
-  var useNavigraphAuth = () => (0, import_react27.useContext)(authContext);
+  var useNavigraphAuth = () => (0, import_react10.useContext)(authContext);
   var useProvideAuth = () => {
-    const [user, setUser2] = (0, import_react27.useState)(null);
-    const [isInitialized, setIsInitialized] = (0, import_react27.useState)(false);
-    (0, import_react27.useEffect)(() => {
+    const [user, setUser2] = (0, import_react10.useState)(null);
+    const [isInitialized, setIsInitialized] = (0, import_react10.useState)(false);
+    (0, import_react10.useEffect)(() => {
       const unsubscribe = auth.onAuthStateChanged((u) => {
         setUser2(u);
         setIsInitialized(true);
@@ -40932,17 +42105,18 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Procedure/chartSorter.tsx
-  var import_react28 = __toESM(require_react());
+  var import_react11 = __toESM(require_react());
+  var import_jsx_runtime27 = __toESM(require_jsx_runtime());
   var ChartSorter = (props) => {
-    const [hoveredItem, setHoveredItem] = (0, import_react28.useState)(null);
-    const itemRef = (0, import_react28.useRef)(null);
+    const [hoveredItem, setHoveredItem] = (0, import_react11.useState)(null);
+    const itemRef = (0, import_react11.useRef)(null);
     const handleMouseEnter = (item) => {
       setHoveredItem(item);
     };
     const handleMouseLeave = () => {
       setHoveredItem(null);
     };
-    (0, import_react28.useEffect)(() => {
+    (0, import_react11.useEffect)(() => {
       props.isHovering(!!hoveredItem);
       if (hoveredItem && itemRef.current) {
         const rect = itemRef.current.getBoundingClientRect();
@@ -40951,8 +42125,8 @@ class InstrumentLogic extends BaseInstrument {
     }, [hoveredItem, props.setCoords, props.isHovering]);
     const sortedCharts = props.chart.filter((chart) => chart.category === props.filter);
     if (props.filter === "")
-      return /* @__PURE__ */ import_react28.default.createElement(import_react28.default.Fragment, null);
-    return /* @__PURE__ */ import_react28.default.createElement(
+      return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_jsx_runtime27.Fragment, {});
+    return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(
       "div",
       {
         onMouseEnter: () => {
@@ -40961,25 +42135,25 @@ class InstrumentLogic extends BaseInstrument {
         onMouseLeave: () => {
           props.isHovering(false);
         },
-        className: "chart-sorter-wrapper"
-      },
-      sortedCharts.map((chart) => /* @__PURE__ */ import_react28.default.createElement(
-        "div",
-        {
-          ref: chart.name === hoveredItem ? itemRef : null,
-          className: "procedure-page-chart-button",
-          onClick: () => props.handleClick(chart),
-          key: chart.id,
-          onMouseEnter: () => handleMouseEnter(chart.name),
-          onMouseLeave: handleMouseLeave
-        },
-        /* @__PURE__ */ import_react28.default.createElement("div", { className: "procedure-page-chart-button-text" }, chart.name)
-      ))
+        className: "chart-sorter-wrapper",
+        children: sortedCharts.map((chart) => /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(
+          "div",
+          {
+            ref: chart.name === hoveredItem ? itemRef : null,
+            className: "procedure-page-chart-button",
+            onClick: () => props.handleClick(chart),
+            onMouseEnter: () => handleMouseEnter(chart.name),
+            onMouseLeave: handleMouseLeave,
+            children: /* @__PURE__ */ (0, import_jsx_runtime27.jsx)("div", { className: "procedure-page-chart-button-text", children: chart.name })
+          },
+          chart.id
+        ))
+      }
     );
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Procedure/procedureButtonBarButton.tsx
-  var import_react29 = __toESM(require_react());
+  var import_jsx_runtime28 = __toESM(require_jsx_runtime());
   var ProcedureButton = (props) => {
     const isActive = () => {
       if (props.state === props.to) {
@@ -40987,26 +42161,33 @@ class InstrumentLogic extends BaseInstrument {
       }
       return false;
     };
-    return /* @__PURE__ */ import_react29.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(
       "div",
       {
         className: `procedure-button ${isActive() ? "active-proc" : ""}`,
         onClick: () => {
           props.setState(props.to);
-        }
-      },
-      /* @__PURE__ */ import_react29.default.createElement("div", { className: "procedure-text" }, /* @__PURE__ */ import_react29.default.createElement("div", null, " ", props.text), /* @__PURE__ */ import_react29.default.createElement("div", null, ">"))
+        },
+        children: /* @__PURE__ */ (0, import_jsx_runtime28.jsxs)("div", { className: "procedure-text", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime28.jsxs)("div", { children: [
+            " ",
+            props.text
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime28.jsx)("div", { children: ">" })
+        ] })
+      }
     );
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Procedure/procedure.tsx
+  var import_jsx_runtime29 = __toESM(require_jsx_runtime());
   var Procedure = (props) => {
-    const [chartIndex, setChartIndex] = import_react30.default.useState([]);
-    const [chartBlob, setChartBlob] = import_react30.default.useState(null);
-    const [procedurePage, setProcedurePage] = import_react30.default.useState(0);
-    const [psudoCoords, setPsudoCoords] = import_react30.default.useState({ x: 0, y: 0 });
-    const [isHover, setIsHover] = import_react30.default.useState(false);
-    const { state } = import_react30.default.useContext(AppContext);
+    const [chartIndex, setChartIndex] = import_react12.default.useState([]);
+    const [chartBlob, setChartBlob] = import_react12.default.useState(null);
+    const [procedurePage, setProcedurePage] = import_react12.default.useState(0);
+    const [psudoCoords, setPsudoCoords] = import_react12.default.useState({ x: 0, y: 0 });
+    const [isHover, setIsHover] = import_react12.default.useState(false);
+    const { state } = import_react12.default.useContext(AppContext);
     const fetchChartsIndex = (icao) => {
       charts.getChartsIndex({ icao }).then((idx) => idx && setChartIndex(idx));
     };
@@ -41027,29 +42208,46 @@ class InstrumentLogic extends BaseInstrument {
           return "";
       }
     };
-    import_react30.default.useEffect(() => {
+    import_react12.default.useEffect(() => {
       fetchChartsIndex(props.airport);
     }, [props.airport]);
     const { user } = useNavigraphAuth();
-    return /* @__PURE__ */ import_react30.default.createElement("div", { className: "procedure-wrapper" }, /* @__PURE__ */ import_react30.default.createElement("div", { className: "procedure-buttons-continer" }, /* @__PURE__ */ import_react30.default.createElement("div", { className: "procedure-buttons-title" }, "Procedure"), /* @__PURE__ */ import_react30.default.createElement(ProcedureButton, { to: 0, setState: setProcedurePage, state: procedurePage, text: "Airport" }), /* @__PURE__ */ import_react30.default.createElement(ProcedureButton, { to: 1, setState: setProcedurePage, state: procedurePage, text: "Departure" }), /* @__PURE__ */ import_react30.default.createElement(ProcedureButton, { to: 2, setState: setProcedurePage, state: procedurePage, text: "Arrival" }), /* @__PURE__ */ import_react30.default.createElement(ProcedureButton, { to: 3, setState: setProcedurePage, state: procedurePage, text: "Approach" })), chartIndex.length ? /* @__PURE__ */ import_react30.default.createElement("div", { className: "procedure-chart-buttons-container" }, /* @__PURE__ */ import_react30.default.createElement("div", { className: "procedure-buttons-title" }, "Plates"), isHover && /* @__PURE__ */ import_react30.default.createElement("div", { className: "psudo-hover", style: { left: psudoCoords.x - 630, top: psudoCoords.y - 745 } }), /* @__PURE__ */ import_react30.default.createElement(
-      ChartSorter,
-      {
-        setCoords: setPsudoCoords,
-        isHovering: setIsHover,
-        chart: chartIndex,
-        filter: getStringFromPage(procedurePage),
-        handleClick: loadChart
-      }
-    )) : "Loading...", user && chartBlob ? /* @__PURE__ */ import_react30.default.createElement("div", { className: "chart-container" }, /* @__PURE__ */ import_react30.default.createElement("div", { className: "chart-header" }, /* @__PURE__ */ import_react30.default.createElement(
-      "div",
-      {
-        onClick: () => {
-          setChartBlob(null);
-        },
-        className: "chart-close"
-      },
-      "Close"
-    )), /* @__PURE__ */ import_react30.default.createElement("img", { className: "chart", src: URL.createObjectURL(chartBlob), alt: "chart" })) : "");
+    return /* @__PURE__ */ (0, import_jsx_runtime29.jsxs)("div", { className: "procedure-wrapper", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime29.jsxs)("div", { className: "procedure-buttons-continer", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime29.jsx)("div", { className: "procedure-buttons-title", children: "Procedure" }),
+        /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(ProcedureButton, { to: 0, setState: setProcedurePage, state: procedurePage, text: "Airport" }),
+        /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(ProcedureButton, { to: 1, setState: setProcedurePage, state: procedurePage, text: "Departure" }),
+        /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(ProcedureButton, { to: 2, setState: setProcedurePage, state: procedurePage, text: "Arrival" }),
+        /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(ProcedureButton, { to: 3, setState: setProcedurePage, state: procedurePage, text: "Approach" })
+      ] }),
+      chartIndex.length ? /* @__PURE__ */ (0, import_jsx_runtime29.jsxs)("div", { className: "procedure-chart-buttons-container", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime29.jsx)("div", { className: "procedure-buttons-title", children: "Plates" }),
+        isHover && /* @__PURE__ */ (0, import_jsx_runtime29.jsx)("div", { className: "psudo-hover", style: { left: psudoCoords.x - 630, top: psudoCoords.y - 745 } }),
+        /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(
+          ChartSorter,
+          {
+            setCoords: setPsudoCoords,
+            isHovering: setIsHover,
+            chart: chartIndex,
+            filter: getStringFromPage(procedurePage),
+            handleClick: loadChart
+          }
+        )
+      ] }) : "Loading...",
+      user && chartBlob ? /* @__PURE__ */ (0, import_jsx_runtime29.jsxs)("div", { className: "chart-container", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime29.jsx)("div", { className: "chart-header", children: /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(
+          "div",
+          {
+            onClick: () => {
+              setChartBlob(null);
+            },
+            className: "chart-close",
+            children: "Close"
+          }
+        ) }),
+        /* @__PURE__ */ (0, import_jsx_runtime29.jsx)("img", { className: "chart", src: URL.createObjectURL(chartBlob), alt: "chart" })
+      ] }) : ""
+    ] });
   };
 
   // node_modules/metar-taf-parser/locale/en.js
@@ -43916,17 +45114,21 @@ class InstrumentLogic extends BaseInstrument {
   }
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Notams/notams.tsx
-  var import_react31 = __toESM(require_react());
+  var import_jsx_runtime30 = __toESM(require_jsx_runtime());
   var Notams = (props) => {
-    return /* @__PURE__ */ import_react31.default.createElement("div", { className: "notams-wrapper" }, /* @__PURE__ */ import_react31.default.createElement("h1", null, "Notams"), /* @__PURE__ */ import_react31.default.createElement("div", null, "Notams are coming soon"));
+    return /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("div", { className: "notams-wrapper", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("h1", { children: "Notams" }),
+      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("div", { children: "Notams are coming soon" })
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Components/Settings/Settings.tsx
-  var import_react32 = __toESM(require_react());
+  var import_react13 = __toESM(require_react());
   var import_react_toggle_button = __toESM(require_lib());
+  var import_jsx_runtime31 = __toESM(require_jsx_runtime());
   var Settings = (props) => {
     const useOutsideAlerter = (ref) => {
-      import_react32.default.useEffect(() => {
+      import_react13.default.useEffect(() => {
         const handleClickOutside = (event) => {
           if (ref.current && !ref.current.contains(event.target)) {
             props.forceClose(false);
@@ -43938,7 +45140,7 @@ class InstrumentLogic extends BaseInstrument {
         };
       }, [ref]);
     };
-    const { state, updateState } = import_react32.default.useContext(AppContext);
+    const { state, updateState } = import_react13.default.useContext(AppContext);
     const setDarkMode = (darkMode) => {
       updateState(__spreadProps(__spreadValues({}, state), {
         state: {
@@ -43958,64 +45160,77 @@ class InstrumentLogic extends BaseInstrument {
         }
       }));
     };
-    const wrapperRef = import_react32.default.useRef(null);
+    const wrapperRef = import_react13.default.useRef(null);
     useOutsideAlerter(wrapperRef);
     if (props.open) {
-      return /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-background" }, /* @__PURE__ */ import_react32.default.createElement("div", { ref: wrapperRef, className: "settings-container" }, /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-header" }, /* @__PURE__ */ import_react32.default.createElement(
-        "div",
-        {
-          onClick: () => {
-            props.forceClose(false);
-          },
-          className: "settings-close-button"
-        },
-        "X"
-      )), /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-content" }, /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-field" }, "Dark mode pates", /* @__PURE__ */ import_react32.default.createElement(
-        import_react_toggle_button.default,
-        {
-          inactiveLabel: "",
-          activeLabel: "",
-          colors: {
-            activeThumb: {
-              base: "rgb(250,250,250)"
+      return /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("div", { className: "settings-background", children: /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("div", { ref: wrapperRef, className: "settings-container", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("div", { className: "settings-header", children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(
+          "div",
+          {
+            onClick: () => {
+              props.forceClose(false);
             },
-            inactiveThumb: {
-              base: "rgb(62,130,247)"
-            },
-            active: {
-              base: "rgb(207,221,245)",
-              hover: "rgb(177, 191, 215)"
-            },
-            inactive: {
-              base: "rgb(65,66,68)",
-              hover: "rgb(95,96,98)"
-            }
-          },
-          thumbAnimateRange: [0, 36],
-          value: state == null ? void 0 : state.ouroborosFlight.darkMode,
-          onToggle: () => {
-            setDarkMode(!(state == null ? void 0 : state.ouroborosFlight.darkMode));
+            className: "settings-close-button",
+            children: "X"
           }
-        }
-      )), /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-field" }, "Show only airports with acceptable runway lengths"), /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-field" }, "Sort nearest airports by:"), /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-field" }, "Sign out of Navigraph"), /* @__PURE__ */ import_react32.default.createElement("div", { className: "settings-field" }, "Reset all favorites"))));
+        ) }),
+        /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("div", { className: "settings-content", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime31.jsxs)("div", { className: "settings-field", children: [
+            "Dark mode pates",
+            /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(
+              import_react_toggle_button.default,
+              {
+                inactiveLabel: "",
+                activeLabel: "",
+                colors: {
+                  activeThumb: {
+                    base: "rgb(250,250,250)"
+                  },
+                  inactiveThumb: {
+                    base: "rgb(62,130,247)"
+                  },
+                  active: {
+                    base: "rgb(207,221,245)",
+                    hover: "rgb(177, 191, 215)"
+                  },
+                  inactive: {
+                    base: "rgb(65,66,68)",
+                    hover: "rgb(95,96,98)"
+                  }
+                },
+                thumbAnimateRange: [0, 36],
+                value: state == null ? void 0 : state.ouroborosFlight.darkMode,
+                onToggle: () => {
+                  setDarkMode(!(state == null ? void 0 : state.ouroborosFlight.darkMode));
+                }
+              }
+            )
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("div", { className: "settings-field", children: "Show only airports with acceptable runway lengths" }),
+          /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("div", { className: "settings-field", children: "Sort nearest airports by:" }),
+          /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("div", { className: "settings-field", children: "Sign out of Navigraph" }),
+          /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("div", { className: "settings-field", children: "Reset all favorites" })
+        ] })
+      ] }) });
     } else
-      return /* @__PURE__ */ import_react32.default.createElement("div", null);
+      return /* @__PURE__ */ (0, import_jsx_runtime31.jsx)("div", {});
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Airports/Airports.tsx
+  var import_jsx_runtime32 = __toESM(require_jsx_runtime());
   var Airports = (props) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k;
-    const [parsedMetar, setParsedMetar] = import_react33.default.useState();
-    const [parsedTaf, setParsedTaf] = import_react33.default.useState();
-    const { state, updateState } = (0, import_react33.useContext)(AppContext);
-    const [airportsState, setAirportsState] = (0, import_react33.useState)(0);
-    const [stationInfo, setStationInfo] = (0, import_react33.useState)(sampleStation);
-    const [data, setData] = (0, import_react33.useState)(ApiReturn);
-    const [airport, setAirport] = (0, import_react33.useState)((_a = state == null ? void 0 : state.ouroborosFlight.currentAirport) != null ? _a : "");
-    const [metar, setMetar] = import_react33.default.useState(sampleMetar);
-    const [taf, setTaf] = import_react33.default.useState(sampleTaf);
-    const [settingsShow, setSettingsShow] = import_react33.default.useState(false);
-    import_react33.default.useEffect(() => {
+    const [parsedMetar, setParsedMetar] = import_react14.default.useState();
+    const [parsedTaf, setParsedTaf] = import_react14.default.useState();
+    const { state, updateState } = (0, import_react14.useContext)(AppContext);
+    const [airportsState, setAirportsState] = (0, import_react14.useState)(0);
+    const [stationInfo, setStationInfo] = (0, import_react14.useState)(sampleStation);
+    const [data, setData] = (0, import_react14.useState)(ApiReturn);
+    const [airport, setAirport] = (0, import_react14.useState)((_a = state == null ? void 0 : state.ouroborosFlight.currentAirport) != null ? _a : "");
+    const [metar, setMetar] = import_react14.default.useState(sampleMetar);
+    const [taf, setTaf] = import_react14.default.useState(sampleTaf);
+    const [settingsShow, setSettingsShow] = import_react14.default.useState(false);
+    import_react14.default.useEffect(() => {
       const fetchMetar = async () => {
         try {
           if ((state == null ? void 0 : state.ouroborosFlight.currentAirport) === void 0)
@@ -44131,7 +45346,7 @@ class InstrumentLogic extends BaseInstrument {
       const Url = `https://airportdb.io/api/v1/airport/${ICAO}?apiToken=${apiToken}`;
       return Url;
     };
-    (0, import_react33.useEffect)(() => {
+    (0, import_react14.useEffect)(() => {
       const fetchData = async () => {
         try {
           if ((state == null ? void 0 : state.ouroborosFlight.currentAirport) === void 0)
@@ -44147,14 +45362,14 @@ class InstrumentLogic extends BaseInstrument {
         console.error(e);
       });
     }, [state == null ? void 0 : state.ouroborosFlight.currentAirport]);
-    import_react33.default.useEffect(() => {
+    import_react14.default.useEffect(() => {
       if (metar.raw === void 0 || metar.raw === null)
         return;
       if (metar.raw === "")
         return;
       setParsedMetar(parseMetar(metar.raw));
     }, [metar.raw]);
-    import_react33.default.useEffect(() => {
+    import_react14.default.useEffect(() => {
       if (taf.raw === void 0 || taf.raw === null)
         return;
       if (taf.raw === "")
@@ -44172,9 +45387,9 @@ class InstrumentLogic extends BaseInstrument {
       var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2;
       switch (airportsState) {
         case 0:
-          return /* @__PURE__ */ import_react33.default.createElement(Info, { data });
+          return /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(Info, { data });
         case 1:
-          return /* @__PURE__ */ import_react33.default.createElement(
+          return /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(
             Weather,
             {
               airport: (_a2 = data == null ? void 0 : data.ident) != null ? _a2 : "",
@@ -44187,7 +45402,7 @@ class InstrumentLogic extends BaseInstrument {
             }
           );
         case 2:
-          return /* @__PURE__ */ import_react33.default.createElement(
+          return /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(
             Runway,
             {
               runways: stationInfo.runways,
@@ -44196,55 +45411,62 @@ class InstrumentLogic extends BaseInstrument {
             }
           );
         case 3:
-          return /* @__PURE__ */ import_react33.default.createElement(Procedure, { airport: (_g2 = data == null ? void 0 : data.ident) != null ? _g2 : "" });
+          return /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(Procedure, { airport: (_g2 = data == null ? void 0 : data.ident) != null ? _g2 : "" });
         case 4:
-          return /* @__PURE__ */ import_react33.default.createElement(Notams, { airport: (_h2 = data == null ? void 0 : data.ident) != null ? _h2 : "" });
+          return /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(Notams, { airport: (_h2 = data == null ? void 0 : data.ident) != null ? _h2 : "" });
         default:
-          return /* @__PURE__ */ import_react33.default.createElement("div", null);
+          return /* @__PURE__ */ (0, import_jsx_runtime32.jsx)("div", {});
       }
     };
-    return /* @__PURE__ */ import_react33.default.createElement("div", null, /* @__PURE__ */ import_react33.default.createElement(
-      AirportsHeader,
-      {
-        settingsButtonCallback: setSettingsShow,
-        setAirport,
-        airport,
-        changeAirport
-      }
-    ), /* @__PURE__ */ import_react33.default.createElement(Settings, { open: settingsShow, forceClose: setSettingsShow }), /* @__PURE__ */ import_react33.default.createElement(InfoButtonBar, { state: airportsState, setState: setAirportsState }), /* @__PURE__ */ import_react33.default.createElement(AirportsFavorites, { setAirport: changeAirport, favorites: (_h = state == null ? void 0 : state.ouroborosFlight.favorites) != null ? _h : [] }), /* @__PURE__ */ import_react33.default.createElement(
-      AirportDisplay,
-      {
-        city: stationInfo.city,
-        country: stationInfo.country,
-        coordnates: { lon: stationInfo.longitude, lat: stationInfo.latitude },
-        metarRaw: (_i = metar.raw) != null ? _i : "",
-        removeFavorite,
-        favorites: (_j = state == null ? void 0 : state.ouroborosFlight.favorites) != null ? _j : [],
-        addFavorite,
-        airport: (_k = data == null ? void 0 : data.ident) != null ? _k : "",
-        fieldElevation: stationInfo.elevation_ft,
-        flightCategory,
-        name: stationInfo.name
-      }
-    ), getPage());
+    return /* @__PURE__ */ (0, import_jsx_runtime32.jsxs)("div", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(
+        AirportsHeader,
+        {
+          settingsButtonCallback: setSettingsShow,
+          setAirport,
+          airport,
+          changeAirport
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(Settings, { open: settingsShow, forceClose: setSettingsShow }),
+      /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(InfoButtonBar, { state: airportsState, setState: setAirportsState }),
+      /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(AirportsFavorites, { setAirport: changeAirport, favorites: (_h = state == null ? void 0 : state.ouroborosFlight.favorites) != null ? _h : [] }),
+      /* @__PURE__ */ (0, import_jsx_runtime32.jsx)(
+        AirportDisplay,
+        {
+          city: stationInfo.city,
+          country: stationInfo.country,
+          coordnates: { lon: stationInfo.longitude, lat: stationInfo.latitude },
+          metarRaw: (_i = metar.raw) != null ? _i : "",
+          removeFavorite,
+          favorites: (_j = state == null ? void 0 : state.ouroborosFlight.favorites) != null ? _j : [],
+          addFavorite,
+          airport: (_k = data == null ? void 0 : data.ident) != null ? _k : "",
+          fieldElevation: stationInfo.elevation_ft,
+          flightCategory,
+          name: stationInfo.name
+        }
+      ),
+      getPage()
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Scratchpads/Scratchpads.tsx
-  var import_react87 = __toESM(require_react());
+  var import_react63 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Scratchpads/ScratchpadHeader.tsx
-  var import_react34 = __toESM(require_react());
+  var import_jsx_runtime33 = __toESM(require_jsx_runtime());
   var ScratchpadHeader = (props) => {
-    return /* @__PURE__ */ import_react34.default.createElement("div", { className: "scratchpad-header" }, !props.isEditMode ? /* @__PURE__ */ import_react34.default.createElement("div", { className: "sp-header-edit", onClick: props.EditClicked }, "Edit") : /* @__PURE__ */ import_react34.default.createElement("div", { className: "sp-header-done", onClick: props.DoneClicked }, "Done"), !props.isEditMode ? props.addAvailable ? /* @__PURE__ */ import_react34.default.createElement("div", { className: "sp-header-add", onClick: props.AddClicked }, "+") : "" : /* @__PURE__ */ import_react34.default.createElement("div", { className: "sp-header-delete", onClick: props.DeleteAllClick }, "Delete All"));
+    return /* @__PURE__ */ (0, import_jsx_runtime33.jsxs)("div", { className: "scratchpad-header", children: [
+      !props.isEditMode ? /* @__PURE__ */ (0, import_jsx_runtime33.jsx)("div", { className: "sp-header-edit", onClick: props.EditClicked, children: "Edit" }) : /* @__PURE__ */ (0, import_jsx_runtime33.jsx)("div", { className: "sp-header-done", onClick: props.DoneClicked, children: "Done" }),
+      !props.isEditMode ? props.addAvailable ? /* @__PURE__ */ (0, import_jsx_runtime33.jsx)("div", { className: "sp-header-add", onClick: props.AddClicked, children: "+" }) : "" : /* @__PURE__ */ (0, import_jsx_runtime33.jsx)("div", { className: "sp-header-delete", onClick: props.DeleteAllClick, children: "Delete All" })
+    ] });
   };
 
-  // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Scratchpads/ScratchpadPopup.tsx
-  var import_react36 = __toESM(require_react());
-
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Scratchpads/ScratchpadIcons.tsx
-  var import_react35 = __toESM(require_react());
+  var import_jsx_runtime34 = __toESM(require_jsx_runtime());
   var SpPopoutIcon = (props) => {
-    return /* @__PURE__ */ import_react35.default.createElement("svg", { ref: props.ref, className: props.className, width: `${props.width}px`, viewBox: "0 0 100 100" }, /* @__PURE__ */ import_react35.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("svg", { ref: props.ref, className: props.className, width: `${props.width}px`, viewBox: "0 0 100 100", children: /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
       "path",
       {
         stroke: "#2a2fff",
@@ -44254,362 +45476,439 @@ class InstrumentLogic extends BaseInstrument {
         d: "M10,10 L 30,10 L50,0 L70,10  L90,10 A10,10 0 0 1 100,20 L100,80 A10,10 0 0 1 90,90 L10,90 A10,10 0 0 1 0,80 L0,20 A10,10 0 0 1 10,10 Z",
         fill: "#16175c"
       }
-    ));
+    ) });
   };
   var SpPopoutHoldIcon = (props) => {
-    return /* @__PURE__ */ import_react35.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react35.default.createElement(
-      "path",
-      {
-        fill: "white",
-        d: "M145.75587,3.24779c-0.0157,0-0.0325,0.00001-0.0482,0.00002c-0.00375,0-0.00748,0.00001-0.01123,0.00001  c-0.01572,0.00001-0.03214,0.00003-0.04785,0.00005l-0.00053,0c-0.0157,0.00002-0.03218,0.00006-0.0479,0.00009  c-0.0045,0.00001-0.00769,0.00002-0.01219,0.00003c-0.01459,0.00003-0.03056,0.00007-0.04515,0.00012  c-0.00075,0-0.00215,0.00001-0.0029,0.00001c-0.01572,0.00005-0.03133,0.0001-0.04704,0.00016  c-0.0045,0.00002-0.00842,0.00003-0.01292,0.00005c-0.01459,0.00006-0.02914,0.00011-0.04373,0.00018  c-0.0015,0.00001-0.00284,0.00001-0.00435,0.00002c-0.0157,0.00007-0.0311,0.00015-0.0468,0.00023  c-0.0045,0.00002-0.00887,0.00005-0.01337,0.00007c-0.01459,0.00008-0.02753,0.00015-0.04211,0.00024  c-0.00226,0.00001-0.0034,0.00002-0.00566,0.00003c-0.0157,0.00009-0.03076,0.00019-0.04648,0.00029  c-0.0045,0.00003-0.0089,0.00006-0.0134,0.00009c-0.01459,0.0001-0.02753,0.00019-0.04211,0.0003  c-0.00226,0.00002-0.0036,0.00003-0.00584,0.00004c-0.01572,0.00012-0.03177,0.00024-0.04749,0.00037  c-0.00375,0.00003-0.00781,0.00006-0.01157,0.0001c-0.01459,0.00012-0.0285,0.00024-0.04309,0.00037  c-0.00224,0.00002-0.00333,0.00003-0.00557,0.00005c-0.01572,0.00014-0.03107,0.00029-0.04677,0.00044  c-0.0045,0.00004-0.00795,0.00008-0.01245,0.00012c-0.01459,0.00014-0.02911,0.00029-0.0437,0.00044  c-0.00151,0.00002-0.00317,0.00003-0.00468,0.00005c-0.0157,0.00016-0.03172,0.00034-0.04744,0.00051  c-0.0045,0.00005-0.00771,0.00009-0.01221,0.00014c-0.01459,0.00016-0.02754,0.00031-0.04213,0.00049  c-0.00151,0.00002-0.00471,0.00005-0.00621,0.00007c-0.0157,0.00019-0.03117,0.00038-0.04688,0.00058  c-0.0045,0.00006-0.00835,0.00011-0.01285,0.00016c-0.01346,0.00017-0.02705,0.00035-0.04051,0.00053  c-0.00226,0.00003-0.00577,0.00008-0.00803,0.00011c-0.01459,0.0002-0.03236,0.00044-0.04695,0.00065  c-0.00375,0.00005-0.00801,0.00011-0.01176,0.00017c-0.01459,0.00021-0.02898,0.00042-0.04356,0.00063  c-0.00151,0.00002-0.00308,0.00005-0.00458,0.00007c-0.01683,0.00025-0.03195,0.00048-0.04878,0.00075  c-0.00375,0.00006-0.00555,0.00009-0.00931,0.00015c-0.01459,0.00023-0.02919,0.00046-0.04378,0.0007  c-0.00224,0.00004-0.00432,0.00007-0.00658,0.00011c-0.0157,0.00026-0.03163,0.00053-0.04733,0.00079  c-0.00375,0.00006-0.00795,0.00014-0.0117,0.0002c-0.01346,0.00023-0.02708,0.00047-0.04054,0.00071  c-0.00301,0.00005-0.00543,0.0001-0.00844,0.00015c-0.01572,0.00028-0.03133,0.00057-0.04704,0.00086  c-0.00375,0.00007-0.00746,0.00014-0.01122,0.00021c-0.01346,0.00025-0.02811,0.00053-0.04158,0.00079  c-0.00299,0.00006-0.00496,0.00009-0.00797,0.00015c-0.0157,0.00031-0.03151,0.00062-0.04723,0.00093  c-0.00375,0.00008-0.00764,0.00015-0.0114,0.00023c-0.01346,0.00027-0.02708,0.00055-0.04056,0.00083  c-0.00299,0.00006-0.00558,0.00011-0.00859,0.00018c-0.0157,0.00033-0.03114,0.00066-0.04686,0.001  c-0.0045,0.0001-0.00729,0.00016-0.0118,0.00026c-0.01346,0.00029-0.02583,0.00056-0.03929,0.00086  c-0.00375,0.00008-0.00679,0.00015-0.01054,0.00023c-0.01572,0.00035-0.03033,0.00068-0.04604,0.00105  c-0.0045,0.0001-0.00826,0.00019-0.01276,0.0003c-0.01347,0.00031-0.02441,0.00057-0.03789,0.00089  c-0.00375,0.00009-0.00714,0.00017-0.01089,0.00026c-0.01572,0.00038-0.03041,0.00073-0.04613,0.00112  c-0.0045,0.00011-0.00783,0.00019-0.01233,0.0003c-0.01346,0.00033-0.02486,0.00062-0.03833,0.00096  c-0.00375,0.00009-0.00772,0.00019-0.01146,0.00029c-0.01459,0.00037-0.03073,0.00079-0.04532,0.00117  c-0.0045,0.00012-0.00958,0.00025-0.01408,0.00037c-0.01122,0.00029-0.02368,0.00062-0.0349,0.00092  c-0.00452,0.00012-0.00948,0.00025-0.01398,0.00037c-0.0157,0.00042-0.02934,0.00079-0.04506,0.00123  c-0.00375,0.0001-0.0087,0.00024-0.01245,0.00034c-0.01346,0.00037-0.02432,0.00068-0.03778,0.00106  c-0.0045,0.00013-0.00775,0.00022-0.01225,0.00035c-0.01572,0.00045-0.02959,0.00084-0.04529,0.0013  c-0.00375,0.00011-0.00909,0.00026-0.01285,0.00037c-0.01346,0.00039-0.02437,0.00071-0.03783,0.00111  c-0.00375,0.00011-0.00743,0.00022-0.01118,0.00033c-0.0157,0.00047-0.03,0.0009-0.04572,0.00138  c-0.0045,0.00014-0.00851,0.00026-0.01303,0.0004c-0.01346,0.00041-0.02454,0.00076-0.03799,0.00118  c-0.00375,0.00012-0.00729,0.00023-0.01105,0.00034c-0.0157,0.00049-0.03116,0.00098-0.04686,0.00148  c-0.00375,0.00012-0.00699,0.00023-0.01074,0.00035c-0.01233,0.0004-0.02588,0.00084-0.03822,0.00124  c-0.00375,0.00012-0.00859,0.00028-0.01234,0.0004c-0.0157,0.00052-0.03043,0.001-0.04614,0.00153  c-0.00299,0.0001-0.00772,0.00026-0.01073,0.00036c-0.01346,0.00045-0.02541,0.00086-0.03886,0.00132  c-0.00374,0.00013-0.00851,0.00029-0.01227,0.00042c-0.0157,0.00054-0.03021,0.00104-0.04591,0.00159  c-0.00375,0.00013-0.00726,0.00026-0.011,0.00039c-0.01346,0.00047-0.02545,0.0009-0.03891,0.00138  c-0.00375,0.00013-0.00754,0.00027-0.01129,0.0004c-0.0157,0.00056-0.03012,0.00108-0.04582,0.00166  c-0.0045,0.00016-0.00827,0.0003-0.01277,0.00047c-0.01234,0.00045-0.02472,0.00091-0.03705,0.00137  c-0.0045,0.00017-0.00813,0.0003-0.01263,0.00047c-0.0157,0.00059-0.03038,0.00114-0.04608,0.00173  c-0.00375,0.00014-0.00705,0.00027-0.01079,0.00041c-0.01346,0.00051-0.02545,0.00097-0.03889,0.00149  c-0.00375,0.00014-0.00774,0.0003-0.01149,0.00044c-0.01569,0.00061-0.03137,0.00122-0.04707,0.00184  c-0.00301,0.00012-0.00592,0.00023-0.00893,0.00035c-0.01344,0.00053-0.02759,0.0011-0.04105,0.00164  c-0.00301,0.00012-0.00751,0.0003-0.01051,0.00042c-0.0157,0.00063-0.03113,0.00126-0.04683,0.0019  c-0.00375,0.00015-0.00696,0.00029-0.01071,0.00044c-0.01346,0.00055-0.02448,0.00101-0.03793,0.00157  c-0.00375,0.00016-0.00928,0.00039-0.01303,0.00054c-0.0157,0.00066-0.03006,0.00126-0.04575,0.00193  c-0.00375,0.00016-0.00739,0.00031-0.01114,0.00047c-0.01344,0.00057-0.02458,0.00105-0.03804,0.00163  c-0.00375,0.00016-0.00906,0.00039-0.01282,0.00055c-0.0157,0.00068-0.03029,0.00132-0.04599,0.00201  c-0.00375,0.00016-0.00706,0.00031-0.01082,0.00048c-0.01233,0.00054-0.02466,0.00109-0.037,0.00164  c-0.0045,0.0002-0.01003,0.00045-0.01453,0.00065c-0.01457,0.00065-0.02988,0.00134-0.04445,0.00201  c-0.0045,0.0002-0.00864,0.00039-0.01314,0.0006c-0.01122,0.00051-0.02417,0.00111-0.03537,0.00162  c-0.00525,0.00024-0.00992,0.00046-0.01517,0.0007c-0.01457,0.00068-0.02908,0.00135-0.04366,0.00203  c-0.00525,0.00025-0.0099,0.00047-0.01515,0.00071c-0.01122,0.00053-0.02158,0.00102-0.03279,0.00155  c-0.00525,0.00025-0.01073,0.00051-0.01598,0.00076c-0.01457,0.0007-0.02983,0.00143-0.0444,0.00214  c-0.0045,0.00022-0.00824,0.0004-0.01274,0.00062c-0.0112,0.00055-0.02386,0.00116-0.03508,0.00171  c-0.00525,0.00026-0.01065,0.00052-0.0159,0.00078c-0.01457,0.00072-0.03015,0.00149-0.04472,0.00222  c-0.00375,0.00019-0.0067,0.00034-0.01045,0.00052c-0.01233,0.00062-0.0248,0.00125-0.03712,0.00187  c-0.00525,0.00027-0.00967,0.00049-0.01492,0.00076c-0.01457,0.00074-0.03023,0.00154-0.0448,0.00229  c-0.00374,0.00019-0.00714,0.00037-0.01088,0.00056c-0.01346,0.00069-0.02443,0.00126-0.03789,0.00196  c-0.00449,0.00023-0.00945,0.00049-0.01395,0.00073c-0.01457,0.00076-0.02994,0.00157-0.04451,0.00234  c-0.0045,0.00024-0.00919,0.00049-0.01369,0.00073c-0.0112,0.0006-0.02249,0.0012-0.03369,0.0018  c-0.00525,0.00028-0.01112,0.0006-0.01637,0.00088c-0.01457,0.00078-0.02908,0.00157-0.04364,0.00236  c-0.0045,0.00024-0.00916,0.0005-0.01366,0.00075c-0.01122,0.00061-0.02357,0.00129-0.03477,0.00191  c-0.00525,0.00029-0.01033,0.00057-0.01558,0.00086c-0.01457,0.00081-0.03021,0.00167-0.04478,0.00249  c-0.00375,0.00021-0.00708,0.0004-0.01082,0.00061c-0.01122,0.00063-0.02425,0.00136-0.03545,0.002  c-0.006,0.00034-0.01128,0.00064-0.01727,0.00098c-0.01457,0.00083-0.02869,0.00163-0.04326,0.00247  c-0.0045,0.00026-0.00842,0.00049-0.01292,0.00075c-0.01122,0.00065-0.02373,0.00137-0.03493,0.00202  c-0.00525,0.0003-0.01112,0.00065-0.01637,0.00095c-0.01457,0.00085-0.02937,0.00172-0.04395,0.00257  c-0.00449,0.00026-0.00743,0.00044-0.01193,0.00071c-0.0112,0.00066-0.02374,0.00141-0.03494,0.00207  c-0.006,0.00036-0.0107,0.00064-0.01669,0.001c-0.01457,0.00087-0.02927,0.00175-0.04382,0.00263  c-0.00375,0.00023-0.00813,0.00049-0.01189,0.00072c-0.0112,0.00068-0.02484,0.00151-0.03606,0.00219  c-0.00525,0.00032-0.01054,0.00064-0.01579,0.00097c-0.01457,0.00089-0.03,0.00184-0.04456,0.00274  c-0.00375,0.00023-0.00642,0.0004-0.01018,0.00063c-0.01231,0.00076-0.02394,0.00149-0.03627,0.00226  c-0.00525,0.00033-0.01169,0.00073-0.01694,0.00106c-0.01456,0.00091-0.02806,0.00177-0.04262,0.00269  c-0.0045,0.00028-0.00771,0.00049-0.01219,0.00078c-0.01233,0.00078-0.02467,0.00157-0.03699,0.00236  c-0.00525,0.00034-0.01027,0.00066-0.01552,0.001c-0.01456,0.00094-0.02998,0.00193-0.04456,0.00288  c-0.00374,0.00024-0.00635,0.00041-0.01009,0.00066c-0.01233,0.0008-0.02393,0.00156-0.03625,0.00237  c-0.00525,0.00034-0.01204,0.00079-0.01729,0.00114c-0.01344,0.00088-0.02557,0.00169-0.03902,0.00258  c-0.00523,0.00035-0.01138,0.00076-0.01663,0.00111c-0.0112,0.00075-0.0238,0.00159-0.035,0.00234  c-0.00525,0.00035-0.01175,0.00079-0.017,0.00114c-0.01456,0.00098-0.02892,0.00195-0.04347,0.00294  c-0.00224,0.00015-0.00645,0.00044-0.0087,0.00059c-0.01233,0.00084-0.02589,0.00177-0.03822,0.00261  c-0.00598,0.00041-0.01137,0.00078-0.01736,0.00119c-0.01344,0.00092-0.02425,0.00167-0.03769,0.0026  c-0.00523,0.00036-0.01178,0.00082-0.01701,0.00118c-0.0112,0.00078-0.02415,0.00168-0.03535,0.00247  c-0.00598,0.00042-0.01251,0.00088-0.01851,0.0013c-0.0112,0.00079-0.02217,0.00156-0.03337,0.00235  c-0.00749,0.00053-0.01537,0.00109-0.02286,0.00162c-0.01009,0.00072-0.02171,0.00155-0.03178,0.00227  c-0.006,0.00043-0.01369,0.00098-0.01968,0.00141c-0.01007,0.00072-0.02191,0.00158-0.032,0.00231  c-0.00824,0.0006-0.01672,0.00121-0.02496,0.00181c-0.01009,0.00073-0.02103,0.00153-0.0311,0.00226  c-0.006,0.00044-0.01363,0.001-0.01962,0.00144c-0.01118,0.00082-0.02339,0.00172-0.03458,0.00254  c-0.006,0.00044-0.01271,0.00094-0.01871,0.00138c-0.0112,0.00083-0.02315,0.00172-0.03435,0.00255  c-0.00674,0.0005-0.01349,0.00101-0.02023,0.00151c-0.0112,0.00084-0.02077,0.00156-0.03197,0.0024  c-0.00674,0.00051-0.0152,0.00115-0.02194,0.00165c-0.0112,0.00085-0.02269,0.00172-0.03389,0.00257  c-0.00748,0.00057-0.01312,0.001-0.02061,0.00157c-0.01007,0.00077-0.01804,0.00138-0.02811,0.00215  c-0.00974,0.00075-0.01833,0.00141-0.02806,0.00216c-0.01007,0.00078-0.01959,0.00151-0.02966,0.00229  c-0.00674,0.00052-0.01508,0.00117-0.02182,0.00169c-0.01007,0.00078-0.01834,0.00143-0.02841,0.00222  c-0.00824,0.00064-0.0173,0.00136-0.02554,0.002c-0.0112,0.00088-0.02202,0.00173-0.0332,0.00262  c-0.00674,0.00053-0.01242,0.00098-0.01915,0.00152c-0.0112,0.00089-0.02167,0.00172-0.03285,0.00261  c-0.006,0.00048-0.0121,0.00096-0.01808,0.00144c-0.01231,0.00099-0.02437,0.00195-0.03667,0.00294  c-0.00674,0.00054-0.01416,0.00114-0.02089,0.00169c-0.01007,0.00081-0.01855,0.0015-0.02863,0.00232  c-0.00824,0.00067-0.01741,0.00142-0.02565,0.00209c-0.01118,0.00091-0.02116,0.00173-0.03235,0.00265  c-0.00674,0.00055-0.01465,0.0012-0.02139,0.00176c-0.01007,0.00083-0.01712,0.00141-0.02719,0.00225  c-0.00974,0.0008-0.01765,0.00146-0.02739,0.00227c-0.01007,0.00084-0.02081,0.00173-0.03088,0.00257  c-0.00749,0.00063-0.01508,0.00126-0.02257,0.00189c-0.00783,0.00066-0.01776,0.00149-0.0256,0.00215  c-0.00972,0.00082-0.02052,0.00173-0.03024,0.00255c-0.01007,0.00085-0.0188,0.00159-0.02887,0.00245  c-0.00824,0.0007-0.01547,0.00132-0.0237,0.00202c-0.00784,0.00067-0.01517,0.0013-0.02299,0.00197  c-0.01198,0.00103-0.02348,0.00202-0.03546,0.00305c-0.00894,0.00077-0.01543,0.00133-0.02437,0.0021  c-0.00899,0.00078-0.01686,0.00146-0.02585,0.00224c-0.00671,0.00058-0.01302,0.00113-0.01973,0.00172  c-0.01273,0.00111-0.02486,0.00217-0.03758,0.00329c-0.00896,0.00078-0.01649,0.00145-0.02544,0.00223  c-0.00748,0.00066-0.01636,0.00144-0.02383,0.0021c-0.00783,0.00069-0.01416,0.00125-0.02199,0.00195  c-0.01271,0.00113-0.02518,0.00224-0.0379,0.00337c-0.00783,0.0007-0.0148,0.00132-0.02263,0.00202  c-0.00822,0.00074-0.01675,0.0015-0.02499,0.00224c-0.00783,0.0007-0.01491,0.00134-0.02275,0.00205  c-0.01196,0.00108-0.02309,0.00209-0.03505,0.00317c-0.00896,0.00081-0.01608,0.00146-0.02504,0.00227  c-0.00897,0.00082-0.01648,0.0015-0.02545,0.00232c-0.00783,0.00072-0.01355,0.00124-0.02138,0.00196  c-0.01047,0.00096-0.01973,0.00181-0.03021,0.00278c-0.01006,0.00093-0.02054,0.00189-0.03059,0.00283  c-0.00897,0.00083-0.01645,0.00152-0.02542,0.00236c-0.0056,0.00052-0.01433,0.00133-0.01991,0.00185  c-0.01271,0.00118-0.02434,0.00227-0.03705,0.00346c-0.00894,0.00084-0.01669,0.00156-0.02563,0.00241  c-0.00822,0.00077-0.01608,0.00152-0.02431,0.00229c-0.00783,0.00074-0.01379,0.0013-0.02162,0.00204  c-0.01047,0.00099-0.02106,0.002-0.03152,0.00299c-0.01006,0.00096-0.01942,0.00185-0.02948,0.00281  c-0.00824,0.00079-0.01628,0.00156-0.02451,0.00235c-0.00783,0.00075-0.01482,0.00142-0.02263,0.00218  c-0.01123,0.00108-0.02217,0.00214-0.03339,0.00322c-0.00894,0.00086-0.0177,0.00171-0.02666,0.00258  c-0.00897,0.00087-0.01743,0.00169-0.0264,0.00257c-0.0067,0.00065-0.01244,0.00121-0.01913,0.00187  c-0.01196,0.00117-0.02429,0.00238-0.03625,0.00355c-0.00894,0.00088-0.01624,0.0016-0.02518,0.00248  c-0.00897,0.00088-0.01773,0.00175-0.0267,0.00264c-0.0067,0.00066-0.01253,0.00124-0.01923,0.00191  c-0.01271,0.00126-0.0248,0.00246-0.03751,0.00373c-0.00783,0.00078-0.01726,0.00172-0.02509,0.00251  c-0.00822,0.00082-0.01686,0.00169-0.02509,0.00252c-0.0067,0.00067-0.01393,0.0014-0.02065,0.00208  c-0.00822,0.00083-0.0157,0.00158-0.02393,0.00241c-0.0123,0.00124-0.02542,0.00257-0.0377,0.00382  c-0.00822,0.00084-0.01601,0.00163-0.02423,0.00247c-0.00781,0.0008-0.01489,0.00152-0.02272,0.00232  c-0.00748,0.00076-0.01541,0.00158-0.02289,0.00234c-0.0134,0.00138-0.0249,0.00256-0.03831,0.00394  c-0.00748,0.00077-0.01604,0.00166-0.02351,0.00243c-0.0067,0.00069-0.01633,0.00169-0.02304,0.00239  c-0.00671,0.0007-0.01486,0.00154-0.02159,0.00224c-0.01341,0.0014-0.02596,0.00271-0.03937,0.00411  c-0.00748,0.00078-0.01498,0.00157-0.02246,0.00236c-0.00781,0.00082-0.01601,0.00168-0.02382,0.00251  c-0.00748,0.00079-0.01541,0.00162-0.02289,0.00241c-0.0134,0.00142-0.02467,0.00261-0.03809,0.00403  c-0.00746,0.00079-0.01648,0.00175-0.02396,0.00255c-0.0067,0.00071-0.01427,0.00152-0.02097,0.00224  c-0.00822,0.00088-0.01639,0.00175-0.0246,0.00263c-0.01228,0.00132-0.02441,0.00262-0.0367,0.00394  c-0.00822,0.00088-0.01706,0.00184-0.02528,0.00273c-0.0067,0.00072-0.01483,0.0016-0.02153,0.00233  c-0.00822,0.00089-0.01561,0.00169-0.02383,0.00258c-0.0134,0.00146-0.02409,0.00262-0.03749,0.00408  c-0.00821,0.0009-0.01619,0.00177-0.02441,0.00267c-0.0067,0.00073-0.01459,0.0016-0.02129,0.00234  c-0.00746,0.00082-0.01634,0.00179-0.0238,0.00262c-0.01228,0.00135-0.02493,0.00275-0.03722,0.00411  c-0.00897,0.00099-0.0172,0.00191-0.02615,0.0029c-0.0067,0.00074-0.01237,0.00137-0.01907,0.00212  c-0.00896,0.001-0.01669,0.00186-0.02565,0.00286c-0.01228,0.00137-0.02513,0.00281-0.03741,0.00419  c-0.00822,0.00092-0.01649,0.00185-0.0247,0.00278c-0.0067,0.00075-0.0127,0.00143-0.01939,0.00219  c-0.00896,0.00101-0.01712,0.00193-0.02609,0.00295c-0.0067,0.00076-0.01552,0.00176-0.0222,0.00252  c-0.0127,0.00144-0.02707,0.00308-0.03976,0.00452c-0.00668,0.00076-0.013,0.00148-0.01968,0.00225  c-0.00897,0.00102-0.01712,0.00196-0.02608,0.00299c-0.00446,0.00051-0.008,0.00092-0.01247,0.00143  c-0.01717,0.00197-0.03383,0.00389-0.05099,0.00588c-0.00558,0.00065-0.01054,0.00122-0.01613,0.00187  c-0.0097,0.00112-0.01814,0.0021-0.02785,0.00323c-0.00223,0.00026-0.00568,0.00066-0.0079,0.00092  c-0.01941,0.00226-0.03737,0.00436-0.05678,0.00663c-0.00446,0.00052-0.00949,0.00111-0.01396,0.00164  c-0.0097,0.00114-0.01962,0.0023-0.02933,0.00345c-0.00111,0.00013-0.00188,0.00022-0.00301,0.00035  c-0.02014,0.00237-0.03949,0.00466-0.05963,0.00705c-0.00558,0.00066-0.01082,0.00128-0.0164,0.00195  c-0.00896,0.00107-0.01846,0.0022-0.0274,0.00326c-0.00447,0.00053-0.01019,0.00122-0.01465,0.00175  c-0.01642,0.00196-0.032,0.00383-0.04842,0.0058c-0.00558,0.00067-0.01151,0.00138-0.01707,0.00205  c-0.0097,0.00117-0.01805,0.00217-0.02776,0.00335c-0.00334,0.0004-0.00687,0.00083-0.01021,0.00124  c-0.01791,0.00217-0.03522,0.00427-0.05313,0.00645c-0.00558,0.00068-0.00978,0.00119-0.01537,0.00187  c-0.00969,0.00118-0.01888,0.0023-0.02856,0.00349c-0.00336,0.00041-0.00613,0.00075-0.00948,0.00116  c-0.0179,0.00219-0.03635,0.00446-0.05426,0.00667c-0.00557,0.00069-0.00934,0.00115-0.01492,0.00184  c-0.00969,0.0012-0.01918,0.00237-0.02887,0.00357c-0.00336,0.00041-0.00557,0.00069-0.00891,0.0011  c-0.0179,0.00222-0.03677,0.00457-0.05469,0.0068c-0.00557,0.0007-0.00902,0.00113-0.0146,0.00182  c-0.00894,0.00112-0.01993,0.00249-0.02888,0.00361c-0.00334,0.00042-0.0061,0.00077-0.00946,0.00119  c-0.0179,0.00225-0.03619,0.00455-0.05409,0.00681c-0.00557,0.0007-0.00978,0.00123-0.01535,0.00194  c-0.00894,0.00113-0.01929,0.00244-0.02824,0.00358c-0.00334,0.00042-0.00848,0.00108-0.01183,0.0015  c-0.01715,0.00218-0.03453,0.00439-0.05168,0.00659c-0.00557,0.00071-0.00984,0.00126-0.01541,0.00197  c-0.00896,0.00115-0.0184,0.00236-0.02736,0.00351c-0.00668,0.00086-0.01169,0.0015-0.01837,0.00236  c-0.01492,0.00192-0.02979,0.00384-0.04469,0.00577c-0.00558,0.00072-0.01181,0.00153-0.01738,0.00225  c-0.00894,0.00116-0.01843,0.00239-0.02737,0.00355c-0.00446,0.00058-0.01048,0.00136-0.01494,0.00194  c-0.01566,0.00204-0.03293,0.00429-0.04858,0.00634c-0.00446,0.00058-0.01111,0.00145-0.01556,0.00204  c-0.00969,0.00127-0.01883,0.00247-0.02852,0.00374c-0.00334,0.00044-0.00758,0.001-0.01093,0.00144  c-0.0179,0.00235-0.03455,0.00455-0.05243,0.00692c-0.00446,0.00059-0.01129,0.0015-0.01575,0.00209  c-0.00894,0.00119-0.01888,0.0025-0.02783,0.00369c-0.00446,0.00059-0.00896,0.00119-0.01341,0.00179  c-0.01715,0.00228-0.03372,0.0045-0.05086,0.00679c-0.00446,0.0006-0.0099,0.00133-0.01436,0.00192  c-0.00969,0.0013-0.01836,0.00246-0.02805,0.00377c-0.00446,0.0006-0.01125,0.00152-0.0157,0.00212  c-0.01566,0.00211-0.03247,0.00438-0.04811,0.0065c-0.00446,0.0006-0.01138,0.00154-0.01584,0.00215  c-0.00969,0.00131-0.01834,0.00249-0.02802,0.00381c-0.00446,0.00061-0.00955,0.0013-0.01401,0.00191  c-0.01714,0.00233-0.03322,0.00453-0.05034,0.00688c-0.00446,0.00061-0.0094,0.00129-0.01385,0.0019  c-0.00969,0.00133-0.02014,0.00276-0.02982,0.0041c-0.00334,0.00046-0.00496,0.00068-0.0083,0.00114  c-0.01936,0.00267-0.03842,0.0053-0.0578,0.00798c-0.00333,0.00046-0.00713,0.00099-0.01047,0.00145  c-0.01044,0.00145-0.02077,0.00288-0.03119,0.00433c-0.00223,0.00031-0.00421,0.00059-0.00644,0.0009  c-0.02011,0.0028-0.03984,0.00555-0.05994,0.00837c-0.00334,0.00047-0.00568,0.00079-0.00902,0.00126  c-0.01042,0.00146-0.02086,0.00293-0.03128,0.00439c-0.00334,0.00047-0.00488,0.00069-0.00822,0.00116  c-0.01935,0.00273-0.03857,0.00544-0.05792,0.00818c-0.00334,0.00047-0.00687,0.00097-0.01019,0.00144  c-0.01044,0.00148-0.02071,0.00294-0.03113,0.00442c-0.00223,0.00032-0.00494,0.0007-0.00716,0.00102  c-0.02011,0.00286-0.03996,0.00569-0.06007,0.00857c-0.00221,0.00032-0.00583,0.00084-0.00806,0.00115  c-0.01042,0.00149-0.02098,0.00301-0.0314,0.00451c-0.00223,0.00032-0.00621,0.00089-0.00844,0.00121  c-0.01935,0.00278-0.03816,0.0055-0.05751,0.0083c-0.00334,0.00048-0.0074,0.00107-0.01074,0.00155  c-0.01042,0.00151-0.01978,0.00287-0.0302,0.00438c-0.00334,0.00048-0.00659,0.00096-0.00993,0.00144  c-0.01935,0.00281-0.03844,0.0056-0.05779,0.00842c-0.00223,0.00033-0.00591,0.00086-0.00813,0.00119  c-0.01041,0.00152-0.02104,0.00308-0.03146,0.00461c-0.00223,0.00033-0.0063,0.00093-0.00853,0.00125  c-0.01935,0.00284-0.04022,0.00592-0.05957,0.00877c-0.00221,0.00033-0.00528,0.00078-0.00751,0.00111  c-0.01042,0.00154-0.02211,0.00327-0.03252,0.00482c-0.00223,0.00033-0.00278,0.00041-0.00499,0.00074  c-0.02084,0.00309-0.04349,0.00646-0.06432,0.00957c-0.00111,0.00017-0.00333,0.0005-0.00444,0.00066  c-0.01117,0.00167-0.02168,0.00324-0.03285,0.00491c-0.00221,0.00033-0.004,0.0006-0.00621,0.00093  c-0.02158,0.00323-0.04309,0.00647-0.06467,0.00972c-0.00111,0.00017-0.002,0.0003-0.00311,0.00047  c-0.0119,0.0018-0.02248,0.00339-0.03438,0.0052l-0.00204,0.00031c-0.02306,0.00349-0.04686,0.00711-0.06992,0.01062  l-0.00005,0.00001c-0.01115,0.0017-0.02283,0.00348-0.03398,0.00519c-0.00223,0.00034-0.00325,0.0005-0.00548,0.00084  c-0.03346,0.00512-0.06844,0.0105-0.1019,0.01567c-0.00223,0.00034-0.0024,0.00037-0.00462,0.00071  c-0.03419,0.00528-0.06767,0.01048-0.10187,0.01582c-0.00221,0.00035-0.00395,0.00062-0.00618,0.00096  c-0.02155,0.00336-0.04301,0.00672-0.06456,0.01011c-0.00111,0.00017-0.00206,0.00032-0.00317,0.0005  c-0.01115,0.00175-0.02257,0.00355-0.03372,0.0053c-0.00111,0.00017-0.00302,0.00048-0.00414,0.00065  c-0.03418,0.00539-0.06743,0.01065-0.10161,0.01609c-0.00334,0.00053-0.00441,0.0007-0.00774,0.00123  c-0.02081,0.00331-0.04117,0.00656-0.06198,0.00989c-0.00221,0.00036-0.00294,0.00047-0.00516,0.00083  c-0.01041,0.00167-0.02074,0.00332-0.03114,0.00499c-0.00333,0.00054-0.00697,0.00112-0.0103,0.00166  c-0.0327,0.00525-0.06517,0.0105-0.09785,0.0158c-0.00223,0.00036-0.00444,0.00072-0.00667,0.00108  c-0.03342,0.00542-0.06647,0.01081-0.09988,0.01628c-0.00223,0.00036-0.00545,0.00089-0.00766,0.00126  c-0.03342,0.00547-0.06567,0.01078-0.09909,0.0163c-0.00223,0.00037-0.0054,0.00089-0.00763,0.00126  c-0.0334,0.00552-0.06686,0.01108-0.10027,0.01665c-0.00223,0.00037-0.00285,0.00047-0.00507,0.00084  c-0.0349,0.00582-0.06816,0.0114-0.10304,0.01727l-0.00189,0.00032c-0.03415,0.00575-0.0699,0.0118-0.10403,0.01759  c-0.00221,0.00038-0.00195,0.00033-0.00417,0.00071c-0.03413,0.0058-0.0679,0.01157-0.10204,0.01742  c-0.00221,0.00038-0.00339,0.00058-0.0056,0.00096c-0.03413,0.00585-0.06769,0.01163-0.10181,0.01754  c-0.00111,0.00019-0.0031,0.00054-0.00421,0.00073c-0.03412,0.0059-0.06895,0.01196-0.10306,0.01791  c-0.00111,0.00019-0.00179,0.00031-0.0029,0.0005c-0.0341,0.00596-0.06973,0.0122-0.10384,0.01821  c-0.00111,0.0002-0.00183,0.00032-0.00294,0.00052c-0.0341,0.00601-0.06905,0.01219-0.10315,0.01825  c-0.0011,0.0002-0.00313,0.00056-0.00424,0.00075c-0.03484,0.00619-0.06952,0.01238-0.10435,0.01862L133.019,4.37947  c-0.03557,0.00638-0.07037,0.01264-0.10594,0.01907l-0.0013,0.00024c-0.03557,0.00643-0.06976,0.01264-0.10533,0.01912  l-0.0014,0.00026c-0.03482,0.00635-0.06952,0.0127-0.10432,0.0191l-0.00316,0.00058c-0.03407,0.00627-0.0699,0.01288-0.10396,0.0192  l-0.00218,0.0004c-0.03481,0.00645-0.06926,0.01287-0.10406,0.01938c-0.0011,0.00021-0.00172,0.00032-0.00284,0.00053  c-0.03479,0.00651-0.06996,0.01311-0.10475,0.01967l-0.0009,0.00017c-0.03477,0.00656-0.06895,0.01303-0.10373,0.01964  c-0.00111,0.00021-0.00331,0.00063-0.00443,0.00084c-0.03477,0.00661-0.06923,0.01319-0.104,0.01986  c-0.0011,0.00021,0.00018-0.00003-0.00093,0.00018c-0.07101,0.01361-0.14134,0.0272-0.21233,0.04103l-0.00044,0.00009  c-0.03474,0.00677-0.07037,0.01374-0.10512,0.02056l-0.00194,0.00038c-0.14194,0.02787-0.2825,0.05592-0.4243,0.08465  l-0.00078,0.00016c-0.61444,0.12452-1.2269,0.25698-1.83853,0.39769l-0.00119,0.00027  c-0.35286,0.08118-0.70367,0.16467-1.05553,0.25124l-0.00182,0.00045c-0.03519,0.00866-0.06885,0.01697-0.10402,0.02568  l-0.00107,0.00026c-0.03444,0.00853-0.06906,0.01713-0.10349,0.02571c-0.0011,0.00027-0.00218,0.00054-0.00328,0.00082  c-0.03442,0.00858-0.06836,0.01707-0.10277,0.0257c-0.0011,0.00027-0.00079,0.0002-0.00188,0.00047  c-0.03516,0.00882-0.06851,0.01721-0.10365,0.02608c-0.00108,0.00028-0.00052,0.00013-0.00162,0.00041  c-0.03441,0.00869-0.06856,0.01733-0.10295,0.02607c-0.00109,0.00028-0.00235,0.0006-0.00345,0.00088  c-0.03366,0.00855-0.06718,0.0171-0.10084,0.0257c-0.00219,0.00056-0.00356,0.00091-0.00574,0.00147  c-0.03366,0.00861-0.06726,0.01723-0.10091,0.02588c-0.00109,0.00028-0.00185,0.00048-0.00294,0.00076  c-0.03365,0.00866-0.06768,0.01744-0.10131,0.02615c-0.00219,0.00057-0.00269,0.0007-0.00488,0.00126  c-0.03364,0.00871-0.06624,0.01718-0.09987,0.02594c-0.00218,0.00057-0.00373,0.00097-0.00591,0.00154  c-0.03289,0.00857-0.06572,0.01715-0.0986,0.02577c-0.00218,0.00057-0.00512,0.00134-0.0073,0.00191  c-0.03288,0.00862-0.06725,0.01766-0.10013,0.02633c-0.00109,0.00029-0.00179,0.00047-0.00288,0.00076  c-0.03288,0.00867-0.06728,0.01777-0.10014,0.02649c-0.00218,0.00058-0.00469,0.00125-0.00687,0.00182  c-0.03359,0.00892-0.06601,0.01755-0.09959,0.02651c-0.00109,0.00029-0.00317,0.00085-0.00426,0.00114  c-0.03285,0.00877-0.06694,0.0179-0.09978,0.02672c-0.00109,0.00029-0.00512,0.00137-0.00621,0.00167  c-0.03357,0.00902-0.0657,0.01768-0.09927,0.02675c-0.00109,0.0003-0.00421,0.00114-0.0053,0.00143  c-0.03283,0.00887-0.06507,0.01761-0.09789,0.02654c-0.00327,0.00089-0.00516,0.0014-0.00843,0.00229  c-0.03209,0.00873-0.06579,0.01792-0.09787,0.02669c-0.00218,0.0006-0.00388,0.00106-0.00607,0.00166  c-0.03281,0.00898-0.06548,0.01794-0.09827,0.02696c-0.00218,0.0006-0.00494,0.00136-0.00712,0.00196  c-0.03353,0.00923-0.06608,0.01821-0.09959,0.02748c-0.00218,0.0006-0.00171,0.00047-0.00389,0.00108  c-0.03352,0.00928-0.06754,0.01872-0.10104,0.02805c-0.00218,0.00061-0.00164,0.00046-0.00381,0.00106  c-0.03278,0.00913-0.06697,0.01867-0.09973,0.02785c-0.00218,0.00061-0.00365,0.00102-0.00583,0.00163  c-0.03277,0.00918-0.06519,0.01829-0.09795,0.02751c-0.00217,0.00061-0.00537,0.00151-0.00755,0.00212  c-0.03275,0.00923-0.06579,0.01856-0.09853,0.02784c-0.00217,0.00062-0.00319,0.0009-0.00536,0.00152  c-0.03347,0.00948-0.06629,0.01881-0.09975,0.02834c-0.00109,0.00031-0.00362,0.00103-0.00471,0.00134  c-0.03273,0.00933-0.06499,0.01855-0.09771,0.02792c-0.00326,0.00093-0.00502,0.00144-0.00828,0.00237  c-0.01091,0.00313-0.02003,0.00574-0.03094,0.00888c-0.00217,0.00062-0.00372,0.00107-0.00589,0.00169  c-0.01963,0.00564-0.03969,0.01141-0.05931,0.01707c-0.00327,0.00094-0.00496,0.00143-0.00822,0.00237  c-0.03271,0.00943-0.06505,0.01878-0.09775,0.02826c-0.00217,0.00063-0.00416,0.0012-0.00633,0.00183  c-0.01089,0.00316-0.02125,0.00616-0.03215,0.00933c-0.00217,0.00063-0.00151,0.00044-0.00368,0.00107  c-0.02034,0.00591-0.04056,0.01179-0.06089,0.01772c-0.00326,0.00095-0.00523,0.00152-0.00848,0.00247  c-0.01017,0.00296-0.02097,0.00612-0.03113,0.00909c-0.00217,0.00063-0.00343,0.001-0.00559,0.00163  c-0.01961,0.00573-0.03909,0.01143-0.05869,0.01717c-0.00326,0.00095-0.00607,0.00178-0.00933,0.00273  c-0.01016,0.00298-0.02023,0.00593-0.03039,0.00892c-0.00326,0.00096-0.00433,0.00127-0.00759,0.00223  c-0.0196,0.00576-0.03899,0.01147-0.05859,0.01725c-0.00217,0.00064-0.00501,0.00148-0.00718,0.00212  c-0.01089,0.00321-0.02116,0.00624-0.03204,0.00946c-0.00108,0.00032-0.00241,0.00071-0.00349,0.00103  c-0.02104,0.00622-0.04164,0.01231-0.06268,0.01855c-0.00217,0.00064-0.00381,0.00113-0.00597,0.00177  c-0.01015,0.00301-0.02078,0.00617-0.03094,0.00918c-0.00325,0.00097-0.00633,0.00188-0.00959,0.00285  c-0.01814,0.00539-0.03599,0.0107-0.05412,0.01611c-0.00325,0.00097-0.00784,0.00234-0.01109,0.00331  c-0.01015,0.00303-0.01925,0.00574-0.0294,0.00878c-0.00325,0.00097-0.00658,0.00197-0.00983,0.00294  c-0.01813,0.00542-0.0357,0.01068-0.05383,0.01611c-0.00433,0.0013-0.00708,0.00212-0.01141,0.00342  c-0.01015,0.00304-0.01847,0.00554-0.02862,0.00859c-0.00433,0.0013-0.00744,0.00224-0.01178,0.00354  c-0.0174,0.00523-0.03561,0.01071-0.053,0.01595c-0.00433,0.00131-0.00624,0.00188-0.01057,0.00319  c-0.01015,0.00306-0.01962,0.00592-0.02977,0.00898c-0.00217,0.00065-0.00668,0.00202-0.00885,0.00267  c-0.01884,0.00569-0.03749,0.01134-0.05633,0.01705c-0.00325,0.00098-0.00576,0.00174-0.00901,0.00273  c-0.00941,0.00286-0.01934,0.00587-0.02876,0.00873c-0.00541,0.00164-0.0084,0.00255-0.01382,0.0042  c-0.01594,0.00484-0.03294,0.01002-0.04888,0.01487c-0.00433,0.00132-0.00951,0.0029-0.01384,0.00422  c-0.00941,0.00287-0.01801,0.00549-0.02743,0.00837c-0.00541,0.00165-0.00928,0.00283-0.01469,0.00449  c-0.01593,0.00487-0.03169,0.00969-0.04762,0.01457c-0.00433,0.00133-0.0099,0.00303-0.01424,0.00436  c-0.00941,0.00288-0.0185,0.00567-0.02791,0.00856c-0.00433,0.00133-0.00881,0.0027-0.01314,0.00403  c-0.01665,0.00511-0.03237,0.00995-0.04902,0.01508c-0.00433,0.00133-0.00992,0.00306-0.01424,0.00439  c-0.00941,0.0029-0.01836,0.00566-0.02777,0.00856c-0.00433,0.00134-0.00881,0.00272-0.01314,0.00406  c-0.01664,0.00514-0.03363,0.01039-0.05027,0.01555c-0.00433,0.00134-0.00799,0.00247-0.01231,0.00381  c-0.00941,0.00291-0.01809,0.00561-0.0275,0.00852c-0.0054,0.00168-0.01058,0.00329-0.01599,0.00496  c-0.01447,0.00449-0.02914,0.00906-0.0436,0.01356c-0.00649,0.00202-0.01186,0.00369-0.01834,0.00571  c-0.00795,0.00248-0.0174,0.00542-0.02536,0.00791c-0.00648,0.00202-0.01118,0.00349-0.01767,0.00552  c-0.01374,0.00429-0.02807,0.00877-0.04181,0.01307c-0.00648,0.00203-0.01257,0.00393-0.01905,0.00596  c-0.00796,0.00249-0.01668,0.00523-0.02463,0.00772c-0.00648,0.00203-0.01325,0.00416-0.01974,0.00619  c-0.01301,0.00408-0.02687,0.00844-0.03987,0.01253c-0.00648,0.00204-0.01321,0.00415-0.01969,0.00619  c-0.00867,0.00273-0.01662,0.00524-0.02528,0.00797c-0.00648,0.00204-0.01167,0.00368-0.01815,0.00572  c-0.013,0.0041-0.02754,0.0087-0.04054,0.01281c-0.00648,0.00205-0.01324,0.00419-0.01972,0.00624  c-0.00867,0.00274-0.01624,0.00514-0.0249,0.00789c-0.00648,0.00205-0.01291,0.00409-0.01939,0.00615  c-0.013,0.00412-0.02553,0.0081-0.03853,0.01223c-0.00755,0.0024-0.01392,0.00443-0.02148,0.00683  c-0.00867,0.00276-0.01595,0.00508-0.02461,0.00784c-0.00647,0.00206-0.01254,0.004-0.01902,0.00606  c-0.01155,0.00368-0.02491,0.00795-0.03646,0.01164c-0.00755,0.00241-0.01621,0.00518-0.02376,0.0076  c-0.00794,0.00254-0.01567,0.00502-0.02361,0.00756c-0.00755,0.00242-0.01296,0.00415-0.02051,0.00657  c-0.01227,0.00393-0.02517,0.00807-0.03743,0.01201c-0.00755,0.00243-0.01466,0.00471-0.02222,0.00714  c-0.00866,0.00278-0.0159,0.00512-0.02456,0.0079c-0.00539,0.00174-0.01255,0.00404-0.01794,0.00578  c-0.0137,0.00442-0.02827,0.00912-0.04198,0.01354c-0.00646,0.00209-0.01215,0.00392-0.01862,0.00601  c-0.00793,0.00256-0.01649,0.00533-0.02442,0.0079c-0.00755,0.00244-0.01288,0.00417-0.02042,0.00661  c-0.01154,0.00374-0.02343,0.00759-0.03497,0.01134c-0.00755,0.00245-0.01691,0.00549-0.02446,0.00794  c-0.00793,0.00258-0.01546,0.00503-0.02339,0.00761c-0.00755,0.00245-0.01407,0.00458-0.02161,0.00703  c-0.00864,0.00282-0.01655,0.00539-0.0252,0.00821c-0.01077,0.00351-0.02309,0.00753-0.03387,0.01105  c-0.00793,0.00259-0.01426,0.00466-0.02219,0.00725c-0.00754,0.00247-0.01552,0.00508-0.02306,0.00754  c-0.0072,0.00236-0.01379,0.00451-0.021,0.00687c-0.01292,0.00424-0.02496,0.00819-0.03788,0.01243  c-0.00721,0.00237-0.01456,0.00478-0.02176,0.00715c-0.00754,0.00248-0.01456,0.00479-0.02209,0.00727  c-0.0072,0.00237-0.01472,0.00485-0.02193,0.00722c-0.01292,0.00426-0.02469,0.00814-0.03761,0.0124  c-0.0072,0.00238-0.01346,0.00444-0.02065,0.00682c-0.00861,0.00284-0.01726,0.0057-0.02586,0.00855  c-0.00576,0.0019-0.01263,0.00418-0.01839,0.00608c-0.01292,0.00428-0.02705,0.00896-0.03996,0.01324  c-0.00576,0.00191-0.01157,0.00384-0.01732,0.00575c-0.01076,0.00357-0.01871,0.00621-0.02946,0.00979  c-0.00504,0.00167-0.01099,0.00365-0.01602,0.00533c-0.01398,0.00465-0.02625,0.00874-0.04023,0.0134  c-0.00576,0.00192-0.01228,0.0041-0.01804,0.00602c-0.00861,0.00287-0.01962,0.00655-0.02822,0.00942  c-0.00576,0.00192-0.01165,0.00389-0.0174,0.00581c-0.0129,0.00432-0.0271,0.00907-0.04,0.01339  c-0.00575,0.00193-0.01191,0.00399-0.01766,0.00592c-0.0086,0.00288-0.01956,0.00656-0.02816,0.00945  c-0.00575,0.00193-0.01157,0.00389-0.01733,0.00582c-0.0129,0.00434-0.02715,0.00913-0.04004,0.01347  c-0.00575,0.00194-0.01169,0.00394-0.01743,0.00588c-0.00967,0.00326-0.01927,0.0065-0.02895,0.00976  c-0.00574,0.00194-0.01106,0.00373-0.01681,0.00568c-0.01289,0.00436-0.02774,0.00938-0.04063,0.01374  c-0.00504,0.0017-0.01138,0.00385-0.01641,0.00556c-0.00967,0.00327-0.01952,0.00662-0.02919,0.0099  c-0.00575,0.00195-0.01128,0.00383-0.01703,0.00578c-0.01289,0.00438-0.02737,0.00929-0.04025,0.01368  c-0.00575,0.00196-0.01134,0.00386-0.01708,0.00582c-0.00859,0.00292-0.01994,0.00679-0.02853,0.00972  c-0.00574,0.00196-0.01188,0.00405-0.01762,0.00601c-0.01288,0.0044-0.02728,0.00931-0.04015,0.01372  c-0.00574,0.00196-0.01069,0.00366-0.01643,0.00562c-0.01073,0.00367-0.01875,0.00642-0.02949,0.0101  c-0.00502,0.00172-0.0116,0.00398-0.01662,0.0057c-0.01288,0.00442-0.02762,0.00948-0.0405,0.0139  c-0.00574,0.00197-0.01062,0.00365-0.01637,0.00563c-0.01073,0.00369-0.0187,0.00643-0.02943,0.01013  c-0.00502,0.00173-0.01212,0.00417-0.01714,0.0059c-0.01287,0.00444-0.02725,0.0094-0.04012,0.01384  c-0.00574,0.00198-0.0113,0.0039-0.01704,0.00589c-0.00965,0.00334-0.01889,0.00653-0.02854,0.00987  c-0.00574,0.00199-0.01117,0.00387-0.01691,0.00585c-0.01286,0.00446-0.02798,0.0097-0.04084,0.01416  c-0.00502,0.00174-0.01073,0.00373-0.01575,0.00547c-0.01072,0.00372-0.01929,0.0067-0.03001,0.01043  c-0.00574,0.00199-0.01077,0.00374-0.0165,0.00574c-0.01393,0.00485-0.02773,0.00966-0.04166,0.01451  c-0.00502,0.00175-0.00822,0.00287-0.01324,0.00462c-0.01071,0.00374-0.02171,0.00758-0.03242,0.01133  c-0.00502,0.00175-0.00996,0.00348-0.01498,0.00523c-0.01392,0.00487-0.02827,0.00989-0.04218,0.01477  c-0.0043,0.00151-0.00831,0.00291-0.01261,0.00442c-0.0107,0.00376-0.02325,0.00816-0.03395,0.01192  c-0.00501,0.00176-0.00909,0.00319-0.01411,0.00496c-0.01392,0.00489-0.02846,0.01001-0.04237,0.01491  c-0.0043,0.00151-0.00842,0.00296-0.01271,0.00448c-0.0107,0.00377-0.02259,0.00796-0.03329,0.01174  c-0.0043,0.00152-0.00997,0.00352-0.01427,0.00504c-0.01392,0.00491-0.02863,0.01011-0.04253,0.01504  c-0.0043,0.00152-0.00773,0.00274-0.01202,0.00426c-0.0107,0.00379-0.02406,0.00852-0.03476,0.01232  c-0.0043,0.00152-0.00912,0.00324-0.01342,0.00476c-0.01391,0.00494-0.02959,0.01051-0.0435,0.01545  c-0.00358,0.00127-0.00607,0.00216-0.00965,0.00344c-0.01284,0.00457-0.0238,0.00847-0.03663,0.01304  c-0.00429,0.00153-0.00798,0.00284-0.01227,0.00437c-0.01498,0.00534-0.02959,0.01056-0.04456,0.01591  c-0.00286,0.00102-0.00488,0.00174-0.00774,0.00277c-0.01283,0.00459-0.02606,0.00932-0.03889,0.01392  c-0.00429,0.00154-0.00713,0.00255-0.01142,0.00409c-0.01604,0.00574-0.02934,0.01051-0.04536,0.01627  c-0.00143,0.00051-0.0038,0.00137-0.00523,0.00188c-0.01389,0.00499-0.02725,0.00979-0.04115,0.01479  c-0.00357,0.00129-0.00681,0.00245-0.01038,0.00373c-0.01603,0.00577-0.0298,0.01073-0.04582,0.01651  c-0.00143,0.00052-0.00352,0.00127-0.00495,0.00179c-0.01389,0.00501-0.02825,0.0102-0.04214,0.01522  c-0.00357,0.00129-0.00594,0.00215-0.00952,0.00344c-0.01601,0.00579-0.03053,0.01105-0.04654,0.01685  c-0.00072,0.00026-0.00214,0.00077-0.00285,0.00103c-0.01389,0.00503-0.02972,0.01078-0.04359,0.01582  c-0.00357,0.0013-0.00581,0.00211-0.00938,0.00341c-0.01601,0.00582-0.03048,0.01108-0.04649,0.01691  c-0.00143,0.00052-0.00191,0.0007-0.00334,0.00122c-0.01388,0.00505-0.02987,0.01089-0.04374,0.01595  c-0.00357,0.0013-0.00528,0.00193-0.00885,0.00323C121.04707,7.61249,121.032,7.618,121.016,7.62386l-0.00114,0.00042  c-0.01601,0.00586-0.02998,0.01098-0.04597,0.01685c-0.00214,0.00078-0.00542,0.00199-0.00756,0.00277  c-0.016,0.00587-0.03173,0.01165-0.04773,0.01753c-0.00071,0.00026-0.00037,0.00013-0.00108,0.0004  c-0.016,0.00588-0.03044,0.0112-0.04643,0.01709c-0.00214,0.00079-0.00481,0.00177-0.00695,0.00256  c-0.03198,0.01179-0.06324,0.02334-0.09521,0.03518c-0.00285,0.00106-0.00448,0.00166-0.00733,0.00272  c-0.03197,0.01184-0.06382,0.02367-0.09578,0.03555c-0.00142,0.00053-0.00469,0.00175-0.00612,0.00228  c-0.03195,0.01189-0.06398,0.02383-0.09592,0.03577c-0.00214,0.0008-0.00414,0.00155-0.00628,0.00235  c-0.03194,0.01194-0.06384,0.02389-0.09576,0.03588c-0.00214,0.0008-0.00454,0.00171-0.00668,0.00251  c-0.03193,0.01199-0.06451,0.02426-0.09642,0.03629c-0.00214,0.00081-0.00276,0.00104-0.0049,0.00185  c-0.03297,0.01244-0.06535,0.02468-0.09831,0.03718c-0.00071,0.00027-0.0022,0.00084-0.00292,0.00111  c-0.03402,0.0129-0.06573,0.02494-0.09974,0.03789c-0.00071,0.00027-0.00098,0.00037-0.00169,0.00064  c-0.03401,0.01295-0.06699,0.02554-0.10098,0.03854l-0.00039,0.00015c-0.034,0.013-0.06759,0.02588-0.10156,0.03894  l-0.00038,0.00015c-3.34653,1.28604-6.61654,2.8319-9.77832,4.6371l7.27125,12.73511  c8.57767-4.89747,18.37067-7.48613,28.3202-7.48613V3.24779L145.75587,3.24779L145.75587,3.24779z M88.05655,31.19099  c0,0-0.41136,0.41136-1.13123,1.13123l0,0c-0.71987,0.71988-1.74826,1.74826-2.98233,2.98233l0,0  c-1.23407,1.23407-2.67382,2.67382-4.21641,4.2164l0,0c-1.54258,1.54259-3.18801,3.18801-4.83344,4.83344l0,0  c-1.64542,1.64542-3.29085,3.29085-4.83344,4.83344l0,0c-1.54259,1.54259-2.98233,2.98233-4.2164,4.2164l0,0  c-1.23407,1.23407-2.26246,2.26246-2.98233,2.98233l0,0c-0.71987,0.71987-1.13123,1.13123-1.13123,1.13123l0,0l10.36954,10.36953  l26.3268-26.3268L88.05655,31.19099L88.05655,31.19099z M41.25335,77.99419c0,0-0.31582,0.31582-0.86851,0.86851l0,0  c-0.55269,0.55269-1.34224,1.34225-2.28971,2.28971l0,0c-0.94747,0.94746-2.05284,2.05284-3.23717,3.23717l0,0  c-1.18433,1.18433-2.44762,2.44762-3.71091,3.71091l0,0c-1.26329,1.26328-2.52658,2.52657-3.71091,3.71091l0,0  c-1.18433,1.18433-2.28971,2.2897-3.23717,3.23717l0,0c-0.94746,0.94746-1.73702,1.73701-2.28971,2.2897l0,0  c-0.55269,0.55269-0.86851,0.86852-0.86851,0.86852l0,0l0,0c-0.01512,0.01512-0.03006,0.03008-0.04516,0.0452  c-0.00513,0.00514-0.00901,0.00903-0.01414,0.01417c-0.01032,0.01035-0.02055,0.0206-0.03086,0.03094  c-0.00513,0.00515-0.01236,0.01241-0.01748,0.01756c-0.00943,0.00947-0.01867,0.01875-0.02809,0.02822  c-0.00683,0.00686-0.01039,0.01044-0.01721,0.01731c-0.00954,0.0096-0.01902,0.01913-0.02855,0.02873  c-0.00682,0.00687-0.01048,0.01055-0.01729,0.01742c-0.01054,0.01062-0.02091,0.02108-0.03144,0.0317  c-0.00511,0.00516-0.00813,0.00819-0.01323,0.01335c-0.01491,0.01505-0.0297,0.02998-0.04459,0.04504  c-0.0034,0.00344-0.00575,0.00582-0.00915,0.00926c-0.01201,0.01215-0.02411,0.0244-0.03611,0.03655  c-0.0051,0.00517-0.01003,0.01017-0.01513,0.01534c-0.00962,0.00975-0.01922,0.01949-0.02884,0.02924  c-0.00509,0.00517-0.01361,0.01382-0.0187,0.01898c-0.00899,0.00912-0.01764,0.01792-0.02662,0.02705  c-0.00508,0.00517-0.01313,0.01334-0.01821,0.01851c-0.00948,0.00964-0.0188,0.01913-0.02827,0.02878  c-0.00508,0.00517-0.0112,0.0114-0.01627,0.01657c-0.01233,0.01257-0.02469,0.02517-0.03701,0.03773  c-0.00338,0.00346-0.004,0.00408-0.00738,0.00753c-0.01481,0.01511-0.02965,0.03027-0.04444,0.04539  c-0.00338,0.00346-0.00968,0.00991-0.01306,0.01337c-0.01068,0.01093-0.02122,0.02171-0.0319,0.03265  c-0.00506,0.00518-0.01023,0.01048-0.01529,0.01567c-0.0098,0.01005-0.01969,0.02018-0.02949,0.03024  c-0.00674,0.00692-0.01013,0.0104-0.01687,0.01732c-0.0093,0.00954-0.01874,0.01925-0.02803,0.0288  c-0.00673,0.00692-0.01018,0.01045-0.0169,0.01738c-0.00953,0.0098-0.01918,0.01974-0.02871,0.02955  c-0.00504,0.00519-0.01115,0.01147-0.01619,0.01667c-0.01447,0.01492-0.02929,0.0302-0.04375,0.04512  c-0.00168,0.00173-0.00056,0.00058-0.00224,0.00231c-0.01384,0.01428-0.02778,0.02869-0.0416,0.04298  c-0.00503,0.0052-0.01047,0.01083-0.0155,0.01603c-0.00962,0.00996-0.0193,0.01997-0.02892,0.02994  c-0.00503,0.0052-0.01227,0.01271-0.01729,0.01791c-0.009,0.00932-0.01819,0.01886-0.02718,0.02819  c-0.00669,0.00694-0.01056,0.01096-0.01726,0.01791c-0.0096,0.00997-0.01934,0.02009-0.02893,0.03006  c-0.00501,0.00521-0.01041,0.01081-0.01542,0.01603c-0.01094,0.01138-0.0217,0.02258-0.03264,0.03397  c-0.00501,0.00522-0.00655,0.00682-0.01156,0.01204c-0.01462,0.01523-0.02916,0.03039-0.04375,0.04563  c-0.00333,0.00348-0.00743,0.00776-0.01076,0.01124c-0.01104,0.01153-0.02199,0.02296-0.03302,0.0345  c-0.005,0.00523-0.01171,0.01225-0.0167,0.01747c-0.00919,0.00961-0.01815,0.01899-0.02733,0.02861  c-0.00499,0.00523-0.01239,0.01298-0.01738,0.0182c-0.00905,0.00949-0.01823,0.01912-0.02728,0.02861  c-0.00499,0.00523-0.01203,0.01262-0.01701,0.01785c-0.0099,0.01039-0.02003,0.02103-0.02992,0.03143  c-0.00498,0.00523-0.00838,0.00881-0.01336,0.01405c-0.0127,0.01335-0.02543,0.02676-0.03812,0.04012  c-0.00166,0.00175-0.00458,0.00482-0.00624,0.00657c-0.01451,0.01529-0.02913,0.03071-0.04363,0.04601  c-0.00331,0.00349-0.00928,0.0098-0.01259,0.01329c-0.01023,0.0108-0.0206,0.02176-0.03082,0.03257  c-0.00661,0.00699-0.00986,0.01042-0.01647,0.01742c-0.00912,0.00965-0.01822,0.01929-0.02734,0.02894  c-0.00661,0.007-0.01118,0.01185-0.01778,0.01884c-0.00838,0.00889-0.01669,0.01769-0.02507,0.02658  c-0.0066,0.007-0.01259,0.01336-0.01919,0.02036c-0.00898,0.00954-0.01781,0.01892-0.02678,0.02846  c-0.00494,0.00526-0.01124,0.01195-0.01619,0.0172c-0.01418,0.01508-0.02852,0.03035-0.04269,0.04544  c-0.00329,0.00351-0.00432,0.00461-0.00761,0.00812c-0.01174,0.01251-0.0235,0.02505-0.03524,0.03757  c-0.00493,0.00526-0.01226,0.0131-0.01719,0.01836c-0.0087,0.00929-0.01712,0.01829-0.02582,0.02759  c-0.00492,0.00526-0.01413,0.01511-0.01905,0.02038c-0.00833,0.00892-0.01663,0.01779-0.02495,0.02671  c-0.00656,0.00703-0.01137,0.01218-0.01793,0.01921c-0.00868,0.00931-0.01734,0.01859-0.02602,0.0279  c-0.00655,0.00703-0.01128,0.01211-0.01783,0.01914c-0.01012,0.01086-0.02021,0.02171-0.03033,0.03259  c-0.00491,0.00527-0.00721,0.00774-0.01212,0.01302c-0.01396,0.01501-0.02792,0.03004-0.04187,0.04507  c-0.0049,0.00528-0.01064,0.01147-0.01554,0.01675c-0.00937,0.0101-0.01901,0.02049-0.02838,0.0306  c-0.00653,0.00705-0.01004,0.01084-0.01656,0.01789c-0.00864,0.00933-0.01729,0.01867-0.02592,0.02801  c-0.00652,0.00705-0.0119,0.01287-0.01842,0.01992c-0.00851,0.00921-0.0167,0.01807-0.02521,0.02728  c-0.00651,0.00706-0.01163,0.0126-0.01814,0.01965c-0.00838,0.00909-0.01668,0.01809-0.02506,0.02718  c-0.00488,0.00529-0.01313,0.01425-0.01801,0.01955c-0.01029,0.01117-0.02045,0.02222-0.03073,0.03339  c-0.00487,0.00529-0.01388,0.01509-0.01875,0.02039c-0.01135,0.01235-0.02288,0.0249-0.03422,0.03725  c-0.00487,0.0053-0.01327,0.01447-0.01814,0.01977c-0.00811,0.00885-0.01612,0.01758-0.02423,0.02643  c-0.00648,0.00707-0.01317,0.01438-0.01965,0.02145c-0.00763,0.00833-0.01523,0.01665-0.02286,0.02498  c-0.00647,0.00707-0.01414,0.01546-0.02061,0.02253c-0.00738,0.00808-0.0147,0.0161-0.02208,0.02417  c-0.00646,0.00708-0.01351,0.0148-0.01997,0.02188c-0.00809,0.00887-0.01604,0.01759-0.02411,0.02645  c-0.00646,0.00708-0.01204,0.0132-0.01849,0.02029c-0.01342,0.01473-0.02696,0.02961-0.04036,0.04435  c-0.00484,0.00532-0.01122,0.01234-0.01605,0.01766c-0.00866,0.00953-0.01705,0.01876-0.0257,0.02829  c-0.00644,0.0071-0.0136,0.01499-0.02003,0.02209c-0.00746,0.00822-0.01509,0.01664-0.02255,0.02487  c-0.00643,0.0071-0.01394,0.01539-0.02037,0.02249c-0.0071,0.00784-0.01437,0.01588-0.02146,0.02372  c-0.00643,0.0071-0.01429,0.0158-0.02071,0.0229c-0.00733,0.00811-0.01485,0.01644-0.02217,0.02454  c-0.00642,0.00711-0.01385,0.01534-0.02027,0.02245c-0.00708,0.00785-0.01409,0.01562-0.02117,0.02348  c-0.01122,0.01245-0.02552,0.02834-0.03673,0.04079c-0.00766,0.00851-0.01537,0.01707-0.02302,0.02558  c-0.008,0.0089-0.01351,0.01504-0.02151,0.02393c-0.00683,0.0076-0.01355,0.01508-0.02037,0.02268  c-0.00799,0.0089-0.01458,0.01626-0.02257,0.02516c-0.00623,0.00695-0.01238,0.01381-0.01861,0.02076  c-0.00798,0.0089-0.01543,0.01723-0.02341,0.02614c-0.00587,0.00656-0.0118,0.01319-0.01767,0.01975  c-0.00797,0.00891-0.01626,0.01817-0.02423,0.02709c-0.00563,0.0063-0.01113,0.01246-0.01675,0.01876  c-0.00797,0.00892-0.01643,0.01839-0.02439,0.02731c-0.00468,0.00525-0.00945,0.0106-0.01413,0.01585  c-0.01751,0.01963-0.03707,0.0416-0.05454,0.06124c-0.00327,0.00368-0.00666,0.00748-0.00993,0.01116  c-0.00953,0.01071-0.01754,0.01974-0.02707,0.03046c-0.00455,0.00513-0.00912,0.01027-0.01367,0.0154  c-0.00793,0.00894-0.01857,0.02093-0.02649,0.02987c-0.0049,0.00552-0.0097,0.01093-0.0146,0.01646  c-0.00951,0.01073-0.01685,0.01902-0.02636,0.02975c-0.00443,0.005-0.0089,0.01006-0.01333,0.01506  c-0.0095,0.01074-0.01817,0.02055-0.02766,0.03129c-0.00361,0.00408-0.00724,0.00819-0.01085,0.01228  c-0.03321,0.0376-0.06541,0.07412-0.09853,0.11178c-0.00255,0.0029-0.00508,0.00577-0.00763,0.00867  c-0.00946,0.01076-0.01934,0.022-0.02879,0.03277c-0.00383,0.00436-0.0078,0.00888-0.01163,0.01324  c-0.00945,0.01077-0.01924,0.02192-0.02868,0.03269c-0.00371,0.00423-0.00712,0.00813-0.01083,0.01235  c-0.00944,0.01077-0.01996,0.02278-0.02939,0.03355c-0.00289,0.0033-0.00585,0.00669-0.00874,0.00999  c-0.04715,0.05389-0.09266,0.10605-0.13962,0.16004c-0.00219,0.00252-0.00437,0.00502-0.00656,0.00754  c-0.01096,0.0126-0.02022,0.02326-0.03116,0.03587c-0.00265,0.00305-0.00524,0.00603-0.00789,0.00909  c-0.00938,0.0108-0.02228,0.02567-0.03165,0.03648c-0.00218,0.00252-0.0045,0.0052-0.00669,0.00771  c-0.01093,0.01261-0.02213,0.02554-0.03305,0.03815c-0.0008,0.00093-0.00154,0.00179-0.00235,0.00271  c-0.04992,0.05769-0.09744,0.11278-0.14716,0.17058c-0.00023,0.00027-0.00052,0.0006-0.00075,0.00087  c-0.01087,0.01265-0.02356,0.0274-0.03442,0.04006c-0.0016,0.00186-0.00323,0.00376-0.00483,0.00562  c-0.01241,0.01446-0.02219,0.02585-0.03459,0.04032c-0.00046,0.00053-0.00071,0.00082-0.00116,0.00135  c-0.66654,0.77757-1.31178,1.56358-1.93967,2.36225l11.52838,9.06372c1.41073-1.79433,2.95133-3.52946,4.579-5.15714  l20.2126-20.2126L41.25335,77.99419L41.25335,77.99419z M2.43997,130.39366c-1.32846,4.97183-2.114,10.05621-2.35779,15.16386  l0,0.00002c-0.00342,0.07175-0.00674,0.14348-0.00995,0.21524l0,0.00003c-0.00321,0.07175-0.00626,0.1422-0.00926,0.21396  c-0.00003,0.00075-0.00008,0.00183-0.00011,0.00258c-0.0015,0.03589-0.00291,0.07027-0.00435,0.10616l-0.00002,0.00044  c-0.00144,0.03589-0.00284,0.07112-0.00423,0.10699c-0.00003,0.00076-0.00001,0.0002-0.00004,0.00095  c-0.00139,0.03589-0.0027,0.07022-0.00403,0.10611c-0.00003,0.00075-0.00006,0.00154-0.00009,0.0023  c-0.00134,0.03589-0.00257,0.06956-0.00385,0.10545c-0.00003,0.00076-0.00005,0.00142-0.00008,0.00218  c-0.00128,0.03589-0.00247,0.06972-0.0037,0.10561l-0.00007,0.00203c-0.00123,0.03589-0.00235,0.06929-0.00353,0.10519  c-0.00002,0.00075-0.00008,0.00256-0.00011,0.00333c-0.00118,0.03589-0.00222,0.06833-0.00334,0.10423  c-0.00005,0.00151-0.00007,0.00215-0.00011,0.00366c-0.00056,0.01794-0.00102,0.03285-0.00157,0.0508  c-0.00002,0.00076-0.00001,0.0004-0.00004,0.00114c-0.00055,0.01794-0.00103,0.03403-0.00157,0.05197  c-0.00005,0.00151-0.00008,0.00285-0.00013,0.00436c-0.00054,0.01794-0.00093,0.03136-0.00145,0.04932  c-0.00004,0.00151-0.00003,0.00095-0.00007,0.00246c-0.00052,0.01796-0.00097,0.03346-0.00148,0.05142  c-0.00004,0.00151-0.00009,0.00331-0.00014,0.00484c-0.00051,0.01794-0.00087,0.03076-0.00136,0.04872  c-0.00002,0.00075-0.00006,0.00218-0.00008,0.00294c-0.00049,0.01794-0.00094,0.03419-0.00142,0.05214  c-0.00002,0.00076-0.00004,0.00153-0.00006,0.00229c-0.00048,0.01794-0.00083,0.03123-0.0013,0.04919  c-0.00004,0.00151-0.00009,0.00331-0.00013,0.00482c-0.00047,0.01794-0.00085,0.03279-0.0013,0.05075  c-0.00004,0.00151-0.00008,0.00308-0.00012,0.00459c-0.0004,0.0157-0.00075,0.02997-0.00114,0.04567  c-0.00006,0.00227-0.00015,0.00587-0.0002,0.00813c-0.00044,0.01796-0.00076,0.03101-0.00119,0.04895  c-0.00005,0.00227-0.0001,0.00409-0.00015,0.00636c-0.00032,0.01346-0.00072,0.03067-0.00104,0.04413  c-0.00007,0.00302-0.00012,0.00526-0.00019,0.00829c-0.00041,0.01794-0.00073,0.03162-0.00113,0.04956  c-0.00003,0.00151-0.00006,0.00262-0.00009,0.00414c-0.00035,0.0157-0.00066,0.03004-0.00101,0.04575  c-0.00007,0.00304-0.00013,0.00584-0.00019,0.00888c-0.00034,0.0157-0.00072,0.0338-0.00105,0.0495  c-0.00002,0.00076-0.00003,0.00143-0.00005,0.0022c-0.00033,0.0157-0.00065,0.03139-0.00097,0.0471  c-0.00006,0.00302-0.00012,0.00594-0.00018,0.00896c-0.00063,0.03142-0.00134,0.06822-0.00193,0.09964  c-0.00004,0.00226-0.00011,0.00578-0.00015,0.00804c-0.00058,0.03142-0.00124,0.06812-0.00178,0.09953  c-0.00005,0.00302-0.00009,0.00526-0.00014,0.00829c-0.00054,0.03142-0.00114,0.06848-0.00164,0.0999  c-0.00005,0.00302-0.00008,0.00488-0.00012,0.0079c-0.00049,0.03142-0.00103,0.06804-0.00148,0.09946  c-0.00004,0.00302-0.00008,0.00587-0.00013,0.0089c-0.00022,0.01572-0.00045,0.03218-0.00066,0.0479  c-0.00001,0.00075-0.00001,0.00081-0.00002,0.00156c-0.00021,0.01572-0.00044,0.03351-0.00064,0.04922  c-0.00004,0.00302-0.00009,0.00699-0.00013,0.01001c-0.00017,0.01346-0.00038,0.03055-0.00054,0.04402  c-0.00002,0.00151-0.00005,0.00381-0.00006,0.00533c-0.00019,0.0157-0.00038,0.03297-0.00056,0.04868  c-0.00004,0.00378-0.00006,0.0054-0.0001,0.00917c-0.00015,0.01347-0.00034,0.03091-0.00048,0.04437  c-0.00002,0.00227-0.00004,0.00359-0.00006,0.00586c-0.00016,0.0157-0.00033,0.03203-0.00048,0.04773  c-0.00004,0.00378-0.00008,0.0078-0.00011,0.01158c-0.00013,0.01347-0.00025,0.02655-0.00037,0.04002  c-0.00003,0.00378-0.00005,0.00555-0.00009,0.00934c-0.00014,0.01572-0.00027,0.03067-0.0004,0.04637  c-0.00004,0.00453-0.00007,0.00835-0.0001,0.01288c-0.00011,0.01347-0.0002,0.02446-0.0003,0.03792  c-0.00003,0.00378-0.00006,0.00768-0.00009,0.01146c-0.0001,0.01346-0.00023,0.03256-0.00033,0.04602  c-0.00003,0.00378-0.00006,0.00891-0.00008,0.0127c-0.00009,0.01346-0.00015,0.02252-0.00023,0.036  c-0.00003,0.00453-0.00006,0.00948-0.00009,0.01401c-0.00008,0.01347-0.00018,0.03125-0.00025,0.04471  c-0.00002,0.00455-0.00005,0.009-0.00007,0.01353c-0.00007,0.01347-0.00011,0.02281-0.00018,0.03629  c-0.00002,0.00453-0.00004,0.00871-0.00006,0.01324c-0.00006,0.01346-0.00013,0.0318-0.00019,0.04526  c-0.00002,0.00453-0.00003,0.00867-0.00005,0.0132c-0.00005,0.01347-0.00008,0.02243-0.00012,0.03589  c-0.00001,0.00455-0.00003,0.00896-0.00004,0.0135c-0.00004,0.01346-0.00009,0.03178-0.00012,0.04524  c-0.00001,0.00453-0.00002,0.00865-0.00003,0.0132c-0.00003,0.01346-0.00005,0.02219-0.00007,0.03564  c-0.00001,0.00455-0.00002,0.01004-0.00002,0.01457c-0.00002,0.01346-0.00004,0.03139-0.00005,0.04485  c0,0.00455,0,0.00854-0.00001,0.01308C0,148.97058,0,148.98212,0,148.99333c0,0.00529,0,0.01173,0,0.01701  c0,0.01347,0.00001,0.02982,0.00002,0.04329c0,0.00453,0.00001,0.00986,0.00001,0.01439  c0.00001,0.01122,0.00002,0.02225,0.00004,0.03348c0.00001,0.00529,0.00002,0.01192,0.00002,0.01721  c0.00002,0.01347,0.00005,0.0293,0.00008,0.04276c0.00001,0.00529,0.00003,0.0108,0.00004,0.0161  c0.00002,0.00899,0.00005,0.02167,0.00008,0.03064c0.00002,0.00604,0.00004,0.01302,0.00006,0.01907  c0.00004,0.01346,0.00009,0.02676,0.00014,0.04024c0.00002,0.00528,0.00004,0.01129,0.00006,0.01659  c0.00004,0.01122,0.00009,0.02187,0.00014,0.03308c0.00003,0.00606,0.00005,0.01176,0.00008,0.01781  c0.00007,0.0157,0.00013,0.02759,0.00021,0.04329c0.00002,0.00378,0.00004,0.00719,0.00006,0.01097  c0.00007,0.01346,0.00012,0.02185,0.0002,0.03532c0.00004,0.00604,0.00008,0.01291,0.00011,0.01895  c0.00008,0.01347,0.00015,0.02399,0.00024,0.03746c0.00003,0.00528,0.00007,0.01048,0.00011,0.01576  c0.00009,0.01347,0.00016,0.02324,0.00026,0.03671c0.00004,0.00604,0.00009,0.01184,0.00013,0.01788  c0.0001,0.01346,0.00017,0.02237,0.00028,0.03583c0.00004,0.00529,0.00009,0.011,0.00013,0.0163  c0.00011,0.01346,0.00021,0.02461,0.00033,0.03807c0.00005,0.00529,0.00011,0.0119,0.00015,0.0172  c0.00012,0.01347,0.00021,0.02248,0.00033,0.03595c0.00005,0.00528,0.00009,0.00948,0.00014,0.01477  c0.00013,0.01346,0.00027,0.02676,0.0004,0.04022c0.00005,0.00529,0.00013,0.01215,0.00018,0.01744  c0.00014,0.01347,0.00023,0.02164,0.00038,0.03511c0.00004,0.00377,0.00009,0.008,0.00013,0.01178  c0.00018,0.0157,0.00031,0.02737,0.0005,0.04309c0.00007,0.00604,0.00015,0.01274,0.00022,0.01878  c0.00011,0.00897,0.00028,0.02316,0.0004,0.03214c0.00007,0.00529,0.00012,0.00941,0.00018,0.01469  c0.00017,0.01347,0.00039,0.03009,0.00057,0.04356c0.00008,0.00604,0.00015,0.01105,0.00023,0.01711  c0.00012,0.00897,0.00031,0.02269,0.00044,0.03166c0.00007,0.00529,0.00015,0.01071,0.00022,0.01601  c0.00019,0.01346,0.00042,0.02908,0.00062,0.04256c0.00009,0.00604,0.00018,0.01205,0.00027,0.0181  c0.00014,0.00897,0.00034,0.02211,0.00047,0.03108c0.00008,0.00529,0.00018,0.01138,0.00026,0.01668  c0.00021,0.01346,0.00045,0.02847,0.00067,0.04195c0.0001,0.00604,0.00022,0.01311,0.00032,0.01915  c0.00015,0.00899,0.00034,0.02066,0.0005,0.02963c0.0001,0.00604,0.00019,0.01117,0.00029,0.01723  c0.00023,0.01346,0.00048,0.02771,0.00072,0.04117c0.00013,0.00755,0.00025,0.01416,0.00039,0.02173  c0.00016,0.00897,0.0003,0.01651,0.00047,0.0255c0.00013,0.00679,0.00026,0.01421,0.00039,0.021  c0.00025,0.01347,0.00051,0.02705,0.00077,0.04051c0.00013,0.00681,0.00026,0.01353,0.0004,0.02034  c0.00018,0.00897,0.00034,0.0175,0.00052,0.02647c0.00014,0.00681,0.00028,0.01387,0.00041,0.02068  c0.00027,0.01346,0.00055,0.02681,0.00083,0.04027c0.00014,0.00681,0.00028,0.01337,0.00042,0.02017  c0.00019,0.00897,0.00039,0.0186,0.00059,0.02757c0.00015,0.00681,0.00029,0.01363,0.00044,0.02043  c0.00029,0.01346,0.00057,0.02608,0.00087,0.03954c0.00017,0.00757,0.00034,0.01494,0.00051,0.02249  c0.0002,0.00897,0.00034,0.01523,0.00055,0.02422c0.00016,0.00679,0.00035,0.01509,0.0005,0.0219  c0.00026,0.01122,0.0005,0.02138,0.00076,0.03259c0.00023,0.00983,0.00047,0.01991,0.00071,0.02974  c0.00022,0.00897,0.00037,0.01514,0.00058,0.02411c0.00017,0.00681,0.00036,0.01462,0.00053,0.02142  c0.00033,0.01346,0.00069,0.02777,0.00103,0.04123c0.00015,0.00604,0.00029,0.01123,0.00044,0.01727  c0.00023,0.00899,0.00052,0.02039,0.00075,0.02937c0.00018,0.00679,0.00035,0.01332,0.00052,0.02013  c0.00029,0.01122,0.00058,0.02206,0.00088,0.03328c0.00024,0.00906,0.00047,0.0174,0.00071,0.02646  c0.00024,0.00897,0.00053,0.01938,0.00077,0.02837c0.00019,0.00679,0.00036,0.01314,0.00055,0.01993  c0.00031,0.01123,0.00061,0.02202,0.00093,0.03323c0.00023,0.00832,0.0005,0.01759,0.00073,0.02589  c0.00026,0.00897,0.00057,0.01994,0.00083,0.02892c0.0002,0.00681,0.00037,0.01277,0.00057,0.01958  c0.00033,0.01122,0.00058,0.0197,0.00091,0.03091c0.00031,0.01057,0.0006,0.0202,0.00092,0.03078  c0.00027,0.00897,0.00049,0.0164,0.00077,0.02538c0.00023,0.00755,0.00046,0.01524,0.0007,0.02281  c0.00028,0.00897,0.00055,0.0179,0.00083,0.02687c0.00033,0.01059,0.00068,0.0218,0.00101,0.03239  c0.00028,0.00897,0.00053,0.01671,0.00081,0.02568c0.00024,0.00755,0.0005,0.01578,0.00075,0.02333  c0.00029,0.00897,0.00053,0.01648,0.00083,0.02545c0.00034,0.01059,0.00069,0.02104,0.00104,0.03162  c0.00037,0.01122,0.00059,0.01776,0.00096,0.02898c0.00023,0.00681,0.00048,0.01447,0.00071,0.02127  c0.0003,0.00897,0.00058,0.01714,0.00089,0.02611c0.00039,0.01134,0.00075,0.02206,0.00115,0.0334  c0.00023,0.00673,0.00068,0.01956,0.00091,0.02629c0.00026,0.00755,0.00053,0.0152,0.0008,0.02277  c0.00032,0.00897,0.00056,0.01584,0.00088,0.02481c0.0004,0.01132,0.00081,0.02257,0.00121,0.03391  c0.00032,0.00897,0.00064,0.01772,0.00096,0.02669c0.00027,0.00755,0.00057,0.0157,0.00085,0.02325  c0.00033,0.00897,0.00057,0.01537,0.0009,0.02434c0.00034,0.00906,0.00068,0.01843,0.00102,0.0275  c0.00042,0.01122,0.00082,0.02187,0.00125,0.03308c0.00029,0.00755,0.0006,0.01585,0.00089,0.02341  c0.00026,0.00673,0.00061,0.01595,0.00087,0.02267c0.00041,0.01057,0.00079,0.02043,0.0012,0.03102  c0.00044,0.0112,0.00079,0.02025,0.00123,0.03146c0.0003,0.00755,0.00061,0.01543,0.00091,0.02298  c0.00027,0.00673,0.00062,0.01569,0.00089,0.02242c0.00036,0.00906,0.00075,0.01871,0.00112,0.02779  c0.00045,0.0112,0.00093,0.02284,0.00138,0.03406c0.00034,0.00832,0.00067,0.01636,0.00101,0.02467  c0.00028,0.00673,0.00057,0.01384,0.00085,0.02057c0.0005,0.01208,0.00098,0.02365,0.00149,0.03575  c0.00038,0.00896,0.00075,0.01796,0.00113,0.02693c0.00035,0.0083,0.00074,0.01743,0.0011,0.02573  c0.00019,0.00449,0.00064,0.01489,0.00083,0.01938c0.00039,0.00906,0.00071,0.01643,0.0011,0.0255  c0.00058,0.01344,0.00107,0.02457,0.00166,0.03802c0.00036,0.00832,0.00068,0.01552,0.00105,0.02382  c0.0004,0.00897,0.00057,0.01295,0.00097,0.02193c0.00034,0.00755,0.00075,0.01678,0.00109,0.02434  c0.0006,0.01346,0.00115,0.02553,0.00176,0.03899c0.00031,0.00679,0.00068,0.01498,0.00099,0.02177  c0.00041,0.00897,0.00065,0.01431,0.00107,0.02327c0.00038,0.00832,0.00073,0.01587,0.00112,0.02417  c0.00042,0.00897,0.0008,0.01709,0.00121,0.02606c0.00056,0.01208,0.00118,0.02521,0.00175,0.03729  c0.00032,0.00673,0.00058,0.01227,0.0009,0.01898c0.00043,0.00906,0.00084,0.01778,0.00128,0.02684  c0.00032,0.00673,0.00063,0.0132,0.00096,0.01993c0.00065,0.0136,0.00135,0.02785,0.00201,0.04144  c0.00033,0.00673,0.0007,0.01442,0.00103,0.02115c0.00037,0.00755,0.0008,0.0164,0.00118,0.02396  c0.00055,0.01122,0.00096,0.01939,0.00152,0.03061c0.00049,0.00981,0.00103,0.02055,0.00152,0.03036  c0.00045,0.00897,0.00074,0.01472,0.00119,0.02368c0.00038,0.00755,0.00084,0.01653,0.00122,0.02408  c0.00046,0.00896,0.00096,0.01875,0.00142,0.02771c0.00054,0.01057,0.00109,0.0213,0.00164,0.03186  c0.00046,0.00897,0.00081,0.01572,0.00128,0.02469c0.00039,0.00754,0.00083,0.01591,0.00122,0.02347  c0.00035,0.00673,0.00095,0.01802,0.0013,0.02473c0.00064,0.01208,0.00126,0.0238,0.0019,0.03589  c0.00036,0.00671,0.00092,0.01718,0.00128,0.02391c0.00044,0.0083,0.00084,0.0157,0.00129,0.024  c0.00036,0.00673,0.00097,0.01794,0.00133,0.02467c0.00061,0.01132,0.00124,0.02287,0.00186,0.03419  c0.00049,0.00897,0.00089,0.01633,0.00139,0.0253c0.00042,0.00754,0.00085,0.01538,0.00127,0.02292  c0.0005,0.00897,0.00101,0.01816,0.00151,0.02713c0.00059,0.01056,0.00116,0.02081,0.00176,0.03139  c0.0005,0.00897,0.001,0.01773,0.0015,0.02669c0.00043,0.00755,0.00088,0.01556,0.00131,0.02312  c0.00051,0.00896,0.00104,0.01823,0.00155,0.02719c0.00052,0.00906,0.00105,0.0183,0.00157,0.02736  c0.00052,0.00896,0.00126,0.02179,0.00178,0.03076c0.00044,0.00754,0.00087,0.01495,0.00131,0.02249  c0.00039,0.00673,0.00103,0.01764,0.00143,0.02437c0.00071,0.01208,0.00138,0.02351,0.0021,0.03558  c0.0004,0.00673,0.00107,0.01814,0.00147,0.02487c0.00049,0.0083,0.00094,0.01582,0.00144,0.02414  c0.0004,0.00671,0.00099,0.0164,0.00139,0.02313c0.00064,0.01056,0.00124,0.02051,0.00188,0.03107  c0.00068,0.0112,0.00116,0.01909,0.00184,0.03029c0.00046,0.00755,0.00087,0.01422,0.00133,0.02177  c0.00055,0.00896,0.0011,0.01782,0.00165,0.02678c0.00056,0.00906,0.00107,0.01729,0.00163,0.02634  c0.0007,0.01122,0.00135,0.0217,0.00205,0.0329c0.00047,0.00755,0.001,0.01602,0.00148,0.02357  c0.00056,0.00896,0.0009,0.01428,0.00147,0.02324c0.00048,0.00755,0.00092,0.01465,0.0014,0.0222  c0.00085,0.01344,0.00161,0.02531,0.00247,0.03876c0.00053,0.00832,0.001,0.01564,0.00154,0.02394  c0.00058,0.00897,0.00086,0.01328,0.00144,0.02223c0.00049,0.00755,0.00106,0.0164,0.00155,0.02396  c0.00087,0.01344,0.00161,0.02477,0.0025,0.03821c0.00054,0.0083,0.00102,0.01549,0.00157,0.02379  c0.00059,0.00896,0.00084,0.01274,0.00143,0.0217c0.00055,0.0083,0.00105,0.01582,0.0016,0.02412  c0.00089,0.01344,0.00164,0.02466,0.00255,0.0381c0.00051,0.00755,0.00106,0.01582,0.00157,0.02336  c0.0006,0.00896,0.00098,0.01454,0.00159,0.02351c0.00051,0.00754,0.00103,0.01518,0.00154,0.02274  c0.00091,0.01344,0.00172,0.0253,0.00265,0.03873c0.00057,0.0083,0.00102,0.0148,0.00159,0.0231  c0.00062,0.00896,0.00102,0.01482,0.00164,0.02379c0.00052,0.00754,0.00096,0.01392,0.00149,0.02145  c0.00093,0.01344,0.00181,0.02597,0.00275,0.0394c0.00058,0.0083,0.00109,0.01553,0.00168,0.02383  c0.00063,0.00896,0.00091,0.01289,0.00154,0.02185c0.00059,0.0083,0.00116,0.01645,0.00175,0.02475  c0.00064,0.00896,0.00121,0.01704,0.00185,0.026c0.00086,0.01207,0.00177,0.02478,0.00264,0.03685  c0.00048,0.00671,0.00092,0.01285,0.00141,0.01956c0.0006,0.0083,0.00121,0.01683,0.00182,0.02512  c0.00081,0.0112,0.00135,0.01854,0.00216,0.02974c0.00072,0.0098,0.0015,0.02051,0.00222,0.03032  c0.00066,0.00896,0.00117,0.01599,0.00184,0.02495c0.00056,0.00754,0.00111,0.01506,0.00167,0.02261  c0.00083,0.0112,0.00131,0.01772,0.00215,0.0289c0.00079,0.01056,0.00157,0.0211,0.00236,0.03165  c0.00067,0.00896,0.00118,0.01581,0.00186,0.02477c0.00057,0.00754,0.00108,0.01428,0.00165,0.02182  c0.00085,0.0112,0.00144,0.01897,0.00229,0.03017c0.00074,0.0098,0.00157,0.02061,0.00232,0.03041  c0.00068,0.00896,0.00125,0.01637,0.00194,0.02533c0.00058,0.00754,0.00118,0.0154,0.00176,0.02293  c0.00069,0.00896,0.00136,0.01761,0.00205,0.02657c0.00088,0.01131,0.00169,0.02185,0.00258,0.03316  c0.0007,0.00896,0.00125,0.01607,0.00195,0.02502c0.00059,0.00754,0.00119,0.01518,0.00178,0.02272  c0.0007,0.00896,0.00143,0.01813,0.00213,0.02708c0.00083,0.01054,0.00162,0.02054,0.00246,0.03108  c0.00071,0.00896,0.00151,0.01906,0.00223,0.02802c0.0006,0.00754,0.00113,0.01411,0.00173,0.02165  c0.00072,0.00896,0.00137,0.01703,0.00209,0.02599c0.00091,0.01131,0.00174,0.02164,0.00266,0.03294  c0.00072,0.00896,0.00143,0.01761,0.00215,0.02655c0.00061,0.00754,0.0012,0.01477,0.00182,0.02231  c0.00055,0.00671,0.00152,0.01862,0.00207,0.02533c0.00093,0.01131,0.00192,0.02344,0.00286,0.03474  c0.00055,0.00671,0.00152,0.01842,0.00207,0.02513c0.00069,0.00829,0.00129,0.01559,0.00198,0.02388  c0.00056,0.00671,0.00127,0.0153,0.00183,0.02202c0.00101,0.01205,0.00213,0.02551,0.00314,0.03757  c0.00056,0.00671,0.00145,0.01726,0.00202,0.02397c0.00064,0.00754,0.00141,0.01669,0.00205,0.02423  c0.00057,0.00671,0.00132,0.01562,0.00189,0.02234c0.00102,0.01205,0.00189,0.02225,0.00292,0.0343  c0.00096,0.01118,0.00143,0.01678,0.00239,0.02797c0.00065,0.00754,0.00133,0.0155,0.00198,0.02304  c0.00058,0.00671,0.00132,0.01535,0.0019,0.02206c0.00111,0.01282,0.00222,0.02567,0.00334,0.03847  c0.00058,0.00671,0.0014,0.01613,0.00199,0.02284c0.00072,0.00829,0.0015,0.01717,0.00223,0.02547  c0.00059,0.00671,0.00118,0.01346,0.00177,0.02016c0.00119,0.01357,0.00245,0.02786,0.00366,0.04143  c0.00079,0.00896,0.00107,0.0121,0.00186,0.02106c0.00074,0.00829,0.00157,0.01768,0.00231,0.02597  c0.0006,0.00671,0.0011,0.01236,0.0017,0.01906c0.00074,0.00829,0.00154,0.0172,0.00228,0.02548  c0.00121,0.01341,0.00215,0.02396,0.00337,0.03738c0.00075,0.00829,0.00154,0.01706,0.0023,0.02534  c0.00061,0.00671,0.00122,0.01344,0.00183,0.02016c0.00075,0.00829,0.00154,0.01697,0.0023,0.02525  c0.00123,0.01343,0.00223,0.02444,0.00347,0.03786c0.00069,0.00754,0.00154,0.01669,0.00223,0.02423  c0.00082,0.00894,0.00107,0.01163,0.0019,0.02057c0.00077,0.00829,0.00154,0.01669,0.00231,0.02498  c0.00125,0.01341,0.0023,0.02478,0.00356,0.03819c0.0007,0.00754,0.00137,0.01465,0.00208,0.02219  c0.00084,0.00894,0.00144,0.01538,0.00228,0.02434c0.00071,0.00752,0.00144,0.01532,0.00215,0.02286  c0.00127,0.01341,0.00236,0.02502,0.00364,0.03844c0.00079,0.00829,0.00155,0.01628,0.00234,0.02457  c0.00064,0.00671,0.0012,0.01265,0.00185,0.01936c0.00086,0.00903,0.00166,0.01735,0.00252,0.02638  c0.00086,0.00896,0.00146,0.01521,0.00232,0.02415c0.00116,0.01205,0.00242,0.02516,0.00359,0.03722  c0.00065,0.0067,0.00139,0.01437,0.00204,0.02109c0.0008,0.00829,0.00164,0.01689,0.00245,0.02518  c0.00087,0.00894,0.00212,0.02174,0.003,0.03069c0.00103,0.01054,0.00191,0.01953,0.00295,0.03006  c0.00066,0.00671,0.00147,0.01492,0.00213,0.02162c0.00089,0.00903,0.00161,0.01631,0.0025,0.02536  c0.00066,0.0067,0.00179,0.01807,0.00246,0.02477c0.0012,0.01205,0.00233,0.02344,0.00353,0.03548  c0.00067,0.00671,0.00163,0.01637,0.0023,0.02309c0.00083,0.00827,0.0016,0.01595,0.00243,0.02423  c0.0009,0.00894,0.00173,0.01723,0.00263,0.02617c0.00106,0.01054,0.00225,0.02228,0.00331,0.03282  c0.0009,0.00894,0.00164,0.01617,0.00255,0.02512c0.00076,0.00752,0.00151,0.01482,0.00227,0.02234  c0.00091,0.00894,0.00217,0.02122,0.00308,0.03017c0.00092,0.00903,0.00197,0.01924,0.0029,0.02827  c0.00092,0.00893,0.00187,0.01819,0.00279,0.02713c0.00078,0.00752,0.00156,0.01508,0.00233,0.0226  c0.00092,0.00894,0.00204,0.01971,0.00297,0.02866c0.00094,0.00903,0.00193,0.01852,0.00287,0.02756  c0.00093,0.00894,0.0021,0.02016,0.00304,0.0291c0.00079,0.00752,0.00151,0.01439,0.0023,0.02191  c0.00094,0.00894,0.00203,0.01936,0.00298,0.02829c0.00095,0.00903,0.00183,0.0174,0.00279,0.02643  c0.00118,0.01117,0.00222,0.02101,0.00341,0.03218c0.00072,0.00677,0.00145,0.01367,0.00217,0.02045  c0.00095,0.00894,0.00207,0.01944,0.00303,0.02838c0.00088,0.00827,0.00184,0.01724,0.00273,0.02551  c0.0012,0.01117,0.00228,0.02127,0.00348,0.03244c0.00081,0.00752,0.00146,0.01352,0.00227,0.02104  c0.00096,0.00894,0.00223,0.0206,0.00319,0.02954c0.00065,0.00601,0.00143,0.01321,0.00209,0.01924  c0.00146,0.0134,0.0028,0.02577,0.00427,0.03917c0.00066,0.00601,0.00132,0.01208,0.00198,0.01811  c0.00122,0.01117,0.0026,0.02373,0.00383,0.0349c0.00041,0.00375,0.00081,0.00734,0.00122,0.01111  c0.00172,0.01562,0.00312,0.02832,0.00486,0.04396c0.00058,0.00526,0.00136,0.0123,0.00195,0.01756  c0.00099,0.00894,0.00251,0.02257,0.0035,0.03151c0.00059,0.00526,0.00118,0.0106,0.00177,0.01588  c0.0015,0.0134,0.00327,0.02927,0.00478,0.04266c0.00068,0.00603,0.00129,0.01149,0.00197,0.0175  c0.001,0.00894,0.00249,0.02214,0.0035,0.03107c0.00059,0.00526,0.00125,0.01105,0.00184,0.01631  c0.00152,0.0134,0.00321,0.02832,0.00473,0.04172c0.00068,0.00601,0.00146,0.01282,0.00215,0.01883  c0.00102,0.00893,0.00253,0.02213,0.00355,0.03105c0.0006,0.00526,0.00121,0.01057,0.00181,0.01584  c0.00154,0.01338,0.00338,0.02942,0.00492,0.04282c0.00061,0.00526,0.00137,0.01183,0.00197,0.01709  c0.00103,0.00893,0.00257,0.02223,0.00361,0.03116c0.00061,0.00526,0.00129,0.01117,0.00191,0.01643  c0.00156,0.0134,0.00337,0.02893,0.00493,0.04233c0.0007,0.00601,0.0014,0.01193,0.0021,0.01794  c0.00105,0.00893,0.00255,0.02177,0.0036,0.0307c0.00062,0.00526,0.00132,0.01126,0.00194,0.01653  c0.00158,0.01338,0.00358,0.03038,0.00517,0.04378c0.00062,0.00526,0.00102,0.00859,0.00164,0.01384  c0.00159,0.0134,0.00245,0.02063,0.00404,0.03403c0.00063,0.00525,0.00125,0.01051,0.00188,0.01578  c0.0016,0.01338,0.0035,0.02934,0.00511,0.04272c0.00063,0.00526,0.0013,0.01083,0.00193,0.01608  c0.00134,0.01117,0.00266,0.02216,0.00401,0.03331c0.00054,0.00452,0.00125,0.01035,0.00179,0.01486  c0.00189,0.01561,0.0035,0.02896,0.0054,0.04459c0.00046,0.00375,0.001,0.00824,0.00146,0.01199  c0.00163,0.01338,0.00278,0.02284,0.00441,0.03622c0.00064,0.00526,0.00108,0.00888,0.00173,0.01414  c0.00191,0.01561,0.00359,0.02931,0.00551,0.04494c0.00046,0.00375,0.00101,0.00824,0.00148,0.01199  c0.00165,0.01338,0.00276,0.02242,0.00442,0.0358c0.00056,0.0045,0.00132,0.01071,0.00188,0.01521  c0.00193,0.01562,0.00367,0.02966,0.00562,0.04527c0.00028,0.00226,0.00073,0.00586,0.00101,0.00812  c0.00167,0.01338,0.0032,0.02568,0.00488,0.03906c0.00056,0.0045,0.00126,0.01004,0.00182,0.01456  c0.00196,0.01561,0.00375,0.02989,0.00572,0.0455c0.00028,0.00226,0.00057,0.00452,0.00085,0.00677  c0.00169,0.01338,0.00367,0.02907,0.00536,0.04245c0.00048,0.00375,0.00093,0.00732,0.0014,0.01108  c0.00198,0.01561,0.00409,0.03226,0.00608,0.04787c0.0001,0.00075,0.00017,0.00134,0.00027,0.00209  c0.00199,0.01561,0.00378,0.02957,0.00578,0.04518c0.00058,0.0045,0.00106,0.00829,0.00164,0.01279  c0.002,0.01561,0.00371,0.02893,0.00573,0.04454c0.00019,0.0015,0.00036,0.00282,0.00056,0.00432  c0.00201,0.01561,0.00392,0.03036,0.00595,0.04596c0.00049,0.00375,0.00111,0.00858,0.0016,0.01233  c0.00203,0.01561,0.00408,0.03143,0.00612,0.04703l0.00002,0.00015c0.00204,0.01559,0.00426,0.03255,0.0063,0.04814  c0.00049,0.00375,0.00104,0.0079,0.00153,0.01166c0.00176,0.01338,0.00363,0.02757,0.00539,0.04094  c0.0004,0.00301,0.00066,0.00497,0.00105,0.00798c0.00206,0.01559,0.00407,0.03079,0.00614,0.04639  c0.0006,0.00452,0.00105,0.00787,0.00164,0.01239c0.00178,0.01337,0.00364,0.02737,0.00543,0.04074  c0.0003,0.00226,0.00068,0.00508,0.00098,0.00732c0.00208,0.01559,0.00423,0.03157,0.00632,0.04718  c0.0005,0.00374,0.00093,0.00693,0.00144,0.01068c0.0018,0.01337,0.00399,0.02962,0.00579,0.04298  c0.0003,0.00224,0.00051,0.00377,0.00081,0.00603c0.00211,0.01559,0.00434,0.03204,0.00646,0.04764  c0.00051,0.00375,0.00097,0.00711,0.00148,0.01086c0.00182,0.01337,0.0038,0.02794,0.00563,0.04131  c0.00031,0.00224,0.00072,0.00526,0.00103,0.00751c0.00213,0.01559,0.00435,0.03181,0.00649,0.04741  c0.00052,0.00375,0.00099,0.00719,0.0015,0.01094c0.00184,0.01335,0.00349,0.02539,0.00534,0.03874  c0.00052,0.00375,0.00103,0.00748,0.00155,0.01123c0.00216,0.01558,0.00437,0.03156,0.00653,0.04715  c0.00042,0.00301,0.00075,0.00537,0.00116,0.00838c0.00186,0.01337,0.00408,0.02934,0.00595,0.04271  c0.00031,0.00224,0.00075,0.00537,0.00106,0.00761c0.00249,0.01782,0.00428,0.03061,0.00678,0.04842  c0.00032,0.00224,0.00079,0.00563,0.00111,0.00789c0.00188,0.01335,0.00406,0.02888,0.00595,0.04224  c0.00042,0.00301,0.00086,0.00613,0.00129,0.00914c0.00251,0.01781,0.00431,0.03046,0.00683,0.04826  c0.00032,0.00224,0.00059,0.00414,0.00091,0.00638c0.0019,0.01335,0.00439,0.0309,0.0063,0.04425  c0.00043,0.00301,0.00062,0.00436,0.00105,0.00735c0.00254,0.01781,0.0045,0.03148,0.00705,0.04929  c0.00032,0.00224,0.00049,0.00342,0.00081,0.00566c0.00192,0.01335,0.00414,0.02881,0.00606,0.04216  c0.00054,0.00375,0.00116,0.00803,0.0017,0.01178c0.00225,0.01558,0.0046,0.03185,0.00686,0.04742  c0.00022,0.0015,0.00051,0.00354,0.00073,0.00504c0.00194,0.01335,0.00453,0.03114,0.00647,0.04449  c0.00044,0.00301,0.00084,0.00574,0.00127,0.00874c0.00227,0.01556,0.0049,0.03355,0.00718,0.04912  c0.00011,0.00075,0.00032,0.0022,0.00043,0.00294c0.00228,0.01556,0.00463,0.03151,0.00692,0.04709  c0.00033,0.00224,0.00075,0.00508,0.00108,0.00734c0.00492,0.03337,0.00975,0.06601,0.01472,0.09937  c0.00033,0.00226,0.00079,0.00528,0.00112,0.00754c0.00497,0.03336,0.00979,0.06558,0.0148,0.09894  c0.00045,0.00301,0.00081,0.00542,0.00126,0.00841c0.00468,0.03114,0.01024,0.0679,0.01497,0.09903  c0.00034,0.00224,0.00078,0.00516,0.00112,0.0074c0.00473,0.03113,0.01036,0.06801,0.01513,0.09914  c0.00046,0.00299,0.00078,0.00511,0.00124,0.0081c0.00478,0.03113,0.01045,0.06792,0.01527,0.09903  c0.00035,0.00224,0.00078,0.00504,0.00113,0.00728c0.00517,0.03334,0.01034,0.06659,0.01556,0.09991  c0.00035,0.00224,0.00072,0.00461,0.00107,0.00685c0.00522,0.03334,0.0106,0.06754,0.01586,0.10088  c0.00024,0.0015,0.00047,0.00296,0.00071,0.00446c0.00562,0.03555,0.01074,0.06781,0.01641,0.10335l0.00033,0.00206  c0.00567,0.03555,0.01096,0.06853,0.01668,0.10405c0.00012,0.00075,0.00041,0.00256,0.00053,0.00333  c0.00573,0.03552,0.01106,0.06848,0.01684,0.104l0.00027,0.00165c0.36155,2.22279,0.82714,4.42888,1.39813,6.61627l14.18938-3.70352  c-2.50627-9.6024-2.47727-19.74527,0.08393-29.33188l-14.16787-3.78513H2.43997z M26.62841,184.01425l-11.58033,8.99727  c1.18167,1.52084,2.4324,3.00467,3.75323,4.44809c0.0005,0.00055,0.00108,0.00117,0.00158,0.00172  c0.01295,0.01414,0.02408,0.02631,0.03704,0.04045c0.001,0.00108,0.00194,0.00212,0.00294,0.0032  c0.05185,0.05658,0.10002,0.10896,0.15209,0.16542c0.00101,0.00108,0.00193,0.00209,0.00293,0.00317  c0.01139,0.01234,0.02323,0.02518,0.03463,0.03751c0.00239,0.00259,0.00485,0.00525,0.00724,0.00784  c0.0114,0.01233,0.02333,0.02524,0.03474,0.03757c0.00113,0.00122,0.00207,0.00224,0.00321,0.00346  c0.0375,0.04053,0.07264,0.07841,0.11025,0.11887c0.00202,0.00218,0.00425,0.00458,0.00627,0.00674  c0.01145,0.01231,0.02093,0.02251,0.03239,0.03481c0.00316,0.0034,0.00658,0.00708,0.00974,0.01047  c0.00982,0.01054,0.02206,0.02368,0.03189,0.03421c0.00341,0.00366,0.00663,0.00711,0.01004,0.01077  c0.03606,0.03865,0.07068,0.07568,0.10684,0.11427c0.00178,0.00189,0.0035,0.00374,0.00527,0.00563  c0.00986,0.01053,0.0202,0.02155,0.03007,0.03206c0.00457,0.00487,0.00923,0.00984,0.0138,0.01471  c0.00987,0.01051,0.01957,0.02084,0.02945,0.03136c0.00432,0.00459,0.00859,0.00912,0.01291,0.01373  c0.00989,0.0105,0.01999,0.02124,0.02988,0.03175c0.00356,0.00378,0.00733,0.00778,0.01089,0.01155  c0.01814,0.01927,0.03848,0.04083,0.05665,0.06007c0.00497,0.00526,0.00988,0.01048,0.01486,0.01575  c0.00826,0.00874,0.01682,0.01779,0.02509,0.02654c0.00625,0.00661,0.01264,0.01337,0.01889,0.01997  c0.00827,0.00874,0.01695,0.01791,0.02523,0.02664c0.00651,0.00688,0.01307,0.01379,0.01958,0.02066  c0.00828,0.00874,0.01613,0.01701,0.02441,0.02576c0.00716,0.00754,0.01442,0.01518,0.02158,0.02272  c0.00829,0.00873,0.01404,0.01479,0.02233,0.02351c0.01369,0.0144,0.02716,0.02856,0.04087,0.04295  c0.0083,0.00873,0.01485,0.01559,0.02316,0.02431c0.00705,0.0074,0.0141,0.0148,0.02115,0.0222  c0.00831,0.00871,0.01584,0.0166,0.02416,0.02531c0.00706,0.00739,0.01425,0.01492,0.02131,0.02231  c0.00832,0.00871,0.01407,0.01472,0.0224,0.02344c0.00809,0.00847,0.01612,0.01685,0.02422,0.02531  c0.00833,0.0087,0.01261,0.01317,0.02095,0.02187c0.01402,0.01463,0.02776,0.02896,0.04179,0.04359  c0.00668,0.00696,0.01174,0.01222,0.01842,0.01918c0.00889,0.00925,0.01767,0.01839,0.02656,0.02763  c0.00668,0.00696,0.01397,0.01453,0.02065,0.02148c0.00851,0.00883,0.01687,0.01753,0.02539,0.02637  c0.00669,0.00694,0.0138,0.01433,0.0205,0.02127c0.00852,0.00885,0.01697,0.01759,0.02549,0.02644  c0.0067,0.00694,0.01312,0.0136,0.01982,0.02054c0.01138,0.01178,0.02301,0.0238,0.03439,0.03558  c0.00838,0.00867,0.0136,0.01407,0.02199,0.02274c0.01061,0.01097,0.02109,0.02179,0.03171,0.03275  c0.00672,0.00693,0.01339,0.01381,0.02011,0.02075c0.00868,0.00894,0.017,0.01752,0.02569,0.02647  c0.00672,0.00693,0.01345,0.01385,0.02018,0.02078c0.00882,0.00908,0.01767,0.01817,0.02649,0.02725  c0.00673,0.00693,0.01257,0.01294,0.01931,0.01985c0.01169,0.01201,0.02356,0.0242,0.03526,0.03621  c0.00337,0.00345,0.0062,0.00636,0.00957,0.00981c0.01483,0.01521,0.02976,0.03052,0.0446,0.04572  c0.00506,0.00517,0.01164,0.0119,0.0167,0.01709c0.01003,0.01025,0.01993,0.02039,0.02996,0.03064  c0.00507,0.00519,0.01229,0.01256,0.01736,0.01775c0.00978,0.00998,0.01951,0.01991,0.0293,0.02989  c0.00676,0.00691,0.01085,0.01108,0.01762,0.01797c0.01083,0.01105,0.02177,0.02219,0.03262,0.03323  c0.00508,0.00517,0.00834,0.0085,0.01343,0.01367c0.0149,0.01515,0.02972,0.03023,0.04464,0.04538  c0.00509,0.00517,0.01012,0.01027,0.01521,0.01544c0.01047,0.01064,0.0211,0.02142,0.03158,0.03204  c0.00509,0.00516,0.01148,0.01164,0.01658,0.0168c0.01035,0.0105,0.02034,0.0206,0.03069,0.0311  c0.0051,0.00516,0.01178,0.01192,0.01688,0.01707c0.01102,0.01115,0.02184,0.02208,0.03287,0.03323  c0.0034,0.00343,0.00994,0.01004,0.01335,0.01347c0.01523,0.01538,0.03069,0.03098,0.04594,0.04636  c0.00341,0.00343,0.00612,0.00615,0.00953,0.00958c0.01236,0.01247,0.02478,0.02498,0.03716,0.03741  c0.00512,0.00516,0.01096,0.01102,0.01608,0.01617c0.01014,0.01019,0.02028,0.02039,0.03043,0.03058  c0.00683,0.00685,0.0107,0.01074,0.01754,0.01759c0.01068,0.01073,0.02138,0.02145,0.03207,0.03217  c0.00513,0.00514,0.00936,0.00938,0.01449,0.01453c0.01557,0.01559,0.03099,0.03104,0.04658,0.04663  c0.00126,0.00125,0.00203,0.00203,0.00329,0.00328c0.01284,0.01285,0.02457,0.02455,0.03742,0.03738  c0.00504,0.00504,0.00986,0.00984,0.0149,0.01486c0.00857,0.00856,0.01728,0.01726,0.02586,0.0258  c0.00546,0.00545,0.01097,0.01093,0.01643,0.01636c0.00858,0.00854,0.01584,0.01579,0.02442,0.02432  c0.00547,0.00545,0.01098,0.01093,0.01645,0.01637c0.00772,0.00768,0.01658,0.01649,0.02431,0.02417  c0.00589,0.00586,0.01189,0.01181,0.01778,0.01765c0.00772,0.00768,0.01534,0.01524,0.02307,0.0229  c0.00547,0.00543,0.01176,0.01167,0.01724,0.01709c0.00773,0.00768,0.01599,0.01587,0.02372,0.02353  c0.00548,0.00542,0.01134,0.01122,0.01681,0.01663c0.00773,0.00766,0.01653,0.01637,0.02427,0.02403  c0.00506,0.00499,0.01069,0.01056,0.01575,0.01556c0.0086,0.0085,0.01658,0.01639,0.02519,0.02489  c0.00548,0.00542,0.01088,0.01073,0.01636,0.01614c0.0086,0.0085,0.01611,0.0159,0.02472,0.02438  c0.00506,0.00499,0.01019,0.01006,0.01526,0.01505c0.00861,0.00848,0.01728,0.01701,0.02589,0.0255  c0.00507,0.00499,0.01066,0.0105,0.01573,0.01547c0.00862,0.00848,0.01643,0.01617,0.02504,0.02464  c0.00549,0.00539,0.01079,0.01059,0.01628,0.01599c0.00776,0.00761,0.01694,0.01663,0.0247,0.02425  c0.00592,0.00581,0.01079,0.01059,0.01671,0.01639c0.00776,0.00761,0.01684,0.01653,0.0246,0.02412  c0.00508,0.00497,0.01062,0.01041,0.01569,0.01537c0.00863,0.00845,0.01679,0.01645,0.02543,0.02489  c0.0055,0.00539,0.0102,0.00998,0.0157,0.01537c0.00864,0.00844,0.01711,0.01672,0.02575,0.02516  c0.00508,0.00496,0.00952,0.00929,0.0146,0.01425c0.00864,0.00844,0.01788,0.01744,0.02652,0.02588  c0.00508,0.00496,0.01027,0.01001,0.01536,0.01497c0.00864,0.00842,0.01718,0.01674,0.02583,0.02516  c0.00509,0.00496,0.00994,0.00967,0.01503,0.01463c0.00865,0.00841,0.01748,0.017,0.02614,0.02542  c0.00509,0.00494,0.01009,0.0098,0.01518,0.01474c0.00866,0.00841,0.01793,0.01741,0.02659,0.02582  c0.00467,0.00453,0.00909,0.00882,0.01376,0.01335c0.00953,0.00925,0.01797,0.01743,0.0275,0.02666  c0.0051,0.00494,0.0093,0.009,0.01439,0.01395c0.00953,0.00923,0.01731,0.01677,0.02685,0.02599  c0.00467,0.00453,0.00934,0.00905,0.01402,0.01357c0.00954,0.00922,0.01796,0.01736,0.0275,0.02658  c0.00468,0.00452,0.00947,0.00914,0.01415,0.01366c0.00954,0.00922,0.01764,0.01703,0.02719,0.02625  c0.00426,0.0041,0.00956,0.00922,0.01382,0.01332c0.00868,0.00836,0.01867,0.01799,0.02736,0.02635  c0.00468,0.00452,0.01003,0.00966,0.01471,0.01416c0.00869,0.00836,0.01844,0.01775,0.02713,0.02609  c0.00426,0.0041,0.00905,0.00871,0.01331,0.0128c0.00956,0.00919,0.01901,0.01826,0.02857,0.02744  c0.00426,0.00409,0.00861,0.00827,0.01288,0.01236c0.00956,0.00919,0.01922,0.01843,0.02879,0.0276  c0.00426,0.00409,0.00815,0.00781,0.01241,0.0119c0.00957,0.00917,0.01946,0.01863,0.02904,0.0278  c0.00427,0.00409,0.00845,0.00809,0.01272,0.01216c0.00958,0.00917,0.01971,0.01886,0.02929,0.028  c0.00384,0.00368,0.00787,0.00752,0.01171,0.0112c0.00958,0.00914,0.02042,0.01949,0.03001,0.02864  c0.00385,0.00366,0.00783,0.00746,0.01168,0.01114c0.01046,0.00996,0.02014,0.0192,0.03061,0.02916  c0.00342,0.00325,0.00696,0.00662,0.01038,0.00989c0.01047,0.00996,0.02018,0.01921,0.03065,0.02916  c0.00385,0.00366,0.0079,0.00751,0.01175,0.01117c0.0096,0.00912,0.02093,0.01988,0.03053,0.02899  c0.00342,0.00325,0.00704,0.0067,0.01047,0.00995c0.01048,0.00993,0.0208,0.01973,0.03128,0.02966  c0.00343,0.00325,0.00718,0.00681,0.01061,0.01006c0.01048,0.00993,0.0209,0.01979,0.03138,0.02971  c0.00343,0.00325,0.00668,0.00633,0.01011,0.00957c0.01049,0.00992,0.0212,0.02005,0.03169,0.02997  c0.00343,0.00323,0.00672,0.00635,0.01015,0.0096c0.01137,0.01073,0.02177,0.02054,0.03314,0.03128  c0.00257,0.00243,0.00538,0.00507,0.00795,0.00749c0.01138,0.01073,0.02324,0.0219,0.03462,0.03262  c0.00257,0.00243,0.00455,0.00429,0.00712,0.00671c0.01226,0.01154,0.02463,0.02318,0.03689,0.0347  c0.00172,0.00162,0.00259,0.00244,0.00431,0.00406c0.01226,0.01154,0.02461,0.02313,0.03688,0.03465  c0.00172,0.00162,0.00371,0.00348,0.00542,0.0051c0.01315,0.01233,0.02626,0.02463,0.03941,0.03696  c0.00043,0.0004,0.00138,0.0013,0.00181,0.00169c0.01315,0.01233,0.02722,0.0255,0.04038,0.03781  c0.00043,0.00041,0.00127,0.00119,0.0017,0.00159c6.45856,6.04282,13.76097,10.67038,21.5111,13.88254l5.61471-13.54727  c-6.92233-2.869-13.14807-7.03954-18.50433-12.39574C29.70455,187.72513,28.09568,185.90273,26.62841,184.01425L26.62841,184.01425z   M100.64041,198.41165c-8.5288,4.98154-18.2952,7.6656-28.24353,7.76215l0.14233,14.66406  c12.29122-0.11906,24.5579-3.37405,35.49738-9.76323L100.64041,198.41165L100.64041,198.41165z M215.07848,56.19686  l-14.15247,3.84207c2.59947,9.57547,2.66907,19.71813,0.20107,29.3314l14.20421,3.64654  c2.06491-8.044,2.71642-16.37573,1.95378-24.60136c-0.00006-0.00076-0.00014-0.00159-0.00021-0.00233  c-0.00331-0.03578-0.00647-0.06955-0.00984-0.10533c-0.00008-0.00076-0.00009-0.00099-0.00017-0.00175  c-0.00337-0.03577-0.00661-0.06982-0.01003-0.1056c-0.00008-0.00075-0.00011-0.00113-0.00018-0.00188  c-0.00342-0.03577-0.00662-0.06892-0.0101-0.10469c-0.00014-0.0015-0.0002-0.002-0.00034-0.0035  c-0.00348-0.03577-0.00665-0.06808-0.01018-0.10385c-0.00008-0.00075-0.00027-0.00285-0.00035-0.00359  c-0.00354-0.03577-0.00681-0.06864-0.01039-0.1044c-0.00008-0.00076-0.00014-0.00132-0.00021-0.00208  c-0.00359-0.03576-0.00702-0.06976-0.01065-0.10552c-0.00008-0.00076-0.00008-0.00066-0.00015-0.0014  c-0.00728-0.07152-0.01454-0.14188-0.02203-0.21338c-0.00008-0.00076,0-0.00005-0.00008-0.00079  c-0.0206-0.19662-0.04181-0.39126-0.06403-0.58774c-0.00008-0.00075-0.0002-0.00174-0.00027-0.00249  c-0.00404-0.03573-0.00783-0.06901-0.01193-0.10473c-0.00008-0.00075-0.00018-0.00165-0.00027-0.0024  c-0.00409-0.03572-0.00787-0.0685-0.01202-0.10422c-0.00008-0.00075-0.00034-0.00291-0.00041-0.00365  c-0.00415-0.03571-0.00778-0.06671-0.01198-0.10242c-0.00017-0.0015-0.00049-0.00417-0.00067-0.00567  c-0.0042-0.03571-0.00774-0.06568-0.01199-0.10139c-0.00027-0.00225-0.00047-0.00391-0.00073-0.00616  c-0.00426-0.03571-0.00789-0.06602-0.01221-0.10172c-0.00018-0.0015-0.0004-0.00327-0.00056-0.00477  c-0.00432-0.0357-0.008-0.06596-0.01234-0.10165c-0.00027-0.00225-0.00055-0.00441-0.00082-0.00667  c-0.00191-0.01562-0.00406-0.0332-0.00598-0.04881c-0.00009-0.00076-0.00005-0.00046-0.00014-0.00121  c-0.0022-0.01785-0.00397-0.03215-0.00618-0.05c-0.00027-0.00225-0.00064-0.00524-0.00092-0.0075  c-0.00194-0.01561-0.00392-0.03166-0.00587-0.04727c-0.00009-0.00075-0.00024-0.00198-0.00034-0.00273  c-0.00223-0.01785-0.004-0.03201-0.00623-0.04985c-0.00038-0.00301-0.00056-0.0045-0.00095-0.0075  c-0.00166-0.01338-0.00401-0.03208-0.00571-0.04546c-0.00018-0.0015-0.00041-0.0033-0.0006-0.0048  c-0.00226-0.01784-0.00397-0.03146-0.00623-0.04929c-0.00029-0.00225-0.00069-0.00532-0.00096-0.00757  c-0.00198-0.01561-0.00383-0.03019-0.00583-0.04579c-0.00018-0.0015-0.00037-0.00285-0.00055-0.00435  c-0.00227-0.01784-0.00415-0.03252-0.00644-0.05035c-0.0002-0.0015-0.0005-0.00394-0.0007-0.00544  c-0.00171-0.01337-0.0042-0.03271-0.00594-0.04609c-0.00018-0.0015-0.00052-0.00412-0.00072-0.00562  c-0.0023-0.01783-0.00407-0.03151-0.00638-0.04934c-0.00031-0.00226-0.0006-0.00455-0.00089-0.00681  c-0.00174-0.01337-0.00418-0.03206-0.00592-0.04543c-0.00029-0.00225-0.00043-0.00326-0.00072-0.00551  c-0.00232-0.01783-0.00421-0.03218-0.00655-0.05001c-0.0002-0.0015-0.0005-0.0038-0.0007-0.0053  c-0.00175-0.01337-0.00414-0.03152-0.00591-0.04489c-0.0004-0.003-0.0006-0.00449-0.00099-0.00749  c-0.00235-0.01782-0.00415-0.03143-0.00652-0.04925c-0.00031-0.00226-0.00043-0.00319-0.00073-0.00544  c-0.00177-0.01337-0.00421-0.03165-0.006-0.04502c-0.00029-0.00225-0.0007-0.00532-0.00101-0.00757  c-0.00238-0.01782-0.00423-0.03155-0.00661-0.04937c-0.00021-0.0015-0.00043-0.00307-0.00063-0.00458  c-0.0018-0.01337-0.00418-0.03106-0.00598-0.04443c-0.00041-0.003-0.00085-0.00636-0.00127-0.00936  c-0.00211-0.01559-0.00453-0.03351-0.00665-0.0491c-0.00011-0.00075-0.00024-0.00183-0.00035-0.00259  c-0.00212-0.01559-0.00427-0.03136-0.00639-0.04694c-0.00041-0.00301-0.0007-0.0051-0.00111-0.0081  c-0.00212-0.01559-0.00462-0.03387-0.00677-0.04945c-0.0002-0.0015-0.00012-0.0009-0.00032-0.0024  c-0.00215-0.01559-0.00403-0.02927-0.00618-0.04487c-0.00063-0.00449-0.00101-0.00729-0.00163-0.01179  c-0.00215-0.01559-0.00446-0.03222-0.00662-0.04781c-0.00011-0.00075-0.00026-0.00185-0.00037-0.0026  c-0.00217-0.01559-0.00415-0.02989-0.00633-0.04548c-0.00052-0.00375-0.00102-0.00726-0.00154-0.01102  c-0.00435-0.03117-0.00896-0.06398-0.01337-0.09515c-0.00052-0.00375-0.00125-0.00892-0.00179-0.01266  c-0.0022-0.01559-0.00446-0.03151-0.00667-0.04709c-0.00011-0.00076-0.00014-0.00095-0.00024-0.0017  c-0.00221-0.01559-0.0042-0.02953-0.00641-0.04511c-0.00066-0.00449-0.00139-0.00967-0.00203-0.01418  c-0.00191-0.01335-0.00412-0.02879-0.00603-0.04215c-0.00034-0.00224-0.00055-0.00373-0.00087-0.00598  c-0.00223-0.01558-0.00406-0.02831-0.0063-0.04388c-0.00076-0.00525-0.00146-0.01014-0.00223-0.01539  c-0.00192-0.01335-0.00383-0.02654-0.00577-0.03989c-0.00034-0.00225-0.0007-0.00484-0.00102-0.00709  c-0.00226-0.01558-0.0043-0.02957-0.00658-0.04515c-0.00076-0.00525-0.00146-0.01006-0.00223-0.01531  c-0.00195-0.01335-0.00351-0.02403-0.00546-0.03738c-0.00055-0.00375-0.00084-0.00577-0.00139-0.00951  c-0.00229-0.01557-0.00427-0.02903-0.00656-0.0446c-0.00076-0.00524-0.00153-0.0104-0.0023-0.01565  c-0.00197-0.01334-0.00334-0.02264-0.00531-0.03599c-0.00056-0.00375-0.00111-0.00753-0.00168-0.01128  c-0.0023-0.01557-0.00429-0.02896-0.00661-0.04453c-0.00078-0.00524-0.00146-0.00989-0.00226-0.01514  c-0.00198-0.01334-0.00334-0.02246-0.00534-0.0358c-0.00056-0.00375-0.00116-0.00777-0.00172-0.01151  c-0.00232-0.01557-0.0042-0.02809-0.00655-0.04366c-0.0009-0.00599-0.00162-0.01078-0.00252-0.01678  c-0.00168-0.01112-0.00334-0.02215-0.00502-0.03326c-0.00067-0.00449-0.00146-0.00974-0.00215-0.01423  c-0.00201-0.01334-0.00455-0.03004-0.00656-0.04337c-0.00079-0.00524-0.0016-0.01055-0.00241-0.0158  c-0.00203-0.01334-0.00316-0.02075-0.00519-0.0341c-0.00056-0.00374-0.00143-0.00945-0.00201-0.0132  c-0.00204-0.01334-0.00461-0.03014-0.00665-0.04348c-0.00081-0.00524-0.00182-0.01184-0.00262-0.01708  c-0.00137-0.0089-0.00346-0.02255-0.00484-0.03144c-0.00092-0.00599-0.00154-0.01006-0.00247-0.01605  c-0.00206-0.01334-0.00452-0.0292-0.00658-0.04253c-0.00081-0.00524-0.00185-0.01192-0.00266-0.01716  c-0.00139-0.0089-0.00343-0.02204-0.00481-0.03093c-0.00082-0.00524-0.00174-0.01113-0.00255-0.01637  c-0.00208-0.01334-0.00449-0.02877-0.00658-0.04211c-0.00093-0.00599-0.00183-0.01168-0.00276-0.01767  c-0.0014-0.00889-0.00342-0.02178-0.00482-0.03067c-0.00093-0.00599-0.00172-0.01104-0.00267-0.01703  c-0.00211-0.01333-0.00455-0.02887-0.00665-0.0422c-0.00095-0.00599-0.00177-0.01116-0.00272-0.01714  c-0.0014-0.00889-0.00331-0.02094-0.00473-0.02983c-0.00095-0.00599-0.00188-0.01184-0.00282-0.01782  c-0.00212-0.01333-0.0045-0.02831-0.00662-0.04164c-0.00096-0.00599-0.00191-0.01189-0.00287-0.01787  c-0.00142-0.00889-0.00337-0.02114-0.00479-0.03003c-0.00084-0.00523-0.00197-0.01228-0.00281-0.01752  c-0.00215-0.01333-0.0047-0.02927-0.00685-0.04259c-0.00084-0.00524-0.00165-0.01018-0.00249-0.01542  c-0.00143-0.00888-0.00357-0.02213-0.005-0.03101c-0.00098-0.00599-0.00197-0.01212-0.00293-0.0181  c-0.00217-0.01332-0.00412-0.02544-0.00629-0.03876c-0.0011-0.00673-0.00214-0.01307-0.00323-0.01979  c-0.00143-0.00888-0.00345-0.02124-0.0049-0.03012c-0.00099-0.00599-0.00211-0.01285-0.00308-0.01883  c-0.00218-0.01332-0.00383-0.0234-0.00601-0.03672c-0.00124-0.00748-0.00217-0.01314-0.00339-0.02061  c-0.00146-0.00888-0.00357-0.02171-0.00504-0.03059c-0.00111-0.00673-0.00195-0.01181-0.00307-0.01854  c-0.0022-0.01332-0.00359-0.02171-0.00578-0.03502c-0.00124-0.00748-0.00244-0.01473-0.00368-0.02221  c-0.00148-0.00888-0.00366-0.02198-0.00513-0.03086c-0.00113-0.00673-0.00223-0.01337-0.00336-0.0201  c-0.00148-0.00888-0.00352-0.02119-0.005-0.03007c-0.00163-0.00972-0.00304-0.01808-0.00465-0.02779  c-0.0015-0.00888-0.0031-0.01844-0.00458-0.02731c-0.00127-0.00748-0.00259-0.01545-0.00386-0.02293  c-0.00111-0.00666-0.00291-0.0173-0.00403-0.02395c-0.00189-0.01121-0.00386-0.0229-0.00575-0.03411  c-0.00188-0.01109-0.00269-0.01582-0.00456-0.02691c-0.00127-0.00747-0.00241-0.01425-0.00368-0.02172  c-0.00151-0.00887-0.00278-0.01633-0.00429-0.0252c-0.00179-0.01046-0.00351-0.02059-0.00529-0.03105  c-0.00151-0.00887-0.00333-0.01951-0.00484-0.02838c-0.00128-0.00747-0.0025-0.01462-0.00378-0.02209  c-0.00153-0.00887-0.00275-0.01604-0.00427-0.02491c-0.0018-0.01046-0.00357-0.02077-0.00537-0.03122  c-0.00191-0.01109-0.00308-0.01793-0.00499-0.02901c-0.0013-0.00747-0.00252-0.01454-0.0038-0.02201  c-0.00154-0.00887-0.00275-0.01586-0.00429-0.02473c-0.00156-0.00896-0.00305-0.01765-0.00461-0.02661  c-0.00192-0.01109-0.00374-0.02149-0.00566-0.03258c-0.00143-0.00821-0.00282-0.01619-0.00426-0.02441  c-0.00116-0.00665-0.00229-0.01308-0.00345-0.01973c-0.00247-0.01419-0.00485-0.02773-0.00734-0.04191  c-0.00156-0.00887-0.00204-0.0117-0.0036-0.02057c-0.00145-0.00821-0.00291-0.01659-0.00436-0.02481  c-0.00117-0.00665-0.00246-0.01392-0.00363-0.02057c-0.00157-0.00896-0.00316-0.01794-0.00473-0.0269  c-0.00235-0.0133-0.00386-0.02184-0.00623-0.03513c-0.00133-0.00747-0.00269-0.01519-0.00401-0.02265  c-0.00157-0.00887-0.00253-0.01428-0.00412-0.02314c-0.00172-0.0097-0.00317-0.01789-0.00491-0.02759  c-0.00197-0.01108-0.00394-0.02208-0.00591-0.03315c-0.00148-0.00821-0.00299-0.01665-0.00446-0.02486  c-0.00119-0.00665-0.0023-0.01283-0.00349-0.01948c-0.0016-0.00896-0.00301-0.01676-0.00461-0.02571  c-0.00079-0.00443-0.00162-0.00895-0.00241-0.01338c-0.00296-0.01642-0.00613-0.03407-0.00911-0.05048  c-0.00079-0.00443-0.00197-0.01093-0.00278-0.01536c-0.00552-0.03059-0.01088-0.06007-0.01645-0.09066  c-0.00081-0.00443-0.00229-0.01252-0.0031-0.01695c-0.00177-0.0097-0.00325-0.01785-0.00504-0.02755  c-0.0004-0.00221-0.00163-0.00891-0.00203-0.01112c-0.00314-0.01715-0.00639-0.03489-0.00955-0.05204  c-0.00081-0.00443-0.00206-0.01124-0.00288-0.01566c-0.00177-0.0097-0.00346-0.01889-0.00526-0.02858  c-0.0004-0.00221-0.00137-0.00744-0.00177-0.00965c-0.00331-0.0179-0.00647-0.03502-0.0098-0.05291  c-0.00122-0.00664-0.00172-0.00933-0.00296-0.01597c-0.00166-0.00895-0.00342-0.01841-0.00508-0.02736  c-0.00082-0.00443-0.002-0.01073-0.00282-0.01516c-0.00305-0.0164-0.00632-0.03393-0.00938-0.05033  c-0.00041-0.00221-0.00198-0.01061-0.0024-0.01282c-0.00182-0.00969-0.0038-0.02026-0.00562-0.02995  c-0.00041-0.00221-0.00122-0.00651-0.00163-0.00872c-0.00351-0.01863-0.0071-0.03769-0.0106-0.05632  c-0.00041-0.00221-0.00175-0.00935-0.00218-0.01157c-0.00183-0.00969-0.00381-0.02021-0.00565-0.02989  c-0.00084-0.00443-0.00134-0.00711-0.00218-0.01153c-0.00339-0.01788-0.00658-0.03471-0.00998-0.0526  c-0.00084-0.00443-0.00169-0.00895-0.00253-0.01337c-0.00185-0.00969-0.00391-0.02051-0.00575-0.03019  c-0.00043-0.00221-0.00111-0.00581-0.00154-0.00802c-0.00369-0.01937-0.00746-0.03905-0.01117-0.05841  c-0.00084-0.00442-0.00092-0.00481-0.00177-0.00923c-0.002-0.01043-0.00394-0.02052-0.00594-0.03094  c-0.00085-0.00443-0.00093-0.00483-0.00179-0.00925c-0.00388-0.02011-0.00784-0.04071-0.01173-0.06081  c-0.00043-0.00221-0.00052-0.00272-0.00095-0.00493c-0.00217-0.01117-0.0043-0.02227-0.00647-0.03344l-0.0009-0.00463  c-0.0042-0.0216-0.00879-0.0452-0.01299-0.0668c-0.00044-0.00221,0.00012,0.00067-0.00031-0.00154  c-0.00218-0.01117-0.00436-0.02241-0.00656-0.03357c-0.00043-0.00221-0.00075-0.00388-0.00119-0.00608  c-0.00655-0.0335-0.01337-0.06823-0.01996-0.10173c-0.00043-0.00221-0.00032-0.00164-0.00076-0.00385  c-0.00674-0.03424-0.01323-0.06706-0.02003-0.10129c-0.00044-0.00221-0.0013-0.00657-0.00174-0.00878  c-0.00665-0.03349-0.01314-0.06595-0.01984-0.09943c-0.00044-0.00221-0.0007-0.00356-0.00114-0.00577  c-0.00656-0.03273-0.01334-0.06646-0.01994-0.09919c-0.00089-0.00441-0.00119-0.00589-0.00208-0.01031  c-0.00645-0.03198-0.01312-0.06491-0.01962-0.09689c-0.0009-0.00441-0.00093-0.00456-0.00183-0.00897  c-0.00681-0.03346-0.0134-0.06578-0.02026-0.09923l-0.00127-0.00619c-0.00716-0.03494-0.01395-0.06794-0.02116-0.10287  l-0.00044-0.00214c-0.00722-0.03493-0.01425-0.06889-0.02151-0.10381c-0.00046-0.0022-0.00035-0.00166-0.00081-0.00387  c-0.00711-0.03418-0.01443-0.06926-0.02161-0.10342c-0.00046-0.00221-0.0002-0.00093-0.00066-0.00314  c-0.00716-0.03417-0.01448-0.06892-0.0217-0.10308c-0.00046-0.0022-0.00041-0.002-0.00089-0.0042  C215.75481,58.83654,215.43559,57.51231,215.07848,56.19686L215.07848,56.19686z M172.64427,8.44973l-5.48126,13.6018  c7.1284,2.87267,13.52774,7.11413,19.0202,12.6066c1.57314,1.57313,3.06573,3.24746,4.43646,4.9766l11.49187-9.10993  c-0.40051-0.50525-0.80884-1.0064-1.22488-1.5032l-0.00325-0.00387c-0.0127-0.01516-0.02521-0.03008-0.03792-0.04523  l-0.00339-0.00404c-0.0126-0.01502-0.02531-0.03016-0.03793-0.04517l-0.00345-0.00411  c-0.041-0.04878-0.08203-0.09745-0.1232-0.14615c-0.00307-0.00363-0.00331-0.00393-0.00638-0.00756  c-0.01103-0.01304-0.02191-0.02591-0.03296-0.03894c-0.00307-0.00363-0.00812-0.0096-0.0112-0.01323  c-0.00974-0.01149-0.01955-0.02307-0.02928-0.03455c-0.00308-0.00363-0.00894-0.01054-0.01202-0.01417  c-0.00897-0.01058-0.01813-0.02136-0.02711-0.03194c-0.00462-0.00544-0.00977-0.0115-0.01439-0.01694  c-0.00867-0.01019-0.01743-0.02049-0.02609-0.03068c-0.00464-0.00544-0.00957-0.01123-0.01419-0.01667  c-0.009-0.01056-0.01816-0.02131-0.02716-0.03187c-0.00464-0.00543-0.00838-0.00984-0.01302-0.01527  c-0.01318-0.01545-0.02608-0.03056-0.03928-0.046c-0.00308-0.00362-0.00775-0.00906-0.01083-0.01268  c-0.00958-0.0112-0.01901-0.02223-0.02858-0.03342c-0.00465-0.00543-0.0139-0.01622-0.01854-0.02164  c-0.00705-0.00823-0.01407-0.01642-0.02113-0.02465c-0.0062-0.00723-0.01309-0.01527-0.01929-0.0225  c-0.00685-0.00797-0.01363-0.01588-0.02048-0.02384c-0.00621-0.00723-0.01436-0.01671-0.02057-0.02394  c-0.00618-0.00719-0.01241-0.01442-0.01859-0.02161c-0.00777-0.00903-0.01401-0.01627-0.02177-0.0253  c-0.00565-0.00655-0.01131-0.01312-0.01695-0.01967c-0.00777-0.00903-0.01567-0.01819-0.02345-0.02721  c-0.00497-0.00578-0.00996-0.01154-0.01494-0.01731c-0.00778-0.00902-0.01685-0.01952-0.02464-0.02854  c-0.00322-0.00372-0.00652-0.00754-0.00974-0.01126c-0.03117-0.03607-0.06418-0.07417-0.09544-0.11019  c-0.00333-0.00384-0.00681-0.00785-0.01015-0.01169c-0.00938-0.01081-0.01735-0.01998-0.02673-0.03078  c-0.00446-0.00512-0.00885-0.01018-0.01331-0.0153c-0.00938-0.0108-0.01727-0.01985-0.02667-0.03064  c-0.00401-0.00461-0.00784-0.00901-0.01186-0.01362c-0.0094-0.01079-0.0186-0.02135-0.02802-0.03214  c-0.00368-0.00422-0.00714-0.00818-0.01082-0.0124c-0.01099-0.01258-0.01802-0.02066-0.02902-0.03324  c-0.00267-0.00307-0.00513-0.00587-0.0078-0.00893c-0.04869-0.0557-0.09477-0.10827-0.14366-0.16386  c-0.00067-0.00076-0.00133-0.00151-0.002-0.00228c-0.01103-0.01255-0.02052-0.02333-0.03157-0.03588  c-0.00281-0.00319-0.00557-0.00632-0.00838-0.00951c-0.00946-0.01075-0.02071-0.0235-0.03018-0.03425  c-0.00314-0.00357-0.00626-0.00709-0.0094-0.01066c-0.00949-0.01075-0.02042-0.02313-0.02991-0.03387  c-0.00304-0.00344-0.00578-0.00654-0.00882-0.00998c-0.01108-0.01253-0.02057-0.02326-0.03165-0.03578  c-0.0018-0.00204-0.00337-0.00381-0.00517-0.00584c-0.06018-0.06799-0.1228-0.13847-0.18329-0.20628  c-0.00159-0.00178-0.00323-0.00363-0.00482-0.00541c-0.01114-0.01249-0.02187-0.02451-0.03302-0.03699  c-0.00215-0.00241-0.0042-0.00469-0.00635-0.0071c-0.00955-0.0107-0.02303-0.02577-0.03261-0.03646  c-0.00226-0.00254-0.00475-0.00531-0.007-0.00784c-0.01117-0.01248-0.02153-0.02404-0.03271-0.03651  c-0.00182-0.00203-0.00365-0.00407-0.00546-0.0061c-0.01118-0.01247-0.02332-0.026-0.0345-0.03846  c-0.00035-0.00038-0.00066-0.00073-0.00101-0.00111c-0.04956-0.0552-0.09995-0.11115-0.1497-0.16623  c-0.00137-0.00152-0.00279-0.00309-0.00417-0.0046c-0.01123-0.01244-0.02222-0.02458-0.03346-0.03701  c-0.00217-0.0024-0.00439-0.00486-0.00658-0.00726c-0.01125-0.01243-0.02063-0.0228-0.03189-0.03522  c-0.00275-0.00303-0.00569-0.00628-0.00844-0.00931c-0.00966-0.01065-0.0224-0.0247-0.03207-0.03534  c-0.00229-0.00252-0.00453-0.005-0.00682-0.00753c-0.01128-0.01242-0.02185-0.02406-0.03314-0.03646  c-0.0016-0.00176-0.00305-0.00337-0.00465-0.00513c-0.04837-0.05318-0.10039-0.1102-0.14894-0.16327  c-0.00104-0.00113-0.0022-0.00241-0.00323-0.00354c-0.01134-0.01238-0.0226-0.02468-0.03394-0.03706  c-0.00208-0.00226-0.00414-0.00451-0.00621-0.00677c-0.01134-0.01238-0.02126-0.02318-0.03261-0.03555  c-0.00276-0.00302-0.00545-0.00594-0.00822-0.00896c-0.00974-0.0106-0.02251-0.0245-0.03224-0.0351  c-0.00232-0.00251-0.00482-0.00524-0.00714-0.00775c-0.01137-0.01236-0.0217-0.0236-0.03308-0.03596  c-0.00208-0.00226-0.00427-0.00465-0.00636-0.0069c-0.04877-0.05295-0.09993-0.10832-0.14888-0.16115  c-0.00104-0.00113-0.0022-0.00238-0.00325-0.00351c-0.01143-0.01233-0.02156-0.02326-0.033-0.03558  c-0.00267-0.00288-0.00528-0.00569-0.00795-0.00857c-0.01143-0.01232-0.01942-0.02092-0.03087-0.03323  c-0.00349-0.00375-0.00697-0.00749-0.01045-0.01125c-0.00981-0.01055-0.02106-0.02264-0.03088-0.03319  c-0.00314-0.00338-0.00623-0.00668-0.00937-0.01006c-0.00983-0.01055-0.02126-0.02281-0.03108-0.03335  c-0.00314-0.00337-0.00635-0.0068-0.00949-0.01017c-0.01147-0.0123-0.0208-0.0223-0.03229-0.03459  c-0.00093-0.001-0.00201-0.00216-0.00294-0.00315c-0.0361-0.03863-0.07582-0.08105-0.11201-0.11962  c-0.0014-0.0015-0.00294-0.00315-0.00435-0.00465c-0.01152-0.01227-0.02034-0.02166-0.03188-0.03392  c-0.00304-0.00324-0.00621-0.00662-0.00926-0.00986c-0.01154-0.01226-0.01848-0.01964-0.03001-0.0319  c-0.00398-0.00423-0.00821-0.00873-0.01221-0.01296c-0.00989-0.01051-0.01865-0.0198-0.02855-0.0303  c-0.00433-0.0046-0.00868-0.0092-0.01302-0.01381c-0.0099-0.0105-0.01833-0.01942-0.02824-0.02991  c-0.00458-0.00485-0.00932-0.00987-0.0139-0.01472c-0.00992-0.01049-0.01799-0.01904-0.02792-0.02953  c-0.004-0.00423-0.00797-0.00842-0.01196-0.01264c-0.03308-0.03496-0.06743-0.07118-0.1006-0.10608  c-0.0033-0.00348-0.00662-0.00698-0.00992-0.01045c-0.00996-0.01047-0.01675-0.01761-0.02672-0.02808  c-0.00519-0.00546-0.01045-0.01098-0.01564-0.01643c-0.0083-0.00872-0.01717-0.01802-0.02548-0.02674  c-0.00555-0.00583-0.01135-0.01192-0.01691-0.01774c-0.00832-0.00871-0.01712-0.01793-0.02544-0.02665  c-0.00568-0.00595-0.01141-0.01196-0.01709-0.01791c-0.00833-0.00871-0.01633-0.01708-0.02466-0.02579  c-0.00592-0.00619-0.01202-0.01257-0.01794-0.01876c-0.00833-0.0087-0.01666-0.0174-0.02499-0.0261  c-0.00569-0.00594-0.0114-0.0119-0.01709-0.01784c-0.00835-0.0087-0.01682-0.01754-0.02516-0.02623  c-0.00522-0.00544-0.01056-0.01101-0.01579-0.01645c-0.01669-0.01739-0.03252-0.03385-0.04924-0.05123  c-0.00594-0.00618-0.01184-0.01232-0.01778-0.01849c-0.00836-0.00868-0.01512-0.01569-0.02348-0.02437  c-0.0063-0.00654-0.01244-0.0129-0.01874-0.01944c-0.0067-0.00694-0.01726-0.01788-0.02396-0.02482  c-0.00655-0.00679-0.01305-0.01351-0.01959-0.0203c-0.00838-0.00867-0.01424-0.01474-0.02263-0.02341  c-0.00679-0.00703-0.01361-0.01409-0.02042-0.02111c-0.00671-0.00694-0.01566-0.01617-0.02237-0.0231  c-0.00716-0.00739-0.0144-0.01487-0.02156-0.02226c-0.00671-0.00693-0.01479-0.01525-0.02151-0.02218  c-0.00693-0.00714-0.01408-0.01451-0.02101-0.02165c-0.00673-0.00693-0.01575-0.01622-0.02248-0.02314  c-0.00754-0.00776-0.01488-0.0153-0.02242-0.02305c-0.00673-0.00692-0.01363-0.01401-0.02036-0.02093  c-0.0139-0.01427-0.02776-0.02849-0.04166-0.04275c-0.00674-0.00692-0.01016-0.01042-0.01691-0.01733  c-0.00888-0.00909-0.01768-0.01812-0.02657-0.02721c-0.00674-0.00691-0.01251-0.01282-0.01927-0.01973  c-0.00792-0.00811-0.01604-0.01641-0.02397-0.02451c-0.00674-0.00691-0.01373-0.01403-0.02049-0.02094  c-0.00781-0.00798-0.0157-0.01604-0.02353-0.02402c-0.00676-0.0069-0.01305-0.01331-0.01981-0.02021  c-0.00793-0.00809-0.01572-0.01601-0.02365-0.0241c-0.00677-0.0069-0.01384-0.0141-0.02061-0.02099  c-0.00783-0.00797-0.0159-0.01618-0.02374-0.02415c-0.00677-0.00689-0.01274-0.01296-0.01952-0.01985  c-0.00868-0.00882-0.01721-0.01748-0.02589-0.0263c-0.00679-0.00689-0.01117-0.01134-0.01796-0.01823  c-0.01424-0.01444-0.02872-0.02911-0.04297-0.04354c-0.00339-0.00344-0.00471-0.00478-0.00812-0.00822  c-0.01172-0.01187-0.02342-0.02371-0.03516-0.03557c-0.00511-0.00516-0.0125-0.01262-0.01761-0.01778  c-0.00882-0.00892-0.01768-0.01787-0.02652-0.02679c-0.00682-0.00687-0.01169-0.01179-0.01849-0.01866  c-0.00836-0.00843-0.01689-0.01702-0.02525-0.02545c-0.00682-0.00687-0.0126-0.0127-0.01942-0.01957  c-0.00848-0.00854-0.01689-0.01701-0.02539-0.02555c-0.00511-0.00515-0.01353-0.01361-0.01866-0.01876  c-0.00861-0.00866-0.01717-0.01725-0.02579-0.02591c-0.00684-0.00686-0.01144-0.01149-0.01828-0.01835  c-0.00972-0.00975-0.01962-0.01968-0.02934-0.02943c-0.00342-0.00343-0.01108-0.01111-0.01451-0.01454  c-0.01471-0.01474-0.02939-0.02943-0.04411-0.04416l0,0l0,0C189.50015,17.23599,181.34608,11.95639,172.64427,8.44973  L172.64427,8.44973z"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement("g", null, /* @__PURE__ */ import_react35.default.createElement(
-      "polygon",
-      {
-        fill: "white",
-        points: "161.20691,239.99629 155.83287,200.79428 150.4518,161.58525 111.24272,156.20413 72.03368,150.82306    141.2099,126.23695 210.39325,101.64379 185.80006,170.8271  "
-      }
-    )));
+    return /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "path",
+        {
+          fill: "white",
+          d: "M145.75587,3.24779c-0.0157,0-0.0325,0.00001-0.0482,0.00002c-0.00375,0-0.00748,0.00001-0.01123,0.00001  c-0.01572,0.00001-0.03214,0.00003-0.04785,0.00005l-0.00053,0c-0.0157,0.00002-0.03218,0.00006-0.0479,0.00009  c-0.0045,0.00001-0.00769,0.00002-0.01219,0.00003c-0.01459,0.00003-0.03056,0.00007-0.04515,0.00012  c-0.00075,0-0.00215,0.00001-0.0029,0.00001c-0.01572,0.00005-0.03133,0.0001-0.04704,0.00016  c-0.0045,0.00002-0.00842,0.00003-0.01292,0.00005c-0.01459,0.00006-0.02914,0.00011-0.04373,0.00018  c-0.0015,0.00001-0.00284,0.00001-0.00435,0.00002c-0.0157,0.00007-0.0311,0.00015-0.0468,0.00023  c-0.0045,0.00002-0.00887,0.00005-0.01337,0.00007c-0.01459,0.00008-0.02753,0.00015-0.04211,0.00024  c-0.00226,0.00001-0.0034,0.00002-0.00566,0.00003c-0.0157,0.00009-0.03076,0.00019-0.04648,0.00029  c-0.0045,0.00003-0.0089,0.00006-0.0134,0.00009c-0.01459,0.0001-0.02753,0.00019-0.04211,0.0003  c-0.00226,0.00002-0.0036,0.00003-0.00584,0.00004c-0.01572,0.00012-0.03177,0.00024-0.04749,0.00037  c-0.00375,0.00003-0.00781,0.00006-0.01157,0.0001c-0.01459,0.00012-0.0285,0.00024-0.04309,0.00037  c-0.00224,0.00002-0.00333,0.00003-0.00557,0.00005c-0.01572,0.00014-0.03107,0.00029-0.04677,0.00044  c-0.0045,0.00004-0.00795,0.00008-0.01245,0.00012c-0.01459,0.00014-0.02911,0.00029-0.0437,0.00044  c-0.00151,0.00002-0.00317,0.00003-0.00468,0.00005c-0.0157,0.00016-0.03172,0.00034-0.04744,0.00051  c-0.0045,0.00005-0.00771,0.00009-0.01221,0.00014c-0.01459,0.00016-0.02754,0.00031-0.04213,0.00049  c-0.00151,0.00002-0.00471,0.00005-0.00621,0.00007c-0.0157,0.00019-0.03117,0.00038-0.04688,0.00058  c-0.0045,0.00006-0.00835,0.00011-0.01285,0.00016c-0.01346,0.00017-0.02705,0.00035-0.04051,0.00053  c-0.00226,0.00003-0.00577,0.00008-0.00803,0.00011c-0.01459,0.0002-0.03236,0.00044-0.04695,0.00065  c-0.00375,0.00005-0.00801,0.00011-0.01176,0.00017c-0.01459,0.00021-0.02898,0.00042-0.04356,0.00063  c-0.00151,0.00002-0.00308,0.00005-0.00458,0.00007c-0.01683,0.00025-0.03195,0.00048-0.04878,0.00075  c-0.00375,0.00006-0.00555,0.00009-0.00931,0.00015c-0.01459,0.00023-0.02919,0.00046-0.04378,0.0007  c-0.00224,0.00004-0.00432,0.00007-0.00658,0.00011c-0.0157,0.00026-0.03163,0.00053-0.04733,0.00079  c-0.00375,0.00006-0.00795,0.00014-0.0117,0.0002c-0.01346,0.00023-0.02708,0.00047-0.04054,0.00071  c-0.00301,0.00005-0.00543,0.0001-0.00844,0.00015c-0.01572,0.00028-0.03133,0.00057-0.04704,0.00086  c-0.00375,0.00007-0.00746,0.00014-0.01122,0.00021c-0.01346,0.00025-0.02811,0.00053-0.04158,0.00079  c-0.00299,0.00006-0.00496,0.00009-0.00797,0.00015c-0.0157,0.00031-0.03151,0.00062-0.04723,0.00093  c-0.00375,0.00008-0.00764,0.00015-0.0114,0.00023c-0.01346,0.00027-0.02708,0.00055-0.04056,0.00083  c-0.00299,0.00006-0.00558,0.00011-0.00859,0.00018c-0.0157,0.00033-0.03114,0.00066-0.04686,0.001  c-0.0045,0.0001-0.00729,0.00016-0.0118,0.00026c-0.01346,0.00029-0.02583,0.00056-0.03929,0.00086  c-0.00375,0.00008-0.00679,0.00015-0.01054,0.00023c-0.01572,0.00035-0.03033,0.00068-0.04604,0.00105  c-0.0045,0.0001-0.00826,0.00019-0.01276,0.0003c-0.01347,0.00031-0.02441,0.00057-0.03789,0.00089  c-0.00375,0.00009-0.00714,0.00017-0.01089,0.00026c-0.01572,0.00038-0.03041,0.00073-0.04613,0.00112  c-0.0045,0.00011-0.00783,0.00019-0.01233,0.0003c-0.01346,0.00033-0.02486,0.00062-0.03833,0.00096  c-0.00375,0.00009-0.00772,0.00019-0.01146,0.00029c-0.01459,0.00037-0.03073,0.00079-0.04532,0.00117  c-0.0045,0.00012-0.00958,0.00025-0.01408,0.00037c-0.01122,0.00029-0.02368,0.00062-0.0349,0.00092  c-0.00452,0.00012-0.00948,0.00025-0.01398,0.00037c-0.0157,0.00042-0.02934,0.00079-0.04506,0.00123  c-0.00375,0.0001-0.0087,0.00024-0.01245,0.00034c-0.01346,0.00037-0.02432,0.00068-0.03778,0.00106  c-0.0045,0.00013-0.00775,0.00022-0.01225,0.00035c-0.01572,0.00045-0.02959,0.00084-0.04529,0.0013  c-0.00375,0.00011-0.00909,0.00026-0.01285,0.00037c-0.01346,0.00039-0.02437,0.00071-0.03783,0.00111  c-0.00375,0.00011-0.00743,0.00022-0.01118,0.00033c-0.0157,0.00047-0.03,0.0009-0.04572,0.00138  c-0.0045,0.00014-0.00851,0.00026-0.01303,0.0004c-0.01346,0.00041-0.02454,0.00076-0.03799,0.00118  c-0.00375,0.00012-0.00729,0.00023-0.01105,0.00034c-0.0157,0.00049-0.03116,0.00098-0.04686,0.00148  c-0.00375,0.00012-0.00699,0.00023-0.01074,0.00035c-0.01233,0.0004-0.02588,0.00084-0.03822,0.00124  c-0.00375,0.00012-0.00859,0.00028-0.01234,0.0004c-0.0157,0.00052-0.03043,0.001-0.04614,0.00153  c-0.00299,0.0001-0.00772,0.00026-0.01073,0.00036c-0.01346,0.00045-0.02541,0.00086-0.03886,0.00132  c-0.00374,0.00013-0.00851,0.00029-0.01227,0.00042c-0.0157,0.00054-0.03021,0.00104-0.04591,0.00159  c-0.00375,0.00013-0.00726,0.00026-0.011,0.00039c-0.01346,0.00047-0.02545,0.0009-0.03891,0.00138  c-0.00375,0.00013-0.00754,0.00027-0.01129,0.0004c-0.0157,0.00056-0.03012,0.00108-0.04582,0.00166  c-0.0045,0.00016-0.00827,0.0003-0.01277,0.00047c-0.01234,0.00045-0.02472,0.00091-0.03705,0.00137  c-0.0045,0.00017-0.00813,0.0003-0.01263,0.00047c-0.0157,0.00059-0.03038,0.00114-0.04608,0.00173  c-0.00375,0.00014-0.00705,0.00027-0.01079,0.00041c-0.01346,0.00051-0.02545,0.00097-0.03889,0.00149  c-0.00375,0.00014-0.00774,0.0003-0.01149,0.00044c-0.01569,0.00061-0.03137,0.00122-0.04707,0.00184  c-0.00301,0.00012-0.00592,0.00023-0.00893,0.00035c-0.01344,0.00053-0.02759,0.0011-0.04105,0.00164  c-0.00301,0.00012-0.00751,0.0003-0.01051,0.00042c-0.0157,0.00063-0.03113,0.00126-0.04683,0.0019  c-0.00375,0.00015-0.00696,0.00029-0.01071,0.00044c-0.01346,0.00055-0.02448,0.00101-0.03793,0.00157  c-0.00375,0.00016-0.00928,0.00039-0.01303,0.00054c-0.0157,0.00066-0.03006,0.00126-0.04575,0.00193  c-0.00375,0.00016-0.00739,0.00031-0.01114,0.00047c-0.01344,0.00057-0.02458,0.00105-0.03804,0.00163  c-0.00375,0.00016-0.00906,0.00039-0.01282,0.00055c-0.0157,0.00068-0.03029,0.00132-0.04599,0.00201  c-0.00375,0.00016-0.00706,0.00031-0.01082,0.00048c-0.01233,0.00054-0.02466,0.00109-0.037,0.00164  c-0.0045,0.0002-0.01003,0.00045-0.01453,0.00065c-0.01457,0.00065-0.02988,0.00134-0.04445,0.00201  c-0.0045,0.0002-0.00864,0.00039-0.01314,0.0006c-0.01122,0.00051-0.02417,0.00111-0.03537,0.00162  c-0.00525,0.00024-0.00992,0.00046-0.01517,0.0007c-0.01457,0.00068-0.02908,0.00135-0.04366,0.00203  c-0.00525,0.00025-0.0099,0.00047-0.01515,0.00071c-0.01122,0.00053-0.02158,0.00102-0.03279,0.00155  c-0.00525,0.00025-0.01073,0.00051-0.01598,0.00076c-0.01457,0.0007-0.02983,0.00143-0.0444,0.00214  c-0.0045,0.00022-0.00824,0.0004-0.01274,0.00062c-0.0112,0.00055-0.02386,0.00116-0.03508,0.00171  c-0.00525,0.00026-0.01065,0.00052-0.0159,0.00078c-0.01457,0.00072-0.03015,0.00149-0.04472,0.00222  c-0.00375,0.00019-0.0067,0.00034-0.01045,0.00052c-0.01233,0.00062-0.0248,0.00125-0.03712,0.00187  c-0.00525,0.00027-0.00967,0.00049-0.01492,0.00076c-0.01457,0.00074-0.03023,0.00154-0.0448,0.00229  c-0.00374,0.00019-0.00714,0.00037-0.01088,0.00056c-0.01346,0.00069-0.02443,0.00126-0.03789,0.00196  c-0.00449,0.00023-0.00945,0.00049-0.01395,0.00073c-0.01457,0.00076-0.02994,0.00157-0.04451,0.00234  c-0.0045,0.00024-0.00919,0.00049-0.01369,0.00073c-0.0112,0.0006-0.02249,0.0012-0.03369,0.0018  c-0.00525,0.00028-0.01112,0.0006-0.01637,0.00088c-0.01457,0.00078-0.02908,0.00157-0.04364,0.00236  c-0.0045,0.00024-0.00916,0.0005-0.01366,0.00075c-0.01122,0.00061-0.02357,0.00129-0.03477,0.00191  c-0.00525,0.00029-0.01033,0.00057-0.01558,0.00086c-0.01457,0.00081-0.03021,0.00167-0.04478,0.00249  c-0.00375,0.00021-0.00708,0.0004-0.01082,0.00061c-0.01122,0.00063-0.02425,0.00136-0.03545,0.002  c-0.006,0.00034-0.01128,0.00064-0.01727,0.00098c-0.01457,0.00083-0.02869,0.00163-0.04326,0.00247  c-0.0045,0.00026-0.00842,0.00049-0.01292,0.00075c-0.01122,0.00065-0.02373,0.00137-0.03493,0.00202  c-0.00525,0.0003-0.01112,0.00065-0.01637,0.00095c-0.01457,0.00085-0.02937,0.00172-0.04395,0.00257  c-0.00449,0.00026-0.00743,0.00044-0.01193,0.00071c-0.0112,0.00066-0.02374,0.00141-0.03494,0.00207  c-0.006,0.00036-0.0107,0.00064-0.01669,0.001c-0.01457,0.00087-0.02927,0.00175-0.04382,0.00263  c-0.00375,0.00023-0.00813,0.00049-0.01189,0.00072c-0.0112,0.00068-0.02484,0.00151-0.03606,0.00219  c-0.00525,0.00032-0.01054,0.00064-0.01579,0.00097c-0.01457,0.00089-0.03,0.00184-0.04456,0.00274  c-0.00375,0.00023-0.00642,0.0004-0.01018,0.00063c-0.01231,0.00076-0.02394,0.00149-0.03627,0.00226  c-0.00525,0.00033-0.01169,0.00073-0.01694,0.00106c-0.01456,0.00091-0.02806,0.00177-0.04262,0.00269  c-0.0045,0.00028-0.00771,0.00049-0.01219,0.00078c-0.01233,0.00078-0.02467,0.00157-0.03699,0.00236  c-0.00525,0.00034-0.01027,0.00066-0.01552,0.001c-0.01456,0.00094-0.02998,0.00193-0.04456,0.00288  c-0.00374,0.00024-0.00635,0.00041-0.01009,0.00066c-0.01233,0.0008-0.02393,0.00156-0.03625,0.00237  c-0.00525,0.00034-0.01204,0.00079-0.01729,0.00114c-0.01344,0.00088-0.02557,0.00169-0.03902,0.00258  c-0.00523,0.00035-0.01138,0.00076-0.01663,0.00111c-0.0112,0.00075-0.0238,0.00159-0.035,0.00234  c-0.00525,0.00035-0.01175,0.00079-0.017,0.00114c-0.01456,0.00098-0.02892,0.00195-0.04347,0.00294  c-0.00224,0.00015-0.00645,0.00044-0.0087,0.00059c-0.01233,0.00084-0.02589,0.00177-0.03822,0.00261  c-0.00598,0.00041-0.01137,0.00078-0.01736,0.00119c-0.01344,0.00092-0.02425,0.00167-0.03769,0.0026  c-0.00523,0.00036-0.01178,0.00082-0.01701,0.00118c-0.0112,0.00078-0.02415,0.00168-0.03535,0.00247  c-0.00598,0.00042-0.01251,0.00088-0.01851,0.0013c-0.0112,0.00079-0.02217,0.00156-0.03337,0.00235  c-0.00749,0.00053-0.01537,0.00109-0.02286,0.00162c-0.01009,0.00072-0.02171,0.00155-0.03178,0.00227  c-0.006,0.00043-0.01369,0.00098-0.01968,0.00141c-0.01007,0.00072-0.02191,0.00158-0.032,0.00231  c-0.00824,0.0006-0.01672,0.00121-0.02496,0.00181c-0.01009,0.00073-0.02103,0.00153-0.0311,0.00226  c-0.006,0.00044-0.01363,0.001-0.01962,0.00144c-0.01118,0.00082-0.02339,0.00172-0.03458,0.00254  c-0.006,0.00044-0.01271,0.00094-0.01871,0.00138c-0.0112,0.00083-0.02315,0.00172-0.03435,0.00255  c-0.00674,0.0005-0.01349,0.00101-0.02023,0.00151c-0.0112,0.00084-0.02077,0.00156-0.03197,0.0024  c-0.00674,0.00051-0.0152,0.00115-0.02194,0.00165c-0.0112,0.00085-0.02269,0.00172-0.03389,0.00257  c-0.00748,0.00057-0.01312,0.001-0.02061,0.00157c-0.01007,0.00077-0.01804,0.00138-0.02811,0.00215  c-0.00974,0.00075-0.01833,0.00141-0.02806,0.00216c-0.01007,0.00078-0.01959,0.00151-0.02966,0.00229  c-0.00674,0.00052-0.01508,0.00117-0.02182,0.00169c-0.01007,0.00078-0.01834,0.00143-0.02841,0.00222  c-0.00824,0.00064-0.0173,0.00136-0.02554,0.002c-0.0112,0.00088-0.02202,0.00173-0.0332,0.00262  c-0.00674,0.00053-0.01242,0.00098-0.01915,0.00152c-0.0112,0.00089-0.02167,0.00172-0.03285,0.00261  c-0.006,0.00048-0.0121,0.00096-0.01808,0.00144c-0.01231,0.00099-0.02437,0.00195-0.03667,0.00294  c-0.00674,0.00054-0.01416,0.00114-0.02089,0.00169c-0.01007,0.00081-0.01855,0.0015-0.02863,0.00232  c-0.00824,0.00067-0.01741,0.00142-0.02565,0.00209c-0.01118,0.00091-0.02116,0.00173-0.03235,0.00265  c-0.00674,0.00055-0.01465,0.0012-0.02139,0.00176c-0.01007,0.00083-0.01712,0.00141-0.02719,0.00225  c-0.00974,0.0008-0.01765,0.00146-0.02739,0.00227c-0.01007,0.00084-0.02081,0.00173-0.03088,0.00257  c-0.00749,0.00063-0.01508,0.00126-0.02257,0.00189c-0.00783,0.00066-0.01776,0.00149-0.0256,0.00215  c-0.00972,0.00082-0.02052,0.00173-0.03024,0.00255c-0.01007,0.00085-0.0188,0.00159-0.02887,0.00245  c-0.00824,0.0007-0.01547,0.00132-0.0237,0.00202c-0.00784,0.00067-0.01517,0.0013-0.02299,0.00197  c-0.01198,0.00103-0.02348,0.00202-0.03546,0.00305c-0.00894,0.00077-0.01543,0.00133-0.02437,0.0021  c-0.00899,0.00078-0.01686,0.00146-0.02585,0.00224c-0.00671,0.00058-0.01302,0.00113-0.01973,0.00172  c-0.01273,0.00111-0.02486,0.00217-0.03758,0.00329c-0.00896,0.00078-0.01649,0.00145-0.02544,0.00223  c-0.00748,0.00066-0.01636,0.00144-0.02383,0.0021c-0.00783,0.00069-0.01416,0.00125-0.02199,0.00195  c-0.01271,0.00113-0.02518,0.00224-0.0379,0.00337c-0.00783,0.0007-0.0148,0.00132-0.02263,0.00202  c-0.00822,0.00074-0.01675,0.0015-0.02499,0.00224c-0.00783,0.0007-0.01491,0.00134-0.02275,0.00205  c-0.01196,0.00108-0.02309,0.00209-0.03505,0.00317c-0.00896,0.00081-0.01608,0.00146-0.02504,0.00227  c-0.00897,0.00082-0.01648,0.0015-0.02545,0.00232c-0.00783,0.00072-0.01355,0.00124-0.02138,0.00196  c-0.01047,0.00096-0.01973,0.00181-0.03021,0.00278c-0.01006,0.00093-0.02054,0.00189-0.03059,0.00283  c-0.00897,0.00083-0.01645,0.00152-0.02542,0.00236c-0.0056,0.00052-0.01433,0.00133-0.01991,0.00185  c-0.01271,0.00118-0.02434,0.00227-0.03705,0.00346c-0.00894,0.00084-0.01669,0.00156-0.02563,0.00241  c-0.00822,0.00077-0.01608,0.00152-0.02431,0.00229c-0.00783,0.00074-0.01379,0.0013-0.02162,0.00204  c-0.01047,0.00099-0.02106,0.002-0.03152,0.00299c-0.01006,0.00096-0.01942,0.00185-0.02948,0.00281  c-0.00824,0.00079-0.01628,0.00156-0.02451,0.00235c-0.00783,0.00075-0.01482,0.00142-0.02263,0.00218  c-0.01123,0.00108-0.02217,0.00214-0.03339,0.00322c-0.00894,0.00086-0.0177,0.00171-0.02666,0.00258  c-0.00897,0.00087-0.01743,0.00169-0.0264,0.00257c-0.0067,0.00065-0.01244,0.00121-0.01913,0.00187  c-0.01196,0.00117-0.02429,0.00238-0.03625,0.00355c-0.00894,0.00088-0.01624,0.0016-0.02518,0.00248  c-0.00897,0.00088-0.01773,0.00175-0.0267,0.00264c-0.0067,0.00066-0.01253,0.00124-0.01923,0.00191  c-0.01271,0.00126-0.0248,0.00246-0.03751,0.00373c-0.00783,0.00078-0.01726,0.00172-0.02509,0.00251  c-0.00822,0.00082-0.01686,0.00169-0.02509,0.00252c-0.0067,0.00067-0.01393,0.0014-0.02065,0.00208  c-0.00822,0.00083-0.0157,0.00158-0.02393,0.00241c-0.0123,0.00124-0.02542,0.00257-0.0377,0.00382  c-0.00822,0.00084-0.01601,0.00163-0.02423,0.00247c-0.00781,0.0008-0.01489,0.00152-0.02272,0.00232  c-0.00748,0.00076-0.01541,0.00158-0.02289,0.00234c-0.0134,0.00138-0.0249,0.00256-0.03831,0.00394  c-0.00748,0.00077-0.01604,0.00166-0.02351,0.00243c-0.0067,0.00069-0.01633,0.00169-0.02304,0.00239  c-0.00671,0.0007-0.01486,0.00154-0.02159,0.00224c-0.01341,0.0014-0.02596,0.00271-0.03937,0.00411  c-0.00748,0.00078-0.01498,0.00157-0.02246,0.00236c-0.00781,0.00082-0.01601,0.00168-0.02382,0.00251  c-0.00748,0.00079-0.01541,0.00162-0.02289,0.00241c-0.0134,0.00142-0.02467,0.00261-0.03809,0.00403  c-0.00746,0.00079-0.01648,0.00175-0.02396,0.00255c-0.0067,0.00071-0.01427,0.00152-0.02097,0.00224  c-0.00822,0.00088-0.01639,0.00175-0.0246,0.00263c-0.01228,0.00132-0.02441,0.00262-0.0367,0.00394  c-0.00822,0.00088-0.01706,0.00184-0.02528,0.00273c-0.0067,0.00072-0.01483,0.0016-0.02153,0.00233  c-0.00822,0.00089-0.01561,0.00169-0.02383,0.00258c-0.0134,0.00146-0.02409,0.00262-0.03749,0.00408  c-0.00821,0.0009-0.01619,0.00177-0.02441,0.00267c-0.0067,0.00073-0.01459,0.0016-0.02129,0.00234  c-0.00746,0.00082-0.01634,0.00179-0.0238,0.00262c-0.01228,0.00135-0.02493,0.00275-0.03722,0.00411  c-0.00897,0.00099-0.0172,0.00191-0.02615,0.0029c-0.0067,0.00074-0.01237,0.00137-0.01907,0.00212  c-0.00896,0.001-0.01669,0.00186-0.02565,0.00286c-0.01228,0.00137-0.02513,0.00281-0.03741,0.00419  c-0.00822,0.00092-0.01649,0.00185-0.0247,0.00278c-0.0067,0.00075-0.0127,0.00143-0.01939,0.00219  c-0.00896,0.00101-0.01712,0.00193-0.02609,0.00295c-0.0067,0.00076-0.01552,0.00176-0.0222,0.00252  c-0.0127,0.00144-0.02707,0.00308-0.03976,0.00452c-0.00668,0.00076-0.013,0.00148-0.01968,0.00225  c-0.00897,0.00102-0.01712,0.00196-0.02608,0.00299c-0.00446,0.00051-0.008,0.00092-0.01247,0.00143  c-0.01717,0.00197-0.03383,0.00389-0.05099,0.00588c-0.00558,0.00065-0.01054,0.00122-0.01613,0.00187  c-0.0097,0.00112-0.01814,0.0021-0.02785,0.00323c-0.00223,0.00026-0.00568,0.00066-0.0079,0.00092  c-0.01941,0.00226-0.03737,0.00436-0.05678,0.00663c-0.00446,0.00052-0.00949,0.00111-0.01396,0.00164  c-0.0097,0.00114-0.01962,0.0023-0.02933,0.00345c-0.00111,0.00013-0.00188,0.00022-0.00301,0.00035  c-0.02014,0.00237-0.03949,0.00466-0.05963,0.00705c-0.00558,0.00066-0.01082,0.00128-0.0164,0.00195  c-0.00896,0.00107-0.01846,0.0022-0.0274,0.00326c-0.00447,0.00053-0.01019,0.00122-0.01465,0.00175  c-0.01642,0.00196-0.032,0.00383-0.04842,0.0058c-0.00558,0.00067-0.01151,0.00138-0.01707,0.00205  c-0.0097,0.00117-0.01805,0.00217-0.02776,0.00335c-0.00334,0.0004-0.00687,0.00083-0.01021,0.00124  c-0.01791,0.00217-0.03522,0.00427-0.05313,0.00645c-0.00558,0.00068-0.00978,0.00119-0.01537,0.00187  c-0.00969,0.00118-0.01888,0.0023-0.02856,0.00349c-0.00336,0.00041-0.00613,0.00075-0.00948,0.00116  c-0.0179,0.00219-0.03635,0.00446-0.05426,0.00667c-0.00557,0.00069-0.00934,0.00115-0.01492,0.00184  c-0.00969,0.0012-0.01918,0.00237-0.02887,0.00357c-0.00336,0.00041-0.00557,0.00069-0.00891,0.0011  c-0.0179,0.00222-0.03677,0.00457-0.05469,0.0068c-0.00557,0.0007-0.00902,0.00113-0.0146,0.00182  c-0.00894,0.00112-0.01993,0.00249-0.02888,0.00361c-0.00334,0.00042-0.0061,0.00077-0.00946,0.00119  c-0.0179,0.00225-0.03619,0.00455-0.05409,0.00681c-0.00557,0.0007-0.00978,0.00123-0.01535,0.00194  c-0.00894,0.00113-0.01929,0.00244-0.02824,0.00358c-0.00334,0.00042-0.00848,0.00108-0.01183,0.0015  c-0.01715,0.00218-0.03453,0.00439-0.05168,0.00659c-0.00557,0.00071-0.00984,0.00126-0.01541,0.00197  c-0.00896,0.00115-0.0184,0.00236-0.02736,0.00351c-0.00668,0.00086-0.01169,0.0015-0.01837,0.00236  c-0.01492,0.00192-0.02979,0.00384-0.04469,0.00577c-0.00558,0.00072-0.01181,0.00153-0.01738,0.00225  c-0.00894,0.00116-0.01843,0.00239-0.02737,0.00355c-0.00446,0.00058-0.01048,0.00136-0.01494,0.00194  c-0.01566,0.00204-0.03293,0.00429-0.04858,0.00634c-0.00446,0.00058-0.01111,0.00145-0.01556,0.00204  c-0.00969,0.00127-0.01883,0.00247-0.02852,0.00374c-0.00334,0.00044-0.00758,0.001-0.01093,0.00144  c-0.0179,0.00235-0.03455,0.00455-0.05243,0.00692c-0.00446,0.00059-0.01129,0.0015-0.01575,0.00209  c-0.00894,0.00119-0.01888,0.0025-0.02783,0.00369c-0.00446,0.00059-0.00896,0.00119-0.01341,0.00179  c-0.01715,0.00228-0.03372,0.0045-0.05086,0.00679c-0.00446,0.0006-0.0099,0.00133-0.01436,0.00192  c-0.00969,0.0013-0.01836,0.00246-0.02805,0.00377c-0.00446,0.0006-0.01125,0.00152-0.0157,0.00212  c-0.01566,0.00211-0.03247,0.00438-0.04811,0.0065c-0.00446,0.0006-0.01138,0.00154-0.01584,0.00215  c-0.00969,0.00131-0.01834,0.00249-0.02802,0.00381c-0.00446,0.00061-0.00955,0.0013-0.01401,0.00191  c-0.01714,0.00233-0.03322,0.00453-0.05034,0.00688c-0.00446,0.00061-0.0094,0.00129-0.01385,0.0019  c-0.00969,0.00133-0.02014,0.00276-0.02982,0.0041c-0.00334,0.00046-0.00496,0.00068-0.0083,0.00114  c-0.01936,0.00267-0.03842,0.0053-0.0578,0.00798c-0.00333,0.00046-0.00713,0.00099-0.01047,0.00145  c-0.01044,0.00145-0.02077,0.00288-0.03119,0.00433c-0.00223,0.00031-0.00421,0.00059-0.00644,0.0009  c-0.02011,0.0028-0.03984,0.00555-0.05994,0.00837c-0.00334,0.00047-0.00568,0.00079-0.00902,0.00126  c-0.01042,0.00146-0.02086,0.00293-0.03128,0.00439c-0.00334,0.00047-0.00488,0.00069-0.00822,0.00116  c-0.01935,0.00273-0.03857,0.00544-0.05792,0.00818c-0.00334,0.00047-0.00687,0.00097-0.01019,0.00144  c-0.01044,0.00148-0.02071,0.00294-0.03113,0.00442c-0.00223,0.00032-0.00494,0.0007-0.00716,0.00102  c-0.02011,0.00286-0.03996,0.00569-0.06007,0.00857c-0.00221,0.00032-0.00583,0.00084-0.00806,0.00115  c-0.01042,0.00149-0.02098,0.00301-0.0314,0.00451c-0.00223,0.00032-0.00621,0.00089-0.00844,0.00121  c-0.01935,0.00278-0.03816,0.0055-0.05751,0.0083c-0.00334,0.00048-0.0074,0.00107-0.01074,0.00155  c-0.01042,0.00151-0.01978,0.00287-0.0302,0.00438c-0.00334,0.00048-0.00659,0.00096-0.00993,0.00144  c-0.01935,0.00281-0.03844,0.0056-0.05779,0.00842c-0.00223,0.00033-0.00591,0.00086-0.00813,0.00119  c-0.01041,0.00152-0.02104,0.00308-0.03146,0.00461c-0.00223,0.00033-0.0063,0.00093-0.00853,0.00125  c-0.01935,0.00284-0.04022,0.00592-0.05957,0.00877c-0.00221,0.00033-0.00528,0.00078-0.00751,0.00111  c-0.01042,0.00154-0.02211,0.00327-0.03252,0.00482c-0.00223,0.00033-0.00278,0.00041-0.00499,0.00074  c-0.02084,0.00309-0.04349,0.00646-0.06432,0.00957c-0.00111,0.00017-0.00333,0.0005-0.00444,0.00066  c-0.01117,0.00167-0.02168,0.00324-0.03285,0.00491c-0.00221,0.00033-0.004,0.0006-0.00621,0.00093  c-0.02158,0.00323-0.04309,0.00647-0.06467,0.00972c-0.00111,0.00017-0.002,0.0003-0.00311,0.00047  c-0.0119,0.0018-0.02248,0.00339-0.03438,0.0052l-0.00204,0.00031c-0.02306,0.00349-0.04686,0.00711-0.06992,0.01062  l-0.00005,0.00001c-0.01115,0.0017-0.02283,0.00348-0.03398,0.00519c-0.00223,0.00034-0.00325,0.0005-0.00548,0.00084  c-0.03346,0.00512-0.06844,0.0105-0.1019,0.01567c-0.00223,0.00034-0.0024,0.00037-0.00462,0.00071  c-0.03419,0.00528-0.06767,0.01048-0.10187,0.01582c-0.00221,0.00035-0.00395,0.00062-0.00618,0.00096  c-0.02155,0.00336-0.04301,0.00672-0.06456,0.01011c-0.00111,0.00017-0.00206,0.00032-0.00317,0.0005  c-0.01115,0.00175-0.02257,0.00355-0.03372,0.0053c-0.00111,0.00017-0.00302,0.00048-0.00414,0.00065  c-0.03418,0.00539-0.06743,0.01065-0.10161,0.01609c-0.00334,0.00053-0.00441,0.0007-0.00774,0.00123  c-0.02081,0.00331-0.04117,0.00656-0.06198,0.00989c-0.00221,0.00036-0.00294,0.00047-0.00516,0.00083  c-0.01041,0.00167-0.02074,0.00332-0.03114,0.00499c-0.00333,0.00054-0.00697,0.00112-0.0103,0.00166  c-0.0327,0.00525-0.06517,0.0105-0.09785,0.0158c-0.00223,0.00036-0.00444,0.00072-0.00667,0.00108  c-0.03342,0.00542-0.06647,0.01081-0.09988,0.01628c-0.00223,0.00036-0.00545,0.00089-0.00766,0.00126  c-0.03342,0.00547-0.06567,0.01078-0.09909,0.0163c-0.00223,0.00037-0.0054,0.00089-0.00763,0.00126  c-0.0334,0.00552-0.06686,0.01108-0.10027,0.01665c-0.00223,0.00037-0.00285,0.00047-0.00507,0.00084  c-0.0349,0.00582-0.06816,0.0114-0.10304,0.01727l-0.00189,0.00032c-0.03415,0.00575-0.0699,0.0118-0.10403,0.01759  c-0.00221,0.00038-0.00195,0.00033-0.00417,0.00071c-0.03413,0.0058-0.0679,0.01157-0.10204,0.01742  c-0.00221,0.00038-0.00339,0.00058-0.0056,0.00096c-0.03413,0.00585-0.06769,0.01163-0.10181,0.01754  c-0.00111,0.00019-0.0031,0.00054-0.00421,0.00073c-0.03412,0.0059-0.06895,0.01196-0.10306,0.01791  c-0.00111,0.00019-0.00179,0.00031-0.0029,0.0005c-0.0341,0.00596-0.06973,0.0122-0.10384,0.01821  c-0.00111,0.0002-0.00183,0.00032-0.00294,0.00052c-0.0341,0.00601-0.06905,0.01219-0.10315,0.01825  c-0.0011,0.0002-0.00313,0.00056-0.00424,0.00075c-0.03484,0.00619-0.06952,0.01238-0.10435,0.01862L133.019,4.37947  c-0.03557,0.00638-0.07037,0.01264-0.10594,0.01907l-0.0013,0.00024c-0.03557,0.00643-0.06976,0.01264-0.10533,0.01912  l-0.0014,0.00026c-0.03482,0.00635-0.06952,0.0127-0.10432,0.0191l-0.00316,0.00058c-0.03407,0.00627-0.0699,0.01288-0.10396,0.0192  l-0.00218,0.0004c-0.03481,0.00645-0.06926,0.01287-0.10406,0.01938c-0.0011,0.00021-0.00172,0.00032-0.00284,0.00053  c-0.03479,0.00651-0.06996,0.01311-0.10475,0.01967l-0.0009,0.00017c-0.03477,0.00656-0.06895,0.01303-0.10373,0.01964  c-0.00111,0.00021-0.00331,0.00063-0.00443,0.00084c-0.03477,0.00661-0.06923,0.01319-0.104,0.01986  c-0.0011,0.00021,0.00018-0.00003-0.00093,0.00018c-0.07101,0.01361-0.14134,0.0272-0.21233,0.04103l-0.00044,0.00009  c-0.03474,0.00677-0.07037,0.01374-0.10512,0.02056l-0.00194,0.00038c-0.14194,0.02787-0.2825,0.05592-0.4243,0.08465  l-0.00078,0.00016c-0.61444,0.12452-1.2269,0.25698-1.83853,0.39769l-0.00119,0.00027  c-0.35286,0.08118-0.70367,0.16467-1.05553,0.25124l-0.00182,0.00045c-0.03519,0.00866-0.06885,0.01697-0.10402,0.02568  l-0.00107,0.00026c-0.03444,0.00853-0.06906,0.01713-0.10349,0.02571c-0.0011,0.00027-0.00218,0.00054-0.00328,0.00082  c-0.03442,0.00858-0.06836,0.01707-0.10277,0.0257c-0.0011,0.00027-0.00079,0.0002-0.00188,0.00047  c-0.03516,0.00882-0.06851,0.01721-0.10365,0.02608c-0.00108,0.00028-0.00052,0.00013-0.00162,0.00041  c-0.03441,0.00869-0.06856,0.01733-0.10295,0.02607c-0.00109,0.00028-0.00235,0.0006-0.00345,0.00088  c-0.03366,0.00855-0.06718,0.0171-0.10084,0.0257c-0.00219,0.00056-0.00356,0.00091-0.00574,0.00147  c-0.03366,0.00861-0.06726,0.01723-0.10091,0.02588c-0.00109,0.00028-0.00185,0.00048-0.00294,0.00076  c-0.03365,0.00866-0.06768,0.01744-0.10131,0.02615c-0.00219,0.00057-0.00269,0.0007-0.00488,0.00126  c-0.03364,0.00871-0.06624,0.01718-0.09987,0.02594c-0.00218,0.00057-0.00373,0.00097-0.00591,0.00154  c-0.03289,0.00857-0.06572,0.01715-0.0986,0.02577c-0.00218,0.00057-0.00512,0.00134-0.0073,0.00191  c-0.03288,0.00862-0.06725,0.01766-0.10013,0.02633c-0.00109,0.00029-0.00179,0.00047-0.00288,0.00076  c-0.03288,0.00867-0.06728,0.01777-0.10014,0.02649c-0.00218,0.00058-0.00469,0.00125-0.00687,0.00182  c-0.03359,0.00892-0.06601,0.01755-0.09959,0.02651c-0.00109,0.00029-0.00317,0.00085-0.00426,0.00114  c-0.03285,0.00877-0.06694,0.0179-0.09978,0.02672c-0.00109,0.00029-0.00512,0.00137-0.00621,0.00167  c-0.03357,0.00902-0.0657,0.01768-0.09927,0.02675c-0.00109,0.0003-0.00421,0.00114-0.0053,0.00143  c-0.03283,0.00887-0.06507,0.01761-0.09789,0.02654c-0.00327,0.00089-0.00516,0.0014-0.00843,0.00229  c-0.03209,0.00873-0.06579,0.01792-0.09787,0.02669c-0.00218,0.0006-0.00388,0.00106-0.00607,0.00166  c-0.03281,0.00898-0.06548,0.01794-0.09827,0.02696c-0.00218,0.0006-0.00494,0.00136-0.00712,0.00196  c-0.03353,0.00923-0.06608,0.01821-0.09959,0.02748c-0.00218,0.0006-0.00171,0.00047-0.00389,0.00108  c-0.03352,0.00928-0.06754,0.01872-0.10104,0.02805c-0.00218,0.00061-0.00164,0.00046-0.00381,0.00106  c-0.03278,0.00913-0.06697,0.01867-0.09973,0.02785c-0.00218,0.00061-0.00365,0.00102-0.00583,0.00163  c-0.03277,0.00918-0.06519,0.01829-0.09795,0.02751c-0.00217,0.00061-0.00537,0.00151-0.00755,0.00212  c-0.03275,0.00923-0.06579,0.01856-0.09853,0.02784c-0.00217,0.00062-0.00319,0.0009-0.00536,0.00152  c-0.03347,0.00948-0.06629,0.01881-0.09975,0.02834c-0.00109,0.00031-0.00362,0.00103-0.00471,0.00134  c-0.03273,0.00933-0.06499,0.01855-0.09771,0.02792c-0.00326,0.00093-0.00502,0.00144-0.00828,0.00237  c-0.01091,0.00313-0.02003,0.00574-0.03094,0.00888c-0.00217,0.00062-0.00372,0.00107-0.00589,0.00169  c-0.01963,0.00564-0.03969,0.01141-0.05931,0.01707c-0.00327,0.00094-0.00496,0.00143-0.00822,0.00237  c-0.03271,0.00943-0.06505,0.01878-0.09775,0.02826c-0.00217,0.00063-0.00416,0.0012-0.00633,0.00183  c-0.01089,0.00316-0.02125,0.00616-0.03215,0.00933c-0.00217,0.00063-0.00151,0.00044-0.00368,0.00107  c-0.02034,0.00591-0.04056,0.01179-0.06089,0.01772c-0.00326,0.00095-0.00523,0.00152-0.00848,0.00247  c-0.01017,0.00296-0.02097,0.00612-0.03113,0.00909c-0.00217,0.00063-0.00343,0.001-0.00559,0.00163  c-0.01961,0.00573-0.03909,0.01143-0.05869,0.01717c-0.00326,0.00095-0.00607,0.00178-0.00933,0.00273  c-0.01016,0.00298-0.02023,0.00593-0.03039,0.00892c-0.00326,0.00096-0.00433,0.00127-0.00759,0.00223  c-0.0196,0.00576-0.03899,0.01147-0.05859,0.01725c-0.00217,0.00064-0.00501,0.00148-0.00718,0.00212  c-0.01089,0.00321-0.02116,0.00624-0.03204,0.00946c-0.00108,0.00032-0.00241,0.00071-0.00349,0.00103  c-0.02104,0.00622-0.04164,0.01231-0.06268,0.01855c-0.00217,0.00064-0.00381,0.00113-0.00597,0.00177  c-0.01015,0.00301-0.02078,0.00617-0.03094,0.00918c-0.00325,0.00097-0.00633,0.00188-0.00959,0.00285  c-0.01814,0.00539-0.03599,0.0107-0.05412,0.01611c-0.00325,0.00097-0.00784,0.00234-0.01109,0.00331  c-0.01015,0.00303-0.01925,0.00574-0.0294,0.00878c-0.00325,0.00097-0.00658,0.00197-0.00983,0.00294  c-0.01813,0.00542-0.0357,0.01068-0.05383,0.01611c-0.00433,0.0013-0.00708,0.00212-0.01141,0.00342  c-0.01015,0.00304-0.01847,0.00554-0.02862,0.00859c-0.00433,0.0013-0.00744,0.00224-0.01178,0.00354  c-0.0174,0.00523-0.03561,0.01071-0.053,0.01595c-0.00433,0.00131-0.00624,0.00188-0.01057,0.00319  c-0.01015,0.00306-0.01962,0.00592-0.02977,0.00898c-0.00217,0.00065-0.00668,0.00202-0.00885,0.00267  c-0.01884,0.00569-0.03749,0.01134-0.05633,0.01705c-0.00325,0.00098-0.00576,0.00174-0.00901,0.00273  c-0.00941,0.00286-0.01934,0.00587-0.02876,0.00873c-0.00541,0.00164-0.0084,0.00255-0.01382,0.0042  c-0.01594,0.00484-0.03294,0.01002-0.04888,0.01487c-0.00433,0.00132-0.00951,0.0029-0.01384,0.00422  c-0.00941,0.00287-0.01801,0.00549-0.02743,0.00837c-0.00541,0.00165-0.00928,0.00283-0.01469,0.00449  c-0.01593,0.00487-0.03169,0.00969-0.04762,0.01457c-0.00433,0.00133-0.0099,0.00303-0.01424,0.00436  c-0.00941,0.00288-0.0185,0.00567-0.02791,0.00856c-0.00433,0.00133-0.00881,0.0027-0.01314,0.00403  c-0.01665,0.00511-0.03237,0.00995-0.04902,0.01508c-0.00433,0.00133-0.00992,0.00306-0.01424,0.00439  c-0.00941,0.0029-0.01836,0.00566-0.02777,0.00856c-0.00433,0.00134-0.00881,0.00272-0.01314,0.00406  c-0.01664,0.00514-0.03363,0.01039-0.05027,0.01555c-0.00433,0.00134-0.00799,0.00247-0.01231,0.00381  c-0.00941,0.00291-0.01809,0.00561-0.0275,0.00852c-0.0054,0.00168-0.01058,0.00329-0.01599,0.00496  c-0.01447,0.00449-0.02914,0.00906-0.0436,0.01356c-0.00649,0.00202-0.01186,0.00369-0.01834,0.00571  c-0.00795,0.00248-0.0174,0.00542-0.02536,0.00791c-0.00648,0.00202-0.01118,0.00349-0.01767,0.00552  c-0.01374,0.00429-0.02807,0.00877-0.04181,0.01307c-0.00648,0.00203-0.01257,0.00393-0.01905,0.00596  c-0.00796,0.00249-0.01668,0.00523-0.02463,0.00772c-0.00648,0.00203-0.01325,0.00416-0.01974,0.00619  c-0.01301,0.00408-0.02687,0.00844-0.03987,0.01253c-0.00648,0.00204-0.01321,0.00415-0.01969,0.00619  c-0.00867,0.00273-0.01662,0.00524-0.02528,0.00797c-0.00648,0.00204-0.01167,0.00368-0.01815,0.00572  c-0.013,0.0041-0.02754,0.0087-0.04054,0.01281c-0.00648,0.00205-0.01324,0.00419-0.01972,0.00624  c-0.00867,0.00274-0.01624,0.00514-0.0249,0.00789c-0.00648,0.00205-0.01291,0.00409-0.01939,0.00615  c-0.013,0.00412-0.02553,0.0081-0.03853,0.01223c-0.00755,0.0024-0.01392,0.00443-0.02148,0.00683  c-0.00867,0.00276-0.01595,0.00508-0.02461,0.00784c-0.00647,0.00206-0.01254,0.004-0.01902,0.00606  c-0.01155,0.00368-0.02491,0.00795-0.03646,0.01164c-0.00755,0.00241-0.01621,0.00518-0.02376,0.0076  c-0.00794,0.00254-0.01567,0.00502-0.02361,0.00756c-0.00755,0.00242-0.01296,0.00415-0.02051,0.00657  c-0.01227,0.00393-0.02517,0.00807-0.03743,0.01201c-0.00755,0.00243-0.01466,0.00471-0.02222,0.00714  c-0.00866,0.00278-0.0159,0.00512-0.02456,0.0079c-0.00539,0.00174-0.01255,0.00404-0.01794,0.00578  c-0.0137,0.00442-0.02827,0.00912-0.04198,0.01354c-0.00646,0.00209-0.01215,0.00392-0.01862,0.00601  c-0.00793,0.00256-0.01649,0.00533-0.02442,0.0079c-0.00755,0.00244-0.01288,0.00417-0.02042,0.00661  c-0.01154,0.00374-0.02343,0.00759-0.03497,0.01134c-0.00755,0.00245-0.01691,0.00549-0.02446,0.00794  c-0.00793,0.00258-0.01546,0.00503-0.02339,0.00761c-0.00755,0.00245-0.01407,0.00458-0.02161,0.00703  c-0.00864,0.00282-0.01655,0.00539-0.0252,0.00821c-0.01077,0.00351-0.02309,0.00753-0.03387,0.01105  c-0.00793,0.00259-0.01426,0.00466-0.02219,0.00725c-0.00754,0.00247-0.01552,0.00508-0.02306,0.00754  c-0.0072,0.00236-0.01379,0.00451-0.021,0.00687c-0.01292,0.00424-0.02496,0.00819-0.03788,0.01243  c-0.00721,0.00237-0.01456,0.00478-0.02176,0.00715c-0.00754,0.00248-0.01456,0.00479-0.02209,0.00727  c-0.0072,0.00237-0.01472,0.00485-0.02193,0.00722c-0.01292,0.00426-0.02469,0.00814-0.03761,0.0124  c-0.0072,0.00238-0.01346,0.00444-0.02065,0.00682c-0.00861,0.00284-0.01726,0.0057-0.02586,0.00855  c-0.00576,0.0019-0.01263,0.00418-0.01839,0.00608c-0.01292,0.00428-0.02705,0.00896-0.03996,0.01324  c-0.00576,0.00191-0.01157,0.00384-0.01732,0.00575c-0.01076,0.00357-0.01871,0.00621-0.02946,0.00979  c-0.00504,0.00167-0.01099,0.00365-0.01602,0.00533c-0.01398,0.00465-0.02625,0.00874-0.04023,0.0134  c-0.00576,0.00192-0.01228,0.0041-0.01804,0.00602c-0.00861,0.00287-0.01962,0.00655-0.02822,0.00942  c-0.00576,0.00192-0.01165,0.00389-0.0174,0.00581c-0.0129,0.00432-0.0271,0.00907-0.04,0.01339  c-0.00575,0.00193-0.01191,0.00399-0.01766,0.00592c-0.0086,0.00288-0.01956,0.00656-0.02816,0.00945  c-0.00575,0.00193-0.01157,0.00389-0.01733,0.00582c-0.0129,0.00434-0.02715,0.00913-0.04004,0.01347  c-0.00575,0.00194-0.01169,0.00394-0.01743,0.00588c-0.00967,0.00326-0.01927,0.0065-0.02895,0.00976  c-0.00574,0.00194-0.01106,0.00373-0.01681,0.00568c-0.01289,0.00436-0.02774,0.00938-0.04063,0.01374  c-0.00504,0.0017-0.01138,0.00385-0.01641,0.00556c-0.00967,0.00327-0.01952,0.00662-0.02919,0.0099  c-0.00575,0.00195-0.01128,0.00383-0.01703,0.00578c-0.01289,0.00438-0.02737,0.00929-0.04025,0.01368  c-0.00575,0.00196-0.01134,0.00386-0.01708,0.00582c-0.00859,0.00292-0.01994,0.00679-0.02853,0.00972  c-0.00574,0.00196-0.01188,0.00405-0.01762,0.00601c-0.01288,0.0044-0.02728,0.00931-0.04015,0.01372  c-0.00574,0.00196-0.01069,0.00366-0.01643,0.00562c-0.01073,0.00367-0.01875,0.00642-0.02949,0.0101  c-0.00502,0.00172-0.0116,0.00398-0.01662,0.0057c-0.01288,0.00442-0.02762,0.00948-0.0405,0.0139  c-0.00574,0.00197-0.01062,0.00365-0.01637,0.00563c-0.01073,0.00369-0.0187,0.00643-0.02943,0.01013  c-0.00502,0.00173-0.01212,0.00417-0.01714,0.0059c-0.01287,0.00444-0.02725,0.0094-0.04012,0.01384  c-0.00574,0.00198-0.0113,0.0039-0.01704,0.00589c-0.00965,0.00334-0.01889,0.00653-0.02854,0.00987  c-0.00574,0.00199-0.01117,0.00387-0.01691,0.00585c-0.01286,0.00446-0.02798,0.0097-0.04084,0.01416  c-0.00502,0.00174-0.01073,0.00373-0.01575,0.00547c-0.01072,0.00372-0.01929,0.0067-0.03001,0.01043  c-0.00574,0.00199-0.01077,0.00374-0.0165,0.00574c-0.01393,0.00485-0.02773,0.00966-0.04166,0.01451  c-0.00502,0.00175-0.00822,0.00287-0.01324,0.00462c-0.01071,0.00374-0.02171,0.00758-0.03242,0.01133  c-0.00502,0.00175-0.00996,0.00348-0.01498,0.00523c-0.01392,0.00487-0.02827,0.00989-0.04218,0.01477  c-0.0043,0.00151-0.00831,0.00291-0.01261,0.00442c-0.0107,0.00376-0.02325,0.00816-0.03395,0.01192  c-0.00501,0.00176-0.00909,0.00319-0.01411,0.00496c-0.01392,0.00489-0.02846,0.01001-0.04237,0.01491  c-0.0043,0.00151-0.00842,0.00296-0.01271,0.00448c-0.0107,0.00377-0.02259,0.00796-0.03329,0.01174  c-0.0043,0.00152-0.00997,0.00352-0.01427,0.00504c-0.01392,0.00491-0.02863,0.01011-0.04253,0.01504  c-0.0043,0.00152-0.00773,0.00274-0.01202,0.00426c-0.0107,0.00379-0.02406,0.00852-0.03476,0.01232  c-0.0043,0.00152-0.00912,0.00324-0.01342,0.00476c-0.01391,0.00494-0.02959,0.01051-0.0435,0.01545  c-0.00358,0.00127-0.00607,0.00216-0.00965,0.00344c-0.01284,0.00457-0.0238,0.00847-0.03663,0.01304  c-0.00429,0.00153-0.00798,0.00284-0.01227,0.00437c-0.01498,0.00534-0.02959,0.01056-0.04456,0.01591  c-0.00286,0.00102-0.00488,0.00174-0.00774,0.00277c-0.01283,0.00459-0.02606,0.00932-0.03889,0.01392  c-0.00429,0.00154-0.00713,0.00255-0.01142,0.00409c-0.01604,0.00574-0.02934,0.01051-0.04536,0.01627  c-0.00143,0.00051-0.0038,0.00137-0.00523,0.00188c-0.01389,0.00499-0.02725,0.00979-0.04115,0.01479  c-0.00357,0.00129-0.00681,0.00245-0.01038,0.00373c-0.01603,0.00577-0.0298,0.01073-0.04582,0.01651  c-0.00143,0.00052-0.00352,0.00127-0.00495,0.00179c-0.01389,0.00501-0.02825,0.0102-0.04214,0.01522  c-0.00357,0.00129-0.00594,0.00215-0.00952,0.00344c-0.01601,0.00579-0.03053,0.01105-0.04654,0.01685  c-0.00072,0.00026-0.00214,0.00077-0.00285,0.00103c-0.01389,0.00503-0.02972,0.01078-0.04359,0.01582  c-0.00357,0.0013-0.00581,0.00211-0.00938,0.00341c-0.01601,0.00582-0.03048,0.01108-0.04649,0.01691  c-0.00143,0.00052-0.00191,0.0007-0.00334,0.00122c-0.01388,0.00505-0.02987,0.01089-0.04374,0.01595  c-0.00357,0.0013-0.00528,0.00193-0.00885,0.00323C121.04707,7.61249,121.032,7.618,121.016,7.62386l-0.00114,0.00042  c-0.01601,0.00586-0.02998,0.01098-0.04597,0.01685c-0.00214,0.00078-0.00542,0.00199-0.00756,0.00277  c-0.016,0.00587-0.03173,0.01165-0.04773,0.01753c-0.00071,0.00026-0.00037,0.00013-0.00108,0.0004  c-0.016,0.00588-0.03044,0.0112-0.04643,0.01709c-0.00214,0.00079-0.00481,0.00177-0.00695,0.00256  c-0.03198,0.01179-0.06324,0.02334-0.09521,0.03518c-0.00285,0.00106-0.00448,0.00166-0.00733,0.00272  c-0.03197,0.01184-0.06382,0.02367-0.09578,0.03555c-0.00142,0.00053-0.00469,0.00175-0.00612,0.00228  c-0.03195,0.01189-0.06398,0.02383-0.09592,0.03577c-0.00214,0.0008-0.00414,0.00155-0.00628,0.00235  c-0.03194,0.01194-0.06384,0.02389-0.09576,0.03588c-0.00214,0.0008-0.00454,0.00171-0.00668,0.00251  c-0.03193,0.01199-0.06451,0.02426-0.09642,0.03629c-0.00214,0.00081-0.00276,0.00104-0.0049,0.00185  c-0.03297,0.01244-0.06535,0.02468-0.09831,0.03718c-0.00071,0.00027-0.0022,0.00084-0.00292,0.00111  c-0.03402,0.0129-0.06573,0.02494-0.09974,0.03789c-0.00071,0.00027-0.00098,0.00037-0.00169,0.00064  c-0.03401,0.01295-0.06699,0.02554-0.10098,0.03854l-0.00039,0.00015c-0.034,0.013-0.06759,0.02588-0.10156,0.03894  l-0.00038,0.00015c-3.34653,1.28604-6.61654,2.8319-9.77832,4.6371l7.27125,12.73511  c8.57767-4.89747,18.37067-7.48613,28.3202-7.48613V3.24779L145.75587,3.24779L145.75587,3.24779z M88.05655,31.19099  c0,0-0.41136,0.41136-1.13123,1.13123l0,0c-0.71987,0.71988-1.74826,1.74826-2.98233,2.98233l0,0  c-1.23407,1.23407-2.67382,2.67382-4.21641,4.2164l0,0c-1.54258,1.54259-3.18801,3.18801-4.83344,4.83344l0,0  c-1.64542,1.64542-3.29085,3.29085-4.83344,4.83344l0,0c-1.54259,1.54259-2.98233,2.98233-4.2164,4.2164l0,0  c-1.23407,1.23407-2.26246,2.26246-2.98233,2.98233l0,0c-0.71987,0.71987-1.13123,1.13123-1.13123,1.13123l0,0l10.36954,10.36953  l26.3268-26.3268L88.05655,31.19099L88.05655,31.19099z M41.25335,77.99419c0,0-0.31582,0.31582-0.86851,0.86851l0,0  c-0.55269,0.55269-1.34224,1.34225-2.28971,2.28971l0,0c-0.94747,0.94746-2.05284,2.05284-3.23717,3.23717l0,0  c-1.18433,1.18433-2.44762,2.44762-3.71091,3.71091l0,0c-1.26329,1.26328-2.52658,2.52657-3.71091,3.71091l0,0  c-1.18433,1.18433-2.28971,2.2897-3.23717,3.23717l0,0c-0.94746,0.94746-1.73702,1.73701-2.28971,2.2897l0,0  c-0.55269,0.55269-0.86851,0.86852-0.86851,0.86852l0,0l0,0c-0.01512,0.01512-0.03006,0.03008-0.04516,0.0452  c-0.00513,0.00514-0.00901,0.00903-0.01414,0.01417c-0.01032,0.01035-0.02055,0.0206-0.03086,0.03094  c-0.00513,0.00515-0.01236,0.01241-0.01748,0.01756c-0.00943,0.00947-0.01867,0.01875-0.02809,0.02822  c-0.00683,0.00686-0.01039,0.01044-0.01721,0.01731c-0.00954,0.0096-0.01902,0.01913-0.02855,0.02873  c-0.00682,0.00687-0.01048,0.01055-0.01729,0.01742c-0.01054,0.01062-0.02091,0.02108-0.03144,0.0317  c-0.00511,0.00516-0.00813,0.00819-0.01323,0.01335c-0.01491,0.01505-0.0297,0.02998-0.04459,0.04504  c-0.0034,0.00344-0.00575,0.00582-0.00915,0.00926c-0.01201,0.01215-0.02411,0.0244-0.03611,0.03655  c-0.0051,0.00517-0.01003,0.01017-0.01513,0.01534c-0.00962,0.00975-0.01922,0.01949-0.02884,0.02924  c-0.00509,0.00517-0.01361,0.01382-0.0187,0.01898c-0.00899,0.00912-0.01764,0.01792-0.02662,0.02705  c-0.00508,0.00517-0.01313,0.01334-0.01821,0.01851c-0.00948,0.00964-0.0188,0.01913-0.02827,0.02878  c-0.00508,0.00517-0.0112,0.0114-0.01627,0.01657c-0.01233,0.01257-0.02469,0.02517-0.03701,0.03773  c-0.00338,0.00346-0.004,0.00408-0.00738,0.00753c-0.01481,0.01511-0.02965,0.03027-0.04444,0.04539  c-0.00338,0.00346-0.00968,0.00991-0.01306,0.01337c-0.01068,0.01093-0.02122,0.02171-0.0319,0.03265  c-0.00506,0.00518-0.01023,0.01048-0.01529,0.01567c-0.0098,0.01005-0.01969,0.02018-0.02949,0.03024  c-0.00674,0.00692-0.01013,0.0104-0.01687,0.01732c-0.0093,0.00954-0.01874,0.01925-0.02803,0.0288  c-0.00673,0.00692-0.01018,0.01045-0.0169,0.01738c-0.00953,0.0098-0.01918,0.01974-0.02871,0.02955  c-0.00504,0.00519-0.01115,0.01147-0.01619,0.01667c-0.01447,0.01492-0.02929,0.0302-0.04375,0.04512  c-0.00168,0.00173-0.00056,0.00058-0.00224,0.00231c-0.01384,0.01428-0.02778,0.02869-0.0416,0.04298  c-0.00503,0.0052-0.01047,0.01083-0.0155,0.01603c-0.00962,0.00996-0.0193,0.01997-0.02892,0.02994  c-0.00503,0.0052-0.01227,0.01271-0.01729,0.01791c-0.009,0.00932-0.01819,0.01886-0.02718,0.02819  c-0.00669,0.00694-0.01056,0.01096-0.01726,0.01791c-0.0096,0.00997-0.01934,0.02009-0.02893,0.03006  c-0.00501,0.00521-0.01041,0.01081-0.01542,0.01603c-0.01094,0.01138-0.0217,0.02258-0.03264,0.03397  c-0.00501,0.00522-0.00655,0.00682-0.01156,0.01204c-0.01462,0.01523-0.02916,0.03039-0.04375,0.04563  c-0.00333,0.00348-0.00743,0.00776-0.01076,0.01124c-0.01104,0.01153-0.02199,0.02296-0.03302,0.0345  c-0.005,0.00523-0.01171,0.01225-0.0167,0.01747c-0.00919,0.00961-0.01815,0.01899-0.02733,0.02861  c-0.00499,0.00523-0.01239,0.01298-0.01738,0.0182c-0.00905,0.00949-0.01823,0.01912-0.02728,0.02861  c-0.00499,0.00523-0.01203,0.01262-0.01701,0.01785c-0.0099,0.01039-0.02003,0.02103-0.02992,0.03143  c-0.00498,0.00523-0.00838,0.00881-0.01336,0.01405c-0.0127,0.01335-0.02543,0.02676-0.03812,0.04012  c-0.00166,0.00175-0.00458,0.00482-0.00624,0.00657c-0.01451,0.01529-0.02913,0.03071-0.04363,0.04601  c-0.00331,0.00349-0.00928,0.0098-0.01259,0.01329c-0.01023,0.0108-0.0206,0.02176-0.03082,0.03257  c-0.00661,0.00699-0.00986,0.01042-0.01647,0.01742c-0.00912,0.00965-0.01822,0.01929-0.02734,0.02894  c-0.00661,0.007-0.01118,0.01185-0.01778,0.01884c-0.00838,0.00889-0.01669,0.01769-0.02507,0.02658  c-0.0066,0.007-0.01259,0.01336-0.01919,0.02036c-0.00898,0.00954-0.01781,0.01892-0.02678,0.02846  c-0.00494,0.00526-0.01124,0.01195-0.01619,0.0172c-0.01418,0.01508-0.02852,0.03035-0.04269,0.04544  c-0.00329,0.00351-0.00432,0.00461-0.00761,0.00812c-0.01174,0.01251-0.0235,0.02505-0.03524,0.03757  c-0.00493,0.00526-0.01226,0.0131-0.01719,0.01836c-0.0087,0.00929-0.01712,0.01829-0.02582,0.02759  c-0.00492,0.00526-0.01413,0.01511-0.01905,0.02038c-0.00833,0.00892-0.01663,0.01779-0.02495,0.02671  c-0.00656,0.00703-0.01137,0.01218-0.01793,0.01921c-0.00868,0.00931-0.01734,0.01859-0.02602,0.0279  c-0.00655,0.00703-0.01128,0.01211-0.01783,0.01914c-0.01012,0.01086-0.02021,0.02171-0.03033,0.03259  c-0.00491,0.00527-0.00721,0.00774-0.01212,0.01302c-0.01396,0.01501-0.02792,0.03004-0.04187,0.04507  c-0.0049,0.00528-0.01064,0.01147-0.01554,0.01675c-0.00937,0.0101-0.01901,0.02049-0.02838,0.0306  c-0.00653,0.00705-0.01004,0.01084-0.01656,0.01789c-0.00864,0.00933-0.01729,0.01867-0.02592,0.02801  c-0.00652,0.00705-0.0119,0.01287-0.01842,0.01992c-0.00851,0.00921-0.0167,0.01807-0.02521,0.02728  c-0.00651,0.00706-0.01163,0.0126-0.01814,0.01965c-0.00838,0.00909-0.01668,0.01809-0.02506,0.02718  c-0.00488,0.00529-0.01313,0.01425-0.01801,0.01955c-0.01029,0.01117-0.02045,0.02222-0.03073,0.03339  c-0.00487,0.00529-0.01388,0.01509-0.01875,0.02039c-0.01135,0.01235-0.02288,0.0249-0.03422,0.03725  c-0.00487,0.0053-0.01327,0.01447-0.01814,0.01977c-0.00811,0.00885-0.01612,0.01758-0.02423,0.02643  c-0.00648,0.00707-0.01317,0.01438-0.01965,0.02145c-0.00763,0.00833-0.01523,0.01665-0.02286,0.02498  c-0.00647,0.00707-0.01414,0.01546-0.02061,0.02253c-0.00738,0.00808-0.0147,0.0161-0.02208,0.02417  c-0.00646,0.00708-0.01351,0.0148-0.01997,0.02188c-0.00809,0.00887-0.01604,0.01759-0.02411,0.02645  c-0.00646,0.00708-0.01204,0.0132-0.01849,0.02029c-0.01342,0.01473-0.02696,0.02961-0.04036,0.04435  c-0.00484,0.00532-0.01122,0.01234-0.01605,0.01766c-0.00866,0.00953-0.01705,0.01876-0.0257,0.02829  c-0.00644,0.0071-0.0136,0.01499-0.02003,0.02209c-0.00746,0.00822-0.01509,0.01664-0.02255,0.02487  c-0.00643,0.0071-0.01394,0.01539-0.02037,0.02249c-0.0071,0.00784-0.01437,0.01588-0.02146,0.02372  c-0.00643,0.0071-0.01429,0.0158-0.02071,0.0229c-0.00733,0.00811-0.01485,0.01644-0.02217,0.02454  c-0.00642,0.00711-0.01385,0.01534-0.02027,0.02245c-0.00708,0.00785-0.01409,0.01562-0.02117,0.02348  c-0.01122,0.01245-0.02552,0.02834-0.03673,0.04079c-0.00766,0.00851-0.01537,0.01707-0.02302,0.02558  c-0.008,0.0089-0.01351,0.01504-0.02151,0.02393c-0.00683,0.0076-0.01355,0.01508-0.02037,0.02268  c-0.00799,0.0089-0.01458,0.01626-0.02257,0.02516c-0.00623,0.00695-0.01238,0.01381-0.01861,0.02076  c-0.00798,0.0089-0.01543,0.01723-0.02341,0.02614c-0.00587,0.00656-0.0118,0.01319-0.01767,0.01975  c-0.00797,0.00891-0.01626,0.01817-0.02423,0.02709c-0.00563,0.0063-0.01113,0.01246-0.01675,0.01876  c-0.00797,0.00892-0.01643,0.01839-0.02439,0.02731c-0.00468,0.00525-0.00945,0.0106-0.01413,0.01585  c-0.01751,0.01963-0.03707,0.0416-0.05454,0.06124c-0.00327,0.00368-0.00666,0.00748-0.00993,0.01116  c-0.00953,0.01071-0.01754,0.01974-0.02707,0.03046c-0.00455,0.00513-0.00912,0.01027-0.01367,0.0154  c-0.00793,0.00894-0.01857,0.02093-0.02649,0.02987c-0.0049,0.00552-0.0097,0.01093-0.0146,0.01646  c-0.00951,0.01073-0.01685,0.01902-0.02636,0.02975c-0.00443,0.005-0.0089,0.01006-0.01333,0.01506  c-0.0095,0.01074-0.01817,0.02055-0.02766,0.03129c-0.00361,0.00408-0.00724,0.00819-0.01085,0.01228  c-0.03321,0.0376-0.06541,0.07412-0.09853,0.11178c-0.00255,0.0029-0.00508,0.00577-0.00763,0.00867  c-0.00946,0.01076-0.01934,0.022-0.02879,0.03277c-0.00383,0.00436-0.0078,0.00888-0.01163,0.01324  c-0.00945,0.01077-0.01924,0.02192-0.02868,0.03269c-0.00371,0.00423-0.00712,0.00813-0.01083,0.01235  c-0.00944,0.01077-0.01996,0.02278-0.02939,0.03355c-0.00289,0.0033-0.00585,0.00669-0.00874,0.00999  c-0.04715,0.05389-0.09266,0.10605-0.13962,0.16004c-0.00219,0.00252-0.00437,0.00502-0.00656,0.00754  c-0.01096,0.0126-0.02022,0.02326-0.03116,0.03587c-0.00265,0.00305-0.00524,0.00603-0.00789,0.00909  c-0.00938,0.0108-0.02228,0.02567-0.03165,0.03648c-0.00218,0.00252-0.0045,0.0052-0.00669,0.00771  c-0.01093,0.01261-0.02213,0.02554-0.03305,0.03815c-0.0008,0.00093-0.00154,0.00179-0.00235,0.00271  c-0.04992,0.05769-0.09744,0.11278-0.14716,0.17058c-0.00023,0.00027-0.00052,0.0006-0.00075,0.00087  c-0.01087,0.01265-0.02356,0.0274-0.03442,0.04006c-0.0016,0.00186-0.00323,0.00376-0.00483,0.00562  c-0.01241,0.01446-0.02219,0.02585-0.03459,0.04032c-0.00046,0.00053-0.00071,0.00082-0.00116,0.00135  c-0.66654,0.77757-1.31178,1.56358-1.93967,2.36225l11.52838,9.06372c1.41073-1.79433,2.95133-3.52946,4.579-5.15714  l20.2126-20.2126L41.25335,77.99419L41.25335,77.99419z M2.43997,130.39366c-1.32846,4.97183-2.114,10.05621-2.35779,15.16386  l0,0.00002c-0.00342,0.07175-0.00674,0.14348-0.00995,0.21524l0,0.00003c-0.00321,0.07175-0.00626,0.1422-0.00926,0.21396  c-0.00003,0.00075-0.00008,0.00183-0.00011,0.00258c-0.0015,0.03589-0.00291,0.07027-0.00435,0.10616l-0.00002,0.00044  c-0.00144,0.03589-0.00284,0.07112-0.00423,0.10699c-0.00003,0.00076-0.00001,0.0002-0.00004,0.00095  c-0.00139,0.03589-0.0027,0.07022-0.00403,0.10611c-0.00003,0.00075-0.00006,0.00154-0.00009,0.0023  c-0.00134,0.03589-0.00257,0.06956-0.00385,0.10545c-0.00003,0.00076-0.00005,0.00142-0.00008,0.00218  c-0.00128,0.03589-0.00247,0.06972-0.0037,0.10561l-0.00007,0.00203c-0.00123,0.03589-0.00235,0.06929-0.00353,0.10519  c-0.00002,0.00075-0.00008,0.00256-0.00011,0.00333c-0.00118,0.03589-0.00222,0.06833-0.00334,0.10423  c-0.00005,0.00151-0.00007,0.00215-0.00011,0.00366c-0.00056,0.01794-0.00102,0.03285-0.00157,0.0508  c-0.00002,0.00076-0.00001,0.0004-0.00004,0.00114c-0.00055,0.01794-0.00103,0.03403-0.00157,0.05197  c-0.00005,0.00151-0.00008,0.00285-0.00013,0.00436c-0.00054,0.01794-0.00093,0.03136-0.00145,0.04932  c-0.00004,0.00151-0.00003,0.00095-0.00007,0.00246c-0.00052,0.01796-0.00097,0.03346-0.00148,0.05142  c-0.00004,0.00151-0.00009,0.00331-0.00014,0.00484c-0.00051,0.01794-0.00087,0.03076-0.00136,0.04872  c-0.00002,0.00075-0.00006,0.00218-0.00008,0.00294c-0.00049,0.01794-0.00094,0.03419-0.00142,0.05214  c-0.00002,0.00076-0.00004,0.00153-0.00006,0.00229c-0.00048,0.01794-0.00083,0.03123-0.0013,0.04919  c-0.00004,0.00151-0.00009,0.00331-0.00013,0.00482c-0.00047,0.01794-0.00085,0.03279-0.0013,0.05075  c-0.00004,0.00151-0.00008,0.00308-0.00012,0.00459c-0.0004,0.0157-0.00075,0.02997-0.00114,0.04567  c-0.00006,0.00227-0.00015,0.00587-0.0002,0.00813c-0.00044,0.01796-0.00076,0.03101-0.00119,0.04895  c-0.00005,0.00227-0.0001,0.00409-0.00015,0.00636c-0.00032,0.01346-0.00072,0.03067-0.00104,0.04413  c-0.00007,0.00302-0.00012,0.00526-0.00019,0.00829c-0.00041,0.01794-0.00073,0.03162-0.00113,0.04956  c-0.00003,0.00151-0.00006,0.00262-0.00009,0.00414c-0.00035,0.0157-0.00066,0.03004-0.00101,0.04575  c-0.00007,0.00304-0.00013,0.00584-0.00019,0.00888c-0.00034,0.0157-0.00072,0.0338-0.00105,0.0495  c-0.00002,0.00076-0.00003,0.00143-0.00005,0.0022c-0.00033,0.0157-0.00065,0.03139-0.00097,0.0471  c-0.00006,0.00302-0.00012,0.00594-0.00018,0.00896c-0.00063,0.03142-0.00134,0.06822-0.00193,0.09964  c-0.00004,0.00226-0.00011,0.00578-0.00015,0.00804c-0.00058,0.03142-0.00124,0.06812-0.00178,0.09953  c-0.00005,0.00302-0.00009,0.00526-0.00014,0.00829c-0.00054,0.03142-0.00114,0.06848-0.00164,0.0999  c-0.00005,0.00302-0.00008,0.00488-0.00012,0.0079c-0.00049,0.03142-0.00103,0.06804-0.00148,0.09946  c-0.00004,0.00302-0.00008,0.00587-0.00013,0.0089c-0.00022,0.01572-0.00045,0.03218-0.00066,0.0479  c-0.00001,0.00075-0.00001,0.00081-0.00002,0.00156c-0.00021,0.01572-0.00044,0.03351-0.00064,0.04922  c-0.00004,0.00302-0.00009,0.00699-0.00013,0.01001c-0.00017,0.01346-0.00038,0.03055-0.00054,0.04402  c-0.00002,0.00151-0.00005,0.00381-0.00006,0.00533c-0.00019,0.0157-0.00038,0.03297-0.00056,0.04868  c-0.00004,0.00378-0.00006,0.0054-0.0001,0.00917c-0.00015,0.01347-0.00034,0.03091-0.00048,0.04437  c-0.00002,0.00227-0.00004,0.00359-0.00006,0.00586c-0.00016,0.0157-0.00033,0.03203-0.00048,0.04773  c-0.00004,0.00378-0.00008,0.0078-0.00011,0.01158c-0.00013,0.01347-0.00025,0.02655-0.00037,0.04002  c-0.00003,0.00378-0.00005,0.00555-0.00009,0.00934c-0.00014,0.01572-0.00027,0.03067-0.0004,0.04637  c-0.00004,0.00453-0.00007,0.00835-0.0001,0.01288c-0.00011,0.01347-0.0002,0.02446-0.0003,0.03792  c-0.00003,0.00378-0.00006,0.00768-0.00009,0.01146c-0.0001,0.01346-0.00023,0.03256-0.00033,0.04602  c-0.00003,0.00378-0.00006,0.00891-0.00008,0.0127c-0.00009,0.01346-0.00015,0.02252-0.00023,0.036  c-0.00003,0.00453-0.00006,0.00948-0.00009,0.01401c-0.00008,0.01347-0.00018,0.03125-0.00025,0.04471  c-0.00002,0.00455-0.00005,0.009-0.00007,0.01353c-0.00007,0.01347-0.00011,0.02281-0.00018,0.03629  c-0.00002,0.00453-0.00004,0.00871-0.00006,0.01324c-0.00006,0.01346-0.00013,0.0318-0.00019,0.04526  c-0.00002,0.00453-0.00003,0.00867-0.00005,0.0132c-0.00005,0.01347-0.00008,0.02243-0.00012,0.03589  c-0.00001,0.00455-0.00003,0.00896-0.00004,0.0135c-0.00004,0.01346-0.00009,0.03178-0.00012,0.04524  c-0.00001,0.00453-0.00002,0.00865-0.00003,0.0132c-0.00003,0.01346-0.00005,0.02219-0.00007,0.03564  c-0.00001,0.00455-0.00002,0.01004-0.00002,0.01457c-0.00002,0.01346-0.00004,0.03139-0.00005,0.04485  c0,0.00455,0,0.00854-0.00001,0.01308C0,148.97058,0,148.98212,0,148.99333c0,0.00529,0,0.01173,0,0.01701  c0,0.01347,0.00001,0.02982,0.00002,0.04329c0,0.00453,0.00001,0.00986,0.00001,0.01439  c0.00001,0.01122,0.00002,0.02225,0.00004,0.03348c0.00001,0.00529,0.00002,0.01192,0.00002,0.01721  c0.00002,0.01347,0.00005,0.0293,0.00008,0.04276c0.00001,0.00529,0.00003,0.0108,0.00004,0.0161  c0.00002,0.00899,0.00005,0.02167,0.00008,0.03064c0.00002,0.00604,0.00004,0.01302,0.00006,0.01907  c0.00004,0.01346,0.00009,0.02676,0.00014,0.04024c0.00002,0.00528,0.00004,0.01129,0.00006,0.01659  c0.00004,0.01122,0.00009,0.02187,0.00014,0.03308c0.00003,0.00606,0.00005,0.01176,0.00008,0.01781  c0.00007,0.0157,0.00013,0.02759,0.00021,0.04329c0.00002,0.00378,0.00004,0.00719,0.00006,0.01097  c0.00007,0.01346,0.00012,0.02185,0.0002,0.03532c0.00004,0.00604,0.00008,0.01291,0.00011,0.01895  c0.00008,0.01347,0.00015,0.02399,0.00024,0.03746c0.00003,0.00528,0.00007,0.01048,0.00011,0.01576  c0.00009,0.01347,0.00016,0.02324,0.00026,0.03671c0.00004,0.00604,0.00009,0.01184,0.00013,0.01788  c0.0001,0.01346,0.00017,0.02237,0.00028,0.03583c0.00004,0.00529,0.00009,0.011,0.00013,0.0163  c0.00011,0.01346,0.00021,0.02461,0.00033,0.03807c0.00005,0.00529,0.00011,0.0119,0.00015,0.0172  c0.00012,0.01347,0.00021,0.02248,0.00033,0.03595c0.00005,0.00528,0.00009,0.00948,0.00014,0.01477  c0.00013,0.01346,0.00027,0.02676,0.0004,0.04022c0.00005,0.00529,0.00013,0.01215,0.00018,0.01744  c0.00014,0.01347,0.00023,0.02164,0.00038,0.03511c0.00004,0.00377,0.00009,0.008,0.00013,0.01178  c0.00018,0.0157,0.00031,0.02737,0.0005,0.04309c0.00007,0.00604,0.00015,0.01274,0.00022,0.01878  c0.00011,0.00897,0.00028,0.02316,0.0004,0.03214c0.00007,0.00529,0.00012,0.00941,0.00018,0.01469  c0.00017,0.01347,0.00039,0.03009,0.00057,0.04356c0.00008,0.00604,0.00015,0.01105,0.00023,0.01711  c0.00012,0.00897,0.00031,0.02269,0.00044,0.03166c0.00007,0.00529,0.00015,0.01071,0.00022,0.01601  c0.00019,0.01346,0.00042,0.02908,0.00062,0.04256c0.00009,0.00604,0.00018,0.01205,0.00027,0.0181  c0.00014,0.00897,0.00034,0.02211,0.00047,0.03108c0.00008,0.00529,0.00018,0.01138,0.00026,0.01668  c0.00021,0.01346,0.00045,0.02847,0.00067,0.04195c0.0001,0.00604,0.00022,0.01311,0.00032,0.01915  c0.00015,0.00899,0.00034,0.02066,0.0005,0.02963c0.0001,0.00604,0.00019,0.01117,0.00029,0.01723  c0.00023,0.01346,0.00048,0.02771,0.00072,0.04117c0.00013,0.00755,0.00025,0.01416,0.00039,0.02173  c0.00016,0.00897,0.0003,0.01651,0.00047,0.0255c0.00013,0.00679,0.00026,0.01421,0.00039,0.021  c0.00025,0.01347,0.00051,0.02705,0.00077,0.04051c0.00013,0.00681,0.00026,0.01353,0.0004,0.02034  c0.00018,0.00897,0.00034,0.0175,0.00052,0.02647c0.00014,0.00681,0.00028,0.01387,0.00041,0.02068  c0.00027,0.01346,0.00055,0.02681,0.00083,0.04027c0.00014,0.00681,0.00028,0.01337,0.00042,0.02017  c0.00019,0.00897,0.00039,0.0186,0.00059,0.02757c0.00015,0.00681,0.00029,0.01363,0.00044,0.02043  c0.00029,0.01346,0.00057,0.02608,0.00087,0.03954c0.00017,0.00757,0.00034,0.01494,0.00051,0.02249  c0.0002,0.00897,0.00034,0.01523,0.00055,0.02422c0.00016,0.00679,0.00035,0.01509,0.0005,0.0219  c0.00026,0.01122,0.0005,0.02138,0.00076,0.03259c0.00023,0.00983,0.00047,0.01991,0.00071,0.02974  c0.00022,0.00897,0.00037,0.01514,0.00058,0.02411c0.00017,0.00681,0.00036,0.01462,0.00053,0.02142  c0.00033,0.01346,0.00069,0.02777,0.00103,0.04123c0.00015,0.00604,0.00029,0.01123,0.00044,0.01727  c0.00023,0.00899,0.00052,0.02039,0.00075,0.02937c0.00018,0.00679,0.00035,0.01332,0.00052,0.02013  c0.00029,0.01122,0.00058,0.02206,0.00088,0.03328c0.00024,0.00906,0.00047,0.0174,0.00071,0.02646  c0.00024,0.00897,0.00053,0.01938,0.00077,0.02837c0.00019,0.00679,0.00036,0.01314,0.00055,0.01993  c0.00031,0.01123,0.00061,0.02202,0.00093,0.03323c0.00023,0.00832,0.0005,0.01759,0.00073,0.02589  c0.00026,0.00897,0.00057,0.01994,0.00083,0.02892c0.0002,0.00681,0.00037,0.01277,0.00057,0.01958  c0.00033,0.01122,0.00058,0.0197,0.00091,0.03091c0.00031,0.01057,0.0006,0.0202,0.00092,0.03078  c0.00027,0.00897,0.00049,0.0164,0.00077,0.02538c0.00023,0.00755,0.00046,0.01524,0.0007,0.02281  c0.00028,0.00897,0.00055,0.0179,0.00083,0.02687c0.00033,0.01059,0.00068,0.0218,0.00101,0.03239  c0.00028,0.00897,0.00053,0.01671,0.00081,0.02568c0.00024,0.00755,0.0005,0.01578,0.00075,0.02333  c0.00029,0.00897,0.00053,0.01648,0.00083,0.02545c0.00034,0.01059,0.00069,0.02104,0.00104,0.03162  c0.00037,0.01122,0.00059,0.01776,0.00096,0.02898c0.00023,0.00681,0.00048,0.01447,0.00071,0.02127  c0.0003,0.00897,0.00058,0.01714,0.00089,0.02611c0.00039,0.01134,0.00075,0.02206,0.00115,0.0334  c0.00023,0.00673,0.00068,0.01956,0.00091,0.02629c0.00026,0.00755,0.00053,0.0152,0.0008,0.02277  c0.00032,0.00897,0.00056,0.01584,0.00088,0.02481c0.0004,0.01132,0.00081,0.02257,0.00121,0.03391  c0.00032,0.00897,0.00064,0.01772,0.00096,0.02669c0.00027,0.00755,0.00057,0.0157,0.00085,0.02325  c0.00033,0.00897,0.00057,0.01537,0.0009,0.02434c0.00034,0.00906,0.00068,0.01843,0.00102,0.0275  c0.00042,0.01122,0.00082,0.02187,0.00125,0.03308c0.00029,0.00755,0.0006,0.01585,0.00089,0.02341  c0.00026,0.00673,0.00061,0.01595,0.00087,0.02267c0.00041,0.01057,0.00079,0.02043,0.0012,0.03102  c0.00044,0.0112,0.00079,0.02025,0.00123,0.03146c0.0003,0.00755,0.00061,0.01543,0.00091,0.02298  c0.00027,0.00673,0.00062,0.01569,0.00089,0.02242c0.00036,0.00906,0.00075,0.01871,0.00112,0.02779  c0.00045,0.0112,0.00093,0.02284,0.00138,0.03406c0.00034,0.00832,0.00067,0.01636,0.00101,0.02467  c0.00028,0.00673,0.00057,0.01384,0.00085,0.02057c0.0005,0.01208,0.00098,0.02365,0.00149,0.03575  c0.00038,0.00896,0.00075,0.01796,0.00113,0.02693c0.00035,0.0083,0.00074,0.01743,0.0011,0.02573  c0.00019,0.00449,0.00064,0.01489,0.00083,0.01938c0.00039,0.00906,0.00071,0.01643,0.0011,0.0255  c0.00058,0.01344,0.00107,0.02457,0.00166,0.03802c0.00036,0.00832,0.00068,0.01552,0.00105,0.02382  c0.0004,0.00897,0.00057,0.01295,0.00097,0.02193c0.00034,0.00755,0.00075,0.01678,0.00109,0.02434  c0.0006,0.01346,0.00115,0.02553,0.00176,0.03899c0.00031,0.00679,0.00068,0.01498,0.00099,0.02177  c0.00041,0.00897,0.00065,0.01431,0.00107,0.02327c0.00038,0.00832,0.00073,0.01587,0.00112,0.02417  c0.00042,0.00897,0.0008,0.01709,0.00121,0.02606c0.00056,0.01208,0.00118,0.02521,0.00175,0.03729  c0.00032,0.00673,0.00058,0.01227,0.0009,0.01898c0.00043,0.00906,0.00084,0.01778,0.00128,0.02684  c0.00032,0.00673,0.00063,0.0132,0.00096,0.01993c0.00065,0.0136,0.00135,0.02785,0.00201,0.04144  c0.00033,0.00673,0.0007,0.01442,0.00103,0.02115c0.00037,0.00755,0.0008,0.0164,0.00118,0.02396  c0.00055,0.01122,0.00096,0.01939,0.00152,0.03061c0.00049,0.00981,0.00103,0.02055,0.00152,0.03036  c0.00045,0.00897,0.00074,0.01472,0.00119,0.02368c0.00038,0.00755,0.00084,0.01653,0.00122,0.02408  c0.00046,0.00896,0.00096,0.01875,0.00142,0.02771c0.00054,0.01057,0.00109,0.0213,0.00164,0.03186  c0.00046,0.00897,0.00081,0.01572,0.00128,0.02469c0.00039,0.00754,0.00083,0.01591,0.00122,0.02347  c0.00035,0.00673,0.00095,0.01802,0.0013,0.02473c0.00064,0.01208,0.00126,0.0238,0.0019,0.03589  c0.00036,0.00671,0.00092,0.01718,0.00128,0.02391c0.00044,0.0083,0.00084,0.0157,0.00129,0.024  c0.00036,0.00673,0.00097,0.01794,0.00133,0.02467c0.00061,0.01132,0.00124,0.02287,0.00186,0.03419  c0.00049,0.00897,0.00089,0.01633,0.00139,0.0253c0.00042,0.00754,0.00085,0.01538,0.00127,0.02292  c0.0005,0.00897,0.00101,0.01816,0.00151,0.02713c0.00059,0.01056,0.00116,0.02081,0.00176,0.03139  c0.0005,0.00897,0.001,0.01773,0.0015,0.02669c0.00043,0.00755,0.00088,0.01556,0.00131,0.02312  c0.00051,0.00896,0.00104,0.01823,0.00155,0.02719c0.00052,0.00906,0.00105,0.0183,0.00157,0.02736  c0.00052,0.00896,0.00126,0.02179,0.00178,0.03076c0.00044,0.00754,0.00087,0.01495,0.00131,0.02249  c0.00039,0.00673,0.00103,0.01764,0.00143,0.02437c0.00071,0.01208,0.00138,0.02351,0.0021,0.03558  c0.0004,0.00673,0.00107,0.01814,0.00147,0.02487c0.00049,0.0083,0.00094,0.01582,0.00144,0.02414  c0.0004,0.00671,0.00099,0.0164,0.00139,0.02313c0.00064,0.01056,0.00124,0.02051,0.00188,0.03107  c0.00068,0.0112,0.00116,0.01909,0.00184,0.03029c0.00046,0.00755,0.00087,0.01422,0.00133,0.02177  c0.00055,0.00896,0.0011,0.01782,0.00165,0.02678c0.00056,0.00906,0.00107,0.01729,0.00163,0.02634  c0.0007,0.01122,0.00135,0.0217,0.00205,0.0329c0.00047,0.00755,0.001,0.01602,0.00148,0.02357  c0.00056,0.00896,0.0009,0.01428,0.00147,0.02324c0.00048,0.00755,0.00092,0.01465,0.0014,0.0222  c0.00085,0.01344,0.00161,0.02531,0.00247,0.03876c0.00053,0.00832,0.001,0.01564,0.00154,0.02394  c0.00058,0.00897,0.00086,0.01328,0.00144,0.02223c0.00049,0.00755,0.00106,0.0164,0.00155,0.02396  c0.00087,0.01344,0.00161,0.02477,0.0025,0.03821c0.00054,0.0083,0.00102,0.01549,0.00157,0.02379  c0.00059,0.00896,0.00084,0.01274,0.00143,0.0217c0.00055,0.0083,0.00105,0.01582,0.0016,0.02412  c0.00089,0.01344,0.00164,0.02466,0.00255,0.0381c0.00051,0.00755,0.00106,0.01582,0.00157,0.02336  c0.0006,0.00896,0.00098,0.01454,0.00159,0.02351c0.00051,0.00754,0.00103,0.01518,0.00154,0.02274  c0.00091,0.01344,0.00172,0.0253,0.00265,0.03873c0.00057,0.0083,0.00102,0.0148,0.00159,0.0231  c0.00062,0.00896,0.00102,0.01482,0.00164,0.02379c0.00052,0.00754,0.00096,0.01392,0.00149,0.02145  c0.00093,0.01344,0.00181,0.02597,0.00275,0.0394c0.00058,0.0083,0.00109,0.01553,0.00168,0.02383  c0.00063,0.00896,0.00091,0.01289,0.00154,0.02185c0.00059,0.0083,0.00116,0.01645,0.00175,0.02475  c0.00064,0.00896,0.00121,0.01704,0.00185,0.026c0.00086,0.01207,0.00177,0.02478,0.00264,0.03685  c0.00048,0.00671,0.00092,0.01285,0.00141,0.01956c0.0006,0.0083,0.00121,0.01683,0.00182,0.02512  c0.00081,0.0112,0.00135,0.01854,0.00216,0.02974c0.00072,0.0098,0.0015,0.02051,0.00222,0.03032  c0.00066,0.00896,0.00117,0.01599,0.00184,0.02495c0.00056,0.00754,0.00111,0.01506,0.00167,0.02261  c0.00083,0.0112,0.00131,0.01772,0.00215,0.0289c0.00079,0.01056,0.00157,0.0211,0.00236,0.03165  c0.00067,0.00896,0.00118,0.01581,0.00186,0.02477c0.00057,0.00754,0.00108,0.01428,0.00165,0.02182  c0.00085,0.0112,0.00144,0.01897,0.00229,0.03017c0.00074,0.0098,0.00157,0.02061,0.00232,0.03041  c0.00068,0.00896,0.00125,0.01637,0.00194,0.02533c0.00058,0.00754,0.00118,0.0154,0.00176,0.02293  c0.00069,0.00896,0.00136,0.01761,0.00205,0.02657c0.00088,0.01131,0.00169,0.02185,0.00258,0.03316  c0.0007,0.00896,0.00125,0.01607,0.00195,0.02502c0.00059,0.00754,0.00119,0.01518,0.00178,0.02272  c0.0007,0.00896,0.00143,0.01813,0.00213,0.02708c0.00083,0.01054,0.00162,0.02054,0.00246,0.03108  c0.00071,0.00896,0.00151,0.01906,0.00223,0.02802c0.0006,0.00754,0.00113,0.01411,0.00173,0.02165  c0.00072,0.00896,0.00137,0.01703,0.00209,0.02599c0.00091,0.01131,0.00174,0.02164,0.00266,0.03294  c0.00072,0.00896,0.00143,0.01761,0.00215,0.02655c0.00061,0.00754,0.0012,0.01477,0.00182,0.02231  c0.00055,0.00671,0.00152,0.01862,0.00207,0.02533c0.00093,0.01131,0.00192,0.02344,0.00286,0.03474  c0.00055,0.00671,0.00152,0.01842,0.00207,0.02513c0.00069,0.00829,0.00129,0.01559,0.00198,0.02388  c0.00056,0.00671,0.00127,0.0153,0.00183,0.02202c0.00101,0.01205,0.00213,0.02551,0.00314,0.03757  c0.00056,0.00671,0.00145,0.01726,0.00202,0.02397c0.00064,0.00754,0.00141,0.01669,0.00205,0.02423  c0.00057,0.00671,0.00132,0.01562,0.00189,0.02234c0.00102,0.01205,0.00189,0.02225,0.00292,0.0343  c0.00096,0.01118,0.00143,0.01678,0.00239,0.02797c0.00065,0.00754,0.00133,0.0155,0.00198,0.02304  c0.00058,0.00671,0.00132,0.01535,0.0019,0.02206c0.00111,0.01282,0.00222,0.02567,0.00334,0.03847  c0.00058,0.00671,0.0014,0.01613,0.00199,0.02284c0.00072,0.00829,0.0015,0.01717,0.00223,0.02547  c0.00059,0.00671,0.00118,0.01346,0.00177,0.02016c0.00119,0.01357,0.00245,0.02786,0.00366,0.04143  c0.00079,0.00896,0.00107,0.0121,0.00186,0.02106c0.00074,0.00829,0.00157,0.01768,0.00231,0.02597  c0.0006,0.00671,0.0011,0.01236,0.0017,0.01906c0.00074,0.00829,0.00154,0.0172,0.00228,0.02548  c0.00121,0.01341,0.00215,0.02396,0.00337,0.03738c0.00075,0.00829,0.00154,0.01706,0.0023,0.02534  c0.00061,0.00671,0.00122,0.01344,0.00183,0.02016c0.00075,0.00829,0.00154,0.01697,0.0023,0.02525  c0.00123,0.01343,0.00223,0.02444,0.00347,0.03786c0.00069,0.00754,0.00154,0.01669,0.00223,0.02423  c0.00082,0.00894,0.00107,0.01163,0.0019,0.02057c0.00077,0.00829,0.00154,0.01669,0.00231,0.02498  c0.00125,0.01341,0.0023,0.02478,0.00356,0.03819c0.0007,0.00754,0.00137,0.01465,0.00208,0.02219  c0.00084,0.00894,0.00144,0.01538,0.00228,0.02434c0.00071,0.00752,0.00144,0.01532,0.00215,0.02286  c0.00127,0.01341,0.00236,0.02502,0.00364,0.03844c0.00079,0.00829,0.00155,0.01628,0.00234,0.02457  c0.00064,0.00671,0.0012,0.01265,0.00185,0.01936c0.00086,0.00903,0.00166,0.01735,0.00252,0.02638  c0.00086,0.00896,0.00146,0.01521,0.00232,0.02415c0.00116,0.01205,0.00242,0.02516,0.00359,0.03722  c0.00065,0.0067,0.00139,0.01437,0.00204,0.02109c0.0008,0.00829,0.00164,0.01689,0.00245,0.02518  c0.00087,0.00894,0.00212,0.02174,0.003,0.03069c0.00103,0.01054,0.00191,0.01953,0.00295,0.03006  c0.00066,0.00671,0.00147,0.01492,0.00213,0.02162c0.00089,0.00903,0.00161,0.01631,0.0025,0.02536  c0.00066,0.0067,0.00179,0.01807,0.00246,0.02477c0.0012,0.01205,0.00233,0.02344,0.00353,0.03548  c0.00067,0.00671,0.00163,0.01637,0.0023,0.02309c0.00083,0.00827,0.0016,0.01595,0.00243,0.02423  c0.0009,0.00894,0.00173,0.01723,0.00263,0.02617c0.00106,0.01054,0.00225,0.02228,0.00331,0.03282  c0.0009,0.00894,0.00164,0.01617,0.00255,0.02512c0.00076,0.00752,0.00151,0.01482,0.00227,0.02234  c0.00091,0.00894,0.00217,0.02122,0.00308,0.03017c0.00092,0.00903,0.00197,0.01924,0.0029,0.02827  c0.00092,0.00893,0.00187,0.01819,0.00279,0.02713c0.00078,0.00752,0.00156,0.01508,0.00233,0.0226  c0.00092,0.00894,0.00204,0.01971,0.00297,0.02866c0.00094,0.00903,0.00193,0.01852,0.00287,0.02756  c0.00093,0.00894,0.0021,0.02016,0.00304,0.0291c0.00079,0.00752,0.00151,0.01439,0.0023,0.02191  c0.00094,0.00894,0.00203,0.01936,0.00298,0.02829c0.00095,0.00903,0.00183,0.0174,0.00279,0.02643  c0.00118,0.01117,0.00222,0.02101,0.00341,0.03218c0.00072,0.00677,0.00145,0.01367,0.00217,0.02045  c0.00095,0.00894,0.00207,0.01944,0.00303,0.02838c0.00088,0.00827,0.00184,0.01724,0.00273,0.02551  c0.0012,0.01117,0.00228,0.02127,0.00348,0.03244c0.00081,0.00752,0.00146,0.01352,0.00227,0.02104  c0.00096,0.00894,0.00223,0.0206,0.00319,0.02954c0.00065,0.00601,0.00143,0.01321,0.00209,0.01924  c0.00146,0.0134,0.0028,0.02577,0.00427,0.03917c0.00066,0.00601,0.00132,0.01208,0.00198,0.01811  c0.00122,0.01117,0.0026,0.02373,0.00383,0.0349c0.00041,0.00375,0.00081,0.00734,0.00122,0.01111  c0.00172,0.01562,0.00312,0.02832,0.00486,0.04396c0.00058,0.00526,0.00136,0.0123,0.00195,0.01756  c0.00099,0.00894,0.00251,0.02257,0.0035,0.03151c0.00059,0.00526,0.00118,0.0106,0.00177,0.01588  c0.0015,0.0134,0.00327,0.02927,0.00478,0.04266c0.00068,0.00603,0.00129,0.01149,0.00197,0.0175  c0.001,0.00894,0.00249,0.02214,0.0035,0.03107c0.00059,0.00526,0.00125,0.01105,0.00184,0.01631  c0.00152,0.0134,0.00321,0.02832,0.00473,0.04172c0.00068,0.00601,0.00146,0.01282,0.00215,0.01883  c0.00102,0.00893,0.00253,0.02213,0.00355,0.03105c0.0006,0.00526,0.00121,0.01057,0.00181,0.01584  c0.00154,0.01338,0.00338,0.02942,0.00492,0.04282c0.00061,0.00526,0.00137,0.01183,0.00197,0.01709  c0.00103,0.00893,0.00257,0.02223,0.00361,0.03116c0.00061,0.00526,0.00129,0.01117,0.00191,0.01643  c0.00156,0.0134,0.00337,0.02893,0.00493,0.04233c0.0007,0.00601,0.0014,0.01193,0.0021,0.01794  c0.00105,0.00893,0.00255,0.02177,0.0036,0.0307c0.00062,0.00526,0.00132,0.01126,0.00194,0.01653  c0.00158,0.01338,0.00358,0.03038,0.00517,0.04378c0.00062,0.00526,0.00102,0.00859,0.00164,0.01384  c0.00159,0.0134,0.00245,0.02063,0.00404,0.03403c0.00063,0.00525,0.00125,0.01051,0.00188,0.01578  c0.0016,0.01338,0.0035,0.02934,0.00511,0.04272c0.00063,0.00526,0.0013,0.01083,0.00193,0.01608  c0.00134,0.01117,0.00266,0.02216,0.00401,0.03331c0.00054,0.00452,0.00125,0.01035,0.00179,0.01486  c0.00189,0.01561,0.0035,0.02896,0.0054,0.04459c0.00046,0.00375,0.001,0.00824,0.00146,0.01199  c0.00163,0.01338,0.00278,0.02284,0.00441,0.03622c0.00064,0.00526,0.00108,0.00888,0.00173,0.01414  c0.00191,0.01561,0.00359,0.02931,0.00551,0.04494c0.00046,0.00375,0.00101,0.00824,0.00148,0.01199  c0.00165,0.01338,0.00276,0.02242,0.00442,0.0358c0.00056,0.0045,0.00132,0.01071,0.00188,0.01521  c0.00193,0.01562,0.00367,0.02966,0.00562,0.04527c0.00028,0.00226,0.00073,0.00586,0.00101,0.00812  c0.00167,0.01338,0.0032,0.02568,0.00488,0.03906c0.00056,0.0045,0.00126,0.01004,0.00182,0.01456  c0.00196,0.01561,0.00375,0.02989,0.00572,0.0455c0.00028,0.00226,0.00057,0.00452,0.00085,0.00677  c0.00169,0.01338,0.00367,0.02907,0.00536,0.04245c0.00048,0.00375,0.00093,0.00732,0.0014,0.01108  c0.00198,0.01561,0.00409,0.03226,0.00608,0.04787c0.0001,0.00075,0.00017,0.00134,0.00027,0.00209  c0.00199,0.01561,0.00378,0.02957,0.00578,0.04518c0.00058,0.0045,0.00106,0.00829,0.00164,0.01279  c0.002,0.01561,0.00371,0.02893,0.00573,0.04454c0.00019,0.0015,0.00036,0.00282,0.00056,0.00432  c0.00201,0.01561,0.00392,0.03036,0.00595,0.04596c0.00049,0.00375,0.00111,0.00858,0.0016,0.01233  c0.00203,0.01561,0.00408,0.03143,0.00612,0.04703l0.00002,0.00015c0.00204,0.01559,0.00426,0.03255,0.0063,0.04814  c0.00049,0.00375,0.00104,0.0079,0.00153,0.01166c0.00176,0.01338,0.00363,0.02757,0.00539,0.04094  c0.0004,0.00301,0.00066,0.00497,0.00105,0.00798c0.00206,0.01559,0.00407,0.03079,0.00614,0.04639  c0.0006,0.00452,0.00105,0.00787,0.00164,0.01239c0.00178,0.01337,0.00364,0.02737,0.00543,0.04074  c0.0003,0.00226,0.00068,0.00508,0.00098,0.00732c0.00208,0.01559,0.00423,0.03157,0.00632,0.04718  c0.0005,0.00374,0.00093,0.00693,0.00144,0.01068c0.0018,0.01337,0.00399,0.02962,0.00579,0.04298  c0.0003,0.00224,0.00051,0.00377,0.00081,0.00603c0.00211,0.01559,0.00434,0.03204,0.00646,0.04764  c0.00051,0.00375,0.00097,0.00711,0.00148,0.01086c0.00182,0.01337,0.0038,0.02794,0.00563,0.04131  c0.00031,0.00224,0.00072,0.00526,0.00103,0.00751c0.00213,0.01559,0.00435,0.03181,0.00649,0.04741  c0.00052,0.00375,0.00099,0.00719,0.0015,0.01094c0.00184,0.01335,0.00349,0.02539,0.00534,0.03874  c0.00052,0.00375,0.00103,0.00748,0.00155,0.01123c0.00216,0.01558,0.00437,0.03156,0.00653,0.04715  c0.00042,0.00301,0.00075,0.00537,0.00116,0.00838c0.00186,0.01337,0.00408,0.02934,0.00595,0.04271  c0.00031,0.00224,0.00075,0.00537,0.00106,0.00761c0.00249,0.01782,0.00428,0.03061,0.00678,0.04842  c0.00032,0.00224,0.00079,0.00563,0.00111,0.00789c0.00188,0.01335,0.00406,0.02888,0.00595,0.04224  c0.00042,0.00301,0.00086,0.00613,0.00129,0.00914c0.00251,0.01781,0.00431,0.03046,0.00683,0.04826  c0.00032,0.00224,0.00059,0.00414,0.00091,0.00638c0.0019,0.01335,0.00439,0.0309,0.0063,0.04425  c0.00043,0.00301,0.00062,0.00436,0.00105,0.00735c0.00254,0.01781,0.0045,0.03148,0.00705,0.04929  c0.00032,0.00224,0.00049,0.00342,0.00081,0.00566c0.00192,0.01335,0.00414,0.02881,0.00606,0.04216  c0.00054,0.00375,0.00116,0.00803,0.0017,0.01178c0.00225,0.01558,0.0046,0.03185,0.00686,0.04742  c0.00022,0.0015,0.00051,0.00354,0.00073,0.00504c0.00194,0.01335,0.00453,0.03114,0.00647,0.04449  c0.00044,0.00301,0.00084,0.00574,0.00127,0.00874c0.00227,0.01556,0.0049,0.03355,0.00718,0.04912  c0.00011,0.00075,0.00032,0.0022,0.00043,0.00294c0.00228,0.01556,0.00463,0.03151,0.00692,0.04709  c0.00033,0.00224,0.00075,0.00508,0.00108,0.00734c0.00492,0.03337,0.00975,0.06601,0.01472,0.09937  c0.00033,0.00226,0.00079,0.00528,0.00112,0.00754c0.00497,0.03336,0.00979,0.06558,0.0148,0.09894  c0.00045,0.00301,0.00081,0.00542,0.00126,0.00841c0.00468,0.03114,0.01024,0.0679,0.01497,0.09903  c0.00034,0.00224,0.00078,0.00516,0.00112,0.0074c0.00473,0.03113,0.01036,0.06801,0.01513,0.09914  c0.00046,0.00299,0.00078,0.00511,0.00124,0.0081c0.00478,0.03113,0.01045,0.06792,0.01527,0.09903  c0.00035,0.00224,0.00078,0.00504,0.00113,0.00728c0.00517,0.03334,0.01034,0.06659,0.01556,0.09991  c0.00035,0.00224,0.00072,0.00461,0.00107,0.00685c0.00522,0.03334,0.0106,0.06754,0.01586,0.10088  c0.00024,0.0015,0.00047,0.00296,0.00071,0.00446c0.00562,0.03555,0.01074,0.06781,0.01641,0.10335l0.00033,0.00206  c0.00567,0.03555,0.01096,0.06853,0.01668,0.10405c0.00012,0.00075,0.00041,0.00256,0.00053,0.00333  c0.00573,0.03552,0.01106,0.06848,0.01684,0.104l0.00027,0.00165c0.36155,2.22279,0.82714,4.42888,1.39813,6.61627l14.18938-3.70352  c-2.50627-9.6024-2.47727-19.74527,0.08393-29.33188l-14.16787-3.78513H2.43997z M26.62841,184.01425l-11.58033,8.99727  c1.18167,1.52084,2.4324,3.00467,3.75323,4.44809c0.0005,0.00055,0.00108,0.00117,0.00158,0.00172  c0.01295,0.01414,0.02408,0.02631,0.03704,0.04045c0.001,0.00108,0.00194,0.00212,0.00294,0.0032  c0.05185,0.05658,0.10002,0.10896,0.15209,0.16542c0.00101,0.00108,0.00193,0.00209,0.00293,0.00317  c0.01139,0.01234,0.02323,0.02518,0.03463,0.03751c0.00239,0.00259,0.00485,0.00525,0.00724,0.00784  c0.0114,0.01233,0.02333,0.02524,0.03474,0.03757c0.00113,0.00122,0.00207,0.00224,0.00321,0.00346  c0.0375,0.04053,0.07264,0.07841,0.11025,0.11887c0.00202,0.00218,0.00425,0.00458,0.00627,0.00674  c0.01145,0.01231,0.02093,0.02251,0.03239,0.03481c0.00316,0.0034,0.00658,0.00708,0.00974,0.01047  c0.00982,0.01054,0.02206,0.02368,0.03189,0.03421c0.00341,0.00366,0.00663,0.00711,0.01004,0.01077  c0.03606,0.03865,0.07068,0.07568,0.10684,0.11427c0.00178,0.00189,0.0035,0.00374,0.00527,0.00563  c0.00986,0.01053,0.0202,0.02155,0.03007,0.03206c0.00457,0.00487,0.00923,0.00984,0.0138,0.01471  c0.00987,0.01051,0.01957,0.02084,0.02945,0.03136c0.00432,0.00459,0.00859,0.00912,0.01291,0.01373  c0.00989,0.0105,0.01999,0.02124,0.02988,0.03175c0.00356,0.00378,0.00733,0.00778,0.01089,0.01155  c0.01814,0.01927,0.03848,0.04083,0.05665,0.06007c0.00497,0.00526,0.00988,0.01048,0.01486,0.01575  c0.00826,0.00874,0.01682,0.01779,0.02509,0.02654c0.00625,0.00661,0.01264,0.01337,0.01889,0.01997  c0.00827,0.00874,0.01695,0.01791,0.02523,0.02664c0.00651,0.00688,0.01307,0.01379,0.01958,0.02066  c0.00828,0.00874,0.01613,0.01701,0.02441,0.02576c0.00716,0.00754,0.01442,0.01518,0.02158,0.02272  c0.00829,0.00873,0.01404,0.01479,0.02233,0.02351c0.01369,0.0144,0.02716,0.02856,0.04087,0.04295  c0.0083,0.00873,0.01485,0.01559,0.02316,0.02431c0.00705,0.0074,0.0141,0.0148,0.02115,0.0222  c0.00831,0.00871,0.01584,0.0166,0.02416,0.02531c0.00706,0.00739,0.01425,0.01492,0.02131,0.02231  c0.00832,0.00871,0.01407,0.01472,0.0224,0.02344c0.00809,0.00847,0.01612,0.01685,0.02422,0.02531  c0.00833,0.0087,0.01261,0.01317,0.02095,0.02187c0.01402,0.01463,0.02776,0.02896,0.04179,0.04359  c0.00668,0.00696,0.01174,0.01222,0.01842,0.01918c0.00889,0.00925,0.01767,0.01839,0.02656,0.02763  c0.00668,0.00696,0.01397,0.01453,0.02065,0.02148c0.00851,0.00883,0.01687,0.01753,0.02539,0.02637  c0.00669,0.00694,0.0138,0.01433,0.0205,0.02127c0.00852,0.00885,0.01697,0.01759,0.02549,0.02644  c0.0067,0.00694,0.01312,0.0136,0.01982,0.02054c0.01138,0.01178,0.02301,0.0238,0.03439,0.03558  c0.00838,0.00867,0.0136,0.01407,0.02199,0.02274c0.01061,0.01097,0.02109,0.02179,0.03171,0.03275  c0.00672,0.00693,0.01339,0.01381,0.02011,0.02075c0.00868,0.00894,0.017,0.01752,0.02569,0.02647  c0.00672,0.00693,0.01345,0.01385,0.02018,0.02078c0.00882,0.00908,0.01767,0.01817,0.02649,0.02725  c0.00673,0.00693,0.01257,0.01294,0.01931,0.01985c0.01169,0.01201,0.02356,0.0242,0.03526,0.03621  c0.00337,0.00345,0.0062,0.00636,0.00957,0.00981c0.01483,0.01521,0.02976,0.03052,0.0446,0.04572  c0.00506,0.00517,0.01164,0.0119,0.0167,0.01709c0.01003,0.01025,0.01993,0.02039,0.02996,0.03064  c0.00507,0.00519,0.01229,0.01256,0.01736,0.01775c0.00978,0.00998,0.01951,0.01991,0.0293,0.02989  c0.00676,0.00691,0.01085,0.01108,0.01762,0.01797c0.01083,0.01105,0.02177,0.02219,0.03262,0.03323  c0.00508,0.00517,0.00834,0.0085,0.01343,0.01367c0.0149,0.01515,0.02972,0.03023,0.04464,0.04538  c0.00509,0.00517,0.01012,0.01027,0.01521,0.01544c0.01047,0.01064,0.0211,0.02142,0.03158,0.03204  c0.00509,0.00516,0.01148,0.01164,0.01658,0.0168c0.01035,0.0105,0.02034,0.0206,0.03069,0.0311  c0.0051,0.00516,0.01178,0.01192,0.01688,0.01707c0.01102,0.01115,0.02184,0.02208,0.03287,0.03323  c0.0034,0.00343,0.00994,0.01004,0.01335,0.01347c0.01523,0.01538,0.03069,0.03098,0.04594,0.04636  c0.00341,0.00343,0.00612,0.00615,0.00953,0.00958c0.01236,0.01247,0.02478,0.02498,0.03716,0.03741  c0.00512,0.00516,0.01096,0.01102,0.01608,0.01617c0.01014,0.01019,0.02028,0.02039,0.03043,0.03058  c0.00683,0.00685,0.0107,0.01074,0.01754,0.01759c0.01068,0.01073,0.02138,0.02145,0.03207,0.03217  c0.00513,0.00514,0.00936,0.00938,0.01449,0.01453c0.01557,0.01559,0.03099,0.03104,0.04658,0.04663  c0.00126,0.00125,0.00203,0.00203,0.00329,0.00328c0.01284,0.01285,0.02457,0.02455,0.03742,0.03738  c0.00504,0.00504,0.00986,0.00984,0.0149,0.01486c0.00857,0.00856,0.01728,0.01726,0.02586,0.0258  c0.00546,0.00545,0.01097,0.01093,0.01643,0.01636c0.00858,0.00854,0.01584,0.01579,0.02442,0.02432  c0.00547,0.00545,0.01098,0.01093,0.01645,0.01637c0.00772,0.00768,0.01658,0.01649,0.02431,0.02417  c0.00589,0.00586,0.01189,0.01181,0.01778,0.01765c0.00772,0.00768,0.01534,0.01524,0.02307,0.0229  c0.00547,0.00543,0.01176,0.01167,0.01724,0.01709c0.00773,0.00768,0.01599,0.01587,0.02372,0.02353  c0.00548,0.00542,0.01134,0.01122,0.01681,0.01663c0.00773,0.00766,0.01653,0.01637,0.02427,0.02403  c0.00506,0.00499,0.01069,0.01056,0.01575,0.01556c0.0086,0.0085,0.01658,0.01639,0.02519,0.02489  c0.00548,0.00542,0.01088,0.01073,0.01636,0.01614c0.0086,0.0085,0.01611,0.0159,0.02472,0.02438  c0.00506,0.00499,0.01019,0.01006,0.01526,0.01505c0.00861,0.00848,0.01728,0.01701,0.02589,0.0255  c0.00507,0.00499,0.01066,0.0105,0.01573,0.01547c0.00862,0.00848,0.01643,0.01617,0.02504,0.02464  c0.00549,0.00539,0.01079,0.01059,0.01628,0.01599c0.00776,0.00761,0.01694,0.01663,0.0247,0.02425  c0.00592,0.00581,0.01079,0.01059,0.01671,0.01639c0.00776,0.00761,0.01684,0.01653,0.0246,0.02412  c0.00508,0.00497,0.01062,0.01041,0.01569,0.01537c0.00863,0.00845,0.01679,0.01645,0.02543,0.02489  c0.0055,0.00539,0.0102,0.00998,0.0157,0.01537c0.00864,0.00844,0.01711,0.01672,0.02575,0.02516  c0.00508,0.00496,0.00952,0.00929,0.0146,0.01425c0.00864,0.00844,0.01788,0.01744,0.02652,0.02588  c0.00508,0.00496,0.01027,0.01001,0.01536,0.01497c0.00864,0.00842,0.01718,0.01674,0.02583,0.02516  c0.00509,0.00496,0.00994,0.00967,0.01503,0.01463c0.00865,0.00841,0.01748,0.017,0.02614,0.02542  c0.00509,0.00494,0.01009,0.0098,0.01518,0.01474c0.00866,0.00841,0.01793,0.01741,0.02659,0.02582  c0.00467,0.00453,0.00909,0.00882,0.01376,0.01335c0.00953,0.00925,0.01797,0.01743,0.0275,0.02666  c0.0051,0.00494,0.0093,0.009,0.01439,0.01395c0.00953,0.00923,0.01731,0.01677,0.02685,0.02599  c0.00467,0.00453,0.00934,0.00905,0.01402,0.01357c0.00954,0.00922,0.01796,0.01736,0.0275,0.02658  c0.00468,0.00452,0.00947,0.00914,0.01415,0.01366c0.00954,0.00922,0.01764,0.01703,0.02719,0.02625  c0.00426,0.0041,0.00956,0.00922,0.01382,0.01332c0.00868,0.00836,0.01867,0.01799,0.02736,0.02635  c0.00468,0.00452,0.01003,0.00966,0.01471,0.01416c0.00869,0.00836,0.01844,0.01775,0.02713,0.02609  c0.00426,0.0041,0.00905,0.00871,0.01331,0.0128c0.00956,0.00919,0.01901,0.01826,0.02857,0.02744  c0.00426,0.00409,0.00861,0.00827,0.01288,0.01236c0.00956,0.00919,0.01922,0.01843,0.02879,0.0276  c0.00426,0.00409,0.00815,0.00781,0.01241,0.0119c0.00957,0.00917,0.01946,0.01863,0.02904,0.0278  c0.00427,0.00409,0.00845,0.00809,0.01272,0.01216c0.00958,0.00917,0.01971,0.01886,0.02929,0.028  c0.00384,0.00368,0.00787,0.00752,0.01171,0.0112c0.00958,0.00914,0.02042,0.01949,0.03001,0.02864  c0.00385,0.00366,0.00783,0.00746,0.01168,0.01114c0.01046,0.00996,0.02014,0.0192,0.03061,0.02916  c0.00342,0.00325,0.00696,0.00662,0.01038,0.00989c0.01047,0.00996,0.02018,0.01921,0.03065,0.02916  c0.00385,0.00366,0.0079,0.00751,0.01175,0.01117c0.0096,0.00912,0.02093,0.01988,0.03053,0.02899  c0.00342,0.00325,0.00704,0.0067,0.01047,0.00995c0.01048,0.00993,0.0208,0.01973,0.03128,0.02966  c0.00343,0.00325,0.00718,0.00681,0.01061,0.01006c0.01048,0.00993,0.0209,0.01979,0.03138,0.02971  c0.00343,0.00325,0.00668,0.00633,0.01011,0.00957c0.01049,0.00992,0.0212,0.02005,0.03169,0.02997  c0.00343,0.00323,0.00672,0.00635,0.01015,0.0096c0.01137,0.01073,0.02177,0.02054,0.03314,0.03128  c0.00257,0.00243,0.00538,0.00507,0.00795,0.00749c0.01138,0.01073,0.02324,0.0219,0.03462,0.03262  c0.00257,0.00243,0.00455,0.00429,0.00712,0.00671c0.01226,0.01154,0.02463,0.02318,0.03689,0.0347  c0.00172,0.00162,0.00259,0.00244,0.00431,0.00406c0.01226,0.01154,0.02461,0.02313,0.03688,0.03465  c0.00172,0.00162,0.00371,0.00348,0.00542,0.0051c0.01315,0.01233,0.02626,0.02463,0.03941,0.03696  c0.00043,0.0004,0.00138,0.0013,0.00181,0.00169c0.01315,0.01233,0.02722,0.0255,0.04038,0.03781  c0.00043,0.00041,0.00127,0.00119,0.0017,0.00159c6.45856,6.04282,13.76097,10.67038,21.5111,13.88254l5.61471-13.54727  c-6.92233-2.869-13.14807-7.03954-18.50433-12.39574C29.70455,187.72513,28.09568,185.90273,26.62841,184.01425L26.62841,184.01425z   M100.64041,198.41165c-8.5288,4.98154-18.2952,7.6656-28.24353,7.76215l0.14233,14.66406  c12.29122-0.11906,24.5579-3.37405,35.49738-9.76323L100.64041,198.41165L100.64041,198.41165z M215.07848,56.19686  l-14.15247,3.84207c2.59947,9.57547,2.66907,19.71813,0.20107,29.3314l14.20421,3.64654  c2.06491-8.044,2.71642-16.37573,1.95378-24.60136c-0.00006-0.00076-0.00014-0.00159-0.00021-0.00233  c-0.00331-0.03578-0.00647-0.06955-0.00984-0.10533c-0.00008-0.00076-0.00009-0.00099-0.00017-0.00175  c-0.00337-0.03577-0.00661-0.06982-0.01003-0.1056c-0.00008-0.00075-0.00011-0.00113-0.00018-0.00188  c-0.00342-0.03577-0.00662-0.06892-0.0101-0.10469c-0.00014-0.0015-0.0002-0.002-0.00034-0.0035  c-0.00348-0.03577-0.00665-0.06808-0.01018-0.10385c-0.00008-0.00075-0.00027-0.00285-0.00035-0.00359  c-0.00354-0.03577-0.00681-0.06864-0.01039-0.1044c-0.00008-0.00076-0.00014-0.00132-0.00021-0.00208  c-0.00359-0.03576-0.00702-0.06976-0.01065-0.10552c-0.00008-0.00076-0.00008-0.00066-0.00015-0.0014  c-0.00728-0.07152-0.01454-0.14188-0.02203-0.21338c-0.00008-0.00076,0-0.00005-0.00008-0.00079  c-0.0206-0.19662-0.04181-0.39126-0.06403-0.58774c-0.00008-0.00075-0.0002-0.00174-0.00027-0.00249  c-0.00404-0.03573-0.00783-0.06901-0.01193-0.10473c-0.00008-0.00075-0.00018-0.00165-0.00027-0.0024  c-0.00409-0.03572-0.00787-0.0685-0.01202-0.10422c-0.00008-0.00075-0.00034-0.00291-0.00041-0.00365  c-0.00415-0.03571-0.00778-0.06671-0.01198-0.10242c-0.00017-0.0015-0.00049-0.00417-0.00067-0.00567  c-0.0042-0.03571-0.00774-0.06568-0.01199-0.10139c-0.00027-0.00225-0.00047-0.00391-0.00073-0.00616  c-0.00426-0.03571-0.00789-0.06602-0.01221-0.10172c-0.00018-0.0015-0.0004-0.00327-0.00056-0.00477  c-0.00432-0.0357-0.008-0.06596-0.01234-0.10165c-0.00027-0.00225-0.00055-0.00441-0.00082-0.00667  c-0.00191-0.01562-0.00406-0.0332-0.00598-0.04881c-0.00009-0.00076-0.00005-0.00046-0.00014-0.00121  c-0.0022-0.01785-0.00397-0.03215-0.00618-0.05c-0.00027-0.00225-0.00064-0.00524-0.00092-0.0075  c-0.00194-0.01561-0.00392-0.03166-0.00587-0.04727c-0.00009-0.00075-0.00024-0.00198-0.00034-0.00273  c-0.00223-0.01785-0.004-0.03201-0.00623-0.04985c-0.00038-0.00301-0.00056-0.0045-0.00095-0.0075  c-0.00166-0.01338-0.00401-0.03208-0.00571-0.04546c-0.00018-0.0015-0.00041-0.0033-0.0006-0.0048  c-0.00226-0.01784-0.00397-0.03146-0.00623-0.04929c-0.00029-0.00225-0.00069-0.00532-0.00096-0.00757  c-0.00198-0.01561-0.00383-0.03019-0.00583-0.04579c-0.00018-0.0015-0.00037-0.00285-0.00055-0.00435  c-0.00227-0.01784-0.00415-0.03252-0.00644-0.05035c-0.0002-0.0015-0.0005-0.00394-0.0007-0.00544  c-0.00171-0.01337-0.0042-0.03271-0.00594-0.04609c-0.00018-0.0015-0.00052-0.00412-0.00072-0.00562  c-0.0023-0.01783-0.00407-0.03151-0.00638-0.04934c-0.00031-0.00226-0.0006-0.00455-0.00089-0.00681  c-0.00174-0.01337-0.00418-0.03206-0.00592-0.04543c-0.00029-0.00225-0.00043-0.00326-0.00072-0.00551  c-0.00232-0.01783-0.00421-0.03218-0.00655-0.05001c-0.0002-0.0015-0.0005-0.0038-0.0007-0.0053  c-0.00175-0.01337-0.00414-0.03152-0.00591-0.04489c-0.0004-0.003-0.0006-0.00449-0.00099-0.00749  c-0.00235-0.01782-0.00415-0.03143-0.00652-0.04925c-0.00031-0.00226-0.00043-0.00319-0.00073-0.00544  c-0.00177-0.01337-0.00421-0.03165-0.006-0.04502c-0.00029-0.00225-0.0007-0.00532-0.00101-0.00757  c-0.00238-0.01782-0.00423-0.03155-0.00661-0.04937c-0.00021-0.0015-0.00043-0.00307-0.00063-0.00458  c-0.0018-0.01337-0.00418-0.03106-0.00598-0.04443c-0.00041-0.003-0.00085-0.00636-0.00127-0.00936  c-0.00211-0.01559-0.00453-0.03351-0.00665-0.0491c-0.00011-0.00075-0.00024-0.00183-0.00035-0.00259  c-0.00212-0.01559-0.00427-0.03136-0.00639-0.04694c-0.00041-0.00301-0.0007-0.0051-0.00111-0.0081  c-0.00212-0.01559-0.00462-0.03387-0.00677-0.04945c-0.0002-0.0015-0.00012-0.0009-0.00032-0.0024  c-0.00215-0.01559-0.00403-0.02927-0.00618-0.04487c-0.00063-0.00449-0.00101-0.00729-0.00163-0.01179  c-0.00215-0.01559-0.00446-0.03222-0.00662-0.04781c-0.00011-0.00075-0.00026-0.00185-0.00037-0.0026  c-0.00217-0.01559-0.00415-0.02989-0.00633-0.04548c-0.00052-0.00375-0.00102-0.00726-0.00154-0.01102  c-0.00435-0.03117-0.00896-0.06398-0.01337-0.09515c-0.00052-0.00375-0.00125-0.00892-0.00179-0.01266  c-0.0022-0.01559-0.00446-0.03151-0.00667-0.04709c-0.00011-0.00076-0.00014-0.00095-0.00024-0.0017  c-0.00221-0.01559-0.0042-0.02953-0.00641-0.04511c-0.00066-0.00449-0.00139-0.00967-0.00203-0.01418  c-0.00191-0.01335-0.00412-0.02879-0.00603-0.04215c-0.00034-0.00224-0.00055-0.00373-0.00087-0.00598  c-0.00223-0.01558-0.00406-0.02831-0.0063-0.04388c-0.00076-0.00525-0.00146-0.01014-0.00223-0.01539  c-0.00192-0.01335-0.00383-0.02654-0.00577-0.03989c-0.00034-0.00225-0.0007-0.00484-0.00102-0.00709  c-0.00226-0.01558-0.0043-0.02957-0.00658-0.04515c-0.00076-0.00525-0.00146-0.01006-0.00223-0.01531  c-0.00195-0.01335-0.00351-0.02403-0.00546-0.03738c-0.00055-0.00375-0.00084-0.00577-0.00139-0.00951  c-0.00229-0.01557-0.00427-0.02903-0.00656-0.0446c-0.00076-0.00524-0.00153-0.0104-0.0023-0.01565  c-0.00197-0.01334-0.00334-0.02264-0.00531-0.03599c-0.00056-0.00375-0.00111-0.00753-0.00168-0.01128  c-0.0023-0.01557-0.00429-0.02896-0.00661-0.04453c-0.00078-0.00524-0.00146-0.00989-0.00226-0.01514  c-0.00198-0.01334-0.00334-0.02246-0.00534-0.0358c-0.00056-0.00375-0.00116-0.00777-0.00172-0.01151  c-0.00232-0.01557-0.0042-0.02809-0.00655-0.04366c-0.0009-0.00599-0.00162-0.01078-0.00252-0.01678  c-0.00168-0.01112-0.00334-0.02215-0.00502-0.03326c-0.00067-0.00449-0.00146-0.00974-0.00215-0.01423  c-0.00201-0.01334-0.00455-0.03004-0.00656-0.04337c-0.00079-0.00524-0.0016-0.01055-0.00241-0.0158  c-0.00203-0.01334-0.00316-0.02075-0.00519-0.0341c-0.00056-0.00374-0.00143-0.00945-0.00201-0.0132  c-0.00204-0.01334-0.00461-0.03014-0.00665-0.04348c-0.00081-0.00524-0.00182-0.01184-0.00262-0.01708  c-0.00137-0.0089-0.00346-0.02255-0.00484-0.03144c-0.00092-0.00599-0.00154-0.01006-0.00247-0.01605  c-0.00206-0.01334-0.00452-0.0292-0.00658-0.04253c-0.00081-0.00524-0.00185-0.01192-0.00266-0.01716  c-0.00139-0.0089-0.00343-0.02204-0.00481-0.03093c-0.00082-0.00524-0.00174-0.01113-0.00255-0.01637  c-0.00208-0.01334-0.00449-0.02877-0.00658-0.04211c-0.00093-0.00599-0.00183-0.01168-0.00276-0.01767  c-0.0014-0.00889-0.00342-0.02178-0.00482-0.03067c-0.00093-0.00599-0.00172-0.01104-0.00267-0.01703  c-0.00211-0.01333-0.00455-0.02887-0.00665-0.0422c-0.00095-0.00599-0.00177-0.01116-0.00272-0.01714  c-0.0014-0.00889-0.00331-0.02094-0.00473-0.02983c-0.00095-0.00599-0.00188-0.01184-0.00282-0.01782  c-0.00212-0.01333-0.0045-0.02831-0.00662-0.04164c-0.00096-0.00599-0.00191-0.01189-0.00287-0.01787  c-0.00142-0.00889-0.00337-0.02114-0.00479-0.03003c-0.00084-0.00523-0.00197-0.01228-0.00281-0.01752  c-0.00215-0.01333-0.0047-0.02927-0.00685-0.04259c-0.00084-0.00524-0.00165-0.01018-0.00249-0.01542  c-0.00143-0.00888-0.00357-0.02213-0.005-0.03101c-0.00098-0.00599-0.00197-0.01212-0.00293-0.0181  c-0.00217-0.01332-0.00412-0.02544-0.00629-0.03876c-0.0011-0.00673-0.00214-0.01307-0.00323-0.01979  c-0.00143-0.00888-0.00345-0.02124-0.0049-0.03012c-0.00099-0.00599-0.00211-0.01285-0.00308-0.01883  c-0.00218-0.01332-0.00383-0.0234-0.00601-0.03672c-0.00124-0.00748-0.00217-0.01314-0.00339-0.02061  c-0.00146-0.00888-0.00357-0.02171-0.00504-0.03059c-0.00111-0.00673-0.00195-0.01181-0.00307-0.01854  c-0.0022-0.01332-0.00359-0.02171-0.00578-0.03502c-0.00124-0.00748-0.00244-0.01473-0.00368-0.02221  c-0.00148-0.00888-0.00366-0.02198-0.00513-0.03086c-0.00113-0.00673-0.00223-0.01337-0.00336-0.0201  c-0.00148-0.00888-0.00352-0.02119-0.005-0.03007c-0.00163-0.00972-0.00304-0.01808-0.00465-0.02779  c-0.0015-0.00888-0.0031-0.01844-0.00458-0.02731c-0.00127-0.00748-0.00259-0.01545-0.00386-0.02293  c-0.00111-0.00666-0.00291-0.0173-0.00403-0.02395c-0.00189-0.01121-0.00386-0.0229-0.00575-0.03411  c-0.00188-0.01109-0.00269-0.01582-0.00456-0.02691c-0.00127-0.00747-0.00241-0.01425-0.00368-0.02172  c-0.00151-0.00887-0.00278-0.01633-0.00429-0.0252c-0.00179-0.01046-0.00351-0.02059-0.00529-0.03105  c-0.00151-0.00887-0.00333-0.01951-0.00484-0.02838c-0.00128-0.00747-0.0025-0.01462-0.00378-0.02209  c-0.00153-0.00887-0.00275-0.01604-0.00427-0.02491c-0.0018-0.01046-0.00357-0.02077-0.00537-0.03122  c-0.00191-0.01109-0.00308-0.01793-0.00499-0.02901c-0.0013-0.00747-0.00252-0.01454-0.0038-0.02201  c-0.00154-0.00887-0.00275-0.01586-0.00429-0.02473c-0.00156-0.00896-0.00305-0.01765-0.00461-0.02661  c-0.00192-0.01109-0.00374-0.02149-0.00566-0.03258c-0.00143-0.00821-0.00282-0.01619-0.00426-0.02441  c-0.00116-0.00665-0.00229-0.01308-0.00345-0.01973c-0.00247-0.01419-0.00485-0.02773-0.00734-0.04191  c-0.00156-0.00887-0.00204-0.0117-0.0036-0.02057c-0.00145-0.00821-0.00291-0.01659-0.00436-0.02481  c-0.00117-0.00665-0.00246-0.01392-0.00363-0.02057c-0.00157-0.00896-0.00316-0.01794-0.00473-0.0269  c-0.00235-0.0133-0.00386-0.02184-0.00623-0.03513c-0.00133-0.00747-0.00269-0.01519-0.00401-0.02265  c-0.00157-0.00887-0.00253-0.01428-0.00412-0.02314c-0.00172-0.0097-0.00317-0.01789-0.00491-0.02759  c-0.00197-0.01108-0.00394-0.02208-0.00591-0.03315c-0.00148-0.00821-0.00299-0.01665-0.00446-0.02486  c-0.00119-0.00665-0.0023-0.01283-0.00349-0.01948c-0.0016-0.00896-0.00301-0.01676-0.00461-0.02571  c-0.00079-0.00443-0.00162-0.00895-0.00241-0.01338c-0.00296-0.01642-0.00613-0.03407-0.00911-0.05048  c-0.00079-0.00443-0.00197-0.01093-0.00278-0.01536c-0.00552-0.03059-0.01088-0.06007-0.01645-0.09066  c-0.00081-0.00443-0.00229-0.01252-0.0031-0.01695c-0.00177-0.0097-0.00325-0.01785-0.00504-0.02755  c-0.0004-0.00221-0.00163-0.00891-0.00203-0.01112c-0.00314-0.01715-0.00639-0.03489-0.00955-0.05204  c-0.00081-0.00443-0.00206-0.01124-0.00288-0.01566c-0.00177-0.0097-0.00346-0.01889-0.00526-0.02858  c-0.0004-0.00221-0.00137-0.00744-0.00177-0.00965c-0.00331-0.0179-0.00647-0.03502-0.0098-0.05291  c-0.00122-0.00664-0.00172-0.00933-0.00296-0.01597c-0.00166-0.00895-0.00342-0.01841-0.00508-0.02736  c-0.00082-0.00443-0.002-0.01073-0.00282-0.01516c-0.00305-0.0164-0.00632-0.03393-0.00938-0.05033  c-0.00041-0.00221-0.00198-0.01061-0.0024-0.01282c-0.00182-0.00969-0.0038-0.02026-0.00562-0.02995  c-0.00041-0.00221-0.00122-0.00651-0.00163-0.00872c-0.00351-0.01863-0.0071-0.03769-0.0106-0.05632  c-0.00041-0.00221-0.00175-0.00935-0.00218-0.01157c-0.00183-0.00969-0.00381-0.02021-0.00565-0.02989  c-0.00084-0.00443-0.00134-0.00711-0.00218-0.01153c-0.00339-0.01788-0.00658-0.03471-0.00998-0.0526  c-0.00084-0.00443-0.00169-0.00895-0.00253-0.01337c-0.00185-0.00969-0.00391-0.02051-0.00575-0.03019  c-0.00043-0.00221-0.00111-0.00581-0.00154-0.00802c-0.00369-0.01937-0.00746-0.03905-0.01117-0.05841  c-0.00084-0.00442-0.00092-0.00481-0.00177-0.00923c-0.002-0.01043-0.00394-0.02052-0.00594-0.03094  c-0.00085-0.00443-0.00093-0.00483-0.00179-0.00925c-0.00388-0.02011-0.00784-0.04071-0.01173-0.06081  c-0.00043-0.00221-0.00052-0.00272-0.00095-0.00493c-0.00217-0.01117-0.0043-0.02227-0.00647-0.03344l-0.0009-0.00463  c-0.0042-0.0216-0.00879-0.0452-0.01299-0.0668c-0.00044-0.00221,0.00012,0.00067-0.00031-0.00154  c-0.00218-0.01117-0.00436-0.02241-0.00656-0.03357c-0.00043-0.00221-0.00075-0.00388-0.00119-0.00608  c-0.00655-0.0335-0.01337-0.06823-0.01996-0.10173c-0.00043-0.00221-0.00032-0.00164-0.00076-0.00385  c-0.00674-0.03424-0.01323-0.06706-0.02003-0.10129c-0.00044-0.00221-0.0013-0.00657-0.00174-0.00878  c-0.00665-0.03349-0.01314-0.06595-0.01984-0.09943c-0.00044-0.00221-0.0007-0.00356-0.00114-0.00577  c-0.00656-0.03273-0.01334-0.06646-0.01994-0.09919c-0.00089-0.00441-0.00119-0.00589-0.00208-0.01031  c-0.00645-0.03198-0.01312-0.06491-0.01962-0.09689c-0.0009-0.00441-0.00093-0.00456-0.00183-0.00897  c-0.00681-0.03346-0.0134-0.06578-0.02026-0.09923l-0.00127-0.00619c-0.00716-0.03494-0.01395-0.06794-0.02116-0.10287  l-0.00044-0.00214c-0.00722-0.03493-0.01425-0.06889-0.02151-0.10381c-0.00046-0.0022-0.00035-0.00166-0.00081-0.00387  c-0.00711-0.03418-0.01443-0.06926-0.02161-0.10342c-0.00046-0.00221-0.0002-0.00093-0.00066-0.00314  c-0.00716-0.03417-0.01448-0.06892-0.0217-0.10308c-0.00046-0.0022-0.00041-0.002-0.00089-0.0042  C215.75481,58.83654,215.43559,57.51231,215.07848,56.19686L215.07848,56.19686z M172.64427,8.44973l-5.48126,13.6018  c7.1284,2.87267,13.52774,7.11413,19.0202,12.6066c1.57314,1.57313,3.06573,3.24746,4.43646,4.9766l11.49187-9.10993  c-0.40051-0.50525-0.80884-1.0064-1.22488-1.5032l-0.00325-0.00387c-0.0127-0.01516-0.02521-0.03008-0.03792-0.04523  l-0.00339-0.00404c-0.0126-0.01502-0.02531-0.03016-0.03793-0.04517l-0.00345-0.00411  c-0.041-0.04878-0.08203-0.09745-0.1232-0.14615c-0.00307-0.00363-0.00331-0.00393-0.00638-0.00756  c-0.01103-0.01304-0.02191-0.02591-0.03296-0.03894c-0.00307-0.00363-0.00812-0.0096-0.0112-0.01323  c-0.00974-0.01149-0.01955-0.02307-0.02928-0.03455c-0.00308-0.00363-0.00894-0.01054-0.01202-0.01417  c-0.00897-0.01058-0.01813-0.02136-0.02711-0.03194c-0.00462-0.00544-0.00977-0.0115-0.01439-0.01694  c-0.00867-0.01019-0.01743-0.02049-0.02609-0.03068c-0.00464-0.00544-0.00957-0.01123-0.01419-0.01667  c-0.009-0.01056-0.01816-0.02131-0.02716-0.03187c-0.00464-0.00543-0.00838-0.00984-0.01302-0.01527  c-0.01318-0.01545-0.02608-0.03056-0.03928-0.046c-0.00308-0.00362-0.00775-0.00906-0.01083-0.01268  c-0.00958-0.0112-0.01901-0.02223-0.02858-0.03342c-0.00465-0.00543-0.0139-0.01622-0.01854-0.02164  c-0.00705-0.00823-0.01407-0.01642-0.02113-0.02465c-0.0062-0.00723-0.01309-0.01527-0.01929-0.0225  c-0.00685-0.00797-0.01363-0.01588-0.02048-0.02384c-0.00621-0.00723-0.01436-0.01671-0.02057-0.02394  c-0.00618-0.00719-0.01241-0.01442-0.01859-0.02161c-0.00777-0.00903-0.01401-0.01627-0.02177-0.0253  c-0.00565-0.00655-0.01131-0.01312-0.01695-0.01967c-0.00777-0.00903-0.01567-0.01819-0.02345-0.02721  c-0.00497-0.00578-0.00996-0.01154-0.01494-0.01731c-0.00778-0.00902-0.01685-0.01952-0.02464-0.02854  c-0.00322-0.00372-0.00652-0.00754-0.00974-0.01126c-0.03117-0.03607-0.06418-0.07417-0.09544-0.11019  c-0.00333-0.00384-0.00681-0.00785-0.01015-0.01169c-0.00938-0.01081-0.01735-0.01998-0.02673-0.03078  c-0.00446-0.00512-0.00885-0.01018-0.01331-0.0153c-0.00938-0.0108-0.01727-0.01985-0.02667-0.03064  c-0.00401-0.00461-0.00784-0.00901-0.01186-0.01362c-0.0094-0.01079-0.0186-0.02135-0.02802-0.03214  c-0.00368-0.00422-0.00714-0.00818-0.01082-0.0124c-0.01099-0.01258-0.01802-0.02066-0.02902-0.03324  c-0.00267-0.00307-0.00513-0.00587-0.0078-0.00893c-0.04869-0.0557-0.09477-0.10827-0.14366-0.16386  c-0.00067-0.00076-0.00133-0.00151-0.002-0.00228c-0.01103-0.01255-0.02052-0.02333-0.03157-0.03588  c-0.00281-0.00319-0.00557-0.00632-0.00838-0.00951c-0.00946-0.01075-0.02071-0.0235-0.03018-0.03425  c-0.00314-0.00357-0.00626-0.00709-0.0094-0.01066c-0.00949-0.01075-0.02042-0.02313-0.02991-0.03387  c-0.00304-0.00344-0.00578-0.00654-0.00882-0.00998c-0.01108-0.01253-0.02057-0.02326-0.03165-0.03578  c-0.0018-0.00204-0.00337-0.00381-0.00517-0.00584c-0.06018-0.06799-0.1228-0.13847-0.18329-0.20628  c-0.00159-0.00178-0.00323-0.00363-0.00482-0.00541c-0.01114-0.01249-0.02187-0.02451-0.03302-0.03699  c-0.00215-0.00241-0.0042-0.00469-0.00635-0.0071c-0.00955-0.0107-0.02303-0.02577-0.03261-0.03646  c-0.00226-0.00254-0.00475-0.00531-0.007-0.00784c-0.01117-0.01248-0.02153-0.02404-0.03271-0.03651  c-0.00182-0.00203-0.00365-0.00407-0.00546-0.0061c-0.01118-0.01247-0.02332-0.026-0.0345-0.03846  c-0.00035-0.00038-0.00066-0.00073-0.00101-0.00111c-0.04956-0.0552-0.09995-0.11115-0.1497-0.16623  c-0.00137-0.00152-0.00279-0.00309-0.00417-0.0046c-0.01123-0.01244-0.02222-0.02458-0.03346-0.03701  c-0.00217-0.0024-0.00439-0.00486-0.00658-0.00726c-0.01125-0.01243-0.02063-0.0228-0.03189-0.03522  c-0.00275-0.00303-0.00569-0.00628-0.00844-0.00931c-0.00966-0.01065-0.0224-0.0247-0.03207-0.03534  c-0.00229-0.00252-0.00453-0.005-0.00682-0.00753c-0.01128-0.01242-0.02185-0.02406-0.03314-0.03646  c-0.0016-0.00176-0.00305-0.00337-0.00465-0.00513c-0.04837-0.05318-0.10039-0.1102-0.14894-0.16327  c-0.00104-0.00113-0.0022-0.00241-0.00323-0.00354c-0.01134-0.01238-0.0226-0.02468-0.03394-0.03706  c-0.00208-0.00226-0.00414-0.00451-0.00621-0.00677c-0.01134-0.01238-0.02126-0.02318-0.03261-0.03555  c-0.00276-0.00302-0.00545-0.00594-0.00822-0.00896c-0.00974-0.0106-0.02251-0.0245-0.03224-0.0351  c-0.00232-0.00251-0.00482-0.00524-0.00714-0.00775c-0.01137-0.01236-0.0217-0.0236-0.03308-0.03596  c-0.00208-0.00226-0.00427-0.00465-0.00636-0.0069c-0.04877-0.05295-0.09993-0.10832-0.14888-0.16115  c-0.00104-0.00113-0.0022-0.00238-0.00325-0.00351c-0.01143-0.01233-0.02156-0.02326-0.033-0.03558  c-0.00267-0.00288-0.00528-0.00569-0.00795-0.00857c-0.01143-0.01232-0.01942-0.02092-0.03087-0.03323  c-0.00349-0.00375-0.00697-0.00749-0.01045-0.01125c-0.00981-0.01055-0.02106-0.02264-0.03088-0.03319  c-0.00314-0.00338-0.00623-0.00668-0.00937-0.01006c-0.00983-0.01055-0.02126-0.02281-0.03108-0.03335  c-0.00314-0.00337-0.00635-0.0068-0.00949-0.01017c-0.01147-0.0123-0.0208-0.0223-0.03229-0.03459  c-0.00093-0.001-0.00201-0.00216-0.00294-0.00315c-0.0361-0.03863-0.07582-0.08105-0.11201-0.11962  c-0.0014-0.0015-0.00294-0.00315-0.00435-0.00465c-0.01152-0.01227-0.02034-0.02166-0.03188-0.03392  c-0.00304-0.00324-0.00621-0.00662-0.00926-0.00986c-0.01154-0.01226-0.01848-0.01964-0.03001-0.0319  c-0.00398-0.00423-0.00821-0.00873-0.01221-0.01296c-0.00989-0.01051-0.01865-0.0198-0.02855-0.0303  c-0.00433-0.0046-0.00868-0.0092-0.01302-0.01381c-0.0099-0.0105-0.01833-0.01942-0.02824-0.02991  c-0.00458-0.00485-0.00932-0.00987-0.0139-0.01472c-0.00992-0.01049-0.01799-0.01904-0.02792-0.02953  c-0.004-0.00423-0.00797-0.00842-0.01196-0.01264c-0.03308-0.03496-0.06743-0.07118-0.1006-0.10608  c-0.0033-0.00348-0.00662-0.00698-0.00992-0.01045c-0.00996-0.01047-0.01675-0.01761-0.02672-0.02808  c-0.00519-0.00546-0.01045-0.01098-0.01564-0.01643c-0.0083-0.00872-0.01717-0.01802-0.02548-0.02674  c-0.00555-0.00583-0.01135-0.01192-0.01691-0.01774c-0.00832-0.00871-0.01712-0.01793-0.02544-0.02665  c-0.00568-0.00595-0.01141-0.01196-0.01709-0.01791c-0.00833-0.00871-0.01633-0.01708-0.02466-0.02579  c-0.00592-0.00619-0.01202-0.01257-0.01794-0.01876c-0.00833-0.0087-0.01666-0.0174-0.02499-0.0261  c-0.00569-0.00594-0.0114-0.0119-0.01709-0.01784c-0.00835-0.0087-0.01682-0.01754-0.02516-0.02623  c-0.00522-0.00544-0.01056-0.01101-0.01579-0.01645c-0.01669-0.01739-0.03252-0.03385-0.04924-0.05123  c-0.00594-0.00618-0.01184-0.01232-0.01778-0.01849c-0.00836-0.00868-0.01512-0.01569-0.02348-0.02437  c-0.0063-0.00654-0.01244-0.0129-0.01874-0.01944c-0.0067-0.00694-0.01726-0.01788-0.02396-0.02482  c-0.00655-0.00679-0.01305-0.01351-0.01959-0.0203c-0.00838-0.00867-0.01424-0.01474-0.02263-0.02341  c-0.00679-0.00703-0.01361-0.01409-0.02042-0.02111c-0.00671-0.00694-0.01566-0.01617-0.02237-0.0231  c-0.00716-0.00739-0.0144-0.01487-0.02156-0.02226c-0.00671-0.00693-0.01479-0.01525-0.02151-0.02218  c-0.00693-0.00714-0.01408-0.01451-0.02101-0.02165c-0.00673-0.00693-0.01575-0.01622-0.02248-0.02314  c-0.00754-0.00776-0.01488-0.0153-0.02242-0.02305c-0.00673-0.00692-0.01363-0.01401-0.02036-0.02093  c-0.0139-0.01427-0.02776-0.02849-0.04166-0.04275c-0.00674-0.00692-0.01016-0.01042-0.01691-0.01733  c-0.00888-0.00909-0.01768-0.01812-0.02657-0.02721c-0.00674-0.00691-0.01251-0.01282-0.01927-0.01973  c-0.00792-0.00811-0.01604-0.01641-0.02397-0.02451c-0.00674-0.00691-0.01373-0.01403-0.02049-0.02094  c-0.00781-0.00798-0.0157-0.01604-0.02353-0.02402c-0.00676-0.0069-0.01305-0.01331-0.01981-0.02021  c-0.00793-0.00809-0.01572-0.01601-0.02365-0.0241c-0.00677-0.0069-0.01384-0.0141-0.02061-0.02099  c-0.00783-0.00797-0.0159-0.01618-0.02374-0.02415c-0.00677-0.00689-0.01274-0.01296-0.01952-0.01985  c-0.00868-0.00882-0.01721-0.01748-0.02589-0.0263c-0.00679-0.00689-0.01117-0.01134-0.01796-0.01823  c-0.01424-0.01444-0.02872-0.02911-0.04297-0.04354c-0.00339-0.00344-0.00471-0.00478-0.00812-0.00822  c-0.01172-0.01187-0.02342-0.02371-0.03516-0.03557c-0.00511-0.00516-0.0125-0.01262-0.01761-0.01778  c-0.00882-0.00892-0.01768-0.01787-0.02652-0.02679c-0.00682-0.00687-0.01169-0.01179-0.01849-0.01866  c-0.00836-0.00843-0.01689-0.01702-0.02525-0.02545c-0.00682-0.00687-0.0126-0.0127-0.01942-0.01957  c-0.00848-0.00854-0.01689-0.01701-0.02539-0.02555c-0.00511-0.00515-0.01353-0.01361-0.01866-0.01876  c-0.00861-0.00866-0.01717-0.01725-0.02579-0.02591c-0.00684-0.00686-0.01144-0.01149-0.01828-0.01835  c-0.00972-0.00975-0.01962-0.01968-0.02934-0.02943c-0.00342-0.00343-0.01108-0.01111-0.01451-0.01454  c-0.01471-0.01474-0.02939-0.02943-0.04411-0.04416l0,0l0,0C189.50015,17.23599,181.34608,11.95639,172.64427,8.44973  L172.64427,8.44973z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("g", { children: /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "polygon",
+        {
+          fill: "white",
+          points: "161.20691,239.99629 155.83287,200.79428 150.4518,161.58525 111.24272,156.20413 72.03368,150.82306    141.2099,126.23695 210.39325,101.64379 185.80006,170.8271  "
+        }
+      ) })
+    ] });
   };
   var SpPopoutAtisIcon = (props) => {
-    return /* @__PURE__ */ import_react35.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react35.default.createElement(
-      "path",
-      {
-        fill: "white",
-        d: "M85.97998,240H72.15002l-20.92004-69.37L30.29999,240H16.47998l13.17999-43.70001l17.33002-57.40997  c-6.88-1.85004-11.95001-8.15002-11.95001-15.62006c0-8.94,7.25-16.17999,16.19-16.17999s16.17999,7.23999,16.17999,16.17999  c0,7.47003-5.06,13.76001-11.94,15.62006l17.32001,57.40997L85.97998,240z"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "path",
-      {
-        fill: "white",
-        d: "M71.25,95.45996c-5.64001-4.06995-12.54999-6.46997-20.02002-6.46997  c-7.46997,0-14.39996,2.40002-20.03998,6.47998c-8.62,6.23004-14.23999,16.37-14.23999,27.79999  c0,12.19,6.39001,22.92004,16.01001,28.99005l1.94-6.45001c-7.11005-5.10004-11.74005-13.42999-11.74005-22.82001  c0-8.88,4.14001-16.81,10.59003-21.95001c4.79999-3.83002,10.88-6.12,17.47998-6.12c6.60004,0,12.67999,2.28998,17.48004,6.12  c6.44995,5.14001,10.58997,13.07001,10.58997,21.95001c0,9.39001-4.64001,17.71002-11.75,22.81L69.5,152.26001  c9.60999-6.08002,16.01001-16.80005,16.01001-28.99005C85.51001,111.82996,79.88,101.69,71.25,95.45996z"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "path",
-      {
-        fill: "white",
-        d: "M64.75,73.84998c-4.31-1.17999-8.84003-1.81-13.52002-1.81c-4.69,0-9.22998,0.63-13.53998,1.82001  C15.98999,79.81,0,99.70996,0,123.26996c0,19.87006,11.35999,37.12006,27.94,45.61005l1.73999-5.75  C15.40997,155.45001,5.71002,140.37,5.71002,123.06c0-18.20001,10.73999-33.94,26.20996-41.22003  c5.87-2.76001,12.41003-4.29999,19.31-4.29999c6.89001,0,13.42999,1.53998,19.29004,4.28998  C86,89.09998,96.75,104.84998,96.75,123.06c0,17.31-9.71002,32.39001-23.96997,40.08002l1.72998,5.73999  c16.58002-8.48004,27.95001-25.73999,27.95001-45.61005C102.46002,99.70001,86.45001,79.79999,64.75,73.84998z"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "path",
-      {
-        fill: "white",
-        d: "M222.03003,52.57996c0,5.07001-1.38,9.82001-3.80005,13.89001c-1.03998,2.79999-2.67999,5.31-4.75,7.39001  c-3.73999,3.72998-8.88,6.04999-14.54999,6.04999h-78.21997c-8.08002,0-15.12-4.71997-18.48004-11.53998  C99.98999,64.96997,98.69,60.89996,98.69,56.52997c0-11.90997,9.65997-21.57001,21.58002-21.57001  c2.04999,0,4.02997,0.29004,5.90997,0.83002c4.04999-14.77997,17.58002-25.64001,33.64001-25.64001  c12.17999,0,22.89996,6.24005,29.14001,15.71002c1.84998-0.40002,3.76996-0.60999,5.73999-0.60999  C209.78998,25.25,222.03003,37.47998,222.03003,52.57996z"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "path",
-      {
-        fill: "white",
-        d: "M240,145.62392c0,4.56081-1.24141,8.83372-3.41838,12.49496c-0.93553,2.51877-2.41083,4.77667-4.27293,6.64778  c-3.36436,3.35536-7.98813,5.44235-13.08864,5.44235h-70.36388c-7.26849,0-13.60139-4.24591-16.62398-10.38095  c-2.01501-3.05853-3.18443-6.71977-3.18443-10.65085c0-10.71379,8.68976-19.40361,19.4126-19.40361  c1.8441,0,3.62521,0.26091,5.31641,0.74666c3.64322-13.29553,15.81435-23.06483,30.26134-23.06483  c10.95668,0,20.59999,5.61333,26.21332,14.13217c1.66417-0.35985,3.39131-0.54872,5.16348-0.54872  C228.98929,121.03888,240,132.04053,240,145.62392z"
-      }
-    ));
+    return /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "path",
+        {
+          fill: "white",
+          d: "M85.97998,240H72.15002l-20.92004-69.37L30.29999,240H16.47998l13.17999-43.70001l17.33002-57.40997  c-6.88-1.85004-11.95001-8.15002-11.95001-15.62006c0-8.94,7.25-16.17999,16.19-16.17999s16.17999,7.23999,16.17999,16.17999  c0,7.47003-5.06,13.76001-11.94,15.62006l17.32001,57.40997L85.97998,240z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "path",
+        {
+          fill: "white",
+          d: "M71.25,95.45996c-5.64001-4.06995-12.54999-6.46997-20.02002-6.46997  c-7.46997,0-14.39996,2.40002-20.03998,6.47998c-8.62,6.23004-14.23999,16.37-14.23999,27.79999  c0,12.19,6.39001,22.92004,16.01001,28.99005l1.94-6.45001c-7.11005-5.10004-11.74005-13.42999-11.74005-22.82001  c0-8.88,4.14001-16.81,10.59003-21.95001c4.79999-3.83002,10.88-6.12,17.47998-6.12c6.60004,0,12.67999,2.28998,17.48004,6.12  c6.44995,5.14001,10.58997,13.07001,10.58997,21.95001c0,9.39001-4.64001,17.71002-11.75,22.81L69.5,152.26001  c9.60999-6.08002,16.01001-16.80005,16.01001-28.99005C85.51001,111.82996,79.88,101.69,71.25,95.45996z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "path",
+        {
+          fill: "white",
+          d: "M64.75,73.84998c-4.31-1.17999-8.84003-1.81-13.52002-1.81c-4.69,0-9.22998,0.63-13.53998,1.82001  C15.98999,79.81,0,99.70996,0,123.26996c0,19.87006,11.35999,37.12006,27.94,45.61005l1.73999-5.75  C15.40997,155.45001,5.71002,140.37,5.71002,123.06c0-18.20001,10.73999-33.94,26.20996-41.22003  c5.87-2.76001,12.41003-4.29999,19.31-4.29999c6.89001,0,13.42999,1.53998,19.29004,4.28998  C86,89.09998,96.75,104.84998,96.75,123.06c0,17.31-9.71002,32.39001-23.96997,40.08002l1.72998,5.73999  c16.58002-8.48004,27.95001-25.73999,27.95001-45.61005C102.46002,99.70001,86.45001,79.79999,64.75,73.84998z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "path",
+        {
+          fill: "white",
+          d: "M222.03003,52.57996c0,5.07001-1.38,9.82001-3.80005,13.89001c-1.03998,2.79999-2.67999,5.31-4.75,7.39001  c-3.73999,3.72998-8.88,6.04999-14.54999,6.04999h-78.21997c-8.08002,0-15.12-4.71997-18.48004-11.53998  C99.98999,64.96997,98.69,60.89996,98.69,56.52997c0-11.90997,9.65997-21.57001,21.58002-21.57001  c2.04999,0,4.02997,0.29004,5.90997,0.83002c4.04999-14.77997,17.58002-25.64001,33.64001-25.64001  c12.17999,0,22.89996,6.24005,29.14001,15.71002c1.84998-0.40002,3.76996-0.60999,5.73999-0.60999  C209.78998,25.25,222.03003,37.47998,222.03003,52.57996z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "path",
+        {
+          fill: "white",
+          d: "M240,145.62392c0,4.56081-1.24141,8.83372-3.41838,12.49496c-0.93553,2.51877-2.41083,4.77667-4.27293,6.64778  c-3.36436,3.35536-7.98813,5.44235-13.08864,5.44235h-70.36388c-7.26849,0-13.60139-4.24591-16.62398-10.38095  c-2.01501-3.05853-3.18443-6.71977-3.18443-10.65085c0-10.71379,8.68976-19.40361,19.4126-19.40361  c1.8441,0,3.62521,0.26091,5.31641,0.74666c3.64322-13.29553,15.81435-23.06483,30.26134-23.06483  c10.95668,0,20.59999,5.61333,26.21332,14.13217c1.66417-0.35985,3.39131-0.54872,5.16348-0.54872  C228.98929,121.03888,240,132.04053,240,145.62392z"
+        }
+      )
+    ] });
   };
   var SpPopoutDrawIcon = (props) => {
-    return /* @__PURE__ */ import_react35.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react35.default.createElement(
-      "path",
-      {
-        fill: "white",
-        d: "M235.18034,29.14549l-85.13074,85.13074c-1.15114,1.15114-2.5591,2.01257-4.10809,2.51343l-15.61316,5.04848  l-8.283,2.67834c-4.04182,1.30693-7.86426-2.51364-6.55928-6.55611l2.67575-8.28876l5.04852-15.61312  c0.50087-1.54898,1.36229-2.95694,2.51343-4.10807l85.13074-85.13074c6.42621-6.4262,16.84514-6.4262,23.27135,0l1.05449,1.05449  C241.60655,12.30035,241.60655,22.71928,235.18034,29.14549z"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "path",
-      {
-        fill: "white",
-        d: "M111.11678,128.18332c-16.53281-11.9464-56.20886-40.05074-76.17789-36.6893  c-0.00011,0.00038-0.72509,0.14238-0.72509,0.14238c-0.1197,0.03719-0.08897,0.04565,0.02116,0.00394  c0.48083-0.16232,1.24989-1.05201,1.38511-1.63291c0.24369-0.8545,0.0794-1.04478,0.16338-0.90333  c2.15899,4.23766,6.60925,8.24443,10.18743,11.78432c3.80839,3.65136,7.81215,7.22482,11.87156,10.75239  c28.89283,24.9935,59.56625,48.15204,86.25902,75.70761c7.41324,8.16742,19.32622,20.33823,19.16434,32.21219  c-0.02599,5.5036-4.14978,10.63271-8.87982,12.46004c-15.45151,6.51544-31.95087-1.98808-44.87067-9.92921  c-18.84272-11.98849-34.95795-26.95377-51.9514-40.86734c-7.83635-6.33569-16.30386-13.5528-25.09653-17.78609  c-2.24724-1.04179-4.08644-1.565-5.51452-1.53549c-0.28788,0.02797-0.50527,0.08601-0.79683,0.21355  c-3.26799,1.35748-2.11197,7.90904-1.76373,11.15627c2.72425,18.51994,13.58253,42.70576,0.31599,59.62978  c-2.17073,2.68961-4.90079,4.79491-7.71597,6.41304c-2.4622,1.41525-5.60548,0.56654-7.02073-1.89566  c-1.39981-2.42964-0.5811-5.52748,1.79632-6.9631c3.72702-2.34792,6.10334-5.54083,7.16143-9.64154  c5.23171-19.23715-16.33473-51.33234-3.7561-66.48021c10.85997-12.48666,27.81738-1.19092,37.90816,5.95567  c13.41156,9.62057,25.76721,20.6819,38.48919,30.84093c12.74488,9.81999,41.92117,34.65562,57.51166,27.47482  c-0.16331,0.17096-0.24207,0.56564-0.19882,0.37936c-0.47867-3.62505-2.914-6.95247-5.12683-10.15767  c-2.9142-4.01375-6.35532-7.95967-9.93555-11.80688c-26.22636-27.41278-56.10275-50.51659-83.92041-76.55951  c-6.07379-5.70602-12.1843-11.47002-17.61101-17.94124c-3.34335-4.35213-8.07311-9.42639-6.47412-15.54784  c0.9151-3.19251,4.26308-5.15088,7.31002-5.37318c7.72291-1.20454,15.33595,1.14466,22.37783,4.02722  c11.68063,4.902,22.31339,11.91,32.29261,19.17748c8.86592,6.53329,17.3046,13.50012,25.3594,20.97763  C114.58268,127.1703,112.70686,129.37141,111.11678,128.18332L111.11678,128.18332z"
-      }
-    ));
+    return /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "path",
+        {
+          fill: "white",
+          d: "M235.18034,29.14549l-85.13074,85.13074c-1.15114,1.15114-2.5591,2.01257-4.10809,2.51343l-15.61316,5.04848  l-8.283,2.67834c-4.04182,1.30693-7.86426-2.51364-6.55928-6.55611l2.67575-8.28876l5.04852-15.61312  c0.50087-1.54898,1.36229-2.95694,2.51343-4.10807l85.13074-85.13074c6.42621-6.4262,16.84514-6.4262,23.27135,0l1.05449,1.05449  C241.60655,12.30035,241.60655,22.71928,235.18034,29.14549z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "path",
+        {
+          fill: "white",
+          d: "M111.11678,128.18332c-16.53281-11.9464-56.20886-40.05074-76.17789-36.6893  c-0.00011,0.00038-0.72509,0.14238-0.72509,0.14238c-0.1197,0.03719-0.08897,0.04565,0.02116,0.00394  c0.48083-0.16232,1.24989-1.05201,1.38511-1.63291c0.24369-0.8545,0.0794-1.04478,0.16338-0.90333  c2.15899,4.23766,6.60925,8.24443,10.18743,11.78432c3.80839,3.65136,7.81215,7.22482,11.87156,10.75239  c28.89283,24.9935,59.56625,48.15204,86.25902,75.70761c7.41324,8.16742,19.32622,20.33823,19.16434,32.21219  c-0.02599,5.5036-4.14978,10.63271-8.87982,12.46004c-15.45151,6.51544-31.95087-1.98808-44.87067-9.92921  c-18.84272-11.98849-34.95795-26.95377-51.9514-40.86734c-7.83635-6.33569-16.30386-13.5528-25.09653-17.78609  c-2.24724-1.04179-4.08644-1.565-5.51452-1.53549c-0.28788,0.02797-0.50527,0.08601-0.79683,0.21355  c-3.26799,1.35748-2.11197,7.90904-1.76373,11.15627c2.72425,18.51994,13.58253,42.70576,0.31599,59.62978  c-2.17073,2.68961-4.90079,4.79491-7.71597,6.41304c-2.4622,1.41525-5.60548,0.56654-7.02073-1.89566  c-1.39981-2.42964-0.5811-5.52748,1.79632-6.9631c3.72702-2.34792,6.10334-5.54083,7.16143-9.64154  c5.23171-19.23715-16.33473-51.33234-3.7561-66.48021c10.85997-12.48666,27.81738-1.19092,37.90816,5.95567  c13.41156,9.62057,25.76721,20.6819,38.48919,30.84093c12.74488,9.81999,41.92117,34.65562,57.51166,27.47482  c-0.16331,0.17096-0.24207,0.56564-0.19882,0.37936c-0.47867-3.62505-2.914-6.95247-5.12683-10.15767  c-2.9142-4.01375-6.35532-7.95967-9.93555-11.80688c-26.22636-27.41278-56.10275-50.51659-83.92041-76.55951  c-6.07379-5.70602-12.1843-11.47002-17.61101-17.94124c-3.34335-4.35213-8.07311-9.42639-6.47412-15.54784  c0.9151-3.19251,4.26308-5.15088,7.31002-5.37318c7.72291-1.20454,15.33595,1.14466,22.37783,4.02722  c11.68063,4.902,22.31339,11.91,32.29261,19.17748c8.86592,6.53329,17.3046,13.50012,25.3594,20.97763  C114.58268,127.1703,112.70686,129.37141,111.11678,128.18332L111.11678,128.18332z"
+        }
+      )
+    ] });
   };
   var SpPopoutCraftIcon = (props) => {
-    return /* @__PURE__ */ import_react35.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react35.default.createElement("rect", { fill: "transparent", strokeWidth: 14, x: 20, y: 10, width: 200, height: 220, rx: 20, ry: 20 }), /* @__PURE__ */ import_react35.default.createElement("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "52.888" }, "C"), /* @__PURE__ */ import_react35.default.createElement("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "94.791" }, "R"), /* @__PURE__ */ import_react35.default.createElement("text", { fontWeight: "bolder", fontSize: 47, x: "45.944", y: "136.075" }, "A"), /* @__PURE__ */ import_react35.default.createElement("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "177.812" }, "F"), /* @__PURE__ */ import_react35.default.createElement("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "219.931" }, "T"));
+    return /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 240 240", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("rect", { fill: "transparent", strokeWidth: 14, x: 20, y: 10, width: 200, height: 220, rx: 20, ry: 20 }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "52.888", children: "C" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "94.791", children: "R" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fontWeight: "bolder", fontSize: 47, x: "45.944", y: "136.075", children: "A" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "177.812", children: "F" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fontWeight: "bolder", fontSize: 47, x: "45.875", y: "219.931", children: "T" })
+    ] });
   };
   var SpAddIcon = (props) => {
-    return /* @__PURE__ */ import_react35.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 24 24", fill: "none" }, /* @__PURE__ */ import_react35.default.createElement("path", { d: "M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15", stroke: "white", strokeWidth: 1, strokeLinecap: "round" }), /* @__PURE__ */ import_react35.default.createElement(
-      "path",
-      {
-        className: `add-icon ${props.hovered ? "icon-hover-animation" : "icon-reset"}`,
-        d: "M7 3.33782C8.47087 2.48697 10.1786 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 10.1786 2.48697 8.47087 3.33782 7",
-        stroke: "white",
-        strokeWidth: 1,
-        strokeLinecap: "round"
-      }
-    ));
+    return /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)("svg", { xmlns: "http://www.w3.org/2000/svg", width: `${props.width}px`, viewBox: "0 0 24 24", fill: "none", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("path", { d: "M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15", stroke: "white", strokeWidth: 1, strokeLinecap: "round" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "path",
+        {
+          className: `add-icon ${props.hovered ? "icon-hover-animation" : "icon-reset"}`,
+          d: "M7 3.33782C8.47087 2.48697 10.1786 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 10.1786 2.48697 8.47087 3.33782 7",
+          stroke: "white",
+          strokeWidth: 1,
+          strokeLinecap: "round"
+        }
+      )
+    ] });
   };
   var SpBGCraft = (props) => {
-    return /* @__PURE__ */ import_react35.default.createElement("svg", { width: `${props.width}px`, viewBox: "51.234 32.356 1787.128 1196.668", xmlns: "http://www.w3.org/2000/svg" }, /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 72, x: "150.151", y: "128.22", dx: "23.561", dy: "71.78" }, "C"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 72, x: "999.873", y: "-158.231", dx: "-826.161", dy: "558.231" }, "R"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 72, x: "387.311", y: "415.009", dx: "-211.589", dy: "184.991" }, "A"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 72, x: "134.846", y: "504.394", dx: "42.918", dy: "295.606" }, "F"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 72, x: "144.601", y: "646.498", dx: "33.163", dy: "353.502" }, "T"));
+    return /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)("svg", { width: `${props.width}px`, viewBox: "51.234 32.356 1787.128 1196.668", xmlns: "http://www.w3.org/2000/svg", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fill: "white", fontSize: 72, x: "150.151", y: "128.22", dx: "23.561", dy: "71.78", children: "C" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fill: "white", fontSize: 72, x: "999.873", y: "-158.231", dx: "-826.161", dy: "558.231", children: "R" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fill: "white", fontSize: 72, x: "387.311", y: "415.009", dx: "-211.589", dy: "184.991", children: "A" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fill: "white", fontSize: 72, x: "134.846", y: "504.394", dx: "42.918", dy: "295.606", children: "F" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fill: "white", fontSize: 72, x: "144.601", y: "646.498", dx: "33.163", dy: "353.502", children: "T" })
+    ] });
   };
   var SpBgAtis = (props) => {
-    return /* @__PURE__ */ import_react35.default.createElement("svg", { width: `${props.width}px`, viewBox: "0 0 1800 1200", xmlns: "http://www.w3.org/2000/svg" }, /* @__PURE__ */ import_react35.default.createElement(
-      "rect",
-      {
-        fill: "transparent",
-        stroke: "white",
-        strokeWidth: 6,
-        x: "49.51",
-        y: "62.21",
-        width: "850.49",
-        height: "137.79",
-        rx: "10",
-        ry: "10"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "rect",
-      {
-        fill: "transparent",
-        stroke: "white",
-        strokeWidth: 6,
-        x: "925.785",
-        y: "62.21",
-        width: "850.49",
-        height: "137.79",
-        rx: "10",
-        ry: "10"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "rect",
-      {
-        fill: "transparent",
-        stroke: "white",
-        strokeWidth: 6,
-        x: "44.509",
-        y: "228.544",
-        width: "850.49",
-        height: "171.456",
-        rx: "10",
-        ry: "10"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "rect",
-      {
-        fill: "transparent",
-        stroke: "white",
-        strokeWidth: 6,
-        x: "920.784",
-        y: "228.544",
-        width: "850.49",
-        height: "171.456",
-        rx: "10",
-        ry: "10"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "rect",
-      {
-        fill: "transparent",
-        stroke: "white",
-        strokeWidth: 6,
-        x: "44.705",
-        y: "442.683",
-        width: "850.49",
-        height: "118.61",
-        rx: "10",
-        ry: "10"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "rect",
-      {
-        fill: "transparent",
-        stroke: "white",
-        strokeWidth: 6,
-        x: "920.98",
-        y: "442.683",
-        width: "850.49",
-        height: "118.61",
-        rx: "10",
-        ry: "10"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "rect",
-      {
-        fill: "transparent",
-        stroke: "white",
-        strokeWidth: 6,
-        x: "43.947",
-        y: "584.442",
-        width: "850.49",
-        height: "118.61",
-        rx: "10",
-        ry: "10"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "rect",
-      {
-        fill: "transparent",
-        stroke: "white",
-        strokeWidth: 6,
-        x: "920.222",
-        y: "584.442",
-        width: "850.49",
-        height: "118.61",
-        rx: "10",
-        ry: "10"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "rect",
-      {
-        fill: "transparent",
-        stroke: "white",
-        strokeWidth: 6,
-        x: "43.687",
-        y: "724.073",
-        width: "850.49",
-        height: "118.61",
-        rx: "10",
-        ry: "10"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "rect",
-      {
-        fill: "transparent",
-        stroke: "white",
-        strokeWidth: 6,
-        x: "919.962",
-        y: "724.073",
-        width: "850.49",
-        height: "118.61",
-        rx: "10",
-        ry: "10"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "rect",
-      {
-        fill: "transparent",
-        stroke: "white",
-        strokeWidth: 6,
-        x: "43.777",
-        y: "881.39",
-        width: "850.49",
-        height: "118.61",
-        rx: "10",
-        ry: "10"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "rect",
-      {
-        fill: "transparent",
-        stroke: "white",
-        strokeWidth: 6,
-        x: "920.052",
-        y: "881.39",
-        width: "850.49",
-        height: "118.61",
-        rx: "10",
-        ry: "10"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "rect",
-      {
-        fill: "transparent",
-        stroke: "white",
-        strokeWidth: 6,
-        x: "44.801",
-        y: "1029.041",
-        width: "850.49",
-        height: "118.61",
-        rx: "10",
-        ry: "10"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "rect",
-      {
-        fill: "transparent",
-        stroke: "white",
-        strokeWidth: 6,
-        x: "921.076",
-        y: "1029.041",
-        width: "850.49",
-        height: "118.61",
-        rx: "10",
-        ry: "10"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "text",
-      {
-        fontSize: 73,
-        fill: "white",
-        transform: "matrix(1.2290329933166504, 0, 0, 1.2290329933166504, -45.74797821044922, 41.262577056884766)"
-      },
-      /* @__PURE__ */ import_react35.default.createElement("tspan", { x: "254.684", y: "101.505" }, "Departure")
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "text",
-      {
-        fontSize: 73,
-        fill: "white",
-        transform: "matrix(1.2290329933166504, 0, 0, 1.2290329933166504, 911.872802734375, 38.153472900390625)"
-      },
-      /* @__PURE__ */ import_react35.default.createElement("tspan", { x: "254.684", y: "101.505" }, "Arrival")
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "ellipse",
-      {
-        fill: "transparent",
-        strokeWidth: 10,
-        paintOrder: "fill",
-        stroke: "white",
-        cx: "145.136",
-        cy: "314.27",
-        rx: "75.794",
-        ry: "75.794"
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement(
-      "ellipse",
-      {
-        fill: "transparent",
-        strokeWidth: 10,
-        paintOrder: "fill",
-        stroke: "white",
-        cx: 1014.496,
-        cy: 315.622,
-        rx: 75.794,
-        ry: 75.794
-      }
-    ), /* @__PURE__ */ import_react35.default.createElement("text", { fontSize: 73, fill: "white", x: "336.256", y: "335.538" }, "Information"), /* @__PURE__ */ import_react35.default.createElement("text", { fontSize: 73, fill: "white", x: "1220.259", y: "334.794" }, "Information"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "67.187", y: "521.045" }, "Wind"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "65.281", y: "661.904" }, "Altimeter"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "65.48", y: "803.222" }, "Sky"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "66.44", y: "958.298" }, "Temp/DP"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "69.056", y: "1105.473" }, "Runway"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "943.441", y: "521.884" }, "Wind"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "941.535", y: "662.743" }, "Altimeter"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "941.734", y: "804.061" }, "Sky"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "942.694", y: "959.137" }, "Temp/DP"), /* @__PURE__ */ import_react35.default.createElement("text", { fill: "white", fontSize: 50, x: "945.31", y: "1106.312" }, "Runway"));
+    return /* @__PURE__ */ (0, import_jsx_runtime34.jsxs)("svg", { width: `${props.width}px`, viewBox: "0 0 1800 1200", xmlns: "http://www.w3.org/2000/svg", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "rect",
+        {
+          fill: "transparent",
+          stroke: "white",
+          strokeWidth: 6,
+          x: "49.51",
+          y: "62.21",
+          width: "850.49",
+          height: "137.79",
+          rx: "10",
+          ry: "10"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "rect",
+        {
+          fill: "transparent",
+          stroke: "white",
+          strokeWidth: 6,
+          x: "925.785",
+          y: "62.21",
+          width: "850.49",
+          height: "137.79",
+          rx: "10",
+          ry: "10"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "rect",
+        {
+          fill: "transparent",
+          stroke: "white",
+          strokeWidth: 6,
+          x: "44.509",
+          y: "228.544",
+          width: "850.49",
+          height: "171.456",
+          rx: "10",
+          ry: "10"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "rect",
+        {
+          fill: "transparent",
+          stroke: "white",
+          strokeWidth: 6,
+          x: "920.784",
+          y: "228.544",
+          width: "850.49",
+          height: "171.456",
+          rx: "10",
+          ry: "10"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "rect",
+        {
+          fill: "transparent",
+          stroke: "white",
+          strokeWidth: 6,
+          x: "44.705",
+          y: "442.683",
+          width: "850.49",
+          height: "118.61",
+          rx: "10",
+          ry: "10"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "rect",
+        {
+          fill: "transparent",
+          stroke: "white",
+          strokeWidth: 6,
+          x: "920.98",
+          y: "442.683",
+          width: "850.49",
+          height: "118.61",
+          rx: "10",
+          ry: "10"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "rect",
+        {
+          fill: "transparent",
+          stroke: "white",
+          strokeWidth: 6,
+          x: "43.947",
+          y: "584.442",
+          width: "850.49",
+          height: "118.61",
+          rx: "10",
+          ry: "10"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "rect",
+        {
+          fill: "transparent",
+          stroke: "white",
+          strokeWidth: 6,
+          x: "920.222",
+          y: "584.442",
+          width: "850.49",
+          height: "118.61",
+          rx: "10",
+          ry: "10"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "rect",
+        {
+          fill: "transparent",
+          stroke: "white",
+          strokeWidth: 6,
+          x: "43.687",
+          y: "724.073",
+          width: "850.49",
+          height: "118.61",
+          rx: "10",
+          ry: "10"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "rect",
+        {
+          fill: "transparent",
+          stroke: "white",
+          strokeWidth: 6,
+          x: "919.962",
+          y: "724.073",
+          width: "850.49",
+          height: "118.61",
+          rx: "10",
+          ry: "10"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "rect",
+        {
+          fill: "transparent",
+          stroke: "white",
+          strokeWidth: 6,
+          x: "43.777",
+          y: "881.39",
+          width: "850.49",
+          height: "118.61",
+          rx: "10",
+          ry: "10"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "rect",
+        {
+          fill: "transparent",
+          stroke: "white",
+          strokeWidth: 6,
+          x: "920.052",
+          y: "881.39",
+          width: "850.49",
+          height: "118.61",
+          rx: "10",
+          ry: "10"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "rect",
+        {
+          fill: "transparent",
+          stroke: "white",
+          strokeWidth: 6,
+          x: "44.801",
+          y: "1029.041",
+          width: "850.49",
+          height: "118.61",
+          rx: "10",
+          ry: "10"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "rect",
+        {
+          fill: "transparent",
+          stroke: "white",
+          strokeWidth: 6,
+          x: "921.076",
+          y: "1029.041",
+          width: "850.49",
+          height: "118.61",
+          rx: "10",
+          ry: "10"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "text",
+        {
+          fontSize: 73,
+          fill: "white",
+          transform: "matrix(1.2290329933166504, 0, 0, 1.2290329933166504, -45.74797821044922, 41.262577056884766)",
+          children: /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("tspan", { x: "254.684", y: "101.505", children: "Departure" })
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "text",
+        {
+          fontSize: 73,
+          fill: "white",
+          transform: "matrix(1.2290329933166504, 0, 0, 1.2290329933166504, 911.872802734375, 38.153472900390625)",
+          children: /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("tspan", { x: "254.684", y: "101.505", children: "Arrival" })
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "ellipse",
+        {
+          fill: "transparent",
+          strokeWidth: 10,
+          paintOrder: "fill",
+          stroke: "white",
+          cx: "145.136",
+          cy: "314.27",
+          rx: "75.794",
+          ry: "75.794"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)(
+        "ellipse",
+        {
+          fill: "transparent",
+          strokeWidth: 10,
+          paintOrder: "fill",
+          stroke: "white",
+          cx: 1014.496,
+          cy: 315.622,
+          rx: 75.794,
+          ry: 75.794
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fontSize: 73, fill: "white", x: "336.256", y: "335.538", children: "Information" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fontSize: 73, fill: "white", x: "1220.259", y: "334.794", children: "Information" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fill: "white", fontSize: 50, x: "67.187", y: "521.045", children: "Wind" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fill: "white", fontSize: 50, x: "65.281", y: "661.904", children: "Altimeter" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fill: "white", fontSize: 50, x: "65.48", y: "803.222", children: "Sky" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fill: "white", fontSize: 50, x: "66.44", y: "958.298", children: "Temp/DP" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fill: "white", fontSize: 50, x: "69.056", y: "1105.473", children: "Runway" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fill: "white", fontSize: 50, x: "943.441", y: "521.884", children: "Wind" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fill: "white", fontSize: 50, x: "941.535", y: "662.743", children: "Altimeter" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fill: "white", fontSize: 50, x: "941.734", y: "804.061", children: "Sky" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fill: "white", fontSize: 50, x: "942.694", y: "959.137", children: "Temp/DP" }),
+      /* @__PURE__ */ (0, import_jsx_runtime34.jsx)("text", { fill: "white", fontSize: 50, x: "945.31", y: "1106.312", children: "Runway" })
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Scratchpads/ScratchpadPopup.tsx
+  var import_jsx_runtime35 = __toESM(require_jsx_runtime());
   var ScratchpadPopup = (props) => {
-    return /* @__PURE__ */ import_react36.default.createElement("div", { className: "popupContainer" }, /* @__PURE__ */ import_react36.default.createElement("div", { className: "popup-flex-row" }, /* @__PURE__ */ import_react36.default.createElement(
-      "div",
-      {
-        onClick: () => {
-          props.clickHandler("Draw" /* DRAW */);
-        },
-        className: "popup-content"
-      },
-      /* @__PURE__ */ import_react36.default.createElement(SpPopoutDrawIcon, { width: 100 }),
-      "Draw" /* DRAW */
-    ), /* @__PURE__ */ import_react36.default.createElement(
-      "div",
-      {
-        onClick: () => {
-          props.clickHandler("CRAFT" /* CRAFT */);
-        },
-        className: "popup-content"
-      },
-      /* @__PURE__ */ import_react36.default.createElement(SpPopoutCraftIcon, { width: 100 }),
-      "CRAFT" /* CRAFT */
-    )), /* @__PURE__ */ import_react36.default.createElement("div", { className: "popup-flex-row" }, /* @__PURE__ */ import_react36.default.createElement(
-      "div",
-      {
-        onClick: () => {
-          props.clickHandler("ATIS" /* ATIS */);
-        },
-        className: "popup-content"
-      },
-      /* @__PURE__ */ import_react36.default.createElement(SpPopoutAtisIcon, { width: 100 }),
-      "ATIS" /* ATIS */
-    ), /* @__PURE__ */ import_react36.default.createElement(
-      "div",
-      {
-        onClick: () => {
-          props.clickHandler("Holding" /* HOLDING */);
-        },
-        className: "popup-content"
-      },
-      /* @__PURE__ */ import_react36.default.createElement(SpPopoutHoldIcon, { width: 100 }),
-      "Holding" /* HOLDING */
-    )));
+    return /* @__PURE__ */ (0, import_jsx_runtime35.jsxs)("div", { className: "popupContainer", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime35.jsxs)("div", { className: "popup-flex-row", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime35.jsxs)(
+          "div",
+          {
+            onClick: () => {
+              props.clickHandler("Draw" /* DRAW */);
+            },
+            className: "popup-content",
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(SpPopoutDrawIcon, { width: 100 }),
+              "Draw" /* DRAW */
+            ]
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime35.jsxs)(
+          "div",
+          {
+            onClick: () => {
+              props.clickHandler("CRAFT" /* CRAFT */);
+            },
+            className: "popup-content",
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(SpPopoutCraftIcon, { width: 100 }),
+              "CRAFT" /* CRAFT */
+            ]
+          }
+        )
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime35.jsxs)("div", { className: "popup-flex-row", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime35.jsxs)(
+          "div",
+          {
+            onClick: () => {
+              props.clickHandler("ATIS" /* ATIS */);
+            },
+            className: "popup-content",
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(SpPopoutAtisIcon, { width: 100 }),
+              "ATIS" /* ATIS */
+            ]
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime35.jsxs)(
+          "div",
+          {
+            onClick: () => {
+              props.clickHandler("Holding" /* HOLDING */);
+            },
+            className: "popup-content",
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime35.jsx)(SpPopoutHoldIcon, { width: 100 }),
+              "Holding" /* HOLDING */
+            ]
+          }
+        )
+      ] })
+    ] });
   };
 
   // node_modules/react-sketch-canvas/dist/react-sketch-canvas.esm.js
-  var React37 = __toESM(require_react());
+  var React15 = __toESM(require_react());
   function asyncGeneratorStep(gen, resolve2, reject, _next, _throw, key, arg) {
     try {
       var info = gen[key](arg);
@@ -45145,7 +46444,7 @@ class InstrumentLogic extends BaseInstrument {
     if (paths.length === 1) {
       var _paths$ = paths[0], x = _paths$.x, y = _paths$.y;
       var radius = strokeWidth / 2;
-      return React37.createElement("circle", {
+      return React15.createElement("circle", {
         key: id,
         id,
         cx: x,
@@ -45158,7 +46457,7 @@ class InstrumentLogic extends BaseInstrument {
     var d = paths.reduce(function(acc, point, i, a) {
       return i === 0 ? "M " + point.x + "," + point.y : acc + " " + command(point, i, a);
     }, "");
-    return React37.createElement("path", {
+    return React15.createElement("path", {
       key: id,
       id,
       d,
@@ -45227,8 +46526,8 @@ class InstrumentLogic extends BaseInstrument {
   };
   var Paths = function Paths2(_ref2) {
     var id = _ref2.id, paths = _ref2.paths;
-    return React37.createElement(React37.Fragment, null, paths.map(function(path, index) {
-      return React37.createElement(SvgPath, {
+    return React15.createElement(React15.Fragment, null, paths.map(function(path, index) {
+      return React15.createElement(SvgPath, {
         key: id + "__" + index,
         paths: path.paths,
         id: id + "__" + index,
@@ -45268,12 +46567,12 @@ class InstrumentLogic extends BaseInstrument {
       height
     };
   }
-  var Canvas = /* @__PURE__ */ React37.forwardRef(function(props, ref) {
+  var Canvas = /* @__PURE__ */ React15.forwardRef(function(props, ref) {
     var paths = props.paths, isDrawing = props.isDrawing, onPointerDown = props.onPointerDown, onPointerMove = props.onPointerMove, onPointerUp = props.onPointerUp, _props$id = props.id, id = _props$id === void 0 ? "react-sketch-canvas" : _props$id, _props$width = props.width, width = _props$width === void 0 ? "100%" : _props$width, _props$height = props.height, height = _props$height === void 0 ? "100%" : _props$height, _props$className = props.className, className = _props$className === void 0 ? "react-sketch-canvas" : _props$className, _props$canvasColor = props.canvasColor, canvasColor = _props$canvasColor === void 0 ? "red" : _props$canvasColor, _props$backgroundImag = props.backgroundImage, backgroundImage = _props$backgroundImag === void 0 ? "" : _props$backgroundImag, _props$exportWithBack = props.exportWithBackgroundImage, exportWithBackgroundImage = _props$exportWithBack === void 0 ? false : _props$exportWithBack, _props$preserveBackgr = props.preserveBackgroundImageAspectRatio, preserveBackgroundImageAspectRatio = _props$preserveBackgr === void 0 ? "none" : _props$preserveBackgr, _props$allowOnlyPoint = props.allowOnlyPointerType, allowOnlyPointerType = _props$allowOnlyPoint === void 0 ? "all" : _props$allowOnlyPoint, _props$style = props.style, style = _props$style === void 0 ? {
       border: "0.0625rem solid #9c9c9c",
       borderRadius: "0.25rem"
     } : _props$style, _props$svgStyle = props.svgStyle, svgStyle = _props$svgStyle === void 0 ? {} : _props$svgStyle;
-    var canvasRef = React37.useRef(null);
+    var canvasRef = React15.useRef(null);
     var getCoordinates = function getCoordinates2(pointerEvent) {
       var _canvasRef$current, _window$scrollX, _window$scrollY;
       var boundingArea = (_canvasRef$current = canvasRef.current) == null ? void 0 : _canvasRef$current.getBoundingClientRect();
@@ -45317,7 +46616,7 @@ class InstrumentLogic extends BaseInstrument {
       }
       onPointerUp();
     };
-    React37.useImperativeHandle(ref, function() {
+    React15.useImperativeHandle(ref, function() {
       return {
         exportImage: function exportImage(imageType) {
           return new Promise(/* @__PURE__ */ function() {
@@ -45416,7 +46715,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       };
     });
-    React37.useEffect(function() {
+    React15.useEffect(function() {
       document.addEventListener("pointerup", handlePointerUp);
       return function() {
         document.removeEventListener("pointerup", handlePointerUp);
@@ -45437,7 +46736,7 @@ class InstrumentLogic extends BaseInstrument {
       arrayGroup[currentGroup].push(path);
       return arrayGroup;
     }, [[]]);
-    return React37.createElement("div", {
+    return React15.createElement("div", {
       role: "presentation",
       ref: canvasRef,
       className,
@@ -45450,7 +46749,7 @@ class InstrumentLogic extends BaseInstrument {
       onPointerDown: handlePointerDown,
       onPointerMove: handlePointerMove,
       onPointerUp: handlePointerUp
-    }, React37.createElement("svg", {
+    }, React15.createElement("svg", {
       version: "1.1",
       baseProfile: "full",
       xmlns: "http://www.w3.org/2000/svg",
@@ -45460,10 +46759,10 @@ class InstrumentLogic extends BaseInstrument {
         height: "100%"
       }, svgStyle),
       id
-    }, React37.createElement("g", {
+    }, React15.createElement("g", {
       id: id + "__eraser-stroke-group",
       display: "none"
-    }, React37.createElement("rect", {
+    }, React15.createElement("rect", {
       id: id + "__mask-background",
       x: "0",
       y: "0",
@@ -45471,21 +46770,21 @@ class InstrumentLogic extends BaseInstrument {
       height: "100%",
       fill: "white"
     }), eraserPaths.map(function(eraserPath, i) {
-      return React37.createElement(SvgPath, {
+      return React15.createElement(SvgPath, {
         key: id + "__eraser-" + i,
         id: id + "__eraser-" + i,
         paths: eraserPath.paths,
         strokeColor: "#000000",
         strokeWidth: eraserPath.strokeWidth
       });
-    })), React37.createElement("defs", null, backgroundImage && React37.createElement("pattern", {
+    })), React15.createElement("defs", null, backgroundImage && React15.createElement("pattern", {
       id: id + "__background",
       x: "0",
       y: "0",
       width: "100%",
       height: "100%",
       patternUnits: "userSpaceOnUse"
-    }, React37.createElement("image", {
+    }, React15.createElement("image", {
       x: "0",
       y: "0",
       width: "100%",
@@ -45493,25 +46792,25 @@ class InstrumentLogic extends BaseInstrument {
       xlinkHref: backgroundImage,
       preserveAspectRatio: preserveBackgroundImageAspectRatio
     })), eraserPaths.map(function(_2, i) {
-      return React37.createElement("mask", {
+      return React15.createElement("mask", {
         id: id + "__eraser-mask-" + i,
         key: id + "__eraser-mask-" + i,
         maskUnits: "userSpaceOnUse"
-      }, React37.createElement("use", {
+      }, React15.createElement("use", {
         href: "#" + id + "__mask-background"
       }), Array.from({
         length: eraserPaths.length - i
       }, function(_3, j) {
         return j + i;
       }).map(function(k) {
-        return React37.createElement("use", {
+        return React15.createElement("use", {
           key: k.toString(),
           href: "#" + id + "__eraser-" + k.toString()
         });
       }));
-    })), React37.createElement("g", {
+    })), React15.createElement("g", {
       id: id + "__canvas-background-group"
-    }, React37.createElement("rect", {
+    }, React15.createElement("rect", {
       id: id + "__canvas-background",
       x: "0",
       y: "0",
@@ -45519,30 +46818,30 @@ class InstrumentLogic extends BaseInstrument {
       height: "100%",
       fill: backgroundImage ? "url(#" + id + "__background)" : canvasColor
     })), pathGroups.map(function(pathGroup, i) {
-      return React37.createElement("g", {
+      return React15.createElement("g", {
         id: id + "__stroke-group-" + i,
         key: id + "__stroke-group-" + i,
         mask: "url(#" + id + "__eraser-mask-" + i + ")"
-      }, React37.createElement(Paths, {
+      }, React15.createElement(Paths, {
         id,
         paths: pathGroup
       }));
     })));
   });
-  var ReactSketchCanvas = /* @__PURE__ */ React37.forwardRef(function(props, ref) {
+  var ReactSketchCanvas = /* @__PURE__ */ React15.forwardRef(function(props, ref) {
     var _props$id = props.id, id = _props$id === void 0 ? "react-sketch-canvas" : _props$id, _props$width = props.width, width = _props$width === void 0 ? "100%" : _props$width, _props$height = props.height, height = _props$height === void 0 ? "100%" : _props$height, _props$className = props.className, className = _props$className === void 0 ? "" : _props$className, _props$canvasColor = props.canvasColor, canvasColor = _props$canvasColor === void 0 ? "white" : _props$canvasColor, _props$strokeColor = props.strokeColor, strokeColor = _props$strokeColor === void 0 ? "red" : _props$strokeColor, _props$backgroundImag = props.backgroundImage, backgroundImage = _props$backgroundImag === void 0 ? "" : _props$backgroundImag, _props$exportWithBack = props.exportWithBackgroundImage, exportWithBackgroundImage = _props$exportWithBack === void 0 ? false : _props$exportWithBack, _props$preserveBackgr = props.preserveBackgroundImageAspectRatio, preserveBackgroundImageAspectRatio = _props$preserveBackgr === void 0 ? "none" : _props$preserveBackgr, _props$strokeWidth = props.strokeWidth, strokeWidth = _props$strokeWidth === void 0 ? 4 : _props$strokeWidth, _props$eraserWidth = props.eraserWidth, eraserWidth = _props$eraserWidth === void 0 ? 8 : _props$eraserWidth, _props$allowOnlyPoint = props.allowOnlyPointerType, allowOnlyPointerType = _props$allowOnlyPoint === void 0 ? "all" : _props$allowOnlyPoint, _props$style = props.style, style = _props$style === void 0 ? {
       border: "0.0625rem solid #9c9c9c",
       borderRadius: "0.25rem"
     } : _props$style, _props$svgStyle = props.svgStyle, svgStyle = _props$svgStyle === void 0 ? {} : _props$svgStyle, _props$onChange = props.onChange, onChange = _props$onChange === void 0 ? function(_paths) {
     } : _props$onChange, _props$onStroke = props.onStroke, onStroke = _props$onStroke === void 0 ? function(_path, _isEraser) {
     } : _props$onStroke, _props$withTimestamp = props.withTimestamp, withTimestamp = _props$withTimestamp === void 0 ? false : _props$withTimestamp;
-    var svgCanvas = React37.createRef();
-    var _React$useState = React37.useState(true), drawMode = _React$useState[0], setDrawMode = _React$useState[1];
-    var _React$useState2 = React37.useState(false), isDrawing = _React$useState2[0], setIsDrawing = _React$useState2[1];
-    var _React$useState3 = React37.useState([]), resetStack = _React$useState3[0], setResetStack = _React$useState3[1];
-    var _React$useState4 = React37.useState([]), undoStack = _React$useState4[0], setUndoStack = _React$useState4[1];
-    var _React$useState5 = React37.useState([]), currentPaths = _React$useState5[0], setCurrentPaths = _React$useState5[1];
-    var liftStrokeUp = React37.useCallback(function() {
+    var svgCanvas = React15.createRef();
+    var _React$useState = React15.useState(true), drawMode = _React$useState[0], setDrawMode = _React$useState[1];
+    var _React$useState2 = React15.useState(false), isDrawing = _React$useState2[0], setIsDrawing = _React$useState2[1];
+    var _React$useState3 = React15.useState([]), resetStack = _React$useState3[0], setResetStack = _React$useState3[1];
+    var _React$useState4 = React15.useState([]), undoStack = _React$useState4[0], setUndoStack = _React$useState4[1];
+    var _React$useState5 = React15.useState([]), currentPaths = _React$useState5[0], setCurrentPaths = _React$useState5[1];
+    var liftStrokeUp = React15.useCallback(function() {
       var _currentPaths$slice$, _currentPaths$slice;
       var lastStroke = (_currentPaths$slice$ = (_currentPaths$slice = currentPaths.slice(-1)) == null ? void 0 : _currentPaths$slice[0]) != null ? _currentPaths$slice$ : null;
       if (lastStroke === null) {
@@ -45551,13 +46850,13 @@ class InstrumentLogic extends BaseInstrument {
       }
       onStroke(lastStroke, !lastStroke.drawMode);
     }, [isDrawing]);
-    React37.useEffect(function() {
+    React15.useEffect(function() {
       liftStrokeUp();
     }, [isDrawing]);
-    React37.useEffect(function() {
+    React15.useEffect(function() {
       onChange(currentPaths);
     }, [currentPaths]);
-    React37.useImperativeHandle(ref, function() {
+    React15.useImperativeHandle(ref, function() {
       return {
         eraseMode: function eraseMode(erase) {
           setDrawMode(!erase);
@@ -45702,7 +47001,7 @@ class InstrumentLogic extends BaseInstrument {
         return [].concat(currentPaths2.slice(0, -1), [updatedStroke]);
       });
     };
-    return React37.createElement(Canvas, {
+    return React15.createElement(Canvas, {
       ref: svgCanvas,
       id,
       width,
@@ -45724,26 +47023,26 @@ class InstrumentLogic extends BaseInstrument {
   });
 
   // instruments/src/ElectronicFlightBag/components/common/util/dangerousLoader.tsx
-  var import_react37 = __toESM(require_react());
   var import_dompurify = __toESM(require_purify());
+  var import_jsx_runtime36 = __toESM(require_jsx_runtime());
   var RenderSvgFromString = (props) => {
     const sanitizedString = import_dompurify.default.sanitize(props.element);
-    return /* @__PURE__ */ import_react37.default.createElement("div", { dangerouslySetInnerHTML: { __html: sanitizedString } });
+    return /* @__PURE__ */ (0, import_jsx_runtime36.jsx)("div", { dangerouslySetInnerHTML: { __html: sanitizedString } });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Scratchpads/ScratchpadBackground.tsx
-  var import_react38 = __toESM(require_react());
+  var import_jsx_runtime37 = __toESM(require_jsx_runtime());
   var getBackground = (type, width) => {
     switch (type) {
       case "Draw" /* DRAW */:
-        return /* @__PURE__ */ import_react38.default.createElement(import_react38.default.Fragment, null);
+        return /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(import_jsx_runtime37.Fragment, {});
       case "CRAFT" /* CRAFT */:
-        return /* @__PURE__ */ import_react38.default.createElement(SpBGCraft, { width });
+        return /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(SpBGCraft, { width });
       case "ATIS" /* ATIS */:
-        return /* @__PURE__ */ import_react38.default.createElement(SpBgAtis, { width });
+        return /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(SpBgAtis, { width });
       case "Holding" /* HOLDING */:
       default:
-        return /* @__PURE__ */ import_react38.default.createElement(import_react38.default.Fragment, null);
+        return /* @__PURE__ */ (0, import_jsx_runtime37.jsx)(import_jsx_runtime37.Fragment, {});
     }
   };
 
@@ -45761,11 +47060,11 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // node_modules/react-color/es/components/alpha/Alpha.js
-  var import_react49 = __toESM(require_react());
+  var import_react25 = __toESM(require_react());
   var import_reactcss9 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/common/Alpha.js
-  var import_react40 = __toESM(require_react());
+  var import_react16 = __toESM(require_react());
   var import_reactcss2 = __toESM(require_lib2());
 
   // node_modules/react-color/es/helpers/alpha.js
@@ -45817,7 +47116,7 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // node_modules/react-color/es/components/common/Checkboard.js
-  var import_react39 = __toESM(require_react());
+  var import_react15 = __toESM(require_react());
   var import_reactcss = __toESM(require_lib2());
 
   // node_modules/react-color/es/helpers/checkboard.js
@@ -45875,7 +47174,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return (0, import_react39.isValidElement)(children) ? import_react39.default.cloneElement(children, _extends2({}, children.props, { style: _extends2({}, children.props.style, styles.grid) })) : import_react39.default.createElement("div", { style: styles.grid });
+    return (0, import_react15.isValidElement)(children) ? import_react15.default.cloneElement(children, _extends2({}, children.props, { style: _extends2({}, children.props.style, styles.grid) })) : import_react15.default.createElement("div", { style: styles.grid });
   };
   Checkboard.defaultProps = {
     size: 8,
@@ -46018,16 +47317,16 @@ class InstrumentLogic extends BaseInstrument {
           vertical: this.props.direction === "vertical",
           overwrite: true
         });
-        return import_react40.default.createElement(
+        return import_react16.default.createElement(
           "div",
           { style: styles.alpha },
-          import_react40.default.createElement(
+          import_react16.default.createElement(
             "div",
             { style: styles.checkboard },
-            import_react40.default.createElement(Checkboard_default, { renderers: this.props.renderers })
+            import_react16.default.createElement(Checkboard_default, { renderers: this.props.renderers })
           ),
-          import_react40.default.createElement("div", { style: styles.gradient }),
-          import_react40.default.createElement(
+          import_react16.default.createElement("div", { style: styles.gradient }),
+          import_react16.default.createElement(
             "div",
             {
               style: styles.container,
@@ -46038,21 +47337,21 @@ class InstrumentLogic extends BaseInstrument {
               onTouchMove: this.handleChange,
               onTouchStart: this.handleChange
             },
-            import_react40.default.createElement(
+            import_react16.default.createElement(
               "div",
               { style: styles.pointer },
-              this.props.pointer ? import_react40.default.createElement(this.props.pointer, this.props) : import_react40.default.createElement("div", { style: styles.slider })
+              this.props.pointer ? import_react16.default.createElement(this.props.pointer, this.props) : import_react16.default.createElement("div", { style: styles.slider })
             )
           )
         );
       }
     }]);
     return Alpha2;
-  }(import_react40.PureComponent || import_react40.Component);
+  }(import_react16.PureComponent || import_react16.Component);
   var Alpha_default = Alpha;
 
   // node_modules/react-color/es/components/common/EditableInput.js
-  var import_react41 = __toESM(require_react());
+  var import_react17 = __toESM(require_react());
   var import_reactcss3 = __toESM(require_lib2());
   var _createClass2 = function() {
     function defineProperties(target, props) {
@@ -46218,10 +47517,10 @@ class InstrumentLogic extends BaseInstrument {
         }, {
           "user-override": true
         }, this.props);
-        return import_react41.default.createElement(
+        return import_react17.default.createElement(
           "div",
           { style: styles.wrap },
-          import_react41.default.createElement("input", {
+          import_react17.default.createElement("input", {
             id: this.inputId,
             style: styles.input,
             ref: function ref(input) {
@@ -46234,7 +47533,7 @@ class InstrumentLogic extends BaseInstrument {
             placeholder: this.props.placeholder,
             spellCheck: "false"
           }),
-          this.props.label && !this.props.hideLabel ? import_react41.default.createElement(
+          this.props.label && !this.props.hideLabel ? import_react17.default.createElement(
             "label",
             {
               htmlFor: this.inputId,
@@ -46247,11 +47546,11 @@ class InstrumentLogic extends BaseInstrument {
       }
     }]);
     return EditableInput2;
-  }(import_react41.PureComponent || import_react41.Component);
+  }(import_react17.PureComponent || import_react17.Component);
   var EditableInput_default = EditableInput;
 
   // node_modules/react-color/es/components/common/Hue.js
-  var import_react42 = __toESM(require_react());
+  var import_react18 = __toESM(require_react());
   var import_reactcss4 = __toESM(require_lib2());
 
   // node_modules/react-color/es/helpers/hue.js
@@ -46413,10 +47712,10 @@ class InstrumentLogic extends BaseInstrument {
             }
           }
         }, { vertical: direction === "vertical" });
-        return import_react42.default.createElement(
+        return import_react18.default.createElement(
           "div",
           { style: styles.hue },
-          import_react42.default.createElement(
+          import_react18.default.createElement(
             "div",
             {
               className: "hue-" + direction,
@@ -46428,26 +47727,26 @@ class InstrumentLogic extends BaseInstrument {
               onTouchMove: this.handleChange,
               onTouchStart: this.handleChange
             },
-            import_react42.default.createElement(
+            import_react18.default.createElement(
               "style",
               null,
               "\n            .hue-horizontal {\n              background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0\n                33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);\n              background: -webkit-linear-gradient(to right, #f00 0%, #ff0\n                17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);\n            }\n\n            .hue-vertical {\n              background: linear-gradient(to top, #f00 0%, #ff0 17%, #0f0 33%,\n                #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);\n              background: -webkit-linear-gradient(to top, #f00 0%, #ff0 17%,\n                #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);\n            }\n          "
             ),
-            import_react42.default.createElement(
+            import_react18.default.createElement(
               "div",
               { style: styles.pointer },
-              this.props.pointer ? import_react42.default.createElement(this.props.pointer, this.props) : import_react42.default.createElement("div", { style: styles.slider })
+              this.props.pointer ? import_react18.default.createElement(this.props.pointer, this.props) : import_react18.default.createElement("div", { style: styles.slider })
             )
           )
         );
       }
     }]);
     return Hue2;
-  }(import_react42.PureComponent || import_react42.Component);
+  }(import_react18.PureComponent || import_react18.Component);
   var Hue_default = Hue;
 
   // node_modules/react-color/es/components/common/Raised.js
-  var import_react43 = __toESM(require_react());
+  var import_react19 = __toESM(require_react());
   var import_prop_types = __toESM(require_prop_types());
   var import_reactcss5 = __toESM(require_lib2());
 
@@ -47546,11 +48845,11 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles), { "zDepth-1": zDepth === 1 });
-    return import_react43.default.createElement(
+    return import_react19.default.createElement(
       "div",
       { style: styles.wrap },
-      import_react43.default.createElement("div", { style: styles.bg }),
-      import_react43.default.createElement(
+      import_react19.default.createElement("div", { style: styles.bg }),
+      import_react19.default.createElement(
         "div",
         { style: styles.content },
         children
@@ -47572,7 +48871,7 @@ class InstrumentLogic extends BaseInstrument {
   var Raised_default = Raised;
 
   // node_modules/react-color/es/components/common/Saturation.js
-  var import_react44 = __toESM(require_react());
+  var import_react20 = __toESM(require_react());
   var import_reactcss6 = __toESM(require_lib2());
 
   // node_modules/lodash-es/now.js
@@ -47893,7 +49192,7 @@ class InstrumentLogic extends BaseInstrument {
             circle
           }
         }, { "custom": !!this.props.style });
-        return import_react44.default.createElement(
+        return import_react20.default.createElement(
           "div",
           {
             style: styles.color,
@@ -47904,30 +49203,30 @@ class InstrumentLogic extends BaseInstrument {
             onTouchMove: this.handleChange,
             onTouchStart: this.handleChange
           },
-          import_react44.default.createElement(
+          import_react20.default.createElement(
             "style",
             null,
             "\n          .saturation-white {\n            background: -webkit-linear-gradient(to right, #fff, rgba(255,255,255,0));\n            background: linear-gradient(to right, #fff, rgba(255,255,255,0));\n          }\n          .saturation-black {\n            background: -webkit-linear-gradient(to top, #000, rgba(0,0,0,0));\n            background: linear-gradient(to top, #000, rgba(0,0,0,0));\n          }\n        "
           ),
-          import_react44.default.createElement(
+          import_react20.default.createElement(
             "div",
             { style: styles.white, className: "saturation-white" },
-            import_react44.default.createElement("div", { style: styles.black, className: "saturation-black" }),
-            import_react44.default.createElement(
+            import_react20.default.createElement("div", { style: styles.black, className: "saturation-black" }),
+            import_react20.default.createElement(
               "div",
               { style: styles.pointer },
-              this.props.pointer ? import_react44.default.createElement(this.props.pointer, this.props) : import_react44.default.createElement("div", { style: styles.circle })
+              this.props.pointer ? import_react20.default.createElement(this.props.pointer, this.props) : import_react20.default.createElement("div", { style: styles.circle })
             )
           )
         );
       }
     }]);
     return Saturation2;
-  }(import_react44.PureComponent || import_react44.Component);
+  }(import_react20.PureComponent || import_react20.Component);
   var Saturation_default = Saturation;
 
   // node_modules/react-color/es/components/common/ColorWrap.js
-  var import_react45 = __toESM(require_react());
+  var import_react21 = __toESM(require_react());
 
   // node_modules/lodash-es/_arrayEach.js
   function arrayEach(array, iteratee) {
@@ -49137,7 +50436,7 @@ class InstrumentLogic extends BaseInstrument {
           if (this.props.onSwatchHover) {
             optionalEvents.onSwatchHover = this.handleSwatchHover;
           }
-          return import_react45.default.createElement(Picker, _extends4({}, this.props, this.state, {
+          return import_react21.default.createElement(Picker, _extends4({}, this.props, this.state, {
             onChange: this.handleChange
           }, optionalEvents));
         }
@@ -49148,7 +50447,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }]);
       return ColorPicker2;
-    }(import_react45.PureComponent || import_react45.Component);
+    }(import_react21.PureComponent || import_react21.Component);
     ColorPicker.propTypes = _extends4({}, Picker.propTypes);
     ColorPicker.defaultProps = _extends4({}, Picker.defaultProps, {
       color: {
@@ -49163,11 +50462,11 @@ class InstrumentLogic extends BaseInstrument {
   var ColorWrap_default = ColorWrap;
 
   // node_modules/react-color/es/components/common/Swatch.js
-  var import_react47 = __toESM(require_react());
+  var import_react23 = __toESM(require_react());
   var import_reactcss7 = __toESM(require_lib2());
 
   // node_modules/react-color/es/helpers/interaction.js
-  var import_react46 = __toESM(require_react());
+  var import_react22 = __toESM(require_react());
   var _extends5 = Object.assign || function(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
@@ -49237,15 +50536,15 @@ class InstrumentLogic extends BaseInstrument {
       _createClass6(Focus, [{
         key: "render",
         value: function render4() {
-          return import_react46.default.createElement(
+          return import_react22.default.createElement(
             Span,
             { onFocus: this.handleFocus, onBlur: this.handleBlur },
-            import_react46.default.createElement(Component6, _extends5({}, this.props, this.state))
+            import_react22.default.createElement(Component6, _extends5({}, this.props, this.state))
           );
         }
       }]);
       return Focus;
-    }(import_react46.default.Component);
+    }(import_react22.default.Component);
   };
 
   // node_modules/react-color/es/components/common/Swatch.js
@@ -49290,7 +50589,7 @@ class InstrumentLogic extends BaseInstrument {
     if (onHover) {
       optionalEvents.onMouseOver = handleHover3;
     }
-    return import_react47.default.createElement(
+    return import_react23.default.createElement(
       "div",
       _extends6({
         style: styles.swatch,
@@ -49300,7 +50599,7 @@ class InstrumentLogic extends BaseInstrument {
         onKeyDown: handleKeyDown
       }, optionalEvents),
       children,
-      transparent && import_react47.default.createElement(Checkboard_default, {
+      transparent && import_react23.default.createElement(Checkboard_default, {
         borderRadius: styles.swatch.borderRadius,
         boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.1)"
       })
@@ -49309,7 +50608,7 @@ class InstrumentLogic extends BaseInstrument {
   var Swatch_default = handleFocus(Swatch);
 
   // node_modules/react-color/es/components/alpha/AlphaPointer.js
-  var import_react48 = __toESM(require_react());
+  var import_react24 = __toESM(require_react());
   var import_reactcss8 = __toESM(require_lib2());
   var AlphaPointer = function AlphaPointer2(_ref) {
     var direction = _ref.direction;
@@ -49330,7 +50629,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, { vertical: direction === "vertical" });
-    return import_react48.default.createElement("div", { style: styles.picker });
+    return import_react24.default.createElement("div", { style: styles.picker });
   };
   var AlphaPointer_default = AlphaPointer;
 
@@ -49361,10 +50660,10 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react49.default.createElement(
+    return import_react25.default.createElement(
       "div",
       { style: styles.picker, className: "alpha-picker " + className },
-      import_react49.default.createElement(Alpha_default, _extends7({}, styles.alpha, {
+      import_react25.default.createElement(Alpha_default, _extends7({}, styles.alpha, {
         rgb,
         hsl,
         pointer,
@@ -49383,12 +50682,12 @@ class InstrumentLogic extends BaseInstrument {
   var Alpha_default2 = ColorWrap_default(AlphaPicker);
 
   // node_modules/react-color/es/components/block/Block.js
-  var import_react51 = __toESM(require_react());
+  var import_react27 = __toESM(require_react());
   var import_prop_types2 = __toESM(require_prop_types());
   var import_reactcss11 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/block/BlockSwatches.js
-  var import_react50 = __toESM(require_react());
+  var import_react26 = __toESM(require_react());
   var import_reactcss10 = __toESM(require_lib2());
 
   // node_modules/lodash-es/_arrayMap.js
@@ -50109,11 +51408,11 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react50.default.createElement(
+    return import_react26.default.createElement(
       "div",
       { style: styles.swatches },
       map_default(colors, function(c) {
-        return import_react50.default.createElement(Swatch_default, {
+        return import_react26.default.createElement(Swatch_default, {
           key: c,
           color: c,
           style: styles.swatch,
@@ -50124,7 +51423,7 @@ class InstrumentLogic extends BaseInstrument {
           }
         });
       }),
-      import_react50.default.createElement("div", { style: styles.clear })
+      import_react26.default.createElement("div", { style: styles.clear })
     );
   };
   var BlockSwatches_default = BlockSwatches;
@@ -50195,25 +51494,25 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles), { "hide-triangle": triangle === "hide" });
-    return import_react51.default.createElement(
+    return import_react27.default.createElement(
       "div",
       { style: styles.card, className: "block-picker " + className },
-      import_react51.default.createElement("div", { style: styles.triangle }),
-      import_react51.default.createElement(
+      import_react27.default.createElement("div", { style: styles.triangle }),
+      import_react27.default.createElement(
         "div",
         { style: styles.head },
-        transparent && import_react51.default.createElement(Checkboard_default, { borderRadius: "6px 6px 0 0" }),
-        import_react51.default.createElement(
+        transparent && import_react27.default.createElement(Checkboard_default, { borderRadius: "6px 6px 0 0" }),
+        import_react27.default.createElement(
           "div",
           { style: styles.label },
           hex
         )
       ),
-      import_react51.default.createElement(
+      import_react27.default.createElement(
         "div",
         { style: styles.body },
-        import_react51.default.createElement(BlockSwatches_default, { colors, onClick: handleChange, onSwatchHover }),
-        import_react51.default.createElement(EditableInput_default, {
+        import_react27.default.createElement(BlockSwatches_default, { colors, onClick: handleChange, onSwatchHover }),
+        import_react27.default.createElement(EditableInput_default, {
           style: { input: styles.input },
           value: hex,
           onChange: handleChange
@@ -50236,7 +51535,7 @@ class InstrumentLogic extends BaseInstrument {
   var Block_default = ColorWrap_default(Block);
 
   // node_modules/react-color/es/components/circle/Circle.js
-  var import_react53 = __toESM(require_react());
+  var import_react29 = __toESM(require_react());
   var import_prop_types3 = __toESM(require_prop_types());
   var import_reactcss13 = __toESM(require_lib2());
 
@@ -50261,7 +51560,7 @@ class InstrumentLogic extends BaseInstrument {
   var blueGrey = { "50": "#eceff1", "100": "#cfd8dc", "200": "#b0bec5", "300": "#90a4ae", "400": "#78909c", "500": "#607d8b", "600": "#546e7a", "700": "#455a64", "800": "#37474f", "900": "#263238" };
 
   // node_modules/react-color/es/components/circle/CircleSwatch.js
-  var import_react52 = __toESM(require_react());
+  var import_react28 = __toESM(require_react());
   var import_reactcss12 = __toESM(require_lib2());
   var CircleSwatch = function CircleSwatch2(_ref) {
     var color = _ref.color, onClick = _ref.onClick, onSwatchHover = _ref.onSwatchHover, hover = _ref.hover, active = _ref.active, circleSize = _ref.circleSize, circleSpacing = _ref.circleSpacing;
@@ -50293,10 +51592,10 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, { hover, active });
-    return import_react52.default.createElement(
+    return import_react28.default.createElement(
       "div",
       { style: styles.swatch },
-      import_react52.default.createElement(Swatch_default, {
+      import_react28.default.createElement(Swatch_default, {
         style: styles.Swatch,
         color,
         onClick,
@@ -50328,11 +51627,11 @@ class InstrumentLogic extends BaseInstrument {
     var handleChange = function handleChange2(hexCode, e) {
       return onChange({ hex: hexCode, source: "hex" }, e);
     };
-    return import_react53.default.createElement(
+    return import_react29.default.createElement(
       "div",
       { style: styles.card, className: "circle-picker " + className },
       map_default(colors, function(c) {
-        return import_react53.default.createElement(CircleSwatch_default, {
+        return import_react29.default.createElement(CircleSwatch_default, {
           key: c,
           color: c,
           onClick: handleChange,
@@ -50360,12 +51659,12 @@ class InstrumentLogic extends BaseInstrument {
   var Circle_default = ColorWrap_default(Circle);
 
   // node_modules/react-color/es/components/chrome/Chrome.js
-  var import_react57 = __toESM(require_react());
+  var import_react33 = __toESM(require_react());
   var import_prop_types4 = __toESM(require_prop_types());
   var import_reactcss17 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/chrome/ChromeFields.js
-  var import_react54 = __toESM(require_react());
+  var import_react30 = __toESM(require_react());
   var import_reactcss14 = __toESM(require_lib2());
 
   // node_modules/lodash-es/isUndefined.js
@@ -50574,13 +51873,13 @@ class InstrumentLogic extends BaseInstrument {
         }, this.props, this.state);
         var fields = void 0;
         if (this.state.view === "hex") {
-          fields = import_react54.default.createElement(
+          fields = import_react30.default.createElement(
             "div",
             { style: styles.fields, className: "flexbox-fix" },
-            import_react54.default.createElement(
+            import_react30.default.createElement(
               "div",
               { style: styles.field },
-              import_react54.default.createElement(EditableInput_default, {
+              import_react30.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "hex",
                 value: this.props.hex,
@@ -50589,43 +51888,43 @@ class InstrumentLogic extends BaseInstrument {
             )
           );
         } else if (this.state.view === "rgb") {
-          fields = import_react54.default.createElement(
+          fields = import_react30.default.createElement(
             "div",
             { style: styles.fields, className: "flexbox-fix" },
-            import_react54.default.createElement(
+            import_react30.default.createElement(
               "div",
               { style: styles.field },
-              import_react54.default.createElement(EditableInput_default, {
+              import_react30.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "r",
                 value: this.props.rgb.r,
                 onChange: this.handleChange
               })
             ),
-            import_react54.default.createElement(
+            import_react30.default.createElement(
               "div",
               { style: styles.field },
-              import_react54.default.createElement(EditableInput_default, {
+              import_react30.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "g",
                 value: this.props.rgb.g,
                 onChange: this.handleChange
               })
             ),
-            import_react54.default.createElement(
+            import_react30.default.createElement(
               "div",
               { style: styles.field },
-              import_react54.default.createElement(EditableInput_default, {
+              import_react30.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "b",
                 value: this.props.rgb.b,
                 onChange: this.handleChange
               })
             ),
-            import_react54.default.createElement(
+            import_react30.default.createElement(
               "div",
               { style: styles.alpha },
-              import_react54.default.createElement(EditableInput_default, {
+              import_react30.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "a",
                 value: this.props.rgb.a,
@@ -50635,43 +51934,43 @@ class InstrumentLogic extends BaseInstrument {
             )
           );
         } else if (this.state.view === "hsl") {
-          fields = import_react54.default.createElement(
+          fields = import_react30.default.createElement(
             "div",
             { style: styles.fields, className: "flexbox-fix" },
-            import_react54.default.createElement(
+            import_react30.default.createElement(
               "div",
               { style: styles.field },
-              import_react54.default.createElement(EditableInput_default, {
+              import_react30.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "h",
                 value: Math.round(this.props.hsl.h),
                 onChange: this.handleChange
               })
             ),
-            import_react54.default.createElement(
+            import_react30.default.createElement(
               "div",
               { style: styles.field },
-              import_react54.default.createElement(EditableInput_default, {
+              import_react30.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "s",
                 value: Math.round(this.props.hsl.s * 100) + "%",
                 onChange: this.handleChange
               })
             ),
-            import_react54.default.createElement(
+            import_react30.default.createElement(
               "div",
               { style: styles.field },
-              import_react54.default.createElement(EditableInput_default, {
+              import_react30.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "l",
                 value: Math.round(this.props.hsl.l * 100) + "%",
                 onChange: this.handleChange
               })
             ),
-            import_react54.default.createElement(
+            import_react30.default.createElement(
               "div",
               { style: styles.alpha },
-              import_react54.default.createElement(EditableInput_default, {
+              import_react30.default.createElement(EditableInput_default, {
                 style: { input: styles.input, label: styles.label },
                 label: "a",
                 value: this.props.hsl.a,
@@ -50681,19 +51980,19 @@ class InstrumentLogic extends BaseInstrument {
             )
           );
         }
-        return import_react54.default.createElement(
+        return import_react30.default.createElement(
           "div",
           { style: styles.wrap, className: "flexbox-fix" },
           fields,
-          import_react54.default.createElement(
+          import_react30.default.createElement(
             "div",
             { style: styles.toggle },
-            import_react54.default.createElement(
+            import_react30.default.createElement(
               "div",
               { style: styles.icon, onClick: this.toggleViews, ref: function ref(icon) {
                 return _this2.icon = icon;
               } },
-              import_react54.default.createElement(import_UnfoldMoreHorizontalIcon.default, {
+              import_react30.default.createElement(import_UnfoldMoreHorizontalIcon.default, {
                 style: styles.svg,
                 onMouseOver: this.showHighlight,
                 onMouseEnter: this.showHighlight,
@@ -50713,14 +52012,14 @@ class InstrumentLogic extends BaseInstrument {
       }
     }]);
     return ChromeFields2;
-  }(import_react54.default.Component);
+  }(import_react30.default.Component);
   ChromeFields.defaultProps = {
     view: "hex"
   };
   var ChromeFields_default = ChromeFields;
 
   // node_modules/react-color/es/components/chrome/ChromePointer.js
-  var import_react55 = __toESM(require_react());
+  var import_react31 = __toESM(require_react());
   var import_reactcss15 = __toESM(require_lib2());
   var ChromePointer = function ChromePointer2() {
     var styles = (0, import_reactcss15.default)({
@@ -50735,12 +52034,12 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react55.default.createElement("div", { style: styles.picker });
+    return import_react31.default.createElement("div", { style: styles.picker });
   };
   var ChromePointer_default = ChromePointer;
 
   // node_modules/react-color/es/components/chrome/ChromePointerCircle.js
-  var import_react56 = __toESM(require_react());
+  var import_react32 = __toESM(require_react());
   var import_reactcss16 = __toESM(require_lib2());
   var ChromePointerCircle = function ChromePointerCircle2() {
     var styles = (0, import_reactcss16.default)({
@@ -50754,7 +52053,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react56.default.createElement("div", { style: styles.picker });
+    return import_react32.default.createElement("div", { style: styles.picker });
   };
   var ChromePointerCircle_default = ChromePointerCircle;
 
@@ -50841,13 +52140,13 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles), { disableAlpha });
-    return import_react57.default.createElement(
+    return import_react33.default.createElement(
       "div",
       { style: styles.picker, className: "chrome-picker " + className },
-      import_react57.default.createElement(
+      import_react33.default.createElement(
         "div",
         { style: styles.saturation },
-        import_react57.default.createElement(Saturation_default, {
+        import_react33.default.createElement(Saturation_default, {
           style: styles.Saturation,
           hsl,
           hsv,
@@ -50855,39 +52154,39 @@ class InstrumentLogic extends BaseInstrument {
           onChange
         })
       ),
-      import_react57.default.createElement(
+      import_react33.default.createElement(
         "div",
         { style: styles.body },
-        import_react57.default.createElement(
+        import_react33.default.createElement(
           "div",
           { style: styles.controls, className: "flexbox-fix" },
-          import_react57.default.createElement(
+          import_react33.default.createElement(
             "div",
             { style: styles.color },
-            import_react57.default.createElement(
+            import_react33.default.createElement(
               "div",
               { style: styles.swatch },
-              import_react57.default.createElement("div", { style: styles.active }),
-              import_react57.default.createElement(Checkboard_default, { renderers })
+              import_react33.default.createElement("div", { style: styles.active }),
+              import_react33.default.createElement(Checkboard_default, { renderers })
             )
           ),
-          import_react57.default.createElement(
+          import_react33.default.createElement(
             "div",
             { style: styles.toggles },
-            import_react57.default.createElement(
+            import_react33.default.createElement(
               "div",
               { style: styles.hue },
-              import_react57.default.createElement(Hue_default, {
+              import_react33.default.createElement(Hue_default, {
                 style: styles.Hue,
                 hsl,
                 pointer: ChromePointer_default,
                 onChange
               })
             ),
-            import_react57.default.createElement(
+            import_react33.default.createElement(
               "div",
               { style: styles.alpha },
-              import_react57.default.createElement(Alpha_default, {
+              import_react33.default.createElement(Alpha_default, {
                 style: styles.Alpha,
                 rgb,
                 hsl,
@@ -50898,7 +52197,7 @@ class InstrumentLogic extends BaseInstrument {
             )
           )
         ),
-        import_react57.default.createElement(ChromeFields_default, {
+        import_react33.default.createElement(ChromeFields_default, {
           rgb,
           hsl,
           hex,
@@ -50923,12 +52222,12 @@ class InstrumentLogic extends BaseInstrument {
   var Chrome_default = ColorWrap_default(Chrome);
 
   // node_modules/react-color/es/components/compact/Compact.js
-  var import_react60 = __toESM(require_react());
+  var import_react36 = __toESM(require_react());
   var import_prop_types5 = __toESM(require_prop_types());
   var import_reactcss20 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/compact/CompactColor.js
-  var import_react58 = __toESM(require_react());
+  var import_react34 = __toESM(require_react());
   var import_reactcss18 = __toESM(require_lib2());
   var CompactColor = function CompactColor2(_ref) {
     var color = _ref.color, _ref$onClick = _ref.onClick, onClick = _ref$onClick === void 0 ? function() {
@@ -50971,7 +52270,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, { active, "color-#FFFFFF": color === "#FFFFFF", "transparent": color === "transparent" });
-    return import_react58.default.createElement(
+    return import_react34.default.createElement(
       Swatch_default,
       {
         style: styles.color,
@@ -50980,13 +52279,13 @@ class InstrumentLogic extends BaseInstrument {
         onHover: onSwatchHover,
         focusStyle: { boxShadow: "0 0 4px " + color }
       },
-      import_react58.default.createElement("div", { style: styles.dot })
+      import_react34.default.createElement("div", { style: styles.dot })
     );
   };
   var CompactColor_default = CompactColor;
 
   // node_modules/react-color/es/components/compact/CompactFields.js
-  var import_react59 = __toESM(require_react());
+  var import_react35 = __toESM(require_react());
   var import_reactcss19 = __toESM(require_lib2());
   var CompactFields = function CompactFields2(_ref) {
     var hex = _ref.hex, rgb = _ref.rgb, onChange = _ref.onChange;
@@ -51065,29 +52364,29 @@ class InstrumentLogic extends BaseInstrument {
         }, e);
       }
     };
-    return import_react59.default.createElement(
+    return import_react35.default.createElement(
       "div",
       { style: styles.fields, className: "flexbox-fix" },
-      import_react59.default.createElement("div", { style: styles.active }),
-      import_react59.default.createElement(EditableInput_default, {
+      import_react35.default.createElement("div", { style: styles.active }),
+      import_react35.default.createElement(EditableInput_default, {
         style: { wrap: styles.HEXwrap, input: styles.HEXinput, label: styles.HEXlabel },
         label: "hex",
         value: hex,
         onChange: handleChange
       }),
-      import_react59.default.createElement(EditableInput_default, {
+      import_react35.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "r",
         value: rgb.r,
         onChange: handleChange
       }),
-      import_react59.default.createElement(EditableInput_default, {
+      import_react35.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "g",
         value: rgb.g,
         onChange: handleChange
       }),
-      import_react59.default.createElement(EditableInput_default, {
+      import_react35.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "b",
         value: rgb.b,
@@ -51127,17 +52426,17 @@ class InstrumentLogic extends BaseInstrument {
         onChange(data, e);
       }
     };
-    return import_react60.default.createElement(
+    return import_react36.default.createElement(
       Raised_default,
       { style: styles.Compact, styles: passedStyles },
-      import_react60.default.createElement(
+      import_react36.default.createElement(
         "div",
         { style: styles.compact, className: "compact-picker " + className },
-        import_react60.default.createElement(
+        import_react36.default.createElement(
           "div",
           null,
           map_default(colors, function(c) {
-            return import_react60.default.createElement(CompactColor_default, {
+            return import_react36.default.createElement(CompactColor_default, {
               key: c,
               color: c,
               active: c.toLowerCase() === hex,
@@ -51145,9 +52444,9 @@ class InstrumentLogic extends BaseInstrument {
               onSwatchHover
             });
           }),
-          import_react60.default.createElement("div", { style: styles.clear })
+          import_react36.default.createElement("div", { style: styles.clear })
         ),
-        import_react60.default.createElement(CompactFields_default, { hex, rgb, onChange: handleChange })
+        import_react36.default.createElement(CompactFields_default, { hex, rgb, onChange: handleChange })
       )
     );
   };
@@ -51162,12 +52461,12 @@ class InstrumentLogic extends BaseInstrument {
   var Compact_default = ColorWrap_default(Compact);
 
   // node_modules/react-color/es/components/github/Github.js
-  var import_react62 = __toESM(require_react());
+  var import_react38 = __toESM(require_react());
   var import_prop_types6 = __toESM(require_prop_types());
   var import_reactcss22 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/github/GithubSwatch.js
-  var import_react61 = __toESM(require_react());
+  var import_react37 = __toESM(require_react());
   var import_reactcss21 = __toESM(require_lib2());
   var GithubSwatch = function GithubSwatch2(_ref) {
     var hover = _ref.hover, color = _ref.color, onClick = _ref.onClick, onSwatchHover = _ref.onSwatchHover;
@@ -51189,10 +52488,10 @@ class InstrumentLogic extends BaseInstrument {
         swatch: hoverSwatch
       }
     }, { hover });
-    return import_react61.default.createElement(
+    return import_react37.default.createElement(
       "div",
       { style: styles.swatch },
-      import_react61.default.createElement(Swatch_default, {
+      import_react37.default.createElement(Swatch_default, {
         color,
         onClick,
         onHover: onSwatchHover,
@@ -51291,13 +52590,13 @@ class InstrumentLogic extends BaseInstrument {
     var handleChange = function handleChange2(hex, e) {
       return onChange({ hex, source: "hex" }, e);
     };
-    return import_react62.default.createElement(
+    return import_react38.default.createElement(
       "div",
       { style: styles.card, className: "github-picker " + className },
-      import_react62.default.createElement("div", { style: styles.triangleShadow }),
-      import_react62.default.createElement("div", { style: styles.triangle }),
+      import_react38.default.createElement("div", { style: styles.triangleShadow }),
+      import_react38.default.createElement("div", { style: styles.triangle }),
       map_default(colors, function(c) {
-        return import_react62.default.createElement(GithubSwatch_default, {
+        return import_react38.default.createElement(GithubSwatch_default, {
           color: c,
           key: c,
           onClick: handleChange,
@@ -51321,12 +52620,12 @@ class InstrumentLogic extends BaseInstrument {
   var Github_default = ColorWrap_default(Github);
 
   // node_modules/react-color/es/components/hue/Hue.js
-  var import_react64 = __toESM(require_react());
+  var import_react40 = __toESM(require_react());
   var import_prop_types7 = __toESM(require_prop_types());
   var import_reactcss24 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/hue/HuePointer.js
-  var import_react63 = __toESM(require_react());
+  var import_react39 = __toESM(require_react());
   var import_reactcss23 = __toESM(require_lib2());
   var SliderPointer = function SliderPointer2(_ref) {
     var direction = _ref.direction;
@@ -51347,7 +52646,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, { vertical: direction === "vertical" });
-    return import_react63.default.createElement("div", { style: styles.picker });
+    return import_react39.default.createElement("div", { style: styles.picker });
   };
   var HuePointer_default = SliderPointer;
 
@@ -51380,10 +52679,10 @@ class InstrumentLogic extends BaseInstrument {
     var handleChange = function handleChange2(data) {
       return onChange({ a: 1, h: data.h, l: 0.5, s: 1 });
     };
-    return import_react64.default.createElement(
+    return import_react40.default.createElement(
       "div",
       { style: styles.picker, className: "hue-picker " + className },
-      import_react64.default.createElement(Hue_default, _extends8({}, styles.hue, {
+      import_react40.default.createElement(Hue_default, _extends8({}, styles.hue, {
         hsl,
         pointer,
         onChange: handleChange,
@@ -51404,7 +52703,7 @@ class InstrumentLogic extends BaseInstrument {
   var Hue_default2 = ColorWrap_default(HuePicker);
 
   // node_modules/react-color/es/components/material/Material.js
-  var import_react65 = __toESM(require_react());
+  var import_react41 = __toESM(require_react());
   var import_reactcss25 = __toESM(require_lib2());
   var Material = function Material2(_ref) {
     var onChange = _ref.onChange, hex = _ref.hex, rgb = _ref.rgb, _ref$styles = _ref.styles, passedStyles = _ref$styles === void 0 ? {} : _ref$styles, _ref$className = _ref.className, className = _ref$className === void 0 ? "" : _ref$className;
@@ -51489,45 +52788,45 @@ class InstrumentLogic extends BaseInstrument {
         }, e);
       }
     };
-    return import_react65.default.createElement(
+    return import_react41.default.createElement(
       Raised_default,
       { styles: passedStyles },
-      import_react65.default.createElement(
+      import_react41.default.createElement(
         "div",
         { style: styles.material, className: "material-picker " + className },
-        import_react65.default.createElement(EditableInput_default, {
+        import_react41.default.createElement(EditableInput_default, {
           style: { wrap: styles.HEXwrap, input: styles.HEXinput, label: styles.HEXlabel },
           label: "hex",
           value: hex,
           onChange: handleChange
         }),
-        import_react65.default.createElement(
+        import_react41.default.createElement(
           "div",
           { style: styles.split, className: "flexbox-fix" },
-          import_react65.default.createElement(
+          import_react41.default.createElement(
             "div",
             { style: styles.third },
-            import_react65.default.createElement(EditableInput_default, {
+            import_react41.default.createElement(EditableInput_default, {
               style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
               label: "r",
               value: rgb.r,
               onChange: handleChange
             })
           ),
-          import_react65.default.createElement(
+          import_react41.default.createElement(
             "div",
             { style: styles.third },
-            import_react65.default.createElement(EditableInput_default, {
+            import_react41.default.createElement(EditableInput_default, {
               style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
               label: "g",
               value: rgb.g,
               onChange: handleChange
             })
           ),
-          import_react65.default.createElement(
+          import_react41.default.createElement(
             "div",
             { style: styles.third },
-            import_react65.default.createElement(EditableInput_default, {
+            import_react41.default.createElement(EditableInput_default, {
               style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
               label: "b",
               value: rgb.b,
@@ -51541,12 +52840,12 @@ class InstrumentLogic extends BaseInstrument {
   var Material_default = ColorWrap_default(Material);
 
   // node_modules/react-color/es/components/photoshop/Photoshop.js
-  var import_react71 = __toESM(require_react());
+  var import_react47 = __toESM(require_react());
   var import_prop_types8 = __toESM(require_prop_types());
   var import_reactcss31 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/photoshop/PhotoshopFields.js
-  var import_react66 = __toESM(require_react());
+  var import_react42 = __toESM(require_react());
   var import_reactcss26 = __toESM(require_lib2());
   var PhotoshopPicker = function PhotoshopPicker2(_ref) {
     var onChange = _ref.onChange, rgb = _ref.rgb, hsv = _ref.hsv, hex = _ref.hex;
@@ -51643,67 +52942,67 @@ class InstrumentLogic extends BaseInstrument {
         }, e);
       }
     };
-    return import_react66.default.createElement(
+    return import_react42.default.createElement(
       "div",
       { style: styles.fields },
-      import_react66.default.createElement(EditableInput_default, {
+      import_react42.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "h",
         value: Math.round(hsv.h),
         onChange: handleChange
       }),
-      import_react66.default.createElement(EditableInput_default, {
+      import_react42.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "s",
         value: Math.round(hsv.s * 100),
         onChange: handleChange
       }),
-      import_react66.default.createElement(EditableInput_default, {
+      import_react42.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "v",
         value: Math.round(hsv.v * 100),
         onChange: handleChange
       }),
-      import_react66.default.createElement("div", { style: styles.divider }),
-      import_react66.default.createElement(EditableInput_default, {
+      import_react42.default.createElement("div", { style: styles.divider }),
+      import_react42.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "r",
         value: rgb.r,
         onChange: handleChange
       }),
-      import_react66.default.createElement(EditableInput_default, {
+      import_react42.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "g",
         value: rgb.g,
         onChange: handleChange
       }),
-      import_react66.default.createElement(EditableInput_default, {
+      import_react42.default.createElement(EditableInput_default, {
         style: { wrap: styles.RGBwrap, input: styles.RGBinput, label: styles.RGBlabel },
         label: "b",
         value: rgb.b,
         onChange: handleChange
       }),
-      import_react66.default.createElement("div", { style: styles.divider }),
-      import_react66.default.createElement(EditableInput_default, {
+      import_react42.default.createElement("div", { style: styles.divider }),
+      import_react42.default.createElement(EditableInput_default, {
         style: { wrap: styles.HEXwrap, input: styles.HEXinput, label: styles.HEXlabel },
         label: "#",
         value: hex.replace("#", ""),
         onChange: handleChange
       }),
-      import_react66.default.createElement(
+      import_react42.default.createElement(
         "div",
         { style: styles.fieldSymbols },
-        import_react66.default.createElement(
+        import_react42.default.createElement(
           "div",
           { style: styles.symbol },
           "\xB0"
         ),
-        import_react66.default.createElement(
+        import_react42.default.createElement(
           "div",
           { style: styles.symbol },
           "%"
         ),
-        import_react66.default.createElement(
+        import_react42.default.createElement(
           "div",
           { style: styles.symbol },
           "%"
@@ -51714,7 +53013,7 @@ class InstrumentLogic extends BaseInstrument {
   var PhotoshopFields_default = PhotoshopPicker;
 
   // node_modules/react-color/es/components/photoshop/PhotoshopPointerCircle.js
-  var import_react67 = __toESM(require_react());
+  var import_react43 = __toESM(require_react());
   var import_reactcss27 = __toESM(require_lib2());
   var PhotoshopPointerCircle = function PhotoshopPointerCircle2(_ref) {
     var hsl = _ref.hsl;
@@ -51734,12 +53033,12 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, { "black-outline": hsl.l > 0.5 });
-    return import_react67.default.createElement("div", { style: styles.picker });
+    return import_react43.default.createElement("div", { style: styles.picker });
   };
   var PhotoshopPointerCircle_default = PhotoshopPointerCircle;
 
   // node_modules/react-color/es/components/photoshop/PhotoshopPointer.js
-  var import_react68 = __toESM(require_react());
+  var import_react44 = __toESM(require_react());
   var import_reactcss28 = __toESM(require_lib2());
   var PhotoshopPointerCircle3 = function PhotoshopPointerCircle4() {
     var styles = (0, import_reactcss28.default)({
@@ -51779,25 +53078,25 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react68.default.createElement(
+    return import_react44.default.createElement(
       "div",
       { style: styles.pointer },
-      import_react68.default.createElement(
+      import_react44.default.createElement(
         "div",
         { style: styles.left },
-        import_react68.default.createElement("div", { style: styles.leftInside })
+        import_react44.default.createElement("div", { style: styles.leftInside })
       ),
-      import_react68.default.createElement(
+      import_react44.default.createElement(
         "div",
         { style: styles.right },
-        import_react68.default.createElement("div", { style: styles.rightInside })
+        import_react44.default.createElement("div", { style: styles.rightInside })
       )
     );
   };
   var PhotoshopPointer_default = PhotoshopPointerCircle3;
 
   // node_modules/react-color/es/components/photoshop/PhotoshopButton.js
-  var import_react69 = __toESM(require_react());
+  var import_react45 = __toESM(require_react());
   var import_reactcss29 = __toESM(require_lib2());
   var PhotoshopButton = function PhotoshopButton2(_ref) {
     var onClick = _ref.onClick, label = _ref.label, children = _ref.children, active = _ref.active;
@@ -51823,7 +53122,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, { active });
-    return import_react69.default.createElement(
+    return import_react45.default.createElement(
       "div",
       { style: styles.button, onClick },
       label || children
@@ -51832,7 +53131,7 @@ class InstrumentLogic extends BaseInstrument {
   var PhotoshopButton_default = PhotoshopButton;
 
   // node_modules/react-color/es/components/photoshop/PhotoshopPreviews.js
-  var import_react70 = __toESM(require_react());
+  var import_react46 = __toESM(require_react());
   var import_reactcss30 = __toESM(require_lib2());
   var PhotoshopPreviews = function PhotoshopPreviews2(_ref) {
     var rgb = _ref.rgb, currentColor = _ref.currentColor;
@@ -51861,21 +53160,21 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react70.default.createElement(
+    return import_react46.default.createElement(
       "div",
       null,
-      import_react70.default.createElement(
+      import_react46.default.createElement(
         "div",
         { style: styles.label },
         "new"
       ),
-      import_react70.default.createElement(
+      import_react46.default.createElement(
         "div",
         { style: styles.swatches },
-        import_react70.default.createElement("div", { style: styles.new }),
-        import_react70.default.createElement("div", { style: styles.current })
+        import_react46.default.createElement("div", { style: styles.new }),
+        import_react46.default.createElement("div", { style: styles.current })
       ),
-      import_react70.default.createElement(
+      import_react46.default.createElement(
         "div",
         { style: styles.label },
         "current"
@@ -51993,57 +53292,57 @@ class InstrumentLogic extends BaseInstrument {
             }
           }
         }, passedStyles));
-        return import_react71.default.createElement(
+        return import_react47.default.createElement(
           "div",
           { style: styles.picker, className: "photoshop-picker " + className },
-          import_react71.default.createElement(
+          import_react47.default.createElement(
             "div",
             { style: styles.head },
             this.props.header
           ),
-          import_react71.default.createElement(
+          import_react47.default.createElement(
             "div",
             { style: styles.body, className: "flexbox-fix" },
-            import_react71.default.createElement(
+            import_react47.default.createElement(
               "div",
               { style: styles.saturation },
-              import_react71.default.createElement(Saturation_default, {
+              import_react47.default.createElement(Saturation_default, {
                 hsl: this.props.hsl,
                 hsv: this.props.hsv,
                 pointer: PhotoshopPointerCircle_default,
                 onChange: this.props.onChange
               })
             ),
-            import_react71.default.createElement(
+            import_react47.default.createElement(
               "div",
               { style: styles.hue },
-              import_react71.default.createElement(Hue_default, {
+              import_react47.default.createElement(Hue_default, {
                 direction: "vertical",
                 hsl: this.props.hsl,
                 pointer: PhotoshopPointer_default,
                 onChange: this.props.onChange
               })
             ),
-            import_react71.default.createElement(
+            import_react47.default.createElement(
               "div",
               { style: styles.controls },
-              import_react71.default.createElement(
+              import_react47.default.createElement(
                 "div",
                 { style: styles.top, className: "flexbox-fix" },
-                import_react71.default.createElement(
+                import_react47.default.createElement(
                   "div",
                   { style: styles.previews },
-                  import_react71.default.createElement(PhotoshopPreviews_default, {
+                  import_react47.default.createElement(PhotoshopPreviews_default, {
                     rgb: this.props.rgb,
                     currentColor: this.state.currentColor
                   })
                 ),
-                import_react71.default.createElement(
+                import_react47.default.createElement(
                   "div",
                   { style: styles.actions },
-                  import_react71.default.createElement(PhotoshopButton_default, { label: "OK", onClick: this.props.onAccept, active: true }),
-                  import_react71.default.createElement(PhotoshopButton_default, { label: "Cancel", onClick: this.props.onCancel }),
-                  import_react71.default.createElement(PhotoshopFields_default, {
+                  import_react47.default.createElement(PhotoshopButton_default, { label: "OK", onClick: this.props.onAccept, active: true }),
+                  import_react47.default.createElement(PhotoshopButton_default, { label: "Cancel", onClick: this.props.onCancel }),
+                  import_react47.default.createElement(PhotoshopFields_default, {
                     onChange: this.props.onChange,
                     rgb: this.props.rgb,
                     hsv: this.props.hsv,
@@ -52057,7 +53356,7 @@ class InstrumentLogic extends BaseInstrument {
       }
     }]);
     return Photoshop2;
-  }(import_react71.default.Component);
+  }(import_react47.default.Component);
   Photoshop.propTypes = {
     header: import_prop_types8.default.string,
     styles: import_prop_types8.default.object
@@ -52069,12 +53368,12 @@ class InstrumentLogic extends BaseInstrument {
   var Photoshop_default = ColorWrap_default(Photoshop);
 
   // node_modules/react-color/es/components/sketch/Sketch.js
-  var import_react74 = __toESM(require_react());
+  var import_react50 = __toESM(require_react());
   var import_prop_types10 = __toESM(require_prop_types());
   var import_reactcss34 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/sketch/SketchFields.js
-  var import_react72 = __toESM(require_react());
+  var import_react48 = __toESM(require_react());
   var import_reactcss32 = __toESM(require_lib2());
   var SketchFields = function SketchFields2(_ref) {
     var onChange = _ref.onChange, rgb = _ref.rgb, hsl = _ref.hsl, hex = _ref.hex, disableAlpha = _ref.disableAlpha;
@@ -52148,23 +53447,23 @@ class InstrumentLogic extends BaseInstrument {
         }, e);
       }
     };
-    return import_react72.default.createElement(
+    return import_react48.default.createElement(
       "div",
       { style: styles.fields, className: "flexbox-fix" },
-      import_react72.default.createElement(
+      import_react48.default.createElement(
         "div",
         { style: styles.double },
-        import_react72.default.createElement(EditableInput_default, {
+        import_react48.default.createElement(EditableInput_default, {
           style: { input: styles.input, label: styles.label },
           label: "hex",
           value: hex.replace("#", ""),
           onChange: handleChange
         })
       ),
-      import_react72.default.createElement(
+      import_react48.default.createElement(
         "div",
         { style: styles.single },
-        import_react72.default.createElement(EditableInput_default, {
+        import_react48.default.createElement(EditableInput_default, {
           style: { input: styles.input, label: styles.label },
           label: "r",
           value: rgb.r,
@@ -52173,10 +53472,10 @@ class InstrumentLogic extends BaseInstrument {
           dragMax: "255"
         })
       ),
-      import_react72.default.createElement(
+      import_react48.default.createElement(
         "div",
         { style: styles.single },
-        import_react72.default.createElement(EditableInput_default, {
+        import_react48.default.createElement(EditableInput_default, {
           style: { input: styles.input, label: styles.label },
           label: "g",
           value: rgb.g,
@@ -52185,10 +53484,10 @@ class InstrumentLogic extends BaseInstrument {
           dragMax: "255"
         })
       ),
-      import_react72.default.createElement(
+      import_react48.default.createElement(
         "div",
         { style: styles.single },
-        import_react72.default.createElement(EditableInput_default, {
+        import_react48.default.createElement(EditableInput_default, {
           style: { input: styles.input, label: styles.label },
           label: "b",
           value: rgb.b,
@@ -52197,10 +53496,10 @@ class InstrumentLogic extends BaseInstrument {
           dragMax: "255"
         })
       ),
-      import_react72.default.createElement(
+      import_react48.default.createElement(
         "div",
         { style: styles.alpha },
-        import_react72.default.createElement(EditableInput_default, {
+        import_react48.default.createElement(EditableInput_default, {
           style: { input: styles.input, label: styles.label },
           label: "a",
           value: Math.round(rgb.a * 100),
@@ -52214,7 +53513,7 @@ class InstrumentLogic extends BaseInstrument {
   var SketchFields_default = SketchFields;
 
   // node_modules/react-color/es/components/sketch/SketchPresetColors.js
-  var import_react73 = __toESM(require_react());
+  var import_react49 = __toESM(require_react());
   var import_prop_types9 = __toESM(require_prop_types());
   var import_reactcss33 = __toESM(require_lib2());
   var _extends9 = Object.assign || function(target) {
@@ -52265,16 +53564,16 @@ class InstrumentLogic extends BaseInstrument {
         source: "hex"
       }, e);
     };
-    return import_react73.default.createElement(
+    return import_react49.default.createElement(
       "div",
       { style: styles.colors, className: "flexbox-fix" },
       colors.map(function(colorObjOrString) {
         var c = typeof colorObjOrString === "string" ? { color: colorObjOrString } : colorObjOrString;
         var key = "" + c.color + (c.title || "");
-        return import_react73.default.createElement(
+        return import_react49.default.createElement(
           "div",
           { key, style: styles.swatchWrap },
-          import_react73.default.createElement(Swatch_default, _extends9({}, c, {
+          import_react49.default.createElement(Swatch_default, _extends9({}, c, {
             style: styles.swatch,
             onClick: handleClick,
             onHover: onSwatchHover,
@@ -52381,38 +53680,38 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles), { disableAlpha });
-    return import_react74.default.createElement(
+    return import_react50.default.createElement(
       "div",
       { style: styles.picker, className: "sketch-picker " + className },
-      import_react74.default.createElement(
+      import_react50.default.createElement(
         "div",
         { style: styles.saturation },
-        import_react74.default.createElement(Saturation_default, {
+        import_react50.default.createElement(Saturation_default, {
           style: styles.Saturation,
           hsl,
           hsv,
           onChange
         })
       ),
-      import_react74.default.createElement(
+      import_react50.default.createElement(
         "div",
         { style: styles.controls, className: "flexbox-fix" },
-        import_react74.default.createElement(
+        import_react50.default.createElement(
           "div",
           { style: styles.sliders },
-          import_react74.default.createElement(
+          import_react50.default.createElement(
             "div",
             { style: styles.hue },
-            import_react74.default.createElement(Hue_default, {
+            import_react50.default.createElement(Hue_default, {
               style: styles.Hue,
               hsl,
               onChange
             })
           ),
-          import_react74.default.createElement(
+          import_react50.default.createElement(
             "div",
             { style: styles.alpha },
-            import_react74.default.createElement(Alpha_default, {
+            import_react50.default.createElement(Alpha_default, {
               style: styles.Alpha,
               rgb,
               hsl,
@@ -52421,21 +53720,21 @@ class InstrumentLogic extends BaseInstrument {
             })
           )
         ),
-        import_react74.default.createElement(
+        import_react50.default.createElement(
           "div",
           { style: styles.color },
-          import_react74.default.createElement(Checkboard_default, null),
-          import_react74.default.createElement("div", { style: styles.activeColor })
+          import_react50.default.createElement(Checkboard_default, null),
+          import_react50.default.createElement("div", { style: styles.activeColor })
         )
       ),
-      import_react74.default.createElement(SketchFields_default, {
+      import_react50.default.createElement(SketchFields_default, {
         rgb,
         hsl,
         hex,
         onChange,
         disableAlpha
       }),
-      import_react74.default.createElement(SketchPresetColors_default, {
+      import_react50.default.createElement(SketchPresetColors_default, {
         colors: presetColors,
         onClick: onChange,
         onSwatchHover
@@ -52456,16 +53755,16 @@ class InstrumentLogic extends BaseInstrument {
   var Sketch_default = ColorWrap_default(Sketch);
 
   // node_modules/react-color/es/components/slider/Slider.js
-  var import_react78 = __toESM(require_react());
+  var import_react54 = __toESM(require_react());
   var import_prop_types11 = __toESM(require_prop_types());
   var import_reactcss38 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/slider/SliderSwatches.js
-  var import_react76 = __toESM(require_react());
+  var import_react52 = __toESM(require_react());
   var import_reactcss36 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/slider/SliderSwatch.js
-  var import_react75 = __toESM(require_react());
+  var import_react51 = __toESM(require_react());
   var import_reactcss35 = __toESM(require_lib2());
   var SliderSwatch = function SliderSwatch2(_ref) {
     var hsl = _ref.hsl, offset = _ref.offset, _ref$onClick = _ref.onClick, onClick = _ref$onClick === void 0 ? function() {
@@ -52503,7 +53802,7 @@ class InstrumentLogic extends BaseInstrument {
         source: "hsl"
       }, e);
     };
-    return import_react75.default.createElement("div", { style: styles.swatch, onClick: handleClick });
+    return import_react51.default.createElement("div", { style: styles.swatch, onClick: handleClick });
   };
   var SliderSwatch_default = SliderSwatch;
 
@@ -52527,13 +53826,13 @@ class InstrumentLogic extends BaseInstrument {
       }
     });
     var epsilon = 0.1;
-    return import_react76.default.createElement(
+    return import_react52.default.createElement(
       "div",
       { style: styles.swatches },
-      import_react76.default.createElement(
+      import_react52.default.createElement(
         "div",
         { style: styles.swatch },
-        import_react76.default.createElement(SliderSwatch_default, {
+        import_react52.default.createElement(SliderSwatch_default, {
           hsl,
           offset: ".80",
           active: Math.abs(hsl.l - 0.8) < epsilon && Math.abs(hsl.s - 0.5) < epsilon,
@@ -52541,40 +53840,40 @@ class InstrumentLogic extends BaseInstrument {
           first: true
         })
       ),
-      import_react76.default.createElement(
+      import_react52.default.createElement(
         "div",
         { style: styles.swatch },
-        import_react76.default.createElement(SliderSwatch_default, {
+        import_react52.default.createElement(SliderSwatch_default, {
           hsl,
           offset: ".65",
           active: Math.abs(hsl.l - 0.65) < epsilon && Math.abs(hsl.s - 0.5) < epsilon,
           onClick
         })
       ),
-      import_react76.default.createElement(
+      import_react52.default.createElement(
         "div",
         { style: styles.swatch },
-        import_react76.default.createElement(SliderSwatch_default, {
+        import_react52.default.createElement(SliderSwatch_default, {
           hsl,
           offset: ".50",
           active: Math.abs(hsl.l - 0.5) < epsilon && Math.abs(hsl.s - 0.5) < epsilon,
           onClick
         })
       ),
-      import_react76.default.createElement(
+      import_react52.default.createElement(
         "div",
         { style: styles.swatch },
-        import_react76.default.createElement(SliderSwatch_default, {
+        import_react52.default.createElement(SliderSwatch_default, {
           hsl,
           offset: ".35",
           active: Math.abs(hsl.l - 0.35) < epsilon && Math.abs(hsl.s - 0.5) < epsilon,
           onClick
         })
       ),
-      import_react76.default.createElement(
+      import_react52.default.createElement(
         "div",
         { style: styles.swatch },
-        import_react76.default.createElement(SliderSwatch_default, {
+        import_react52.default.createElement(SliderSwatch_default, {
           hsl,
           offset: ".20",
           active: Math.abs(hsl.l - 0.2) < epsilon && Math.abs(hsl.s - 0.5) < epsilon,
@@ -52582,13 +53881,13 @@ class InstrumentLogic extends BaseInstrument {
           last: true
         })
       ),
-      import_react76.default.createElement("div", { style: styles.clear })
+      import_react52.default.createElement("div", { style: styles.clear })
     );
   };
   var SliderSwatches_default = SliderSwatches;
 
   // node_modules/react-color/es/components/slider/SliderPointer.js
-  var import_react77 = __toESM(require_react());
+  var import_react53 = __toESM(require_react());
   var import_reactcss37 = __toESM(require_lib2());
   var SliderPointer3 = function SliderPointer4() {
     var styles = (0, import_reactcss37.default)({
@@ -52603,7 +53902,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react77.default.createElement("div", { style: styles.picker });
+    return import_react53.default.createElement("div", { style: styles.picker });
   };
   var SliderPointer_default = SliderPointer3;
 
@@ -52621,23 +53920,23 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles));
-    return import_react78.default.createElement(
+    return import_react54.default.createElement(
       "div",
       { style: styles.wrap || {}, className: "slider-picker " + className },
-      import_react78.default.createElement(
+      import_react54.default.createElement(
         "div",
         { style: styles.hue },
-        import_react78.default.createElement(Hue_default, {
+        import_react54.default.createElement(Hue_default, {
           style: styles.Hue,
           hsl,
           pointer,
           onChange
         })
       ),
-      import_react78.default.createElement(
+      import_react54.default.createElement(
         "div",
         { style: styles.swatches },
-        import_react78.default.createElement(SliderSwatches_default, { hsl, onClick: onChange })
+        import_react54.default.createElement(SliderSwatches_default, { hsl, onClick: onChange })
       )
     );
   };
@@ -52651,16 +53950,16 @@ class InstrumentLogic extends BaseInstrument {
   var Slider_default = ColorWrap_default(Slider);
 
   // node_modules/react-color/es/components/swatches/Swatches.js
-  var import_react81 = __toESM(require_react());
+  var import_react57 = __toESM(require_react());
   var import_prop_types12 = __toESM(require_prop_types());
   var import_reactcss41 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/swatches/SwatchesGroup.js
-  var import_react80 = __toESM(require_react());
+  var import_react56 = __toESM(require_react());
   var import_reactcss40 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/swatches/SwatchesColor.js
-  var import_react79 = __toESM(require_react());
+  var import_react55 = __toESM(require_react());
   var import_reactcss39 = __toESM(require_lib2());
   var import_CheckIcon = __toESM(require_CheckIcon());
   var SwatchesColor = function SwatchesColor2(_ref) {
@@ -52718,7 +54017,7 @@ class InstrumentLogic extends BaseInstrument {
       "color-#FFFFFF": color === "#FFFFFF",
       "transparent": color === "transparent"
     });
-    return import_react79.default.createElement(
+    return import_react55.default.createElement(
       Swatch_default,
       {
         color,
@@ -52727,10 +54026,10 @@ class InstrumentLogic extends BaseInstrument {
         onHover: onSwatchHover,
         focusStyle: { boxShadow: "0 0 4px " + color }
       },
-      import_react79.default.createElement(
+      import_react55.default.createElement(
         "div",
         { style: styles.check },
-        import_react79.default.createElement(import_CheckIcon.default, null)
+        import_react55.default.createElement(import_CheckIcon.default, null)
       )
     );
   };
@@ -52749,11 +54048,11 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react80.default.createElement(
+    return import_react56.default.createElement(
       "div",
       { style: styles.group },
       map_default(group, function(color, i) {
-        return import_react80.default.createElement(SwatchesColor_default, {
+        return import_react56.default.createElement(SwatchesColor_default, {
           key: color,
           color,
           active: color.toLowerCase() === active,
@@ -52791,20 +54090,20 @@ class InstrumentLogic extends BaseInstrument {
     var handleChange = function handleChange2(data, e) {
       return onChange({ hex: data, source: "hex" }, e);
     };
-    return import_react81.default.createElement(
+    return import_react57.default.createElement(
       "div",
       { style: styles.picker, className: "swatches-picker " + className },
-      import_react81.default.createElement(
+      import_react57.default.createElement(
         Raised_default,
         null,
-        import_react81.default.createElement(
+        import_react57.default.createElement(
           "div",
           { style: styles.overflow },
-          import_react81.default.createElement(
+          import_react57.default.createElement(
             "div",
             { style: styles.body },
             map_default(colors, function(group) {
-              return import_react81.default.createElement(SwatchesGroup_default, {
+              return import_react57.default.createElement(SwatchesGroup_default, {
                 key: group.toString(),
                 group,
                 active: hex,
@@ -52812,7 +54111,7 @@ class InstrumentLogic extends BaseInstrument {
                 onSwatchHover
               });
             }),
-            import_react81.default.createElement("div", { style: styles.clear })
+            import_react57.default.createElement("div", { style: styles.clear })
           )
         )
       )
@@ -52833,7 +54132,7 @@ class InstrumentLogic extends BaseInstrument {
   var Swatches_default = ColorWrap_default(Swatches);
 
   // node_modules/react-color/es/components/twitter/Twitter.js
-  var import_react82 = __toESM(require_react());
+  var import_react58 = __toESM(require_react());
   var import_prop_types13 = __toESM(require_prop_types());
   var import_reactcss42 = __toESM(require_lib2());
   var Twitter = function Twitter2(_ref) {
@@ -52945,16 +54244,16 @@ class InstrumentLogic extends BaseInstrument {
         source: "hex"
       }, e);
     };
-    return import_react82.default.createElement(
+    return import_react58.default.createElement(
       "div",
       { style: styles.card, className: "twitter-picker " + className },
-      import_react82.default.createElement("div", { style: styles.triangleShadow }),
-      import_react82.default.createElement("div", { style: styles.triangle }),
-      import_react82.default.createElement(
+      import_react58.default.createElement("div", { style: styles.triangleShadow }),
+      import_react58.default.createElement("div", { style: styles.triangle }),
+      import_react58.default.createElement(
         "div",
         { style: styles.body },
         map_default(colors, function(c, i) {
-          return import_react82.default.createElement(Swatch_default, {
+          return import_react58.default.createElement(Swatch_default, {
             key: i,
             color: c,
             hex: c,
@@ -52966,18 +54265,18 @@ class InstrumentLogic extends BaseInstrument {
             }
           });
         }),
-        import_react82.default.createElement(
+        import_react58.default.createElement(
           "div",
           { style: styles.hash },
           "#"
         ),
-        import_react82.default.createElement(EditableInput_default, {
+        import_react58.default.createElement(EditableInput_default, {
           label: null,
           style: { input: styles.input },
           value: hex.replace("#", ""),
           onChange: handleChange
         }),
-        import_react82.default.createElement("div", { style: styles.clear })
+        import_react58.default.createElement("div", { style: styles.clear })
       )
     );
   };
@@ -52996,12 +54295,12 @@ class InstrumentLogic extends BaseInstrument {
   var Twitter_default = ColorWrap_default(Twitter);
 
   // node_modules/react-color/es/components/google/Google.js
-  var import_react86 = __toESM(require_react());
+  var import_react62 = __toESM(require_react());
   var import_prop_types16 = __toESM(require_prop_types());
   var import_reactcss46 = __toESM(require_lib2());
 
   // node_modules/react-color/es/components/google/GooglePointerCircle.js
-  var import_react83 = __toESM(require_react());
+  var import_react59 = __toESM(require_react());
   var import_reactcss43 = __toESM(require_lib2());
   var import_prop_types14 = __toESM(require_prop_types());
   var GooglePointerCircle = function GooglePointerCircle2(props) {
@@ -53017,7 +54316,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react83.default.createElement("div", { style: styles.picker });
+    return import_react59.default.createElement("div", { style: styles.picker });
   };
   GooglePointerCircle.propTypes = {
     hsl: import_prop_types14.default.shape({
@@ -53033,7 +54332,7 @@ class InstrumentLogic extends BaseInstrument {
   var GooglePointerCircle_default = GooglePointerCircle;
 
   // node_modules/react-color/es/components/google/GooglePointer.js
-  var import_react84 = __toESM(require_react());
+  var import_react60 = __toESM(require_react());
   var import_reactcss44 = __toESM(require_lib2());
   var import_prop_types15 = __toESM(require_prop_types());
   var GooglePointer = function GooglePointer2(props) {
@@ -53049,7 +54348,7 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     });
-    return import_react84.default.createElement("div", { style: styles.picker });
+    return import_react60.default.createElement("div", { style: styles.picker });
   };
   GooglePointer.propTypes = {
     hsl: import_prop_types15.default.shape({
@@ -53065,7 +54364,7 @@ class InstrumentLogic extends BaseInstrument {
   var GooglePointer_default = GooglePointer;
 
   // node_modules/react-color/es/components/google/GoogleFields.js
-  var import_react85 = __toESM(require_react());
+  var import_react61 = __toESM(require_react());
   var import_reactcss45 = __toESM(require_lib2());
   var GoogleFields = function GoogleFields2(_ref) {
     var onChange = _ref.onChange, rgb = _ref.rgb, hsl = _ref.hsl, hex = _ref.hex, hsv = _ref.hsv;
@@ -53202,49 +54501,49 @@ class InstrumentLogic extends BaseInstrument {
     var rgbValue = rgb.r + ", " + rgb.g + ", " + rgb.b;
     var hslValue = Math.round(hsl.h) + "\xB0, " + Math.round(hsl.s * 100) + "%, " + Math.round(hsl.l * 100) + "%";
     var hsvValue = Math.round(hsv.h) + "\xB0, " + Math.round(hsv.s * 100) + "%, " + Math.round(hsv.v * 100) + "%";
-    return import_react85.default.createElement(
+    return import_react61.default.createElement(
       "div",
       { style: styles.wrap, className: "flexbox-fix" },
-      import_react85.default.createElement(
+      import_react61.default.createElement(
         "div",
         { style: styles.fields },
-        import_react85.default.createElement(
+        import_react61.default.createElement(
           "div",
           { style: styles.double },
-          import_react85.default.createElement(EditableInput_default, {
+          import_react61.default.createElement(EditableInput_default, {
             style: { input: styles.input, label: styles.label },
             label: "hex",
             value: hex,
             onChange: handleChange
           })
         ),
-        import_react85.default.createElement(
+        import_react61.default.createElement(
           "div",
           { style: styles.column },
-          import_react85.default.createElement(
+          import_react61.default.createElement(
             "div",
             { style: styles.single },
-            import_react85.default.createElement(EditableInput_default, {
+            import_react61.default.createElement(EditableInput_default, {
               style: { input: styles.input2, label: styles.label2 },
               label: "rgb",
               value: rgbValue,
               onChange: handleChange
             })
           ),
-          import_react85.default.createElement(
+          import_react61.default.createElement(
             "div",
             { style: styles.single },
-            import_react85.default.createElement(EditableInput_default, {
+            import_react61.default.createElement(EditableInput_default, {
               style: { input: styles.input2, label: styles.label2 },
               label: "hsv",
               value: hsvValue,
               onChange: handleChange
             })
           ),
-          import_react85.default.createElement(
+          import_react61.default.createElement(
             "div",
             { style: styles.single },
-            import_react85.default.createElement(EditableInput_default, {
+            import_react61.default.createElement(EditableInput_default, {
               style: { input: styles.input2, label: styles.label2 },
               label: "hsl",
               value: hslValue,
@@ -53319,35 +54618,35 @@ class InstrumentLogic extends BaseInstrument {
         }
       }
     }, passedStyles));
-    return import_react86.default.createElement(
+    return import_react62.default.createElement(
       "div",
       { style: styles.picker, className: "google-picker " + className },
-      import_react86.default.createElement(
+      import_react62.default.createElement(
         "div",
         { style: styles.head },
         header
       ),
-      import_react86.default.createElement("div", { style: styles.swatch }),
-      import_react86.default.createElement(
+      import_react62.default.createElement("div", { style: styles.swatch }),
+      import_react62.default.createElement(
         "div",
         { style: styles.saturation },
-        import_react86.default.createElement(Saturation_default, {
+        import_react62.default.createElement(Saturation_default, {
           hsl,
           hsv,
           pointer: GooglePointerCircle_default,
           onChange
         })
       ),
-      import_react86.default.createElement(
+      import_react62.default.createElement(
         "div",
         { style: styles.body },
-        import_react86.default.createElement(
+        import_react62.default.createElement(
           "div",
           { style: styles.controls, className: "flexbox-fix" },
-          import_react86.default.createElement(
+          import_react62.default.createElement(
             "div",
             { style: styles.hue },
-            import_react86.default.createElement(Hue_default, {
+            import_react62.default.createElement(Hue_default, {
               style: styles.Hue,
               hsl,
               radius: "4px",
@@ -53356,7 +54655,7 @@ class InstrumentLogic extends BaseInstrument {
             })
           )
         ),
-        import_react86.default.createElement(GoogleFields_default, {
+        import_react62.default.createElement(GoogleFields_default, {
           rgb,
           hsl,
           hex,
@@ -53379,20 +54678,21 @@ class InstrumentLogic extends BaseInstrument {
   var Google_default = ColorWrap_default(Google);
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Scratchpads/Scratchpads.tsx
+  var import_jsx_runtime38 = __toESM(require_jsx_runtime());
   var Scratchpads = () => {
     var _a;
-    const { state, updateState } = import_react87.default.useContext(AppContext);
-    const [editMode, setEditMode] = import_react87.default.useState(false);
-    const [addMenu, setAddMenu] = import_react87.default.useState(false);
-    const [showScratchpad, setShowScratchpad] = import_react87.default.useState(false);
-    const [confirmDeleteAll, setConfirmDeleteAll] = import_react87.default.useState(false);
-    const [popupPosition, setPopupPosition] = import_react87.default.useState({ x: 0, y: 0 });
-    const [activeScratchpad, setActiveScratchpad] = import_react87.default.useState(null);
-    const [activeSpNumber, setActiveSpNumber] = import_react87.default.useState(0);
-    const [penSettings, setPenSettings] = import_react87.default.useState({ color: "white", size: 5 });
-    const [penColorMenu, setPenColorMenu] = import_react87.default.useState(false);
-    const [penSizeMenu, setPenSizeMenu] = import_react87.default.useState(false);
-    const [addHovered, setAddHovered] = import_react87.default.useState(false);
+    const { state, updateState } = import_react63.default.useContext(AppContext);
+    const [editMode, setEditMode] = import_react63.default.useState(false);
+    const [addMenu, setAddMenu] = import_react63.default.useState(false);
+    const [showScratchpad, setShowScratchpad] = import_react63.default.useState(false);
+    const [confirmDeleteAll, setConfirmDeleteAll] = import_react63.default.useState(false);
+    const [popupPosition, setPopupPosition] = import_react63.default.useState({ x: 0, y: 0 });
+    const [activeScratchpad, setActiveScratchpad] = import_react63.default.useState(null);
+    const [activeSpNumber, setActiveSpNumber] = import_react63.default.useState(0);
+    const [penSettings, setPenSettings] = import_react63.default.useState({ color: "white", size: 5 });
+    const [penColorMenu, setPenColorMenu] = import_react63.default.useState(false);
+    const [penSizeMenu, setPenSizeMenu] = import_react63.default.useState(false);
+    const [addHovered, setAddHovered] = import_react63.default.useState(false);
     const maxScratchpads = 15;
     const scratchpads = (_a = state == null ? void 0 : state.ouroborosFlight.scratchpads) != null ? _a : [];
     const setScratchpads = (scratchpads2) => {
@@ -53415,7 +54715,7 @@ class InstrumentLogic extends BaseInstrument {
       }));
     };
     const useOutsidePopupAlerter = (ref, setTheState) => {
-      import_react87.default.useEffect(() => {
+      import_react63.default.useEffect(() => {
         const handleClickOutside = (event) => {
           if (ref.current !== null && !ref.current.contains(event.target)) {
             setTheState(false);
@@ -53451,11 +54751,11 @@ class InstrumentLogic extends BaseInstrument {
         setScratchpads(updatedScratchpads);
       }
     };
-    const canvasRef = (0, import_react87.useRef)(null);
-    const popupRef = import_react87.default.useRef(null);
-    const confirmRef = import_react87.default.useRef(null);
-    const colorPickerRef = import_react87.default.useRef(null);
-    const penSizeRef = import_react87.default.useRef(null);
+    const canvasRef = (0, import_react63.useRef)(null);
+    const popupRef = import_react63.default.useRef(null);
+    const confirmRef = import_react63.default.useRef(null);
+    const colorPickerRef = import_react63.default.useRef(null);
+    const penSizeRef = import_react63.default.useRef(null);
     useOutsidePopupAlerter(popupRef, setAddMenu);
     useOutsidePopupAlerter(confirmRef, setConfirmDeleteAll);
     useOutsidePopupAlerter(colorPickerRef, setPenColorMenu);
@@ -53522,7 +54822,7 @@ class InstrumentLogic extends BaseInstrument {
     const onPenColorChange = (color) => {
       setPenSettings({ size: penSettings.size, color: color.hex });
     };
-    import_react87.default.useEffect(() => {
+    import_react63.default.useEffect(() => {
       var _a2, _b, _c, _d, _e;
       if (showScratchpad) {
         (_e = canvasRef.current) == null ? void 0 : _e.loadPaths((_d = (_c = (_b = (_a2 = state == null ? void 0 : state.ouroborosFlight) == null ? void 0 : _a2.scratchpads) == null ? void 0 : _b[activeSpNumber]) == null ? void 0 : _c.content) != null ? _d : []);
@@ -53554,311 +54854,372 @@ class InstrumentLogic extends BaseInstrument {
     const handleMouseLeaveAdd = () => {
       setAddHovered(false);
     };
-    return /* @__PURE__ */ import_react87.default.createElement("div", null, /* @__PURE__ */ import_react87.default.createElement(
-      ScratchpadHeader,
-      {
-        DeleteAllClick: deleteAllScratchpadClick,
-        AddClicked: addScratchpadClick,
-        EditClicked: editScratchpadClick,
-        isEditMode: editMode,
-        DoneClicked: doneSpClicked,
-        addAvailable: scratchpads.length < 15
-      }
-    ), /* @__PURE__ */ import_react87.default.createElement("div", { className: "sp-content-container" }, scratchpads.length !== 0 ? /* @__PURE__ */ import_react87.default.createElement("div", { className: "sp-content-container-inner" }, scratchpads.map((s, index) => {
-      var _a2, _b;
-      return /* @__PURE__ */ import_react87.default.createElement(
-        "div",
+    return /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)("div", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(
+        ScratchpadHeader,
         {
-          key: index,
-          onClick: () => {
-            if (!editMode) {
-              openScratchpad(s, index);
-            }
-          },
-          className: "sp-item-container"
-        },
-        /* @__PURE__ */ import_react87.default.createElement("div", null, getFormattedUTC(s.timestamp, true), "Z"),
-        /* @__PURE__ */ import_react87.default.createElement("div", { className: "mini-preset-positioner" }, getBackground(s.type, 300)),
-        /* @__PURE__ */ import_react87.default.createElement("div", { className: "mini-content-positioner" }, /* @__PURE__ */ import_react87.default.createElement(RenderSvgFromString, { element: (_b = (_a2 = state == null ? void 0 : state.ouroborosFlight.scratchpads) == null ? void 0 : _a2[index].preview) != null ? _b : "" })),
-        editMode ? /* @__PURE__ */ import_react87.default.createElement(
+          DeleteAllClick: deleteAllScratchpadClick,
+          AddClicked: addScratchpadClick,
+          EditClicked: editScratchpadClick,
+          isEditMode: editMode,
+          DoneClicked: doneSpClicked,
+          addAvailable: scratchpads.length < 15
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("div", { className: "sp-content-container", children: scratchpads.length !== 0 ? /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)("div", { className: "sp-content-container-inner", children: [
+        scratchpads.map((s, index) => {
+          var _a2, _b;
+          return /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)(
+            "div",
+            {
+              onClick: () => {
+                if (!editMode) {
+                  openScratchpad(s, index);
+                }
+              },
+              className: "sp-item-container",
+              children: [
+                /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)("div", { children: [
+                  getFormattedUTC(s.timestamp, true),
+                  "Z"
+                ] }),
+                /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("div", { className: "mini-preset-positioner", children: getBackground(s.type, 300) }),
+                /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("div", { className: "mini-content-positioner", children: /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(RenderSvgFromString, { element: (_b = (_a2 = state == null ? void 0 : state.ouroborosFlight.scratchpads) == null ? void 0 : _a2[index].preview) != null ? _b : "" }) }),
+                editMode ? /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(
+                  "div",
+                  {
+                    className: "remove-button",
+                    onClick: () => {
+                      removeScratchpad(index);
+                    },
+                    children: "-"
+                  }
+                ) : ""
+              ]
+            },
+            index
+          );
+        }),
+        scratchpads.length < maxScratchpads ? /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)(
           "div",
           {
-            className: "remove-button",
-            onClick: () => {
-              removeScratchpad(index);
-            }
-          },
-          "-"
+            className: "add-scratchpad-content-button",
+            onClick: addScratchpadClick,
+            onMouseEnter: handleMouseEnterAdd,
+            onMouseLeave: handleMouseLeaveAdd,
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(
+                SpAddIcon,
+                {
+                  hovered: addHovered,
+                  handleEnter: handleMouseEnterAdd,
+                  handleLeave: handleMouseLeaveAdd,
+                  width: 180
+                }
+              ),
+              "Add Scratchpad"
+            ]
+          }
         ) : ""
-      );
-    }), scratchpads.length < maxScratchpads ? /* @__PURE__ */ import_react87.default.createElement(
-      "div",
-      {
-        className: "add-scratchpad-content-button",
-        onClick: addScratchpadClick,
-        onMouseEnter: handleMouseEnterAdd,
-        onMouseLeave: handleMouseLeaveAdd
-      },
-      /* @__PURE__ */ import_react87.default.createElement(
-        SpAddIcon,
+      ] }) : /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)(
+        "div",
         {
-          hovered: addHovered,
-          handleEnter: handleMouseEnterAdd,
-          handleLeave: handleMouseLeaveAdd,
-          width: 180
+          className: "add-scratchpad-content-button",
+          onClick: addScratchpadClick,
+          onMouseEnter: handleMouseEnterAdd,
+          onMouseLeave: handleMouseLeaveAdd,
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(
+              SpAddIcon,
+              {
+                hovered: addHovered,
+                handleEnter: handleMouseEnterAdd,
+                handleLeave: handleMouseLeaveAdd,
+                width: 180
+              }
+            ),
+            "Add Scratchpad"
+          ]
+        }
+      ) }),
+      confirmDeleteAll && /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)("div", { className: "delete-all-container", ref: confirmRef, children: [
+        /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("div", { className: "delete-all-text", children: "Are you Sure you want to delete ALL scratchpads?" }),
+        /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("div", { onClick: confirmDeleteAllClick, children: "yes" })
+      ] }),
+      addMenu && /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)(
+        "div",
+        {
+          ref: popupRef,
+          className: "popup-container",
+          style: { top: `${popupPosition.y + 20}px`, left: `${popupPosition.x}px` },
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(SpPopoutIcon, { ref: popupRef, className: "popout-svg", width: 300 }),
+            /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(ScratchpadPopup, { clickHandler: handlePopupClick })
+          ]
         }
       ),
-      "Add Scratchpad"
-    ) : "") : /* @__PURE__ */ import_react87.default.createElement(
-      "div",
-      {
-        className: "add-scratchpad-content-button",
-        onClick: addScratchpadClick,
-        onMouseEnter: handleMouseEnterAdd,
-        onMouseLeave: handleMouseLeaveAdd
-      },
-      /* @__PURE__ */ import_react87.default.createElement(
-        SpAddIcon,
-        {
-          hovered: addHovered,
-          handleEnter: handleMouseEnterAdd,
-          handleLeave: handleMouseLeaveAdd,
-          width: 180
-        }
-      ),
-      "Add Scratchpad"
-    )), confirmDeleteAll && /* @__PURE__ */ import_react87.default.createElement("div", { className: "delete-all-container", ref: confirmRef }, /* @__PURE__ */ import_react87.default.createElement("div", { className: "delete-all-text" }, "Are you Sure you want to delete ALL scratchpads?"), /* @__PURE__ */ import_react87.default.createElement("div", { onClick: confirmDeleteAllClick }, "yes")), addMenu && /* @__PURE__ */ import_react87.default.createElement(
-      "div",
-      {
-        ref: popupRef,
-        className: "popup-container",
-        style: { top: `${popupPosition.y + 20}px`, left: `${popupPosition.x}px` }
-      },
-      /* @__PURE__ */ import_react87.default.createElement(SpPopoutIcon, { ref: popupRef, className: "popout-svg", width: 300 }),
-      /* @__PURE__ */ import_react87.default.createElement(ScratchpadPopup, { clickHandler: handlePopupClick })
-    ), showScratchpad && /* @__PURE__ */ import_react87.default.createElement("div", { className: "scratchpad-display-container" }, /* @__PURE__ */ import_react87.default.createElement("div", { className: "scratchpad-display-header" }, /* @__PURE__ */ import_react87.default.createElement(
-      "div",
-      {
-        className: "clear-sp-button",
-        onClick: () => {
-          var _a2;
-          (_a2 = canvasRef.current) == null ? void 0 : _a2.clearCanvas();
-        }
-      },
-      "Clear"
-    ), /* @__PURE__ */ import_react87.default.createElement("div", { className: "tool-container" }, /* @__PURE__ */ import_react87.default.createElement(
-      "div",
-      {
-        onClick: () => {
-          setPenColorMenu(!penColorMenu);
-        }
-      },
-      "Color \u2193"
-    ), /* @__PURE__ */ import_react87.default.createElement(
-      "div",
-      {
-        onClick: () => {
-          setPenSizeMenu(!penSizeMenu);
-        }
-      },
-      "Size \u2193"
-    )), /* @__PURE__ */ import_react87.default.createElement("div", { className: "close-sp-button", onClick: closeScratchpad }, "close")), penColorMenu && /* @__PURE__ */ import_react87.default.createElement("div", { ref: colorPickerRef, className: "color-menu" }, /* @__PURE__ */ import_react87.default.createElement(Github_default, { color: penSettings.color, onChangeComplete: onPenColorChange })), penColorMenu && /* @__PURE__ */ import_react87.default.createElement("div", { className: "pen-size-menu", ref: penSizeRef }, "Set Size"), /* @__PURE__ */ import_react87.default.createElement("div", { className: "canvas-container" }, /* @__PURE__ */ import_react87.default.createElement("div", { className: "bg-positioner" }, activeScratchpad !== null ? getBackground(activeScratchpad.type, 1800) : ""), /* @__PURE__ */ import_react87.default.createElement("div", { className: "canvas-positioner" }, /* @__PURE__ */ import_react87.default.createElement(
-      ReactSketchCanvas,
-      {
-        canvasColor: "transparent",
-        style: { border: "none" },
-        ref: canvasRef,
-        strokeWidth: penSettings.size,
-        strokeColor: penSettings.color
-      }
-    )))));
+      showScratchpad && /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)("div", { className: "scratchpad-display-container", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)("div", { className: "scratchpad-display-header", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(
+            "div",
+            {
+              className: "clear-sp-button",
+              onClick: () => {
+                var _a2;
+                (_a2 = canvasRef.current) == null ? void 0 : _a2.clearCanvas();
+              },
+              children: "Clear"
+            }
+          ),
+          /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)("div", { className: "tool-container", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(
+              "div",
+              {
+                onClick: () => {
+                  setPenColorMenu(!penColorMenu);
+                },
+                children: "Color \u2193"
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(
+              "div",
+              {
+                onClick: () => {
+                  setPenSizeMenu(!penSizeMenu);
+                },
+                children: "Size \u2193"
+              }
+            )
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("div", { className: "close-sp-button", onClick: closeScratchpad, children: "close" })
+        ] }),
+        penColorMenu && /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("div", { ref: colorPickerRef, className: "color-menu", children: /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(Github_default, { color: penSettings.color, onChangeComplete: onPenColorChange }) }),
+        penColorMenu && /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("div", { className: "pen-size-menu", ref: penSizeRef, children: "Set Size" }),
+        /* @__PURE__ */ (0, import_jsx_runtime38.jsxs)("div", { className: "canvas-container", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("div", { className: "bg-positioner", children: activeScratchpad !== null ? getBackground(activeScratchpad.type, 1800) : "" }),
+          /* @__PURE__ */ (0, import_jsx_runtime38.jsx)("div", { className: "canvas-positioner", children: /* @__PURE__ */ (0, import_jsx_runtime38.jsx)(
+            ReactSketchCanvas,
+            {
+              canvasColor: "transparent",
+              style: { border: "none" },
+              ref: canvasRef,
+              strokeWidth: penSettings.size,
+              strokeColor: penSettings.color
+            }
+          ) })
+        ] })
+      ] })
+    ] });
   };
-
-  // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/GroundService/GroundService.tsx
-  var import_react89 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/GroundService/GroundSericeIcon.tsx
-  var import_react88 = __toESM(require_react());
+  var import_jsx_runtime39 = __toESM(require_jsx_runtime());
   var GroundServiceIcon = (props) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G, _H, _I, _J, _K, _L, _M, _N, _O, _P;
-    return /* @__PURE__ */ import_react88.default.createElement("svg", { width: props.width, height: props.width * 1.3, viewBox: "0 0 2069 2377" }, /* @__PURE__ */ import_react88.default.createElement(
-      "path",
-      {
-        fill: (_a = props.color) != null ? _a : "white",
-        stroke: (_b = props.stroke) != null ? _b : "white",
-        strokeWidth: props.strokeWidth,
-        d: "M2068,1472.99988c0,0-32.03845-110.92566-39.00012-132.99988\r\n			c-6.96155-22.07446-21.99988-30.00012-21.99988-30.00012l-621-313L1396,951h4c8.8938-0.55853,10-10.00006,10-10.00006\r\n			s7-48.21521,7-86.00006c0-79.73535-15.17725-77.99994-20-77.99994c-4.82288,0-37.92383-0.35309-87.00012,0\r\n			c-24.1897,0-21.99988,78.79419-21.99988,81c0,17.82141,4.50891,61.56189,6,76.99994c1.33276,13.85608,8,15,8,15L1309,951\r\n			l2,8.99994l-94-46c0,0-26.8894-18.78766-42.00012-28S1157,866.99988,1157,866.99988s0-429.01611,0-494\r\n			C1157,308.01587,1125,143,1125,143l-17-53c0,0-4.49414-8.68042-22.00012-41C1063.97876,17.51636,1040.96082,2,1035,2\r\n			c-5.96094,0-35.77722,22.16528-50.00012,46c-63.50464,103.47913-71.99994,329-71.99994,329s0,487.79224,0,490.99988\r\n			c0,3.20776-11.99994,14-11.99994,14l-47,31.00006l-97.00006,48L759,951c0,0,4.16541,0,7,0\r\n			c6.73694,0,8.99988-8.00012,8.99988-8.00012s7.00006-53.5918,7.00006-89c0-81.12408-19-76.99994-19-76.99994\r\n			s-74.79999,0-91.99994,0s-18.00006,54.53558-18.00006,81c0,26.46448,5.65515,74.28906,7,83c1.34491,8.71094,7,8.99994,7,8.99994\r\n			l7,1.00012L684,995.99988c0,0-596.7674,301.2467-617,312.00012c-20.2326,10.7533-26.00012,31-26.00012,31\r\n			S3.65143,1466.16943,1.99994,1471.99988c-1.65143,5.83057,1,18.00012,1,18.00012S18.1698,1464.25708,27,1445.99988\r\n			C35.83014,1427.7428,43.99994,1422,43.99994,1422s3.10413-0.55029,16.00006-4.00012\r\n			C72.89575,1414.55029,349.99994,1340,349.99994,1340s7.45483,54,9.99994,54c2.54529,0,10.00006-59,10.00006-59l197-52.00012\r\n			c0,6.83289,7.88818,50.00012,9.99994,50.00012c2.11188,0,9.00006-56,9.00006-56l85.99994-23l84.00006,0.99988\r\n			c0,0,6.87225,55,10.99994,55c4.12787,0,11.00006-55,11.00006-55l135,1c0,0,1.24261,151.37329,2.99994,299\r\n			C915.99988,1851.14685,969,1990,969,1990c-3.9826,11.12012-15.00006,21-15.00006,21l-291,198\r\n			C653.64844,2215.40894,650,2231,650,2231c-6.22296,21.84473-11.00012,101-11.00012,101L996,2238l22.99988,138H1051l23-138l356,93\r\n			c0.7251-17.69775-5.87427-83.63135-10-100c-4.12573-16.3689-12-21-12-21s-272.93335-185.65576-285-194.00012\r\n			c-12.06689-8.34436-22-24.99988-22-24.99988c56.02271-165.43506,55-434,55-434l1-302.00012h135\r\n			c0.26318,6.55139,7.9043,55,10.99988,55s11.00012-55,11.00012-55L1398.99988,1254L1484,1277c0,11.3136,7.85889,56,9.99988,56\r\n			s9-51.00012,9-51.00012L1700,1335c0,0,6.21155,60,9.99988,60c3.78845,0,10.00012-55,10.00012-55s275.00806,73.61304,290,77\r\n			c14.99182,3.38696,24,11,24,11l33,62C2068.62988,1485.73853,2068,1472.99988,2068,1472.99988z"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "path",
-      {
-        fill: (_c = props.color) != null ? _c : "white",
-        stroke: (_d = props.stroke) != null ? _d : "white",
-        strokeWidth: props.strokeWidth,
-        d: "M727.99994,827.99988L725,802.99994c0,0-4.9436-6-9.00006-6c-4.05652,0-7.57013,3.79706-9.00006,7\r\n				c-1.42987,3.20282-2.99988,183-2.99988,183s4.14398,0.20245,12.99994-3.00006c8.85602-3.20239,11-9.99994,11-9.99994\r\n				C725.90234,952.46637,727.99994,827.99988,727.99994,827.99988z"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "path",
-      {
-        fill: (_e = props.color) != null ? _e : "white",
-        stroke: (_f = props.stroke) != null ? _f : "white",
-        strokeWidth: props.strokeWidth,
-        d: "M657,843.99994h5.99994l1.99994-38.00006C654.84912,809.79083,657,843.99994,657,843.99994z"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "path",
-      {
-        fill: (_g = props.color) != null ? _g : "white",
-        stroke: (_h = props.stroke) != null ? _h : "white",
-        strokeWidth: props.strokeWidth,
-        d: "M769.99994,805.99988l1.95416,38.00006h5.86261\r\n				C777.81671,843.99994,779.91821,809.79083,769.99994,805.99988z"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "polygon",
-      {
-        fill: (_i = props.color) != null ? _i : "white",
-        stroke: (_j = props.stroke) != null ? _j : "white",
-        strokeWidth: props.strokeWidth,
-        points: "74.99988,1305 77.99994,1312 692.99988,1013.99994 692.99988,993 			"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "path",
-      {
-        fill: (_k = props.color) != null ? _k : "white",
-        stroke: (_l = props.stroke) != null ? _l : "white",
-        strokeWidth: props.strokeWidth,
-        d: "M888,891.99994l-32.00012,20l-123,62L742.99994,993l148-68C890.99994,925,890.60455,897.08075,888,891.99994\r\n				z"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "polygon",
-      {
-        fill: (_m = props.color) != null ? _m : "white",
-        stroke: (_n = props.stroke) != null ? _n : "white",
-        strokeWidth: props.strokeWidth,
-        points: "393.99988,1267 407,1301.99988 267.99994,1347 270,1360 270,1350.99988 658,1238 \r\n				662.99994,1255.99988 671,1254 671.99988,1176 			"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "polygon",
-      {
-        fill: (_o = props.color) != null ? _o : "white",
-        stroke: (_p = props.stroke) != null ? _p : "white",
-        strokeWidth: props.strokeWidth,
-        points: "671.99988,1187.99988 671,1254 755.99994,1254.99988 756.99994,1240.99988 906.99994,1243 \r\n				908,1254.99988 911.99994,1254.99988 911.99994,1194.99988 			"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "path",
-      {
-        fill: (_q = props.color) != null ? _q : "white",
-        stroke: (_r = props.stroke) != null ? _r : "white",
-        strokeWidth: props.strokeWidth,
-        d: "M1362.93091,803.99609c-1.42944-3.20209-4.94189-6.99811-8.99695-6.99811\r\n				c-4.05518,0-8.99707,5.99841-8.99707,5.99841l-2.9989,24.9931c0,0,2.0968,124.43237,0,145.96002\r\n				c0,0,2.14331,6.79553,10.99622,9.99719c8.85303,3.20172,12.99573,2.99927,12.99573,2.99927\r\n				S1364.36035,807.19812,1362.93091,803.99609z"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "path",
-      {
-        fill: (_s = props.color) != null ? _s : "white",
-        stroke: (_t = props.stroke) != null ? _t : "white",
-        strokeWidth: props.strokeWidth,
-        d: "M1404.91675,805.99548l1.99951,37.98962h5.99792\r\n				C1412.91418,843.98511,1415.06421,809.78546,1404.91675,805.99548z"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "path",
-      {
-        fill: (_u = props.color) != null ? _u : "white",
-        stroke: (_v = props.stroke) != null ? _v : "white",
-        strokeWidth: props.strokeWidth,
-        d: "M1292.13782,843.98511h5.8606l1.95349-37.98962\r\n				C1290.03699,809.78546,1292.13782,843.98511,1292.13782,843.98511z"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "polygon",
-      {
-        fill: (_w = props.color) != null ? _w : "white",
-        stroke: (_x = props.stroke) != null ? _x : "white",
-        strokeWidth: props.strokeWidth,
-        points: "1376.92627,992.94427 1376.92627,1013.9386 1991.72021,1311.85693 1994.71899,1304.85889 			"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "path",
-      {
-        fill: (_y = props.color) != null ? _y : "white",
-        stroke: (_z = props.stroke) != null ? _z : "white",
-        strokeWidth: props.strokeWidth,
-        d: "M1213.98096,911.96655l-31.9895-19.99451c-2.60364,5.07935-2.9989,32.99097-2.9989,32.99097\r\n				l147.95044,67.98126l9.99658-18.99475L1213.98096,911.96655z"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "polygon",
-      {
-        fill: (_A = props.color) != null ? _A : "white",
-        stroke: (_B = props.stroke) != null ? _B : "white",
-        strokeWidth: props.strokeWidth,
-        points: "1801.78369,1346.84717 1662.83032,1301.85962 1675.82593,1266.86914 1397.91919,1175.89417 \r\n				1398.91895,1253.8728 1406.91626,1255.87219 1411.91443,1237.8772 1799.78442,1350.84619 1799.78442,1359.84375 			"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "polygon",
-      {
-        fill: (_C = props.color) != null ? _C : "white",
-        stroke: (_D = props.stroke) != null ? _D : "white",
-        strokeWidth: props.strokeWidth,
-        points: "1397.91919,1187.89087 1157.99951,1194.88892 1157.99951,1254.87256 1161.99829,1254.87256 \r\n				1162.99805,1242.87573 1312.94763,1240.87634 1314,1254.99988 1398.99988,1254 			"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "path",
-      {
-        fill: (_E = props.color) != null ? _E : "white",
-        stroke: (_F = props.stroke) != null ? _F : "white",
-        strokeWidth: props.strokeWidth,
-        d: "M958.99994,193c0,0-6.98682-3.91772-9.99994,4c-3.01324,7.91748-16.34448,45.13452-18.00012,65h23.00006\r\n				c0,0,11.48254-28.80957,19-42L958.99994,193z"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "path",
-      {
-        fill: (_G = props.color) != null ? _G : "white",
-        stroke: (_H = props.stroke) != null ? _H : "white",
-        strokeWidth: props.strokeWidth,
-        d: "M1122.00073,196.97119c-2.99841-7.9209-9.95068-4.00171-9.95068-4.00171l-13.93066,27.01172\r\n				c7.48035,13.19629,18.90601,42.01831,18.90601,42.01831h22.88623\r\n				C1138.26416,242.12549,1124.99878,204.89233,1122.00073,196.97119z"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "path",
-      {
-        fill: (_I = props.color) != null ? _I : "white",
-        stroke: (_J = props.stroke) != null ? _J : "white",
-        strokeWidth: props.strokeWidth,
-        d: "M958.99994,180.99988l17.99994,35c0,0,27.70367-24.99988,57.00012-24.99988l1-55\r\n				C1035,136,995.65912,129.44434,958.99994,180.99988z"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "path",
-      {
-        fill: (_K = props.color) != null ? _K : "white",
-        stroke: (_L = props.stroke) != null ? _L : "white",
-        strokeWidth: props.strokeWidth,
-        d: "M1034.99805,136.28271l0.9978,55.06213c29.23804,0,56.88623,25.0282,56.88623,25.0282l17.96387-35.03955\r\n				C1074.26001,129.7196,1034.99805,136.28271,1034.99805,136.28271z"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "polygon",
-      {
-        fill: (_M = props.color) != null ? _M : "white",
-        stroke: (_N = props.stroke) != null ? _N : "white",
-        strokeWidth: props.strokeWidth,
-        points: "1040,136 1029,136 1030,191 1041,192 			"
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      "path",
-      {
-        fill: (_O = props.color) != null ? _O : "white",
-        stroke: (_P = props.stroke) != null ? _P : "white",
-        strokeWidth: props.strokeWidth,
-        d: "M1023.3291,1884.08289c-5.69275,38.15613-11.4303,80.81226-12.04797,116.39612\r\n		c-0.61774,35.58386-0.04419,241.86694,24.71887,337.78931c0,0,24.0105-157.29175,24.0105-305.82666\r\n		c0-40.37744-10.36719-111.75989-14.93774-146.36523c-4.57056-34.60522-7.39307-130.07654-10.07275-130.07654\r\n		C1030.38281,1755.99988,1027.02051,1859.34094,1023.3291,1884.08289z"
-      }
-    ));
+    return /* @__PURE__ */ (0, import_jsx_runtime39.jsxs)("svg", { width: props.width, height: props.width * 1.3, viewBox: "0 0 2069 2377", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "path",
+        {
+          fill: (_a = props.color) != null ? _a : "white",
+          stroke: (_b = props.stroke) != null ? _b : "white",
+          strokeWidth: props.strokeWidth,
+          d: "M2068,1472.99988c0,0-32.03845-110.92566-39.00012-132.99988\r\n			c-6.96155-22.07446-21.99988-30.00012-21.99988-30.00012l-621-313L1396,951h4c8.8938-0.55853,10-10.00006,10-10.00006\r\n			s7-48.21521,7-86.00006c0-79.73535-15.17725-77.99994-20-77.99994c-4.82288,0-37.92383-0.35309-87.00012,0\r\n			c-24.1897,0-21.99988,78.79419-21.99988,81c0,17.82141,4.50891,61.56189,6,76.99994c1.33276,13.85608,8,15,8,15L1309,951\r\n			l2,8.99994l-94-46c0,0-26.8894-18.78766-42.00012-28S1157,866.99988,1157,866.99988s0-429.01611,0-494\r\n			C1157,308.01587,1125,143,1125,143l-17-53c0,0-4.49414-8.68042-22.00012-41C1063.97876,17.51636,1040.96082,2,1035,2\r\n			c-5.96094,0-35.77722,22.16528-50.00012,46c-63.50464,103.47913-71.99994,329-71.99994,329s0,487.79224,0,490.99988\r\n			c0,3.20776-11.99994,14-11.99994,14l-47,31.00006l-97.00006,48L759,951c0,0,4.16541,0,7,0\r\n			c6.73694,0,8.99988-8.00012,8.99988-8.00012s7.00006-53.5918,7.00006-89c0-81.12408-19-76.99994-19-76.99994\r\n			s-74.79999,0-91.99994,0s-18.00006,54.53558-18.00006,81c0,26.46448,5.65515,74.28906,7,83c1.34491,8.71094,7,8.99994,7,8.99994\r\n			l7,1.00012L684,995.99988c0,0-596.7674,301.2467-617,312.00012c-20.2326,10.7533-26.00012,31-26.00012,31\r\n			S3.65143,1466.16943,1.99994,1471.99988c-1.65143,5.83057,1,18.00012,1,18.00012S18.1698,1464.25708,27,1445.99988\r\n			C35.83014,1427.7428,43.99994,1422,43.99994,1422s3.10413-0.55029,16.00006-4.00012\r\n			C72.89575,1414.55029,349.99994,1340,349.99994,1340s7.45483,54,9.99994,54c2.54529,0,10.00006-59,10.00006-59l197-52.00012\r\n			c0,6.83289,7.88818,50.00012,9.99994,50.00012c2.11188,0,9.00006-56,9.00006-56l85.99994-23l84.00006,0.99988\r\n			c0,0,6.87225,55,10.99994,55c4.12787,0,11.00006-55,11.00006-55l135,1c0,0,1.24261,151.37329,2.99994,299\r\n			C915.99988,1851.14685,969,1990,969,1990c-3.9826,11.12012-15.00006,21-15.00006,21l-291,198\r\n			C653.64844,2215.40894,650,2231,650,2231c-6.22296,21.84473-11.00012,101-11.00012,101L996,2238l22.99988,138H1051l23-138l356,93\r\n			c0.7251-17.69775-5.87427-83.63135-10-100c-4.12573-16.3689-12-21-12-21s-272.93335-185.65576-285-194.00012\r\n			c-12.06689-8.34436-22-24.99988-22-24.99988c56.02271-165.43506,55-434,55-434l1-302.00012h135\r\n			c0.26318,6.55139,7.9043,55,10.99988,55s11.00012-55,11.00012-55L1398.99988,1254L1484,1277c0,11.3136,7.85889,56,9.99988,56\r\n			s9-51.00012,9-51.00012L1700,1335c0,0,6.21155,60,9.99988,60c3.78845,0,10.00012-55,10.00012-55s275.00806,73.61304,290,77\r\n			c14.99182,3.38696,24,11,24,11l33,62C2068.62988,1485.73853,2068,1472.99988,2068,1472.99988z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "path",
+        {
+          fill: (_c = props.color) != null ? _c : "white",
+          stroke: (_d = props.stroke) != null ? _d : "white",
+          strokeWidth: props.strokeWidth,
+          d: "M727.99994,827.99988L725,802.99994c0,0-4.9436-6-9.00006-6c-4.05652,0-7.57013,3.79706-9.00006,7\r\n				c-1.42987,3.20282-2.99988,183-2.99988,183s4.14398,0.20245,12.99994-3.00006c8.85602-3.20239,11-9.99994,11-9.99994\r\n				C725.90234,952.46637,727.99994,827.99988,727.99994,827.99988z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "path",
+        {
+          fill: (_e = props.color) != null ? _e : "white",
+          stroke: (_f = props.stroke) != null ? _f : "white",
+          strokeWidth: props.strokeWidth,
+          d: "M657,843.99994h5.99994l1.99994-38.00006C654.84912,809.79083,657,843.99994,657,843.99994z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "path",
+        {
+          fill: (_g = props.color) != null ? _g : "white",
+          stroke: (_h = props.stroke) != null ? _h : "white",
+          strokeWidth: props.strokeWidth,
+          d: "M769.99994,805.99988l1.95416,38.00006h5.86261\r\n				C777.81671,843.99994,779.91821,809.79083,769.99994,805.99988z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "polygon",
+        {
+          fill: (_i = props.color) != null ? _i : "white",
+          stroke: (_j = props.stroke) != null ? _j : "white",
+          strokeWidth: props.strokeWidth,
+          points: "74.99988,1305 77.99994,1312 692.99988,1013.99994 692.99988,993 			"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "path",
+        {
+          fill: (_k = props.color) != null ? _k : "white",
+          stroke: (_l = props.stroke) != null ? _l : "white",
+          strokeWidth: props.strokeWidth,
+          d: "M888,891.99994l-32.00012,20l-123,62L742.99994,993l148-68C890.99994,925,890.60455,897.08075,888,891.99994\r\n				z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "polygon",
+        {
+          fill: (_m = props.color) != null ? _m : "white",
+          stroke: (_n = props.stroke) != null ? _n : "white",
+          strokeWidth: props.strokeWidth,
+          points: "393.99988,1267 407,1301.99988 267.99994,1347 270,1360 270,1350.99988 658,1238 \r\n				662.99994,1255.99988 671,1254 671.99988,1176 			"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "polygon",
+        {
+          fill: (_o = props.color) != null ? _o : "white",
+          stroke: (_p = props.stroke) != null ? _p : "white",
+          strokeWidth: props.strokeWidth,
+          points: "671.99988,1187.99988 671,1254 755.99994,1254.99988 756.99994,1240.99988 906.99994,1243 \r\n				908,1254.99988 911.99994,1254.99988 911.99994,1194.99988 			"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "path",
+        {
+          fill: (_q = props.color) != null ? _q : "white",
+          stroke: (_r = props.stroke) != null ? _r : "white",
+          strokeWidth: props.strokeWidth,
+          d: "M1362.93091,803.99609c-1.42944-3.20209-4.94189-6.99811-8.99695-6.99811\r\n				c-4.05518,0-8.99707,5.99841-8.99707,5.99841l-2.9989,24.9931c0,0,2.0968,124.43237,0,145.96002\r\n				c0,0,2.14331,6.79553,10.99622,9.99719c8.85303,3.20172,12.99573,2.99927,12.99573,2.99927\r\n				S1364.36035,807.19812,1362.93091,803.99609z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "path",
+        {
+          fill: (_s = props.color) != null ? _s : "white",
+          stroke: (_t = props.stroke) != null ? _t : "white",
+          strokeWidth: props.strokeWidth,
+          d: "M1404.91675,805.99548l1.99951,37.98962h5.99792\r\n				C1412.91418,843.98511,1415.06421,809.78546,1404.91675,805.99548z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "path",
+        {
+          fill: (_u = props.color) != null ? _u : "white",
+          stroke: (_v = props.stroke) != null ? _v : "white",
+          strokeWidth: props.strokeWidth,
+          d: "M1292.13782,843.98511h5.8606l1.95349-37.98962\r\n				C1290.03699,809.78546,1292.13782,843.98511,1292.13782,843.98511z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "polygon",
+        {
+          fill: (_w = props.color) != null ? _w : "white",
+          stroke: (_x = props.stroke) != null ? _x : "white",
+          strokeWidth: props.strokeWidth,
+          points: "1376.92627,992.94427 1376.92627,1013.9386 1991.72021,1311.85693 1994.71899,1304.85889 			"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "path",
+        {
+          fill: (_y = props.color) != null ? _y : "white",
+          stroke: (_z = props.stroke) != null ? _z : "white",
+          strokeWidth: props.strokeWidth,
+          d: "M1213.98096,911.96655l-31.9895-19.99451c-2.60364,5.07935-2.9989,32.99097-2.9989,32.99097\r\n				l147.95044,67.98126l9.99658-18.99475L1213.98096,911.96655z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "polygon",
+        {
+          fill: (_A = props.color) != null ? _A : "white",
+          stroke: (_B = props.stroke) != null ? _B : "white",
+          strokeWidth: props.strokeWidth,
+          points: "1801.78369,1346.84717 1662.83032,1301.85962 1675.82593,1266.86914 1397.91919,1175.89417 \r\n				1398.91895,1253.8728 1406.91626,1255.87219 1411.91443,1237.8772 1799.78442,1350.84619 1799.78442,1359.84375 			"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "polygon",
+        {
+          fill: (_C = props.color) != null ? _C : "white",
+          stroke: (_D = props.stroke) != null ? _D : "white",
+          strokeWidth: props.strokeWidth,
+          points: "1397.91919,1187.89087 1157.99951,1194.88892 1157.99951,1254.87256 1161.99829,1254.87256 \r\n				1162.99805,1242.87573 1312.94763,1240.87634 1314,1254.99988 1398.99988,1254 			"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "path",
+        {
+          fill: (_E = props.color) != null ? _E : "white",
+          stroke: (_F = props.stroke) != null ? _F : "white",
+          strokeWidth: props.strokeWidth,
+          d: "M958.99994,193c0,0-6.98682-3.91772-9.99994,4c-3.01324,7.91748-16.34448,45.13452-18.00012,65h23.00006\r\n				c0,0,11.48254-28.80957,19-42L958.99994,193z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "path",
+        {
+          fill: (_G = props.color) != null ? _G : "white",
+          stroke: (_H = props.stroke) != null ? _H : "white",
+          strokeWidth: props.strokeWidth,
+          d: "M1122.00073,196.97119c-2.99841-7.9209-9.95068-4.00171-9.95068-4.00171l-13.93066,27.01172\r\n				c7.48035,13.19629,18.90601,42.01831,18.90601,42.01831h22.88623\r\n				C1138.26416,242.12549,1124.99878,204.89233,1122.00073,196.97119z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "path",
+        {
+          fill: (_I = props.color) != null ? _I : "white",
+          stroke: (_J = props.stroke) != null ? _J : "white",
+          strokeWidth: props.strokeWidth,
+          d: "M958.99994,180.99988l17.99994,35c0,0,27.70367-24.99988,57.00012-24.99988l1-55\r\n				C1035,136,995.65912,129.44434,958.99994,180.99988z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "path",
+        {
+          fill: (_K = props.color) != null ? _K : "white",
+          stroke: (_L = props.stroke) != null ? _L : "white",
+          strokeWidth: props.strokeWidth,
+          d: "M1034.99805,136.28271l0.9978,55.06213c29.23804,0,56.88623,25.0282,56.88623,25.0282l17.96387-35.03955\r\n				C1074.26001,129.7196,1034.99805,136.28271,1034.99805,136.28271z"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "polygon",
+        {
+          fill: (_M = props.color) != null ? _M : "white",
+          stroke: (_N = props.stroke) != null ? _N : "white",
+          strokeWidth: props.strokeWidth,
+          points: "1040,136 1029,136 1030,191 1041,192 			"
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime39.jsx)(
+        "path",
+        {
+          fill: (_O = props.color) != null ? _O : "white",
+          stroke: (_P = props.stroke) != null ? _P : "white",
+          strokeWidth: props.strokeWidth,
+          d: "M1023.3291,1884.08289c-5.69275,38.15613-11.4303,80.81226-12.04797,116.39612\r\n		c-0.61774,35.58386-0.04419,241.86694,24.71887,337.78931c0,0,24.0105-157.29175,24.0105-305.82666\r\n		c0-40.37744-10.36719-111.75989-14.93774-146.36523c-4.57056-34.60522-7.39307-130.07654-10.07275-130.07654\r\n		C1030.38281,1755.99988,1027.02051,1859.34094,1023.3291,1884.08289z"
+        }
+      )
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/GroundService/GroundService.tsx
+  var import_jsx_runtime40 = __toESM(require_jsx_runtime());
   var GroundService = () => {
-    return /* @__PURE__ */ import_react89.default.createElement("div", { className: "ground-service-container" }, /* @__PURE__ */ import_react89.default.createElement("div", { className: "ground-service-header" }, "Ground Services"), /* @__PURE__ */ import_react89.default.createElement("div", { className: "ground-service-content" }, /* @__PURE__ */ import_react89.default.createElement(GroundServiceIcon, { width: 1e3, color: "transparent", stroke: "blue", strokeWidth: 10 })));
+    return /* @__PURE__ */ (0, import_jsx_runtime40.jsxs)("div", { className: "ground-service-container", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime40.jsx)("div", { className: "ground-service-header", children: "Ground Services" }),
+      /* @__PURE__ */ (0, import_jsx_runtime40.jsx)("div", { className: "ground-service-content", children: /* @__PURE__ */ (0, import_jsx_runtime40.jsx)(GroundServiceIcon, { width: 1e3, color: "transparent", stroke: "blue", strokeWidth: 10 }) })
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/WeightBalance/WeightBalance.tsx
-  var import_react90 = __toESM(require_react());
+  var import_react64 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/WeightBalance/cg_limits.png
   var cg_limits_default = "data:image/png;base64,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";
@@ -54385,18 +55746,19 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/WeightBalance/WeightBalance.tsx
+  var import_jsx_runtime41 = __toESM(require_jsx_runtime());
   var WeightAndBalance = () => {
-    const [id, setId] = (0, import_react90.useState)(() => {
+    const [id, setId] = (0, import_react64.useState)(() => {
       const id2 = localStorage.getItem("simbriefId");
       const initialValue = JSON.parse(id2);
       return initialValue != null ? initialValue : "";
     });
-    const [simbriefData, setSimbriefData] = (0, import_react90.useState)(() => {
+    const [simbriefData, setSimbriefData] = (0, import_react64.useState)(() => {
       const data = localStorage.getItem("simbriefData");
       const initialValue = JSON.parse(data);
       return initialValue != null ? initialValue : "";
     });
-    (0, import_react90.useEffect)(() => {
+    (0, import_react64.useEffect)(() => {
       localStorage.setItem("simbriefId", JSON.stringify(id));
     }, [id]);
     const getSimbriefData = async () => {
@@ -54409,151 +55771,178 @@ class InstrumentLogic extends BaseInstrument {
         console.error(e);
       }
     };
-    const [BEW] = (0, import_react90.useState)(() => {
+    const [BEW] = (0, import_react64.useState)(() => {
       var _a;
       const data = localStorage.getItem("simbriefData");
       const initialValue = JSON.parse(data);
       return (_a = Number(initialValue == null ? void 0 : initialValue.weights.oew)) != null ? _a : 46840.8;
     });
-    const [BEM] = (0, import_react90.useState)(2534735576e-2);
-    const [passangers] = (0, import_react90.useState)(() => {
+    const [BEM] = (0, import_react64.useState)(2534735576e-2);
+    const [passangers] = (0, import_react64.useState)(() => {
       var _a;
       const data = localStorage.getItem("simbriefData");
       const initialValue = JSON.parse(data);
       return (_a = Number(initialValue == null ? void 0 : initialValue.weights.pax_count)) != null ? _a : 0;
     });
-    const [fuel] = (0, import_react90.useState)(() => {
+    const [fuel] = (0, import_react64.useState)(() => {
       const data = localStorage.getItem("simbriefData");
       const initialValue = JSON.parse(data);
       return (initialValue == null ? void 0 : initialValue.fuel.plan_takeoff) / 6.767;
     });
-    const [fuelBurn] = (0, import_react90.useState)(() => {
+    const [fuelBurn] = (0, import_react64.useState)(() => {
       var _a;
       const data = localStorage.getItem("simbriefData");
       const initialValue = JSON.parse(data);
       return (_a = Number((initialValue == null ? void 0 : initialValue.fuel.enroute_burn) / 6.767)) != null ? _a : 0;
     });
-    const [fwdCargo] = (0, import_react90.useState)(() => {
+    const [fwdCargo] = (0, import_react64.useState)(() => {
       var _a;
       const data = localStorage.getItem("simbriefData");
       const initialValue = JSON.parse(data);
       return (_a = Number((initialValue == null ? void 0 : initialValue.weights.cargo) * 0.75)) != null ? _a : 0;
     });
-    const [aftCargo] = (0, import_react90.useState)(() => {
+    const [aftCargo] = (0, import_react64.useState)(() => {
       var _a;
       const data = localStorage.getItem("simbriefData");
       const initialValue = JSON.parse(data);
       return (_a = Number((initialValue == null ? void 0 : initialValue.weights.cargo) * 0.25)) != null ? _a : 0;
     });
-    return /* @__PURE__ */ import_react90.default.createElement("div", null, /* @__PURE__ */ import_react90.default.createElement("div", { className: "weightAndBalanceContainer" }, /* @__PURE__ */ import_react90.default.createElement("div", { className: "WBsliderContainer" }, /* @__PURE__ */ import_react90.default.createElement("div", null, "Passangers: ", passangers), /* @__PURE__ */ import_react90.default.createElement("div", null, "fuel: ", Math.round(fuel * 6.767), "lbs"), /* @__PURE__ */ import_react90.default.createElement("div", null, "cargo:", fwdCargo + aftCargo), /* @__PURE__ */ import_react90.default.createElement(
-      "div",
-      {
-        onClick: () => {
-          getSimbriefData().catch((e) => {
-            console.error(e);
-          });
-        }
-      },
-      "Get simbrief Data"
-    ), /* @__PURE__ */ import_react90.default.createElement("form", null, /* @__PURE__ */ import_react90.default.createElement("label", null, "simbrief id", /* @__PURE__ */ import_react90.default.createElement(
-      "input",
-      {
-        type: "text",
-        value: id,
-        onChange: (e) => {
-          setId(e.target.value);
-        }
-      }
-    )))), /* @__PURE__ */ import_react90.default.createElement("img", { src: cg_limits_default, alt: "cgLimits" }), /* @__PURE__ */ import_react90.default.createElement(
-      "div",
-      {
-        style: {
-          position: "absolute",
-          left: "1200px",
-          top: "500px",
-          width: "720px",
-          height: "860px"
-        }
-      },
-      /* @__PURE__ */ import_react90.default.createElement("svg", { viewBox: "0 0 200 200" }, /* @__PURE__ */ import_react90.default.createElement(
-        "circle",
-        {
-          cx: getTOCg(fuel, BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37,
-          cy: -getTOW(fuel, BEW, passangers, fwdCargo, aftCargo) / 239 + 381,
-          r: 3,
-          fill: "none",
-          stroke: "#007BFA",
-          strokeWidth: 2
-        }
-      ), /* @__PURE__ */ import_react90.default.createElement(
-        "rect",
-        {
-          x: getLdgCg(fuel, fuelBurn, BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 34,
-          y: -getLW(fuel, fuelBurn, BEW, passangers, fwdCargo, aftCargo) / 239 + 378,
-          width: 6,
-          height: 6,
-          fill: "none",
-          stroke: "#007BFA",
-          strokeWidth: 2
-        }
-      ), /* @__PURE__ */ import_react90.default.createElement(
-        "g",
-        {
-          transform: `translate(${getZfCg(BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37},${-getZfw(BEW, passangers, fwdCargo, aftCargo) / 239 + 381 - 4})`
-        },
-        /* @__PURE__ */ import_react90.default.createElement(
-          "rect",
+    return /* @__PURE__ */ (0, import_jsx_runtime41.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime41.jsxs)("div", { className: "weightAndBalanceContainer", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime41.jsxs)("div", { className: "WBsliderContainer", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime41.jsxs)("div", { children: [
+          "Passangers: ",
+          passangers
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime41.jsxs)("div", { children: [
+          "fuel: ",
+          Math.round(fuel * 6.767),
+          "lbs"
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime41.jsxs)("div", { children: [
+          "cargo:",
+          fwdCargo + aftCargo
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime41.jsx)(
+          "div",
           {
-            x: 0,
-            y: 0,
-            width: 6,
-            height: 6,
-            transform: "rotate(45)",
-            fill: "none",
-            stroke: "#778899",
-            strokeWidth: 2
+            onClick: () => {
+              getSimbriefData().catch((e) => {
+                console.error(e);
+              });
+            },
+            children: "Get simbrief Data"
           }
-        )
-      ), /* @__PURE__ */ import_react90.default.createElement(
-        "path",
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime41.jsx)("form", { children: /* @__PURE__ */ (0, import_jsx_runtime41.jsxs)("label", { children: [
+          "simbrief id",
+          /* @__PURE__ */ (0, import_jsx_runtime41.jsx)(
+            "input",
+            {
+              type: "text",
+              value: id,
+              onChange: (e) => {
+                setId(e.target.value);
+              }
+            }
+          )
+        ] }) })
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime41.jsx)("img", { src: cg_limits_default, alt: "cgLimits" }),
+      /* @__PURE__ */ (0, import_jsx_runtime41.jsx)(
+        "div",
         {
-          d: `M${getTOCg(fuel, BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37},${-getTOW(fuel, BEW, passangers, fwdCargo, aftCargo) / 239 + 381} L ${getLdgCg(fuel, fuelBurn, BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37} ${-getLW(fuel, fuelBurn, BEW, passangers, fwdCargo, aftCargo) / 239 + 381}`,
-          stroke: "white",
-          strokeWidth: 1,
-          strokeLinecap: "round"
+          style: {
+            position: "absolute",
+            left: "1200px",
+            top: "500px",
+            width: "720px",
+            height: "860px"
+          },
+          children: /* @__PURE__ */ (0, import_jsx_runtime41.jsxs)("svg", { viewBox: "0 0 200 200", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime41.jsx)(
+              "circle",
+              {
+                cx: getTOCg(fuel, BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37,
+                cy: -getTOW(fuel, BEW, passangers, fwdCargo, aftCargo) / 239 + 381,
+                r: 3,
+                fill: "none",
+                stroke: "#007BFA",
+                strokeWidth: 2
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime41.jsx)(
+              "rect",
+              {
+                x: getLdgCg(fuel, fuelBurn, BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 34,
+                y: -getLW(fuel, fuelBurn, BEW, passangers, fwdCargo, aftCargo) / 239 + 378,
+                width: 6,
+                height: 6,
+                fill: "none",
+                stroke: "#007BFA",
+                strokeWidth: 2
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime41.jsx)(
+              "g",
+              {
+                transform: `translate(${getZfCg(BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37},${-getZfw(BEW, passangers, fwdCargo, aftCargo) / 239 + 381 - 4})`,
+                children: /* @__PURE__ */ (0, import_jsx_runtime41.jsx)(
+                  "rect",
+                  {
+                    x: 0,
+                    y: 0,
+                    width: 6,
+                    height: 6,
+                    transform: "rotate(45)",
+                    fill: "none",
+                    stroke: "#778899",
+                    strokeWidth: 2
+                  }
+                )
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime41.jsx)(
+              "path",
+              {
+                d: `M${getTOCg(fuel, BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37},${-getTOW(fuel, BEW, passangers, fwdCargo, aftCargo) / 239 + 381} L ${getLdgCg(fuel, fuelBurn, BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37} ${-getLW(fuel, fuelBurn, BEW, passangers, fwdCargo, aftCargo) / 239 + 381}`,
+                stroke: "white",
+                strokeWidth: 1,
+                strokeLinecap: "round"
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime41.jsx)(
+              "path",
+              {
+                d: `M${getLdgCg(fuel, fuelBurn, BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37},${-getLW(fuel, fuelBurn, BEW, passangers, fwdCargo, aftCargo) / 239 + 381} L ${getZfCg(BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37} ${-getZfw(BEW, passangers, fwdCargo, aftCargo) / 239 + 381}`,
+                stroke: "#778899",
+                strokeWidth: 1,
+                strokeLinecap: "round",
+                strokeDasharray: 2
+              }
+            )
+          ] })
         }
-      ), /* @__PURE__ */ import_react90.default.createElement(
-        "path",
-        {
-          d: `M${getLdgCg(fuel, fuelBurn, BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37},${-getLW(fuel, fuelBurn, BEW, passangers, fwdCargo, aftCargo) / 239 + 381} L ${getZfCg(BEW, BEM, passangers, fwdCargo, aftCargo) * 3.64 + 37} ${-getZfw(BEW, passangers, fwdCargo, aftCargo) / 239 + 381}`,
-          stroke: "#778899",
-          strokeWidth: 1,
-          strokeLinecap: "round",
-          strokeDasharray: 2
-        }
-      ))
-    )));
+      )
+    ] }) });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/checklists.tsx
-  var import_react99 = __toESM(require_react());
+  var import_react67 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistHeader/ChecklistHeader.tsx
-  var import_react91 = __toESM(require_react());
+  var import_jsx_runtime42 = __toESM(require_jsx_runtime());
   var ChecklistHeader = () => {
-    return /* @__PURE__ */ import_react91.default.createElement("div", { className: "checklist-header" });
+    return /* @__PURE__ */ (0, import_jsx_runtime42.jsx)("div", { className: "checklist-header" });
   };
 
-  // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistSelector/ChecklistSelector.tsx
-  var import_react93 = __toESM(require_react());
-
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistSelecorButton/ChecklistSelectorButton.tsx
-  var import_react92 = __toESM(require_react());
+  var import_react65 = __toESM(require_react());
+  var import_jsx_runtime43 = __toESM(require_jsx_runtime());
   var ChecklistSelectorButton = (props) => {
     const active = props.activeChecklist === props.to;
     const completed = props.completedChecklists[props.to];
-    const [showArrow, setShowArrow] = import_react92.default.useState(false);
-    (0, import_react92.useEffect)(() => {
+    const [showArrow, setShowArrow] = import_react65.default.useState(false);
+    (0, import_react65.useEffect)(() => {
       if (!active) {
         setShowArrow(false);
       } else {
@@ -54562,72 +55951,85 @@ class InstrumentLogic extends BaseInstrument {
         }, 100);
       }
     }, [active]);
-    return /* @__PURE__ */ import_react92.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime43.jsxs)(
       "div",
       {
         style: { top: props.to * 87 + 72 + "px" },
         className: `${props.dividerAbove !== null && props.dividerAbove !== void 0 && props.dividerAbove ? "checklist-selector-button-divider-above" : "checklist-selector-button"} ${active ? "selector-button-active" : "checklist-selector-button-text"}`,
         onClick: () => {
           props.activeChecklist !== props.to && props.onClick(props.to);
-        }
-      },
-      /* @__PURE__ */ import_react92.default.createElement("div", { className: "checklist-selector-left-text" }, /* @__PURE__ */ import_react92.default.createElement("svg", { width: 40, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react92.default.createElement(
-        "path",
-        {
-          fill: completed ? "#00ffb4" : "#150B26",
-          d: "M230.24876,80.10179l3.56483,3.56483c6.71123,6.71123,6.71123,17.59228,0,24.30351L113.40904,228.37469\r\n	c-6.71123,6.71123-17.59229,6.71123-24.30351,0L6.99719,146.26636c-6.71123-6.71123-6.71123-17.59229,0-24.3035l3.56484-3.56484\r\n	c6.71123-6.71123,17.59228-6.71123,24.30351,0l54.24,54.24001c6.71123,6.71123,17.59229,6.71123,24.30351,0l92.53622-92.53622\r\n	C212.65649,73.39056,223.53754,73.39056,230.24876,80.10179z"
-        }
-      )), props.text),
-      showArrow ? /* @__PURE__ */ import_react92.default.createElement("svg", { className: `fade-in-anim ${active ? "" : "arrow-force-hide"}`, width: 20, viewBox: "0 0 240 240" }, /* @__PURE__ */ import_react92.default.createElement(
-        "path",
-        {
-          fill: "white",
-          d: "M116.42586,119.52027v-3.15111c0-0.88866,0.96201-1.44408,1.73161-0.99975l2.72894,1.57555l2.72894,1.57556\r\n	c0.7696,0.44433,0.7696,1.55515,0,1.99948l-2.72894,1.57555l-2.72894,1.57556c-0.7696,0.44433-1.73161-0.11108-1.73161-0.99975\r\n	V119.52027z"
-        }
-      ), /* @__PURE__ */ import_react92.default.createElement(
-        "path",
-        {
-          fill: "white",
-          d: "M14.29402,120V34.22571c0-24.18964,26.18605-39.30816,47.13489-27.21334l74.28271,42.88715l74.28271,42.88715\r\n	c20.94885,12.09482,20.94885,42.33187,0,54.42669l-74.28271,42.88715l-74.28271,42.88715\r\n	c-20.94884,12.09482-47.13489-3.02371-47.13489-27.21335V120z"
-        }
-      )) : null
+        },
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime43.jsxs)("div", { className: "checklist-selector-left-text", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime43.jsx)("svg", { width: 40, viewBox: "0 0 240 240", children: /* @__PURE__ */ (0, import_jsx_runtime43.jsx)(
+              "path",
+              {
+                fill: completed ? "#00ffb4" : "#150B26",
+                d: "M230.24876,80.10179l3.56483,3.56483c6.71123,6.71123,6.71123,17.59228,0,24.30351L113.40904,228.37469\r\n	c-6.71123,6.71123-17.59229,6.71123-24.30351,0L6.99719,146.26636c-6.71123-6.71123-6.71123-17.59229,0-24.3035l3.56484-3.56484\r\n	c6.71123-6.71123,17.59228-6.71123,24.30351,0l54.24,54.24001c6.71123,6.71123,17.59229,6.71123,24.30351,0l92.53622-92.53622\r\n	C212.65649,73.39056,223.53754,73.39056,230.24876,80.10179z"
+              }
+            ) }),
+            props.text
+          ] }),
+          showArrow ? /* @__PURE__ */ (0, import_jsx_runtime43.jsxs)("svg", { className: `fade-in-anim ${active ? "" : "arrow-force-hide"}`, width: 20, viewBox: "0 0 240 240", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime43.jsx)(
+              "path",
+              {
+                fill: "white",
+                d: "M116.42586,119.52027v-3.15111c0-0.88866,0.96201-1.44408,1.73161-0.99975l2.72894,1.57555l2.72894,1.57556\r\n	c0.7696,0.44433,0.7696,1.55515,0,1.99948l-2.72894,1.57555l-2.72894,1.57556c-0.7696,0.44433-1.73161-0.11108-1.73161-0.99975\r\n	V119.52027z"
+              }
+            ),
+            /* @__PURE__ */ (0, import_jsx_runtime43.jsx)(
+              "path",
+              {
+                fill: "white",
+                d: "M14.29402,120V34.22571c0-24.18964,26.18605-39.30816,47.13489-27.21334l74.28271,42.88715l74.28271,42.88715\r\n	c20.94885,12.09482,20.94885,42.33187,0,54.42669l-74.28271,42.88715l-74.28271,42.88715\r\n	c-20.94884,12.09482-47.13489-3.02371-47.13489-27.21335V120z"
+              }
+            )
+          ] }) : null
+        ]
+      }
     );
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistSelector/ChecklistSelector.tsx
+  var import_jsx_runtime44 = __toESM(require_jsx_runtime());
   var ChecklistSelector = (props) => {
     const allTrue = (arr) => {
       return arr.every((value) => value);
     };
     const isAllCompleted = allTrue(props.completedChecklists);
-    return /* @__PURE__ */ import_react93.default.createElement("div", { className: "checklist-selector" }, /* @__PURE__ */ import_react93.default.createElement("div", { className: "checklist-selector-title" }, "Checklists"), /* @__PURE__ */ import_react93.default.createElement("div", { className: "checklist-selector-button-bar" }, props.checklist.map((item, index) => {
-      if (index === 0 || index === 2 || index === 4 || index === 6 || index === 8) {
-        return /* @__PURE__ */ import_react93.default.createElement(
-          ChecklistSelectorButton,
-          {
-            activeChecklist: props.activeChecklist,
-            onClick: props.onClick,
-            key: index,
-            text: item.name,
-            to: index,
-            completedChecklists: props.completedChecklists,
-            dividerAbove: true
-          }
-        );
-      } else {
-        return /* @__PURE__ */ import_react93.default.createElement(
-          ChecklistSelectorButton,
-          {
-            activeChecklist: props.activeChecklist,
-            onClick: props.onClick,
-            key: index,
-            text: item.name,
-            to: index,
-            completedChecklists: props.completedChecklists
-          }
-        );
-      }
-    })), isAllCompleted && /* @__PURE__ */ import_react93.default.createElement("div", { onClick: props.resetAllChecklists, className: "reset-all-checklists-button" }, "Reset All"));
+    return /* @__PURE__ */ (0, import_jsx_runtime44.jsxs)("div", { className: "checklist-selector", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime44.jsx)("div", { className: "checklist-selector-title", children: "Checklists" }),
+      /* @__PURE__ */ (0, import_jsx_runtime44.jsx)("div", { className: "checklist-selector-button-bar", children: props.checklist.map((item, index) => {
+        if (index === 0 || index === 2 || index === 4 || index === 6 || index === 8) {
+          return /* @__PURE__ */ (0, import_jsx_runtime44.jsx)(
+            ChecklistSelectorButton,
+            {
+              activeChecklist: props.activeChecklist,
+              onClick: props.onClick,
+              text: item.name,
+              to: index,
+              completedChecklists: props.completedChecklists,
+              dividerAbove: true
+            },
+            index
+          );
+        } else {
+          return /* @__PURE__ */ (0, import_jsx_runtime44.jsx)(
+            ChecklistSelectorButton,
+            {
+              activeChecklist: props.activeChecklist,
+              onClick: props.onClick,
+              text: item.name,
+              to: index,
+              completedChecklists: props.completedChecklists
+            },
+            index
+          );
+        }
+      }) }),
+      isAllCompleted && /* @__PURE__ */ (0, import_jsx_runtime44.jsx)("div", { onClick: props.resetAllChecklists, className: "reset-all-checklists-button", children: "Reset All" })
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistContent/ChecklistContent.ts
@@ -55567,16 +56969,16 @@ class InstrumentLogic extends BaseInstrument {
     }
   ];
 
-  // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistContentDisplay/ChecklistContentDisplay.tsx
-  var import_react98 = __toESM(require_react());
-
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistItemDisplay/ChecklistItemDisplay.tsx
-  var import_react95 = __toESM(require_react());
+  var import_react66 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistItemDisplay/ChecklistItemDisplayDetails.tsx
-  var import_react94 = __toESM(require_react());
+  var import_jsx_runtime45 = __toESM(require_jsx_runtime());
   var ActionIconDetails = () => {
-    return /* @__PURE__ */ import_react94.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: 30, viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react94.default.createElement("ellipse", { fill: "white", cx: "17", cy: "12", rx: "5", ry: "5" }), /* @__PURE__ */ import_react94.default.createElement("path", { fill: "white", d: "M 5.723 10 H 16.281 V 14 H 5.723 A 2 2 0 0 1 3.723 12 V 12 A 2 2 0 0 1 5.723 10 Z" }));
+    return /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("svg", { xmlns: "http://www.w3.org/2000/svg", width: 30, viewBox: "0 0 24 24", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("ellipse", { fill: "white", cx: "17", cy: "12", rx: "5", ry: "5" }),
+      /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("path", { fill: "white", d: "M 5.723 10 H 16.281 V 14 H 5.723 A 2 2 0 0 1 3.723 12 V 12 A 2 2 0 0 1 5.723 10 Z" })
+    ] });
   };
   var ChecklistItemDisplayDetails = ({
     details
@@ -55591,15 +56993,25 @@ class InstrumentLogic extends BaseInstrument {
           challenge,
           response: details.detailsResponse[index]
         }));
-        return /* @__PURE__ */ import_react94.default.createElement("div", { className: "info-dropdown" }, combinedArray.map((item, index) => {
-          return /* @__PURE__ */ import_react94.default.createElement("div", { className: "checklist-item-subchecklist-wrapper", key: index }, /* @__PURE__ */ import_react94.default.createElement("div", { className: "checklist-item-subchecklist-chal" }, item.challenge), /* @__PURE__ */ import_react94.default.createElement("div", { className: "checklist-item-subchecklist-res" }, /* @__PURE__ */ import_react94.default.createElement(ActionIconDetails, null), " ", " " + item.response));
-        }));
+        return /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("div", { className: "info-dropdown", children: combinedArray.map((item, index) => {
+          return /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("div", { className: "checklist-item-subchecklist-wrapper", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("div", { className: "checklist-item-subchecklist-chal", children: item.challenge }),
+            /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("div", { className: "checklist-item-subchecklist-res", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime45.jsx)(ActionIconDetails, {}),
+              " ",
+              " " + item.response
+            ] })
+          ] }, index);
+        }) });
       case "ChallengeTitleBullets":
-        return /* @__PURE__ */ import_react94.default.createElement("div", { className: "info-dropdown" }, /* @__PURE__ */ import_react94.default.createElement("div", { className: "checklist-item-subarray-title" }, details.title), /* @__PURE__ */ import_react94.default.createElement("ul", { className: "checklist-item-subarray-ul" }, details.bullets.map((bullet, index) => /* @__PURE__ */ import_react94.default.createElement("li", { className: "checklist-item-subarray-li", key: index }, bullet))));
+        return /* @__PURE__ */ (0, import_jsx_runtime45.jsxs)("div", { className: "info-dropdown", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("div", { className: "checklist-item-subarray-title", children: details.title }),
+          /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("ul", { className: "checklist-item-subarray-ul", children: details.bullets.map((bullet, index) => /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("li", { className: "checklist-item-subarray-li", children: bullet }, index)) })
+        ] });
       case "StringArray":
-        return /* @__PURE__ */ import_react94.default.createElement("ul", { className: "info-dropdown" }, details.items.map((item, index) => /* @__PURE__ */ import_react94.default.createElement("li", { className: "checklist-item-subarray-li", key: index }, item)));
+        return /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("ul", { className: "info-dropdown", children: details.items.map((item, index) => /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("li", { className: "checklist-item-subarray-li", children: item }, index)) });
       case "String":
-        return /* @__PURE__ */ import_react94.default.createElement("div", { className: "info-dropdown" }, details.value);
+        return /* @__PURE__ */ (0, import_jsx_runtime45.jsx)("div", { className: "info-dropdown", children: details.value });
       default:
         return null;
     }
@@ -55607,11 +57019,15 @@ class InstrumentLogic extends BaseInstrument {
   var ChecklistItemDisplayDetails_default = ChecklistItemDisplayDetails;
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistItemDisplay/ChecklistItemDisplay.tsx
+  var import_jsx_runtime46 = __toESM(require_jsx_runtime());
   var ActionIcon = () => {
-    return /* @__PURE__ */ import_react95.default.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: 30, viewBox: "0 0 24 24" }, /* @__PURE__ */ import_react95.default.createElement("ellipse", { fill: "white", cx: "17", cy: "12", rx: "5", ry: "5" }), /* @__PURE__ */ import_react95.default.createElement("path", { fill: "white", d: "M 5.723 10 H 16.281 V 14 H 5.723 A 2 2 0 0 1 3.723 12 V 12 A 2 2 0 0 1 5.723 10 Z" }));
+    return /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("svg", { xmlns: "http://www.w3.org/2000/svg", width: 30, viewBox: "0 0 24 24", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("ellipse", { fill: "white", cx: "17", cy: "12", rx: "5", ry: "5" }),
+      /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("path", { fill: "white", d: "M 5.723 10 H 16.281 V 14 H 5.723 A 2 2 0 0 1 3.723 12 V 12 A 2 2 0 0 1 5.723 10 Z" })
+    ] });
   };
   var InformationIcon = (props) => {
-    return /* @__PURE__ */ import_react95.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)(
       "svg",
       {
         version: "1.1",
@@ -55620,30 +57036,32 @@ class InstrumentLogic extends BaseInstrument {
         y: "0px",
         width: props.width,
         height: props.height,
-        viewBox: "0 0 240 240"
-      },
-      /* @__PURE__ */ import_react95.default.createElement("rect", { y: 45, rx: 20, strokeWidth: 10, x: 10, width: 220, height: 150, fill: props.bgFill, stroke: props.stroke }),
-      /* @__PURE__ */ import_react95.default.createElement(
-        "polygon",
-        {
-          fill: "white",
-          points: "86.9,149 86.9,161.3 39.1,161.3 39.1,149 62.1,149 62.1,116.7 43,116.7 43,104.4 74.4,104.4 \r\n			74.4,149 		"
-        }
-      ),
-      /* @__PURE__ */ import_react95.default.createElement("circle", { fill: "white", cx: "63", cy: "88.2", r: "10.1" }),
-      /* @__PURE__ */ import_react95.default.createElement(
-        "path",
-        {
-          transform: `rotate(${props.active ? "90" : "0"} 170 120)`,
-          className: props.className,
-          fill: "white",
-          d: "M139.1,120V93c0-7.3,7.9-11.8,14.1-8.2l23.4,13.5l23.4,13.5c6.3,3.6,6.3,12.7,0,16.3l-23.4,13.5\r\n		l-23.4,13.5c-6.3,3.6-14.1-0.9-14.1-8.2V120z"
-        }
-      )
+        viewBox: "0 0 240 240",
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("rect", { y: 45, rx: 20, strokeWidth: 10, x: 10, width: 220, height: 150, fill: props.bgFill, stroke: props.stroke }),
+          /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(
+            "polygon",
+            {
+              fill: "white",
+              points: "86.9,149 86.9,161.3 39.1,161.3 39.1,149 62.1,149 62.1,116.7 43,116.7 43,104.4 74.4,104.4 \r\n			74.4,149 		"
+            }
+          ),
+          /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("circle", { fill: "white", cx: "63", cy: "88.2", r: "10.1" }),
+          /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(
+            "path",
+            {
+              transform: `rotate(${props.active ? "90" : "0"} 170 120)`,
+              className: props.className,
+              fill: "white",
+              d: "M139.1,120V93c0-7.3,7.9-11.8,14.1-8.2l23.4,13.5l23.4,13.5c6.3,3.6,6.3,12.7,0,16.3l-23.4,13.5\r\n		l-23.4,13.5c-6.3,3.6-14.1-0.9-14.1-8.2V120z"
+            }
+          )
+        ]
+      }
     );
   };
   var ExpandedChecklistIcon = (props) => {
-    return /* @__PURE__ */ import_react95.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(
       "svg",
       {
         version: "1.1",
@@ -55653,25 +57071,36 @@ class InstrumentLogic extends BaseInstrument {
         y: "0px",
         width: props.width,
         height: props.height,
-        viewBox: "0 0 240 240"
-      },
-      /* @__PURE__ */ import_react95.default.createElement("g", null, /* @__PURE__ */ import_react95.default.createElement("g", null, /* @__PURE__ */ import_react95.default.createElement("circle", { cx: 120, cy: "120.1", r: "110", strokeWidth: 10, fill: props.bgFill, stroke: props.stroke })), /* @__PURE__ */ import_react95.default.createElement(
-        "path",
-        {
-          fill: props.fill,
-          d: "M82.3,120V85.8c0-9.2,10-15,17.9-10.4l29.6,17.1l29.6,17.1c8,4.6,8,16.1,0,20.7l-29.6,17.1\r\n		l-29.6,17.1c-8,4.6-17.9-1.2-17.9-10.4V120z"
-        }
-      ))
+        viewBox: "0 0 240 240",
+        children: /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("g", { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("g", { children: /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("circle", { cx: 120, cy: "120.1", r: "110", strokeWidth: 10, fill: props.bgFill, stroke: props.stroke }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(
+            "path",
+            {
+              fill: props.fill,
+              d: "M82.3,120V85.8c0-9.2,10-15,17.9-10.4l29.6,17.1l29.6,17.1c8,4.6,8,16.1,0,20.7l-29.6,17.1\r\n		l-29.6,17.1c-8,4.6-17.9-1.2-17.9-10.4V120z"
+            }
+          )
+        ] })
+      }
     );
   };
   var ChecklistItemDisplay = (props) => {
-    const [details, setDetails] = import_react95.default.useState(false);
+    const [details, setDetails] = import_react66.default.useState(false);
     if (props.isCaution !== null && props.isCaution !== void 0 && props.isCaution) {
-      return /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-display-caution" }, /* @__PURE__ */ import_react95.default.createElement("u", null, "CAUTION:"), " ", props.Challenge);
+      return /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "checklist-item-display-caution", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("u", { children: "CAUTION:" }),
+        " ",
+        props.Challenge
+      ] });
     } else if (props.isNote !== null && props.isNote !== void 0 && props.isNote) {
-      return /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-display-note" }, /* @__PURE__ */ import_react95.default.createElement("u", null, "NOTE:"), " ", props.Challenge);
+      return /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "checklist-item-display-note", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("u", { children: "NOTE:" }),
+        " ",
+        props.Challenge
+      ] });
     } else if (props.isDivider !== null && props.isDivider !== void 0 && props.isDivider) {
-      return /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-display" }, /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-display-divider" }));
+      return /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("div", { className: "checklist-item-display", children: /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("div", { className: "checklist-item-display-divider" }) });
     } else {
       const getIconType = () => {
         if (props.details === null || props.details === void 0)
@@ -55680,7 +57109,7 @@ class InstrumentLogic extends BaseInstrument {
           case "ChallengeDetails":
           case "ChallengeTitleBullets":
           case "StringArray":
-            return /* @__PURE__ */ import_react95.default.createElement(
+            return /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(
               ExpandedChecklistIcon,
               {
                 width: 50,
@@ -55693,7 +57122,7 @@ class InstrumentLogic extends BaseInstrument {
               }
             );
           case "String":
-            return /* @__PURE__ */ import_react95.default.createElement(
+            return /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(
               InformationIcon,
               {
                 width: 70,
@@ -55709,65 +57138,82 @@ class InstrumentLogic extends BaseInstrument {
             return null;
         }
       };
-      return /* @__PURE__ */ import_react95.default.createElement(
+      return /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)(
         "div",
         {
           onClick: () => {
             setDetails(!details);
           },
-          className: props.details !== null && props.details !== void 0 ? "checklist-item-display-hasdetails" : "checklist-item-display"
-        },
-        /* @__PURE__ */ import_react95.default.createElement(
-          "div",
-          {
-            className: props.details !== null && props.details !== void 0 ? "checklist-item-display-inner-wrapper-details" : "checklist-item-display-inner-wrapper"
-          },
-          /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-display-challenge" }, props.details !== null && props.details !== void 0 ? /* @__PURE__ */ import_react95.default.createElement("div", { className: "item-icon-container" }, getIconType()) : /* @__PURE__ */ import_react95.default.createElement("div", { className: "item-icon-container-filler" }), /* @__PURE__ */ import_react95.default.createElement("div", { className: "text-bounding-box" }, props.Challenge)),
-          /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-display-action" }, /* @__PURE__ */ import_react95.default.createElement(ActionIcon, null), props.action),
-          /* @__PURE__ */ import_react95.default.createElement("div", { className: "checklist-item-display-performedBy" }, props.performedBy)
-        ),
-        details && /* @__PURE__ */ import_react95.default.createElement(ChecklistItemDisplayDetails_default, { details: props.details })
+          className: props.details !== null && props.details !== void 0 ? "checklist-item-display-hasdetails" : "checklist-item-display",
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)(
+              "div",
+              {
+                className: props.details !== null && props.details !== void 0 ? "checklist-item-display-inner-wrapper-details" : "checklist-item-display-inner-wrapper",
+                children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "checklist-item-display-challenge", children: [
+                    props.details !== null && props.details !== void 0 ? /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("div", { className: "item-icon-container", children: getIconType() }) : /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("div", { className: "item-icon-container-filler" }),
+                    /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("div", { className: "text-bounding-box", children: props.Challenge })
+                  ] }),
+                  /* @__PURE__ */ (0, import_jsx_runtime46.jsxs)("div", { className: "checklist-item-display-action", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(ActionIcon, {}),
+                    props.action
+                  ] }),
+                  /* @__PURE__ */ (0, import_jsx_runtime46.jsx)("div", { className: "checklist-item-display-performedBy", children: props.performedBy })
+                ]
+              }
+            ),
+            details && /* @__PURE__ */ (0, import_jsx_runtime46.jsx)(ChecklistItemDisplayDetails_default, { details: props.details })
+          ]
+        }
       );
     }
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistContentHeader/ChecklistContentHeader.tsx
-  var import_react96 = __toESM(require_react());
+  var import_jsx_runtime47 = __toESM(require_jsx_runtime());
   var ChecklistContentHeader = (props) => {
-    return /* @__PURE__ */ import_react96.default.createElement("div", { className: "checklist-content-header" }, /* @__PURE__ */ import_react96.default.createElement("div", null, props.field1), /* @__PURE__ */ import_react96.default.createElement("div", { className: "cl-content-header-sep" }), /* @__PURE__ */ import_react96.default.createElement("div", null, props.field2), /* @__PURE__ */ import_react96.default.createElement("div", { className: "cl-content-header-sep" }), /* @__PURE__ */ import_react96.default.createElement("div", null, props.field3));
+    return /* @__PURE__ */ (0, import_jsx_runtime47.jsxs)("div", { className: "checklist-content-header", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime47.jsx)("div", { children: props.field1 }),
+      /* @__PURE__ */ (0, import_jsx_runtime47.jsx)("div", { className: "cl-content-header-sep" }),
+      /* @__PURE__ */ (0, import_jsx_runtime47.jsx)("div", { children: props.field2 }),
+      /* @__PURE__ */ (0, import_jsx_runtime47.jsx)("div", { className: "cl-content-header-sep" }),
+      /* @__PURE__ */ (0, import_jsx_runtime47.jsx)("div", { children: props.field3 })
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/CompleteChecklistButton/CompleteChecklistButton.tsx
-  var import_react97 = __toESM(require_react());
+  var import_jsx_runtime48 = __toESM(require_jsx_runtime());
   var CompleteChecklistButton = (props) => {
     const className = props.checklistCompleted ? "checklist-content-completeButton-complete" : "checklist-content-completeButton-incomplete";
-    return /* @__PURE__ */ import_react97.default.createElement("div", { style: { position: "relative" } }, !props.checklistCompleted ? /* @__PURE__ */ import_react97.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime48.jsx)("div", { style: { position: "relative" }, children: !props.checklistCompleted ? /* @__PURE__ */ (0, import_jsx_runtime48.jsx)(
       "div",
       {
         className,
         onClick: () => {
           var _a;
           props.handleComplete((_a = props.currentChecklist) != null ? _a : 0, true);
-        }
-      },
-      "Complete Checklist"
-    ) : /* @__PURE__ */ import_react97.default.createElement(
+        },
+        children: "Complete Checklist"
+      }
+    ) : /* @__PURE__ */ (0, import_jsx_runtime48.jsx)(
       "div",
       {
         className,
         onClick: () => {
           var _a;
           props.handleComplete((_a = props.currentChecklist) != null ? _a : 0, false);
-        }
-      },
-      "Mark Incomplete"
-    ));
+        },
+        children: "Mark Incomplete"
+      }
+    ) });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/ChecklistComponents/ChecklistContentDisplay/ChecklistContentDisplay.tsx
+  var import_jsx_runtime49 = __toESM(require_jsx_runtime());
   var ChecklistContentDisplay = (props) => {
     if (props.currentChecklist === null || props.currentChecklist === void 0) {
-      return /* @__PURE__ */ import_react98.default.createElement("div", { className: "checklist-select-a-checklist" }, "Select a Checklist");
+      return /* @__PURE__ */ (0, import_jsx_runtime49.jsx)("div", { className: "checklist-select-a-checklist", children: "Select a Checklist" });
     }
     const currentChecklist = props.checklist[props.currentChecklist];
     const checklistCompleted = props.completedChecklists[props.currentChecklist];
@@ -55779,92 +57225,97 @@ class InstrumentLogic extends BaseInstrument {
         const performedBy = currentChecklist.performedBy[i];
         if (currentChecklist.Challenge[i].isCaution) {
           checklistItems.push(
-            /* @__PURE__ */ import_react98.default.createElement(
+            /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(
               ChecklistItemDisplay,
               {
                 details: null,
-                key: i,
                 Challenge: challenge,
                 action,
                 performedBy,
                 handleComplete: () => {
                 },
                 isCaution: true
-              }
+              },
+              i
             )
           );
         } else if (currentChecklist.Challenge[i].isNote) {
           checklistItems.push(
-            /* @__PURE__ */ import_react98.default.createElement(
+            /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(
               ChecklistItemDisplay,
               {
                 details: null,
-                key: i,
                 Challenge: challenge,
                 action,
                 performedBy,
                 handleComplete: () => {
                 },
                 isNote: true
-              }
+              },
+              i
             )
           );
         } else if (currentChecklist.Challenge[i].isDivider) {
           checklistItems.push(
-            /* @__PURE__ */ import_react98.default.createElement(
+            /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(
               ChecklistItemDisplay,
               {
                 details: null,
-                key: i,
                 Challenge: challenge,
                 action,
                 performedBy,
                 handleComplete: () => {
                 },
                 isDivider: true
-              }
+              },
+              i
             )
           );
         } else {
           checklistItems.push(
-            /* @__PURE__ */ import_react98.default.createElement(
+            /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(
               ChecklistItemDisplay,
               {
                 details: currentChecklist.Challenge[i].details,
-                key: i,
                 Challenge: challenge,
                 action,
                 performedBy,
                 handleComplete: () => {
                 }
-              }
+              },
+              i
             )
           );
         }
       }
       return checklistItems;
     };
-    return /* @__PURE__ */ import_react98.default.createElement("div", { className: "checklist-content-display-container" }, /* @__PURE__ */ import_react98.default.createElement(
-      ChecklistContentHeader,
-      {
-        field1: "Challenge",
-        field2: "Action",
-        field3: props.checklist[props.currentChecklist].isAnsweredBy ? "Answered By" : "Performed By"
-      }
-    ), getChecklistItem(), /* @__PURE__ */ import_react98.default.createElement(
-      CompleteChecklistButton,
-      {
-        handleComplete: props.handleComplete,
-        checklistCompleted,
-        currentChecklist: props.currentChecklist
-      }
-    ));
+    return /* @__PURE__ */ (0, import_jsx_runtime49.jsxs)("div", { className: "checklist-content-display-container", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(
+        ChecklistContentHeader,
+        {
+          field1: "Challenge",
+          field2: "Action",
+          field3: props.checklist[props.currentChecklist].isAnsweredBy ? "Answered By" : "Performed By"
+        }
+      ),
+      getChecklistItem(),
+      /* @__PURE__ */ (0, import_jsx_runtime49.jsx)(
+        CompleteChecklistButton,
+        {
+          handleComplete: props.handleComplete,
+          checklistCompleted,
+          currentChecklist: props.currentChecklist
+        }
+      )
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/Tabs/Checklists/checklists.tsx
+  var import_jsx_runtime50 = __toESM(require_jsx_runtime());
   var Checklists = () => {
     var _a, _b, _c, _d;
-    const { state, updateState } = import_react99.default.useContext(AppContext);
+    const { state, updateState } = import_react67.default.useContext(AppContext);
     const updateCurrentChecklist = (current) => {
       updateState(__spreadProps(__spreadValues({}, state), {
         state: {
@@ -55920,28 +57371,34 @@ class InstrumentLogic extends BaseInstrument {
       newCompletedChecklists.fill(false);
       updateCompletedChecklists(newCompletedChecklists);
     };
-    return /* @__PURE__ */ import_react99.default.createElement("div", { className: "checklist-container" }, /* @__PURE__ */ import_react99.default.createElement(ChecklistHeader, null), /* @__PURE__ */ import_react99.default.createElement("div", { className: "checklist-content" }, /* @__PURE__ */ import_react99.default.createElement(
-      ChecklistSelector,
-      {
-        resetAllChecklists: handleResetAllChecklists,
-        completedChecklists: (_a = state == null ? void 0 : state.checklists.completedChecklists) != null ? _a : [],
-        checklist: checklistContent,
-        activeChecklist: (_b = state == null ? void 0 : state.checklists.currentChecklist) != null ? _b : 0,
-        onClick: handleChecklistClick
-      }
-    ), /* @__PURE__ */ import_react99.default.createElement(
-      ChecklistContentDisplay,
-      {
-        handleComplete,
-        currentChecklist: (_c = state == null ? void 0 : state.checklists.currentChecklist) != null ? _c : 0,
-        checklist: checklistContent,
-        completedChecklists: (_d = state == null ? void 0 : state.checklists.completedChecklists) != null ? _d : []
-      }
-    )));
+    return /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "checklist-container", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(ChecklistHeader, {}),
+      /* @__PURE__ */ (0, import_jsx_runtime50.jsxs)("div", { className: "checklist-content", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(
+          ChecklistSelector,
+          {
+            resetAllChecklists: handleResetAllChecklists,
+            completedChecklists: (_a = state == null ? void 0 : state.checklists.completedChecklists) != null ? _a : [],
+            checklist: checklistContent,
+            activeChecklist: (_b = state == null ? void 0 : state.checklists.currentChecklist) != null ? _b : 0,
+            onClick: handleChecklistClick
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime50.jsx)(
+          ChecklistContentDisplay,
+          {
+            handleComplete,
+            currentChecklist: (_c = state == null ? void 0 : state.checklists.currentChecklist) != null ? _c : 0,
+            checklist: checklistContent,
+            completedChecklists: (_d = state == null ? void 0 : state.checklists.completedChecklists) != null ? _d : []
+          }
+        )
+      ] })
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/NavigraphApi/Map.tsx
-  var import_react100 = __toESM(require_react());
+  var import_react68 = __toESM(require_react());
 
   // node_modules/@navigraph/leaflet/dist/index.esm.js
   var import_leaflet = __toESM(require_leaflet_src());
@@ -56079,6 +57536,7 @@ class InstrumentLogic extends BaseInstrument {
 
   // instruments/src/ElectronicFlightBag/NavigraphApi/Map.tsx
   var import_leaflet3 = __toESM(require_leaflet_src());
+  var import_jsx_runtime51 = __toESM(require_jsx_runtime());
   var NgMap = () => {
     var _a, _b;
     const initializeMap = () => {
@@ -56098,7 +57556,7 @@ class InstrumentLogic extends BaseInstrument {
     const handleSignInButtonClick = () => {
       auth.signInWithDeviceFlow((params) => window.open(params.verification_uri_complete, "_blank")).catch(console.error);
     };
-    (0, import_react100.useEffect)(() => {
+    (0, import_react68.useEffect)(() => {
       var _a2;
       if (((_a2 = auth.getUser()) == null ? void 0 : _a2.preferred_username) === null)
         return;
@@ -56108,84 +57566,101 @@ class InstrumentLogic extends BaseInstrument {
         cleanupMap();
       };
     }, [(_a = auth.getUser()) == null ? void 0 : _a.preferred_username]);
-    return /* @__PURE__ */ import_react100.default.createElement("div", null, /* @__PURE__ */ import_react100.default.createElement("div", { id: "map", style: { height: "900px" } }), /* @__PURE__ */ import_react100.default.createElement("div", null, (_b = auth.getUser()) == null ? void 0 : _b.preferred_username), /* @__PURE__ */ import_react100.default.createElement("div", { className: "sources" }, /* @__PURE__ */ import_react100.default.createElement(
-      "button",
-      {
-        onClick: () => {
-          handleSourceButtonClick("VFR");
-        }
-      },
-      "VFR"
-    ), /* @__PURE__ */ import_react100.default.createElement(
-      "button",
-      {
-        onClick: () => {
-          handleSourceButtonClick("IFR LOW");
-        }
-      },
-      "Source 2"
-    )), /* @__PURE__ */ import_react100.default.createElement("div", { className: "faa-sources" }, /* @__PURE__ */ import_react100.default.createElement(
-      "button",
-      {
-        onClick: () => {
-          handleFAASourceButtonClick("VFR");
-        }
-      },
-      "FAA Source 1"
-    ), /* @__PURE__ */ import_react100.default.createElement(
-      "button",
-      {
-        onClick: () => {
-          handleFAASourceButtonClick("IFR LOW");
-        }
-      },
-      "FAA Source 2"
-    )), /* @__PURE__ */ import_react100.default.createElement("div", { className: "themes" }, /* @__PURE__ */ import_react100.default.createElement(
-      "button",
-      {
-        onClick: () => {
-          handleThemeButtonClick("DAY");
-        }
-      },
-      "day"
-    ), /* @__PURE__ */ import_react100.default.createElement(
-      "button",
-      {
-        onClick: () => {
-          handleThemeButtonClick("NIGHT");
-        }
-      },
-      "night"
-    )), auth.getUser() !== null ? "" : /* @__PURE__ */ import_react100.default.createElement("div", { id: "signin", onClick: handleSignInButtonClick }, "Sign In"));
+    return /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { id: "map", style: { height: "900px" } }),
+      /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { children: (_b = auth.getUser()) == null ? void 0 : _b.preferred_username }),
+      /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "sources", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(
+          "button",
+          {
+            onClick: () => {
+              handleSourceButtonClick("VFR");
+            },
+            children: "VFR"
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(
+          "button",
+          {
+            onClick: () => {
+              handleSourceButtonClick("IFR LOW");
+            },
+            children: "Source 2"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "faa-sources", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(
+          "button",
+          {
+            onClick: () => {
+              handleFAASourceButtonClick("VFR");
+            },
+            children: "FAA Source 1"
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(
+          "button",
+          {
+            onClick: () => {
+              handleFAASourceButtonClick("IFR LOW");
+            },
+            children: "FAA Source 2"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime51.jsxs)("div", { className: "themes", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(
+          "button",
+          {
+            onClick: () => {
+              handleThemeButtonClick("DAY");
+            },
+            children: "day"
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime51.jsx)(
+          "button",
+          {
+            onClick: () => {
+              handleThemeButtonClick("NIGHT");
+            },
+            children: "night"
+          }
+        )
+      ] }),
+      auth.getUser() !== null ? "" : /* @__PURE__ */ (0, import_jsx_runtime51.jsx)("div", { id: "signin", onClick: handleSignInButtonClick, children: "Sign In" })
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/apps/OuroborosFlight/OuroborosFlight.tsx
+  var import_jsx_runtime52 = __toESM(require_jsx_runtime());
   var OuroborosFlight = () => {
-    const { state } = import_react101.default.useContext(AppContext);
+    const { state } = import_react69.default.useContext(AppContext);
     const HandlePage = () => {
       switch (state == null ? void 0 : state.ouroborosFlight.page) {
         case 0:
-          return /* @__PURE__ */ import_react101.default.createElement(Airports, null);
+          return /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(Airports, {});
         case 1:
-          return /* @__PURE__ */ import_react101.default.createElement(NgMap, null);
+          return /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(NgMap, {});
         case 4:
-          return /* @__PURE__ */ import_react101.default.createElement(Scratchpads, null);
+          return /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(Scratchpads, {});
         case 5:
-          return /* @__PURE__ */ import_react101.default.createElement(Checklists, null);
+          return /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(Checklists, {});
         case 6:
-          return /* @__PURE__ */ import_react101.default.createElement(WeightAndBalance, null);
+          return /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(WeightAndBalance, {});
         case 7:
-          return /* @__PURE__ */ import_react101.default.createElement(GroundService, null);
+          return /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(GroundService, {});
         case 8:
-          return /* @__PURE__ */ import_react101.default.createElement("div", null, "Flight Plan");
+          return /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { children: "Flight Plan" });
         case 9:
-          return /* @__PURE__ */ import_react101.default.createElement("div", null, "Cabin Config");
+          return /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { children: "Cabin Config" });
         default:
-          return /* @__PURE__ */ import_react101.default.createElement(import_react101.default.Fragment, null);
+          return /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(import_jsx_runtime52.Fragment, {});
       }
     };
-    const [loading, setLoading] = (0, import_react101.useState)(true);
-    (0, import_react101.useEffect)(() => {
+    const [loading, setLoading] = (0, import_react69.useState)(true);
+    (0, import_react69.useEffect)(() => {
       const loadDelay = setTimeout(() => {
         setLoading(false);
       }, 2e3);
@@ -56194,7 +57669,7 @@ class InstrumentLogic extends BaseInstrument {
       };
     });
     const Watermark = (props) => {
-      return /* @__PURE__ */ import_react101.default.createElement("svg", { width: `${props.width}px`, viewBox: "0 0 2560 2560" }, /* @__PURE__ */ import_react101.default.createElement("g", { id: "svgPath" }, /* @__PURE__ */ import_react101.default.createElement(
+      return /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("svg", { width: `${props.width}px`, viewBox: "0 0 2560 2560", children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("g", { id: "svgPath", children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(
         "path",
         {
           d: "M 1028.714 282.604 C 1028.597 282.714, 1023.550 283.106, 1017.500 283.475 C 1011.450 283.844, 1004.250 284.312, 1001.500 284.513 C 998.750 284.715, 992.450 285.175, 987.500 285.534 C 976.871 286.307, 976.040 286.417, 965 288.506 C 960.325 289.390, 955.600 290.269, 954.500 290.458 C 953.400 290.647, 948.900 291.546, 944.500 292.454 C 940.100 293.362, 935.375 294.278, 934 294.490 C 932.625 294.702, 926.325 296.565, 920 298.632 C 913.675 300.698, 908.275 302.418, 908 302.456 C 906 302.726, 898.608 306.055, 874 317.769 C 869.325 319.994, 865.050 321.901, 864.500 322.006 C 862.487 322.391, 860 324.097, 860 325.094 C 860 325.657, 860.412 325.864, 860.915 325.552 C 862.140 324.795, 877.246 327.009, 878.450 328.122 C 878.973 328.605, 880.633 329, 882.141 329 C 883.649 329, 885.127 329.396, 885.425 329.879 C 885.724 330.363, 875.319 340.235, 862.304 351.818 C 844.305 367.835, 838.263 372.676, 837.069 372.038 C 836.206 371.576, 830.325 370.427, 824 369.485 C 817.675 368.542, 811.600 367.391, 810.500 366.926 C 807.773 365.774, 787.838 362.982, 786.823 363.609 C 786.374 363.887, 785.201 364.269, 784.214 364.459 C 782.208 364.845, 768.904 370.152, 762 373.320 C 759.525 374.456, 757.275 375.411, 757 375.443 C 756.380 375.515, 745.605 380.241, 737.247 384.108 C 733.808 385.698, 730.658 387.003, 730.247 387.006 C 729.492 387.013, 708.522 397.504, 699.750 402.264 C 697.138 403.682, 695 404.638, 695 404.390 C 695 404.142, 692.637 405.442, 689.750 407.280 C 686.862 409.118, 683.825 410.937, 683 411.322 C 682.175 411.707, 680.150 412.912, 678.500 414 C 676.850 415.088, 674.825 416.283, 674 416.655 C 673.175 417.028, 670.860 418.608, 668.856 420.166 C 666.852 421.725, 664.942 423, 664.611 423 C 662.631 423, 645.642 437.263, 634.883 447.958 C 615.169 467.556, 609.599 477.412, 611.973 488.500 C 613.646 496.315, 613.965 497.365, 614.977 498.377 C 615.539 498.939, 616 500.227, 616 501.237 C 616 502.898, 624.521 512.232, 629.500 516.023 C 635.540 520.623, 660.232 531.987, 664.228 532.006 C 664.928 532.010, 666.715 532.646, 668.199 533.420 C 669.683 534.195, 673.508 535.585, 676.699 536.509 C 679.890 537.433, 682.950 538.542, 683.500 538.974 C 684.050 539.405, 687.200 540.530, 690.500 541.474 C 693.800 542.417, 696.950 543.532, 697.500 543.951 C 700.473 546.218, 720.405 551.283, 743 555.513 C 747.125 556.285, 753.200 557.434, 756.500 558.067 C 759.800 558.700, 765.200 559.622, 768.500 560.115 C 771.800 560.608, 775.805 561.459, 777.399 562.006 C 778.994 562.552, 781.806 563, 783.649 563 C 785.492 563, 787 563.369, 787 563.819 C 787 564.270, 779.913 569.398, 771.250 575.214 C 754.693 586.331, 732.473 602.691, 716.213 615.738 C 555.397 744.761, 445.269 926.234, 405.951 1127 C 403.635 1138.825, 401.577 1148.685, 401.377 1148.910 C 400.931 1149.413, 389.628 1146.254, 385.500 1144.473 C 383.850 1143.762, 379.913 1142.464, 376.750 1141.590 C 365.137 1138.379, 359.476 1136.617, 358.500 1135.909 C 357.950 1135.510, 354.800 1134.425, 351.500 1133.498 C 348.200 1132.570, 343.609 1131.275, 341.298 1130.621 C 338.988 1129.966, 336.775 1129.108, 336.382 1128.715 C 335.988 1128.322, 334.814 1128, 333.771 1128 C 332.009 1128, 321.057 1124.734, 316.500 1122.849 C 312.468 1121.181, 301.443 1118.025, 299.500 1117.981 C 298.400 1117.957, 296.626 1117.276, 295.559 1116.468 C 294.491 1115.661, 292.788 1115, 291.774 1115 C 290.759 1115, 288.933 1114.374, 287.715 1113.608 C 286.497 1112.843, 283.373 1111.917, 280.773 1111.551 C 278.174 1111.184, 275.785 1110.460, 275.464 1109.942 C 275.144 1109.424, 273.754 1109, 272.375 1109 C 270.997 1109, 268.906 1108.485, 267.730 1107.856 C 266.554 1107.226, 263.546 1106.139, 261.046 1105.440 C 258.546 1104.741, 255.150 1103.718, 253.500 1103.167 C 243.103 1099.694, 233.959 1097.014, 230.500 1096.426 C 228.300 1096.052, 225.825 1095.183, 225 1094.495 C 224.175 1093.807, 222.150 1092.996, 220.500 1092.694 C 215.738 1091.822, 208.762 1089.894, 205.500 1088.548 C 192.399 1083.146, 183.343 1081.663, 179.816 1084.344 C 177.909 1085.794, 177.322 1087.952, 176.513 1096.500 C 175.966 1102.285, 175.665 1105.079, 174.500 1115.192 C 173.012 1128.113, 172.256 1143.959, 172.949 1147.733 C 173.827 1152.521, 178.822 1158.650, 193.950 1173.500 C 240.349 1219.046, 353.128 1332.990, 353.833 1335.034 C 354.017 1335.565, 354.570 1336, 355.064 1336 C 356.369 1336, 369.907 1350.185, 370.571 1352.250 C 370.881 1353.213, 371.516 1354, 371.982 1354 C 372.448 1354, 374.549 1356.363, 376.650 1359.250 C 378.751 1362.138, 381.231 1365.337, 382.161 1366.360 C 383.092 1367.383, 383.613 1368.845, 383.320 1369.610 C 383.026 1370.374, 383.281 1371, 383.887 1371 C 384.492 1371, 387.050 1375.162, 389.571 1380.250 C 393.972 1389.131, 394.253 1390.238, 396.606 1408 C 414.578 1543.651, 461.384 1668.234, 536.609 1780.643 C 673.887 1985.777, 892.859 2123.771, 1136.104 2158.438 C 1181.098 2164.851, 1212.500 2166.993, 1261.500 2166.993 C 1310.500 2166.993, 1341.902 2164.851, 1386.896 2158.438 C 1614.438 2126.009, 1820.351 2003.762, 1959.508 1818.488 C 2059.254 1685.687, 2119.960 1523.728, 2130.986 1361 C 2131.564 1352.475, 2132.693 1338.750, 2133.496 1330.500 C 2135.123 1313.780, 2137.330 1289.152, 2139.232 1266.500 C 2140.978 1245.710, 2140.940 1154.647, 2139.176 1134 C 2135.800 1094.462, 2132.739 1068.418, 2128.588 1043.900 C 2113.620 955.491, 2087.047 876.812, 2047.228 803 C 1980.852 679.961, 1877.124 575.290, 1741.570 494.562 C 1714.561 478.476, 1698.740 469.950, 1664.500 453.025 C 1594.795 418.570, 1533.530 394.718, 1440 365.623 C 1393.278 351.089, 1386.324 349, 1384.663 349 C 1383.679 349, 1364.115 344.079, 1341.187 338.065 C 1293.042 325.435, 1286.946 323.945, 1281.500 323.478 C 1279.300 323.289, 1261.525 319.545, 1242 315.158 C 1209.951 307.956, 1127.002 291.464, 1103 287.521 C 1085.270 284.608, 1074.425 283.810, 1036.714 282.645 C 1032.432 282.513, 1028.832 282.494, 1028.714 282.604 M 895.911 335.729 C 894.035 337.780, 889.876 342.590, 886.669 346.417 C 883.461 350.245, 878.209 356.104, 874.996 359.438 C 871.783 362.772, 867.143 367.727, 864.685 370.450 L 860.216 375.399 862.517 376.593 C 863.783 377.250, 867.204 378.115, 870.120 378.516 C 873.035 378.917, 876.113 379.629, 876.960 380.097 C 877.807 380.565, 881.200 381.383, 884.500 381.914 C 887.800 382.444, 894.550 383.797, 899.500 384.920 C 904.450 386.042, 911.200 387.457, 914.500 388.064 C 917.800 388.671, 921.918 389.805, 923.651 390.584 C 925.384 391.363, 927.475 392, 928.298 392 C 929.997 392, 935.993 385.562, 936.013 383.715 C 936.020 383.047, 937.329 372.600, 938.923 360.500 C 940.516 348.400, 941.641 338.318, 941.422 338.096 C 940.939 337.604, 904.350 332.048, 901.411 332.020 C 900.257 332.009, 897.794 333.670, 895.911 335.729 M 1018.500 605.032 C 1017.400 605.526, 1010.875 607.999, 1004 610.529 C 951.377 629.893, 891.967 661.153, 843.493 694.983 C 737.899 768.678, 652.173 870.204, 598.118 985.582 C 576.966 1030.731, 558.999 1082.289, 548.488 1128 C 545.695 1140.144, 540 1167.743, 540 1169.131 C 540 1170.189, 545.671 1169.055, 548.956 1167.340 C 550.355 1166.610, 552.331 1166.010, 553.346 1166.006 C 555.737 1165.998, 565.643 1163.248, 569.500 1161.522 C 571.150 1160.784, 575.200 1159.426, 578.500 1158.505 C 590.845 1155.059, 595.528 1153.615, 596.500 1152.955 C 597.050 1152.581, 598.850 1151.977, 600.500 1151.611 C 603.534 1150.939, 620.975 1145.735, 626.500 1143.853 C 631.182 1142.258, 637.678 1140.319, 648 1137.435 C 653.225 1135.975, 658.694 1134.155, 660.154 1133.390 C 661.614 1132.626, 663.475 1132, 664.290 1132 C 665.105 1132, 667.060 1131.328, 668.636 1130.506 C 670.211 1129.685, 672.625 1129.007, 674 1129 C 675.375 1128.993, 677.789 1128.315, 679.364 1127.494 C 680.940 1126.672, 683.415 1125.986, 684.864 1125.968 C 686.314 1125.951, 688.329 1125.308, 689.342 1124.541 C 690.355 1123.773, 692.941 1122.848, 695.087 1122.485 C 697.233 1122.123, 699.219 1121.454, 699.500 1121 C 699.781 1120.546, 701.812 1119.870, 704.014 1119.498 C 706.216 1119.126, 710.376 1117.918, 713.259 1116.813 C 716.141 1115.708, 720.750 1114.381, 723.500 1113.862 C 726.250 1113.344, 729.850 1112.300, 731.500 1111.542 C 735.390 1109.757, 744.750 1107, 746.924 1107 C 747.855 1107, 749.491 1106.339, 750.559 1105.532 C 751.626 1104.724, 753.310 1104.049, 754.300 1104.032 C 755.289 1104.014, 757.416 1103.319, 759.025 1102.487 C 760.633 1101.655, 764.667 1100.691, 767.987 1100.344 C 776.733 1099.429, 778.035 1100.871, 779.420 1113 C 780.902 1125.967, 783.401 1157.525, 783.262 1161.500 C 783.028 1168.149, 779.018 1173.921, 765.548 1187 C 762.433 1190.025, 736.397 1215.787, 707.692 1244.250 C 678.986 1272.712, 648.975 1302.285, 641 1309.968 C 628.072 1322.421, 622.280 1327.899, 606 1343.071 C 603.525 1345.377, 597.371 1350.816, 592.325 1355.156 C 587.279 1359.497, 583.004 1363.474, 582.825 1363.993 C 582.646 1364.512, 579.095 1368.439, 574.934 1372.718 C 570.772 1376.998, 566.497 1382.035, 565.434 1383.911 C 564.370 1385.787, 562.600 1388.327, 561.500 1389.556 C 560.400 1390.786, 558.150 1394.426, 556.500 1397.646 C 554.850 1400.866, 553.225 1403.725, 552.890 1404 C 552.006 1404.724, 548.867 1411, 549.388 1411 C 549.630 1411, 548.480 1413.784, 546.831 1417.187 C 542.348 1426.442, 541.702 1432.334, 543.966 1443.336 C 569.815 1568.963, 628.505 1685.936, 713.887 1782 C 726.133 1795.778, 755.457 1825.262, 770 1838.419 C 905.515 1961.021, 1079.163 2028, 1261.500 2028 C 1443.861 2028, 1617.229 1961.125, 1753 1838.407 C 1767.518 1825.285, 1796.830 1795.819, 1809.113 1782 C 1846.537 1739.893, 1880.721 1690.866, 1907.915 1640.297 C 1914.015 1628.952, 1916.719 1622.583, 1919.502 1613 C 1921.499 1606.125, 1924.401 1596.225, 1925.952 1591 C 1937.211 1553.071, 1949.693 1495.794, 1954.936 1458 C 1956.269 1448.393, 1959.622 1417.416, 1961.214 1400 C 1962.873 1381.853, 1962.861 1311.572, 1961.196 1294.500 C 1955.624 1237.377, 1947.472 1195.654, 1933.256 1151.500 C 1904.239 1061.380, 1852.579 978.413, 1781.018 907 C 1766.085 892.097, 1747.815 874.959, 1744.050 872.323 C 1742.881 871.504, 1740.910 869.859, 1739.669 868.667 C 1734.817 864.007, 1710.292 844.437, 1700 837.012 C 1696.975 834.830, 1691.125 830.558, 1687 827.518 C 1676.373 819.687, 1644.093 798.212, 1630.500 789.931 C 1612.143 778.749, 1605.037 774.729, 1579 760.799 C 1556.648 748.842, 1507.508 725.499, 1491.017 719.005 C 1488.002 717.817, 1483.151 715.755, 1480.238 714.423 C 1477.324 713.090, 1474.551 712, 1474.075 712 C 1473.599 712, 1469.900 710.587, 1465.855 708.860 C 1461.810 707.133, 1454.225 704.162, 1449 702.257 C 1432.313 696.175, 1408.662 687.863, 1403.500 686.266 C 1400.750 685.415, 1392.425 682.798, 1385 680.451 C 1362.732 673.411, 1347.201 669.371, 1312 661.462 C 1293.575 657.322, 1277.600 653.495, 1276.500 652.957 C 1273.852 651.662, 1181.609 632.281, 1153 627.009 C 1140.625 624.729, 1129.600 622.457, 1128.500 621.961 C 1124.039 619.949, 1029.486 603.919, 1023 604.075 C 1021.625 604.108, 1019.600 604.539, 1018.500 605.032",
@@ -56202,22 +57677,26 @@ class InstrumentLogic extends BaseInstrument {
           fill: "#044cfc",
           fillRule: "evenodd"
         }
-      )));
+      ) }) });
     };
-    return loading ? /* @__PURE__ */ import_react101.default.createElement("div", { className: `ouroboros-flight-root loading-container ` }, /* @__PURE__ */ import_react101.default.createElement("div", { className: "loading-watermark " }, /* @__PURE__ */ import_react101.default.createElement(Watermark, { width: 800, className: "loading-watermark" }))) : /* @__PURE__ */ import_react101.default.createElement("div", { className: `ouroboros-flight-root` }, /* @__PURE__ */ import_react101.default.createElement("div", { className: "ouroboros-flight-container" }, HandlePage()), /* @__PURE__ */ import_react101.default.createElement("div", null), /* @__PURE__ */ import_react101.default.createElement(ButtonBar, { recentButton: { to: 8, text: "" } }));
+    return loading ? /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: `ouroboros-flight-root loading-container `, children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: "loading-watermark ", children: /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(Watermark, { width: 800, className: "loading-watermark" }) }) }) : /* @__PURE__ */ (0, import_jsx_runtime52.jsxs)("div", { className: `ouroboros-flight-root`, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", { className: "ouroboros-flight-container", children: HandlePage() }),
+      /* @__PURE__ */ (0, import_jsx_runtime52.jsx)("div", {}),
+      /* @__PURE__ */ (0, import_jsx_runtime52.jsx)(ButtonBar, { recentButton: { to: 8, text: "" } })
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/NavigraphApi/NavigraphApp.tsx
-  var import_react104 = __toESM(require_react());
+  var import_react71 = __toESM(require_react());
 
   // instruments/src/ElectronicFlightBag/NavigraphApi/components/auth.tsx
-  var import_react102 = __toESM(require_react());
-  var import_react103 = __toESM(require_react());
+  var import_react70 = __toESM(require_react());
+  var import_jsx_runtime53 = __toESM(require_jsx_runtime());
   function Auth() {
-    const [error, setError] = (0, import_react103.useState)(null);
-    const [params, setParams] = (0, import_react103.useState)(null);
+    const [error, setError] = (0, import_react70.useState)(null);
+    const [params, setParams] = (0, import_react70.useState)(null);
     const { user, isInitialized, signIn, signOut: signOut2 } = useNavigraphAuth();
-    const handleSignIn = (0, import_react103.useCallback)(
+    const handleSignIn = (0, import_react70.useCallback)(
       () => signIn((params2) => {
         setParams(params2);
         setError(null);
@@ -56225,42 +57704,52 @@ class InstrumentLogic extends BaseInstrument {
       [signIn]
     );
     const isLoginInProgress = !!params;
-    return /* @__PURE__ */ import_react102.default.createElement(import_react102.default.Fragment, null, !isInitialized && /* @__PURE__ */ import_react102.default.createElement("div", null, "Loading..."), isInitialized && /* @__PURE__ */ import_react102.default.createElement(
-      "button",
-      {
-        className: "py-2 px-4 font-semibold rounded-md bg-black text-white dark:bg-white dark:text-black",
-        onClick: () => !isLoginInProgress && (user ? signOut2() : handleSignIn())
-      },
-      user ? "Sign out" : !isLoginInProgress ? "Sign in" : "Signing in..."
-    ), error && /* @__PURE__ */ import_react102.default.createElement("div", { className: "text-red-500" }, error instanceof DeviceFlowTokenExpiredError ? "Session expired, try again!" : error.message), (params == null ? void 0 : params.verification_uri_complete) && !user && /* @__PURE__ */ import_react102.default.createElement("div", { className: "flex flex-col items-center gap-2" }, /* @__PURE__ */ import_react102.default.createElement(
-      "a",
-      {
-        href: params.verification_uri_complete,
-        className: "text-blue-600 bg-gray-500/10 p-3 rounded-lg",
-        target: "_blank",
-        rel: "noreferrer"
-      },
-      "Open sign in page"
-    ), /* @__PURE__ */ import_react102.default.createElement("span", { className: "opacity-50" }, "or scan this QR code:"), /* @__PURE__ */ import_react102.default.createElement("div", { className: "p-2 rounded-lg bg-white mt-1" }, /* @__PURE__ */ import_react102.default.createElement(
-      "img",
-      {
-        src: `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${params.verification_uri_complete}`,
-        alt: "QR Code for sign in."
-      }
-    ))));
+    return /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)(import_jsx_runtime53.Fragment, { children: [
+      !isInitialized && /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("div", { children: "Loading..." }),
+      isInitialized && /* @__PURE__ */ (0, import_jsx_runtime53.jsx)(
+        "button",
+        {
+          className: "py-2 px-4 font-semibold rounded-md bg-black text-white dark:bg-white dark:text-black",
+          onClick: () => !isLoginInProgress && (user ? signOut2() : handleSignIn()),
+          children: user ? "Sign out" : !isLoginInProgress ? "Sign in" : "Signing in..."
+        }
+      ),
+      error && /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("div", { className: "text-red-500", children: error instanceof DeviceFlowTokenExpiredError ? "Session expired, try again!" : error.message }),
+      (params == null ? void 0 : params.verification_uri_complete) && !user && /* @__PURE__ */ (0, import_jsx_runtime53.jsxs)("div", { className: "flex flex-col items-center gap-2", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime53.jsx)(
+          "a",
+          {
+            href: params.verification_uri_complete,
+            className: "text-blue-600 bg-gray-500/10 p-3 rounded-lg",
+            target: "_blank",
+            rel: "noreferrer",
+            children: "Open sign in page"
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("span", { className: "opacity-50", children: "or scan this QR code:" }),
+        /* @__PURE__ */ (0, import_jsx_runtime53.jsx)("div", { className: "p-2 rounded-lg bg-white mt-1", children: /* @__PURE__ */ (0, import_jsx_runtime53.jsx)(
+          "img",
+          {
+            src: `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${params.verification_uri_complete}`,
+            alt: "QR Code for sign in."
+          }
+        ) })
+      ] })
+    ] });
   }
 
   // instruments/src/ElectronicFlightBag/NavigraphApi/NavigraphApp.tsx
+  var import_jsx_runtime54 = __toESM(require_jsx_runtime());
   var AIRPORT_ICAO = "KPHX";
   var NavigraphAppPage = () => {
     var _a;
-    const [output, setOutput] = (0, import_react104.useState)(void 0);
-    const [packageDetails, setPackageDetails] = (0, import_react104.useState)(void 0);
-    const [errorMessage, setErrorMessage] = (0, import_react104.useState)(void 0);
-    const [chartIndex, setChartIndex] = (0, import_react104.useState)([]);
-    const [chartBlob, setChartBlob] = (0, import_react104.useState)(null);
+    const [output, setOutput] = (0, import_react71.useState)(void 0);
+    const [packageDetails, setPackageDetails] = (0, import_react71.useState)(void 0);
+    const [errorMessage, setErrorMessage] = (0, import_react71.useState)(void 0);
+    const [chartIndex, setChartIndex] = (0, import_react71.useState)([]);
+    const [chartBlob, setChartBlob] = (0, import_react71.useState)(null);
     const { user } = useNavigraphAuth();
-    const handleNavigraphError = (0, import_react104.useCallback)(
+    const handleNavigraphError = (0, import_react71.useCallback)(
       (error) => {
         if (error instanceof NoPackagesFoundError)
           setErrorMessage("No packages found");
@@ -56293,24 +57782,48 @@ class InstrumentLogic extends BaseInstrument {
     }).catch((err) => {
       handleNavigraphError(err);
     });
-    return /* @__PURE__ */ import_react104.default.createElement("div", null, /* @__PURE__ */ import_react104.default.createElement("h1", null, "Navigraph charts"), /* @__PURE__ */ import_react104.default.createElement(Auth, null), user && /* @__PURE__ */ import_react104.default.createElement(import_react104.default.Fragment, null, /* @__PURE__ */ import_react104.default.createElement("div", null, /* @__PURE__ */ import_react104.default.createElement("h2", null, "Welcome, ", user.preferred_username), /* @__PURE__ */ import_react104.default.createElement(
-      "button",
-      {
-        onClick: () => {
-          fetchChartsIndex();
-        }
-      },
-      "list ",
-      AIRPORT_ICAO,
-      " charts"
-    ), /* @__PURE__ */ import_react104.default.createElement("button", { onClick: listPackages2 }, "List available packages"), /* @__PURE__ */ import_react104.default.createElement("button", { onClick: fetchPackage }, "Fetch default package"), packageDetails && /* @__PURE__ */ import_react104.default.createElement("a", { href: (_a = packageDetails.file) == null ? void 0 : _a.url, className: "text-blue-500 hover:text-blue-700" }, "Download ", packageDetails.format), errorMessage && /* @__PURE__ */ import_react104.default.createElement("span", { className: "text-red-500 hover:text-red-700" }, errorMessage))), output && /* @__PURE__ */ import_react104.default.createElement("pre", { className: "text-sm max-h-[40vh] max-w-[90vw] overflow-auto" }, chartBlob ? /* @__PURE__ */ import_react104.default.createElement("img", { className: "w-full h-full object-contain", src: URL.createObjectURL(chartBlob), alt: "chart" }) : "no chart loaded", /* @__PURE__ */ import_react104.default.createElement("div", null, chartIndex.length ? chartIndex.map((c) => /* @__PURE__ */ import_react104.default.createElement("button", { key: c.id, className: "p-2 bg-black w-full", onClick: () => loadChart(c) }, /* @__PURE__ */ import_react104.default.createElement("span", { className: "text-xs" }, c.name))) : "No index loaded")));
+    return /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("div", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("h1", { children: "Navigraph charts" }),
+      /* @__PURE__ */ (0, import_jsx_runtime54.jsx)(Auth, {}),
+      user && /* @__PURE__ */ (0, import_jsx_runtime54.jsx)(import_jsx_runtime54.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("div", { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("h2", { children: [
+          "Welcome, ",
+          user.preferred_username
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)(
+          "button",
+          {
+            onClick: () => {
+              fetchChartsIndex();
+            },
+            children: [
+              "list ",
+              AIRPORT_ICAO,
+              " charts"
+            ]
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("button", { onClick: listPackages2, children: "List available packages" }),
+        /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("button", { onClick: fetchPackage, children: "Fetch default package" }),
+        packageDetails && /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("a", { href: (_a = packageDetails.file) == null ? void 0 : _a.url, className: "text-blue-500 hover:text-blue-700", children: [
+          "Download ",
+          packageDetails.format
+        ] }),
+        errorMessage && /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("span", { className: "text-red-500 hover:text-red-700", children: errorMessage })
+      ] }) }),
+      output && /* @__PURE__ */ (0, import_jsx_runtime54.jsxs)("pre", { className: "text-sm max-h-[40vh] max-w-[90vw] overflow-auto", children: [
+        chartBlob ? /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("img", { className: "w-full h-full object-contain", src: URL.createObjectURL(chartBlob), alt: "chart" }) : "no chart loaded",
+        /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("div", { children: chartIndex.length ? chartIndex.map((c) => /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("button", { className: "p-2 bg-black w-full", onClick: () => loadChart(c), children: /* @__PURE__ */ (0, import_jsx_runtime54.jsx)("span", { className: "text-xs", children: c.name }) }, c.id)) : "No index loaded" })
+      ] })
+    ] });
   };
 
   // instruments/src/ElectronicFlightBag/components/OS/DisplayProvider/DisplayProvider.tsx
+  var import_jsx_runtime55 = __toESM(require_jsx_runtime());
   var DisplayProvider = () => {
     const OSContext = LoadContext(OsRouterContext);
-    const { state, updateState } = import_react105.default.useContext(AppContext);
-    import_react105.default.useEffect(() => {
+    const { state, updateState } = import_react72.default.useContext(AppContext);
+    import_react72.default.useEffect(() => {
       if (state === void 0) {
         updateState({
           state: {
@@ -56334,25 +57847,25 @@ class InstrumentLogic extends BaseInstrument {
     const OsAppSwitch = () => {
       switch (OSContext.page) {
         case 0:
-          return /* @__PURE__ */ import_react105.default.createElement(OsHome, null);
+          return /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(OsHome, {});
         case 1:
-          return /* @__PURE__ */ import_react105.default.createElement(OuroborosFlight, null);
+          return /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(OuroborosFlight, {});
         case 2:
-          return /* @__PURE__ */ import_react105.default.createElement(NavigraphAppPage, null);
+          return /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(NavigraphAppPage, {});
         case 3:
-          return /* @__PURE__ */ import_react105.default.createElement("div", null, "Configurator");
+          return /* @__PURE__ */ (0, import_jsx_runtime55.jsx)("div", { children: "Configurator" });
         default:
-          return /* @__PURE__ */ import_react105.default.createElement(OsHome, null);
+          return /* @__PURE__ */ (0, import_jsx_runtime55.jsx)(OsHome, {});
       }
     };
     return OsAppSwitch();
   };
 
   // instruments/src/ElectronicFlightBag/components/OS/HomeButton/HomeButton.tsx
-  var import_react106 = __toESM(require_react());
+  var import_jsx_runtime56 = __toESM(require_jsx_runtime());
   var HomeButton = () => {
     const OSRouter = LoadContext(OsRouterContext);
-    return /* @__PURE__ */ import_react106.default.createElement(
+    return /* @__PURE__ */ (0, import_jsx_runtime56.jsx)(
       "div",
       {
         className: "home-button-debug",
@@ -56364,10 +57877,14 @@ class InstrumentLogic extends BaseInstrument {
   };
 
   // instruments/src/ElectronicFlightBag/index.tsx
+  var import_jsx_runtime57 = __toESM(require_jsx_runtime());
   var ElectronicFlightBag = () => {
-    return /* @__PURE__ */ import_react107.default.createElement(NavigraphAuthProvider, null, /* @__PURE__ */ import_react107.default.createElement(AppRouter, null, /* @__PURE__ */ import_react107.default.createElement(EFBRouter, null, /* @__PURE__ */ import_react107.default.createElement("div", { className: "ipadContainer" }, /* @__PURE__ */ import_react107.default.createElement(DisplayProvider, null), /* @__PURE__ */ import_react107.default.createElement(HomeButton, null)))));
+    return /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(NavigraphAuthProvider, { children: /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(AppRouter, { children: /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(EFBRouter, { children: /* @__PURE__ */ (0, import_jsx_runtime57.jsxs)("div", { className: "ipadContainer", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(DisplayProvider, {}),
+      /* @__PURE__ */ (0, import_jsx_runtime57.jsx)(HomeButton, {})
+    ] }) }) }) });
   };
-  render(/* @__PURE__ */ import_react107.default.createElement(ElectronicFlightBag, null));
+  render(/* @__PURE__ */ (0, import_jsx_runtime57.jsx)(ElectronicFlightBag, {}));
 })();
 /*
 object-assign
@@ -56378,10 +57895,19 @@ object-assign
  * Leaflet 1.9.4, a JS library for interactive maps. https://leafletjs.com
  * (c) 2010-2023 Vladimir Agafonkin, (c) 2010-2011 CloudMade
  */
-/*! @license DOMPurify 3.0.8 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.0.8/LICENSE */
+/*! @license DOMPurify 3.0.11 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.0.11/LICENSE */
 /**
  * @license React
  * react-dom.development.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+/**
+ * @license React
+ * react-jsx-runtime.development.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
