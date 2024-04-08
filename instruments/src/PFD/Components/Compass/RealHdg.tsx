@@ -23,6 +23,7 @@ export default class RealHdgIndicator extends DisplayComponent<T_RealHdgIndicato
   public render(): VNode {
     return (
       <g transform="translate(275, 42.5)">
+        <path d="M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20 L 25 -20" fill="black" />
         <text ref={this.hdgRef} text-anchor="middle" font-size={25} fill="#04E304">
           000
         </text>

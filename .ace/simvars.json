@@ -95,7 +95,7 @@
     "name": "INDICATED ALTITUDE",
     "index": 0,
     "unit": "Feet",
-    "value": 0.0,
+    "value": 1.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -537,7 +537,7 @@
     "name": "PLANE HEADING DEGREES MAGNETIC",
     "index": 0,
     "unit": "radians",
-    "value": 62.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

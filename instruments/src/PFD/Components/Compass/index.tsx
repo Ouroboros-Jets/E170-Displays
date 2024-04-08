@@ -1,7 +1,7 @@
 import type { PFDSimvars } from '../PFDSimVarPublisher'
 import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
-import RealHdgIndicator from './RealHdgIndicator'
-import LockHdgIndicator from './LockHdgIndicator'
+import RealHdgIndicator from './RealHdg'
+import LockHdgIndicator from './LockHdg'
 
 type T_CompassProps = ComponentProps & {
   bus: EventBus

@@ -7,7 +7,7 @@ const drawChevron = (double: boolean, y: number): JSX.Element => {
   const offset = -y / 3.31
   if (double) {
     return (
-      <g>
+      <g transform="translate(0 3)">
         <PathWithBlackBackground
           d={`M 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181}`}
           fill="black"

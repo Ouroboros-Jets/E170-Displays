@@ -32082,7 +32082,7 @@
   var drawChevron = (double, y) => {
     const offset = -y / 3.31;
     if (double) {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(0 3)" }, /* @__PURE__ */ FSComponent.buildComponent(
         PathWithBlackBackground,
         {
           d: `M 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181}`,
@@ -32343,7 +32343,7 @@
   };
   var Airspeed_default = Airspeed;
 
-  // instruments/src/PFD/Components/Compass/RealHdgIndicator.tsx
+  // instruments/src/PFD/Components/Compass/RealHdg.tsx
   var RealHdgIndicator = class extends DisplayComponent {
     constructor() {
       super(...arguments);
@@ -32357,7 +32357,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 42.5)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.hdgRef, "text-anchor": "middle", "font-size": 25, fill: "#04E304" }, "000"), /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 42.5)" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20 L 25 -20", fill: "black" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.hdgRef, "text-anchor": "middle", "font-size": 25, fill: "#04E304" }, "000"), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           d: "M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20",
@@ -32370,7 +32370,7 @@
     }
   };
 
-  // instruments/src/PFD/Components/Compass/LockHdgIndicator.tsx
+  // instruments/src/PFD/Components/Compass/LockHdg.tsx
   var LockHdgIndicator = class extends DisplayComponent {
     constructor() {
       super(...arguments);
@@ -32489,7 +32489,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(35, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "GSPD"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: -11, y: 18, "text-anchor": "middle", "font-size": 17, fill: "#04E304", ref: this.grndSpdRef }, "0"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 18, "text-anchor": "right", "font-size": 17, fill: "white" }, "KT"));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(35, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "GSPD"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: -17, y: 18, "text-anchor": "middle", "font-size": 17, fill: "#04E304", ref: this.grndSpdRef }, "0"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 18, "text-anchor": "right", "font-size": 17, fill: "white" }, "KT"));
     }
   };
 
@@ -32522,7 +32522,7 @@
       this.vsiWarning = false;
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 545 100 L 545 400 L 570 400 L 595 350 L 595 150 L 570 100 L 545 100", fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { d: "M 545 100 L 545 400 L 570 400 L 595 350 L 595 150 L 570 100 L 545 100" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 565 247 L 560  246", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 565 242 L 560  241", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 565 237 L 560  236", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 565 232 L 560  230", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 570 229 L 560  225", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 570 204 L 560  200", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 570 179 L 560  175", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 570 154 L 560  150", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 570 129 L 560  125", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           d: "M 545 100 L 545 400 L 570 400 L 595 350 L 595 150 L 570 100 L 545 100",
@@ -32530,15 +32530,6 @@
           "stroke-width": 3,
           fill: "transparent",
           "stroke-linecap": "round"
-        }
-      ), /* @__PURE__ */ FSComponent.buildComponent(
-        "path",
-        {
-          d: "M 545 100 L 545 400 L 570 400 L 595 350 L 595 150 L 570 100 L 545 100",
-          fill: "black",
-          stroke: "white",
-          "stroke-width": 3,
-          opacity: 0.3
         }
       ));
     }
