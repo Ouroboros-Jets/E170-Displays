@@ -32521,7 +32521,7 @@
     const leftBound = 560;
     const smallCount = 5;
     const smallSpacing = 5;
-    const smallTilt = 1;
+    const smallTilt = 0.5;
     const bigCount = 5;
     const bigSpacing = smallSpacing * 5;
     const bigTiltFactor = 0.1;
@@ -32595,7 +32595,7 @@
         alt = Math.min(Math.max(alt, -4e3), 4e3);
         const vSpd = fpmToPixel(alt);
         console.log(vSpd);
-        this.vSpdRef.instance.setAttribute("d", `M 560 ${vSpd + 254} L 595  254`);
+        this.vSpdRef.instance.setAttribute("d", `M 560 ${vSpd + 254} L 675  254`);
       });
     }
     render() {
