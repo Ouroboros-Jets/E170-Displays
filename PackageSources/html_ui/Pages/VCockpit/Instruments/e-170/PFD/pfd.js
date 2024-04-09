@@ -32343,6 +32343,15 @@
   };
   var Airspeed_default = Airspeed;
 
+  // instruments/common/util/Colors.ts
+  var Colors = /* @__PURE__ */ ((Colors2) => {
+    Colors2["GREEN"] = "#04E304";
+    Colors2["PINK"] = "#D202D4";
+    Colors2["CYAN"] = "#00FEFE";
+    return Colors2;
+  })(Colors || {});
+  var Colors_default = Colors;
+
   // instruments/src/PFD/Components/Compass/RealHdg.tsx
   var RealHdgIndicator = class extends DisplayComponent {
     constructor() {
@@ -32357,7 +32366,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 42.5)" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20 L 25 -20", fill: "black" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.hdgRef, "text-anchor": "middle", "font-size": 25, fill: "#04E304" }, "000"), /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 42.5)" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20 L 25 -20", fill: "black" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.hdgRef, "text-anchor": "middle", "font-size": 25, fill: Colors_default.GREEN }, "000"), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           d: "M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20",
@@ -32393,9 +32402,9 @@
         "path",
         {
           d: "M 0 -1 L -15 -1 L -15 -10 L -9 -10 L 0 -3 L 9 -10 L 15 -10 L 15 -1 L 0 -1",
-          fill: "#00FEFE",
+          fill: Colors_default.CYAN,
           "stroke-width": 2,
-          stroke: "#00FEFE",
+          stroke: Colors_default.CYAN,
           "stroke-linecap": "round"
         }
       )));
@@ -32489,7 +32498,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(35, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "GSPD"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: -17, y: 18, "text-anchor": "middle", "font-size": 17, fill: "#04E304", ref: this.grndSpdRef }, "0"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 18, "text-anchor": "right", "font-size": 17, fill: "white" }, "KT"));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(35, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "GSPD"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: -17, y: 18, "text-anchor": "middle", "font-size": 17, fill: Colors_default.GREEN, ref: this.grndSpdRef }, "0"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 18, "text-anchor": "right", "font-size": 17, fill: "white" }, "KT"));
     }
   };
 
@@ -32507,7 +32516,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(110, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "HDG"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 24, "text-anchor": "middle", "font-size": 25, fill: "#00FEFE", ref: this.hdgRef }, "000"));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(110, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "HDG"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 24, "text-anchor": "middle", "font-size": 25, fill: Colors_default.CYAN, ref: this.hdgRef }, "000"));
     }
   };
 
@@ -32613,7 +32622,7 @@
         "path",
         {
           ref: this.vSpdNeedleRef,
-          stroke: "#04E304",
+          stroke: Colors_default.GREEN,
           "stroke-width": 4,
           fill: "transparent",
           "stroke-linecap": "round",
@@ -32628,7 +32637,7 @@
           fill: "transparent",
           "stroke-linecap": "round"
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.vSpdBoxRef }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "546", y: xAxis - 9, width: "48", height: "18", fill: "black", "clip-path": "url(#vsClip)" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 588, y: 260, "text-anchor": "end", "font-size": 17, fill: "#04E304", ref: this.vSpdValueRef }), /* @__PURE__ */ FSComponent.buildComponent(
+      ), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.vSpdBoxRef }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "546", y: xAxis - 9, width: "48", height: "18", fill: "black", "clip-path": "url(#vsClip)" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 588, y: 260, "text-anchor": "end", "font-size": 17, fill: Colors_default.GREEN, ref: this.vSpdValueRef }), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           d: `M 546 ${xAxis - 9} L 594 ${xAxis - 9} M 546 ${xAxis + 9} L 594 ${xAxis + 9}`,

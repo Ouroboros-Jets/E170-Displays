@@ -1,3 +1,4 @@
+import Colors from 'instruments/common/util/Colors'
 import type { PFDSimvars } from '../PFDSimVarPublisher'
 import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
 
@@ -32,9 +33,9 @@ export default class LockHdgIndicator extends DisplayComponent<T_LockHdgIndicato
         <g transform="translate(0, -128)">
           <path
             d="M 0 -1 L -15 -1 L -15 -10 L -9 -10 L 0 -3 L 9 -10 L 15 -10 L 15 -1 L 0 -1"
-            fill="#00FEFE"
+            fill={Colors.CYAN}
             stroke-width={2}
-            stroke="#00FEFE"
+            stroke={Colors.CYAN}
             stroke-linecap="round"
           />
         </g>

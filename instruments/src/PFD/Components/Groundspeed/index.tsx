@@ -1,3 +1,4 @@
+import Colors from 'instruments/common/util/Colors'
 import type { PFDSimvars } from '../PFDSimVarPublisher'
 import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
 
@@ -36,7 +37,7 @@ export default class GspdIndicator extends DisplayComponent<T_GspdIndicatorProps
         <text x={0} y={0} text-anchor="middle" font-size={17} fill="white">
           GSPD
         </text>
-        <text x={-17} y={18} text-anchor="middle" font-size={17} fill="#04E304" ref={this.grndSpdRef}>
+        <text x={-17} y={18} text-anchor="middle" font-size={17} fill={Colors.GREEN} ref={this.grndSpdRef}>
           0
         </text>
         <text x={0} y={18} text-anchor="right" font-size={17} fill="white">

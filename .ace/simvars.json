@@ -199,11 +199,11 @@
     "name": "VERTICAL SPEED",
     "index": 0,
     "unit": "Feet per second",
-    "value": 4000.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 4000.0
+      "max": 250.0
     },
     "pinned": null
   },

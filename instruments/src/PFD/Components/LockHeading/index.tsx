@@ -1,3 +1,4 @@
+import Colors from 'instruments/common/util/Colors'
 import type { PFDSimvars } from '../PFDSimVarPublisher'
 import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
 
@@ -26,7 +27,7 @@ export default class LockHdgIndicator extends DisplayComponent<T_LockHdgIndicato
         <text x={0} y={0} text-anchor="middle" font-size={17} fill="white">
           HDG
         </text>
-        <text x={0} y={24} text-anchor="middle" font-size={25} fill="#00FEFE" ref={this.hdgRef}>
+        <text x={0} y={24} text-anchor="middle" font-size={25} fill={Colors.CYAN} ref={this.hdgRef}>
           000
         </text>
       </g>
