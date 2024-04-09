@@ -1,69 +1,118 @@
 import { type ComponentProps, DisplayComponent, type EventBus, FSComponent, type VNode } from '@microsoft/msfs-sdk'
 import './index.scss'
-import { PathWithBlackBackground } from '../../Util/PathWithBlackBackground'
+import type { PFDSimvars } from '../PFDSimVarPublisher'
 
 type T_VerticalSpeedIndicatorProps = ComponentProps & {
   bus: EventBus
 }
 
-const fpmToPixels = (fpm: number): number => {
-  const seg1 = 0.104 * Math.min(Math.abs(fpm), 1000)
-  const seg2 = 0.04 * Math.min(Math.max(Math.abs(fpm) - 1000, 0), 1000)
-  const seg3 = 0.042 * Math.max(Math.abs(fpm) - 2000, 0)
-  const pixels = fpm > 6000 || fpm < -6000 ? 180 : seg1 + seg2 + seg3
-  return fpm > 0 ? -pixels : pixels
+const fpmToPixel = (fpm: number): number => {
+  return -fpm * 5 * 1.1 * 0.005
+}
+
+const renderMarkers = (): JSX.Element[] => {
+  const stroke = 'white'
+  const xAxis = 254
+  const leftBound = 560
+  const smallCount = 5
+  const smallSpacing = 5
+  const smallTilt = 1
+  const bigCount = 5
+  const bigSpacing = smallSpacing * 5
+  const bigTiltFactor = 0.1
+
+  const markers: JSX.Element[] = []
+
+  // Small markers
+  for (let y = smallCount; y < smallCount * smallSpacing; y += smallSpacing) {
+    console.log(y)
+    markers.push(
+      <path
+        d={`M 565 ${xAxis + y} L ${leftBound}  ${xAxis + y + smallTilt}`}
+        stroke={stroke}
+        stroke-width={2}
+        stroke-linecap="round"
+      />
+    )
+  }
+
+  for (let y = smallCount; y < smallCount * smallSpacing; y += smallSpacing) {
+    console.log(y)
+    markers.push(
+      <path
+        d={`M 565 ${xAxis - y} L ${leftBound}  ${xAxis - y - smallTilt}`}
+        stroke={stroke}
+        stroke-width={2}
+        stroke-linecap="round"
+      />
+    )
+  }
+
+  // Big markers
+  for (let y = 0; y < bigCount * bigSpacing; y += bigSpacing) {
+    console.log(y)
+    markers.push(
+      <path
+        d={`M 570 ${xAxis + y} L ${leftBound}  ${xAxis + y + bigTiltFactor * y}`}
+        stroke={stroke}
+        stroke-width={2}
+        stroke-linecap="round"
+      />
+    )
+  }
+
+  for (let y = 0; y < bigCount * bigSpacing; y += bigSpacing) {
+    markers.push(
+      <path
+        d={`M 570 ${xAxis - y} L ${leftBound}  ${xAxis - y - bigTiltFactor * y}`}
+        stroke={stroke}
+        stroke-width={2}
+        stroke-linecap="round"
+      />
+    )
+  }
+
+  return markers
 }
 
 export default class VerticalSpeedIndicator extends DisplayComponent<T_VerticalSpeedIndicatorProps> {
-  verticalSpeed = 0
-  constrainedVSpeed = 0
-  vsiReadout = 0
-  vsiReadoutBox = false
-  vsiWarning = false
+  vSpdRef = FSComponent.createRef<SVGPathElement>()
+
+  public onAfterRender(node: VNode): void {
+    super.onAfterRender(node)
+
+    const sub = this.props.bus.getSubscriber<PFDSimvars>()
+    sub
+      .on('vertical_speed')
+      .whenChanged()
+      .handle((alt) => {
+        alt = Math.min(Math.max(alt, -4000), 4000)
+        const vSpd = fpmToPixel(alt)
+        console.log(vSpd)
+
+        this.vSpdRef.instance.setAttribute('d', `M 560 ${vSpd + 254} L 595  254`)
+      })
+  }
 
   public render(): VNode {
     return (
       <g>
-        <path d="M 545 108 L 545 408 L 570 408 L 595 358 L 595 158 L 570 108 L 545 108" fill="black" opacity={0.3} />
-        <clipPath d="M 545 108 L 545 408 L 570 408 L 595 358 L 595 158 L 570 108 L 545 108"></clipPath>
+        {renderMarkers()}
 
-        <path d="M 565 247 L 560  246" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
+        <g>
+          <clipPath id="vsClip">
+            <path d="M 545 108 L 545 408 L 570 408 L 595 358 L 595 158 L 570 108 L 545 108" />
+          </clipPath>
 
-        <path d="M 565 242 L 560  241" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <path d="M 565 237 L 560  236" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <path d="M 565 232 L 560  231" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <path d="M 570 229 L 560  225" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <path d="M 570 206 L 560  200" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <path d="M 570 183 L 560  175" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <path d="M 570 160 L 560  150" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <path d="M 570 137 L 560  125" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <></>
-
-        <path d="M 565 261 L 560  262" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <path d="M 565 266 L 560  267" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <path d="M 565 271 L 560  272" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <path d="M 565 276 L 560  277" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <path d="M 570 279 L 560  283" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <path d="M 570 304 L 560  310" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <path d="M 570 329 L 560  337" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <path d="M 570 354 L 560  364" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
-
-        <path d="M 570 379 L 560  391" stroke="white" stroke-width={2} fill="transparent" stroke-linecap="round" />
+          <path
+            ref={this.vSpdRef}
+            stroke="#04E304"
+            stroke-width={4}
+            fill="transparent"
+            stroke-linecap="round"
+            clip-path="url(#vsClip)"
+          />
+        </g>
 
         <path
           d="M 545 108 L 545 408 L 570 408 L 595 358 L 595 158 L 570 108 L 545 108"

@@ -32512,17 +32512,104 @@
   };
 
   // instruments/src/PFD/Components/VerticalSpeed/index.tsx
+  var fpmToPixel = (fpm) => {
+    return -fpm * 5 * 1.1 * 5e-3;
+  };
+  var renderMarkers = () => {
+    const stroke = "white";
+    const xAxis = 254;
+    const leftBound = 560;
+    const smallCount = 5;
+    const smallSpacing = 5;
+    const smallTilt = 1;
+    const bigCount = 5;
+    const bigSpacing = smallSpacing * 5;
+    const bigTiltFactor = 0.1;
+    const markers = [];
+    for (let y = smallCount; y < smallCount * smallSpacing; y += smallSpacing) {
+      console.log(y);
+      markers.push(
+        /* @__PURE__ */ FSComponent.buildComponent(
+          "path",
+          {
+            d: `M 565 ${xAxis + y} L ${leftBound}  ${xAxis + y + smallTilt}`,
+            stroke,
+            "stroke-width": 2,
+            "stroke-linecap": "round"
+          }
+        )
+      );
+    }
+    for (let y = smallCount; y < smallCount * smallSpacing; y += smallSpacing) {
+      console.log(y);
+      markers.push(
+        /* @__PURE__ */ FSComponent.buildComponent(
+          "path",
+          {
+            d: `M 565 ${xAxis - y} L ${leftBound}  ${xAxis - y - smallTilt}`,
+            stroke,
+            "stroke-width": 2,
+            "stroke-linecap": "round"
+          }
+        )
+      );
+    }
+    for (let y = 0; y < bigCount * bigSpacing; y += bigSpacing) {
+      console.log(y);
+      markers.push(
+        /* @__PURE__ */ FSComponent.buildComponent(
+          "path",
+          {
+            d: `M 570 ${xAxis + y} L ${leftBound}  ${xAxis + y + bigTiltFactor * y}`,
+            stroke,
+            "stroke-width": 2,
+            "stroke-linecap": "round"
+          }
+        )
+      );
+    }
+    for (let y = 0; y < bigCount * bigSpacing; y += bigSpacing) {
+      markers.push(
+        /* @__PURE__ */ FSComponent.buildComponent(
+          "path",
+          {
+            d: `M 570 ${xAxis - y} L ${leftBound}  ${xAxis - y - bigTiltFactor * y}`,
+            stroke,
+            "stroke-width": 2,
+            "stroke-linecap": "round"
+          }
+        )
+      );
+    }
+    return markers;
+  };
   var VerticalSpeedIndicator = class extends DisplayComponent {
     constructor() {
       super(...arguments);
-      this.verticalSpeed = 0;
-      this.constrainedVSpeed = 0;
-      this.vsiReadout = 0;
-      this.vsiReadoutBox = false;
-      this.vsiWarning = false;
+      this.vSpdRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("vertical_speed").whenChanged().handle((alt) => {
+        alt = Math.min(Math.max(alt, -4e3), 4e3);
+        const vSpd = fpmToPixel(alt);
+        console.log(vSpd);
+        this.vSpdRef.instance.setAttribute("d", `M 560 ${vSpd + 254} L 595  254`);
+      });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 545 108 L 545 408 L 570 408 L 595 358 L 595 158 L 570 108 L 545 108", fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { d: "M 545 108 L 545 408 L 570 408 L 595 358 L 595 158 L 570 108 L 545 108" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 565 247 L 560  246", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 565 242 L 560  241", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 565 237 L 560  236", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 565 232 L 560  231", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 570 229 L 560  225", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 570 206 L 560  200", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 570 183 L 560  175", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 570 160 L 560  150", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 570 137 L 560  125", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent(FSComponent.Fragment, null), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 565 261 L 560  262", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 565 266 L 560  267", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 565 271 L 560  272", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 565 276 L 560  277", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 570 279 L 560  283", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 570 304 L 560  310", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 570 329 L 560  337", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 570 354 L 560  364", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 570 379 L 560  391", stroke: "white", "stroke-width": 2, fill: "transparent", "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, renderMarkers(), /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "vsClip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 545 108 L 545 408 L 570 408 L 595 358 L 595 158 L 570 108 L 545 108" })), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          ref: this.vSpdRef,
+          stroke: "#04E304",
+          "stroke-width": 4,
+          fill: "transparent",
+          "stroke-linecap": "round",
+          "clip-path": "url(#vsClip)"
+        }
+      )), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           d: "M 545 108 L 545 408 L 570 408 L 595 358 L 595 158 L 570 108 L 545 108",
