@@ -10027,9 +10027,9 @@
     constructor() {
       this.procTurnBuilder = new ProcedureTurnBuilder();
     }
-    computeTurns(legs, startIndex, count, desiredTurnRadius, desiredCourseReversalTurnRadius, desiredTurnAnticipationTurnRadius) {
+    computeTurns(legs, startIndex, count2, desiredTurnRadius, desiredCourseReversalTurnRadius, desiredTurnAnticipationTurnRadius) {
       var _a2, _b, _c, _d;
-      const end = startIndex + count;
+      const end = startIndex + count2;
       let currentIndex = startIndex;
       while (currentIndex < end) {
         const fromLeg = legs[currentIndex];
@@ -14351,12 +14351,12 @@
     static awaitDelay(delay) {
       return new Promise((resolve) => setTimeout(() => resolve(), delay));
     }
-    static awaitFrames(count, glassCockpitRefresh = false) {
+    static awaitFrames(count2, glassCockpitRefresh = false) {
       let elapsedFrameCount = 0;
       if (glassCockpitRefresh) {
         return new Promise((resolve) => {
           const callback = () => {
-            if (++elapsedFrameCount > count) {
+            if (++elapsedFrameCount > count2) {
               resolve();
             } else {
               requestAnimationFrame(callback);
@@ -14367,7 +14367,7 @@
       } else {
         return new Promise((resolve) => {
           const id = setInterval(() => {
-            if (++elapsedFrameCount > count) {
+            if (++elapsedFrameCount > count2) {
               clearInterval(id);
               resolve();
             }
@@ -32512,21 +32512,20 @@
   };
 
   // instruments/src/PFD/Components/VerticalSpeed/index.tsx
+  var stroke = "white";
+  var xAxis = 254;
+  var leftBound = 560;
+  var count = 5;
+  var smallSpacing = 5;
+  var smallTilt = 0.5;
+  var bigSpacing = smallSpacing * 5;
+  var bigTiltFactor = 0.1;
   var fpmToPixel = (fpm) => {
-    return -fpm * 5 * 1.1 * 5e-3;
+    return -fpm * count * (bigTiltFactor + 1) * 5e-3;
   };
   var renderMarkers = () => {
-    const stroke = "white";
-    const xAxis = 254;
-    const leftBound = 560;
-    const smallCount = 5;
-    const smallSpacing = 5;
-    const smallTilt = 0.5;
-    const bigCount = 5;
-    const bigSpacing = smallSpacing * 5;
-    const bigTiltFactor = 0.1;
     const markers = [];
-    for (let y = smallCount; y < smallCount * smallSpacing; y += smallSpacing) {
+    for (let y = count; y < count * smallSpacing; y += smallSpacing) {
       console.log(y);
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
@@ -32540,7 +32539,7 @@
         )
       );
     }
-    for (let y = smallCount; y < smallCount * smallSpacing; y += smallSpacing) {
+    for (let y = count; y < count * smallSpacing; y += smallSpacing) {
       console.log(y);
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
@@ -32554,7 +32553,7 @@
         )
       );
     }
-    for (let y = 0; y < bigCount * bigSpacing; y += bigSpacing) {
+    for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
       console.log(y);
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
@@ -32568,7 +32567,7 @@
         )
       );
     }
-    for (let y = 0; y < bigCount * bigSpacing; y += bigSpacing) {
+    for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",

@@ -6,25 +6,25 @@ type T_VerticalSpeedIndicatorProps = ComponentProps & {
   bus: EventBus
 }
 
+// Static markers settings
+const stroke = 'white'
+const xAxis = 254
+const leftBound = 560
+const count = 5
+const smallSpacing = 5
+const smallTilt = 0.5
+const bigSpacing = smallSpacing * 5
+const bigTiltFactor = 0.1
+
 const fpmToPixel = (fpm: number): number => {
-  return -fpm * 5 * 1.1 * 0.005
+  return -fpm * count * (bigTiltFactor + 1) * 0.005
 }
 
 const renderMarkers = (): JSX.Element[] => {
-  const stroke = 'white'
-  const xAxis = 254
-  const leftBound = 560
-  const smallCount = 5
-  const smallSpacing = 5
-  const smallTilt = 0.5
-  const bigCount = 5
-  const bigSpacing = smallSpacing * 5
-  const bigTiltFactor = 0.1
-
   const markers: JSX.Element[] = []
 
   // Small markers
-  for (let y = smallCount; y < smallCount * smallSpacing; y += smallSpacing) {
+  for (let y = count; y < count * smallSpacing; y += smallSpacing) {
     console.log(y)
     markers.push(
       <path
@@ -36,7 +36,7 @@ const renderMarkers = (): JSX.Element[] => {
     )
   }
 
-  for (let y = smallCount; y < smallCount * smallSpacing; y += smallSpacing) {
+  for (let y = count; y < count * smallSpacing; y += smallSpacing) {
     console.log(y)
     markers.push(
       <path
@@ -49,7 +49,7 @@ const renderMarkers = (): JSX.Element[] => {
   }
 
   // Big markers
-  for (let y = 0; y < bigCount * bigSpacing; y += bigSpacing) {
+  for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
     console.log(y)
     markers.push(
       <path
@@ -61,7 +61,7 @@ const renderMarkers = (): JSX.Element[] => {
     )
   }
 
-  for (let y = 0; y < bigCount * bigSpacing; y += bigSpacing) {
+  for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
     markers.push(
       <path
         d={`M 570 ${xAxis - y} L ${leftBound}  ${xAxis - y - bigTiltFactor * y}`}
