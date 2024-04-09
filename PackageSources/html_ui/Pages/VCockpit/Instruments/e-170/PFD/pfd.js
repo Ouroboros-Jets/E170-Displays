@@ -32517,21 +32517,19 @@
   var leftBound = 560;
   var count = 5;
   var smallSpacing = 5;
-  var smallTilt = 0.5;
   var bigSpacing = smallSpacing * 5;
-  var bigTiltFactor = 0.1;
+  var tiltFactor = 0.1;
   var fpmToPixel = (fpm) => {
-    return -fpm * count * (bigTiltFactor + 1) * 5e-3;
+    return -fpm * count * (tiltFactor + 1) * 5e-3;
   };
   var renderMarkers = () => {
     const markers = [];
-    for (let y = count; y < count * smallSpacing; y += smallSpacing) {
-      console.log(y);
+    for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
           {
-            d: `M 565 ${xAxis + y} L ${leftBound}  ${xAxis + y + smallTilt}`,
+            d: `M 565 ${xAxis + y} L ${leftBound}  ${xAxis + y + tiltFactor * y}}`,
             stroke,
             "stroke-width": 2,
             "stroke-linecap": "round"
@@ -32539,27 +32537,12 @@
         )
       );
     }
-    for (let y = count; y < count * smallSpacing; y += smallSpacing) {
-      console.log(y);
+    for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
           {
-            d: `M 565 ${xAxis - y} L ${leftBound}  ${xAxis - y - smallTilt}`,
-            stroke,
-            "stroke-width": 2,
-            "stroke-linecap": "round"
-          }
-        )
-      );
-    }
-    for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
-      console.log(y);
-      markers.push(
-        /* @__PURE__ */ FSComponent.buildComponent(
-          "path",
-          {
-            d: `M 570 ${xAxis + y} L ${leftBound}  ${xAxis + y + bigTiltFactor * y}`,
+            d: `M 565 ${xAxis - y} L ${leftBound}  ${xAxis - y - tiltFactor * y}}`,
             stroke,
             "stroke-width": 2,
             "stroke-linecap": "round"
@@ -32572,7 +32555,20 @@
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
           {
-            d: `M 570 ${xAxis - y} L ${leftBound}  ${xAxis - y - bigTiltFactor * y}`,
+            d: `M 570 ${xAxis + y} L ${leftBound}  ${xAxis + y + tiltFactor * y}`,
+            stroke,
+            "stroke-width": 2,
+            "stroke-linecap": "round"
+          }
+        )
+      );
+    }
+    for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
+      markers.push(
+        /* @__PURE__ */ FSComponent.buildComponent(
+          "path",
+          {
+            d: `M 570 ${xAxis - y} L ${leftBound}  ${xAxis - y - tiltFactor * y}`,
             stroke,
             "stroke-width": 2,
             "stroke-linecap": "round"
@@ -32585,7 +32581,9 @@
   var VerticalSpeedIndicator = class extends DisplayComponent {
     constructor() {
       super(...arguments);
-      this.vSpdRef = FSComponent.createRef();
+      this.vSpdNeedleRef = FSComponent.createRef();
+      this.vSpdValueRef = FSComponent.createRef();
+      this.vSpdBoxRef = FSComponent.createRef();
     }
     onAfterRender(node) {
       super.onAfterRender(node);
@@ -32593,15 +32591,28 @@
       sub.on("vertical_speed").whenChanged().handle((alt) => {
         alt = Math.min(Math.max(alt, -4e3), 4e3);
         const vSpd = fpmToPixel(alt);
-        console.log(vSpd);
-        this.vSpdRef.instance.setAttribute("d", `M 560 ${vSpd + 254} L 675  254`);
+        this.vSpdNeedleRef.instance.setAttribute("d", `M 560 ${vSpd + 254} L 675  254`);
+        if (alt >= 500 || alt <= -500) {
+          this.vSpdBoxRef.instance.setAttribute("opacity", "1");
+          this.vSpdValueRef.instance.textContent = (Math.round(alt / 100) * 100).toString();
+        } else {
+          this.vSpdBoxRef.instance.setAttribute("opacity", "0");
+        }
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, renderMarkers(), /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "vsClip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 545 108 L 545 408 L 570 408 L 595 358 L 595 158 L 570 108 L 545 108" })), /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
-          ref: this.vSpdRef,
+          d: "M 545 104 L 545 404 L 570 404 L 595 354 L 595 154 L 570 104 L 545 104",
+          fill: "black",
+          "stroke-linecap": "round",
+          opacity: 0.3
+        }
+      ), renderMarkers(), /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "vsClip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 545 108 L 545 408 L 570 408 L 595 358 L 595 158 L 570 108 L 545 108" })), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          ref: this.vSpdNeedleRef,
           stroke: "#04E304",
           "stroke-width": 4,
           fill: "transparent",
@@ -32611,13 +32622,21 @@
       )), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
-          d: "M 545 108 L 545 408 L 570 408 L 595 358 L 595 158 L 570 108 L 545 108",
+          d: "M 545 104 L 545 404 L 570 404 L 595 354 L 595 154 L 570 104 L 545 104",
           stroke: "white",
-          "stroke-width": 3,
+          "stroke-width": 2,
           fill: "transparent",
           "stroke-linecap": "round"
         }
-      ));
+      ), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.vSpdBoxRef }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "546", y: xAxis - 9, width: "48", height: "18", fill: "black", "clip-path": "url(#vsClip)" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 588, y: 260, "text-anchor": "end", "font-size": 17, fill: "#04E304", ref: this.vSpdValueRef }), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: `M 546 ${xAxis - 9} L 594 ${xAxis - 9} M 546 ${xAxis + 9} L 594 ${xAxis + 9}`,
+          stroke: "white",
+          "stroke-width": 2,
+          "stroke-linecap": "round"
+        }
+      )));
     }
   };
 
