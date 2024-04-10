@@ -108,9 +108,11 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": "",
+    "value": 104.0,
     "control": {
-      "type": "Text"
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
     },
     "pinned": null
   },
@@ -197,7 +199,7 @@
     "name": "VERTICAL SPEED",
     "index": 0,
     "unit": "Feet per second",
-    "value": 0.0,
+    "value": 2400.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

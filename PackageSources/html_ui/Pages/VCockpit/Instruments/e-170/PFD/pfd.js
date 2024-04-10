@@ -32005,7 +32005,19 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { class: "foreground-attitude" }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "attitude-clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" })), /* @__PURE__ */ FSComponent.buildComponent("linearGradient", { id: "SkyGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "0%", "stop-color": "#020383" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "88%", "stop-color": "#020383" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "100%", "stop-color": "#1717cf" })), /* @__PURE__ */ FSComponent.buildComponent("linearGradient", { id: "GroundGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "0%", "stop-color": "#674200" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "25%", "stop-color": "#352200" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "100%", "stop-color": "#352201" }))), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.bankRefDup }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.pitchRefDup }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", fill: "url(#SkyGradiant)" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-2000", y: "254", width: "4600", height: "2205", fill: "url(#GroundGradiant)" }), /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "attitude-clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" })), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("linearGradient", { gradientTransform: "rotate(0, 0.5, 0.5)", x1: "50%", y1: "0%", x2: "50%", y2: "100%", id: "sky-gradient" }, /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#0964b5", "stop-opacity": "1", offset: "95%" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#5098c3", "stop-opacity": "1", offset: "100%" })), /* @__PURE__ */ FSComponent.buildComponent(
+        "linearGradient",
+        {
+          gradientTransform: "rotate(0, 0.5, 0.5)",
+          x1: "50%",
+          y1: "0%",
+          x2: "50%",
+          y2: "100%",
+          id: "ground-gradient"
+        },
+        /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#a7811a", "stop-opacity": "1", offset: "0%" }),
+        /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#a36a27", "stop-opacity": "1", offset: "5%" })
+      )), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.bankRefDup, opacity: "0.75" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.pitchRefDup }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", class: "attitude-sky" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-2000", y: "254", width: "4600", height: "2205", class: "attitude-ground" }), /* @__PURE__ */ FSComponent.buildComponent(
         "rect",
         {
           ref: this.markerActiveRef,
@@ -32015,9 +32027,10 @@
           height: "4",
           fill: "white",
           stroke: "black",
-          "stroke-width": 1
+          "stroke-width": 1,
+          opacity: "1.0"
         }
-      ))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#attitude-clip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.bankRef }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.pitchRef }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-500", y: "-2000", width: "1600", height: "2255", class: "attitude-sky" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-0", y: "254", width: "1600", height: "2205", class: "attitude-ground-inner" }), /* @__PURE__ */ FSComponent.buildComponent(
+      ))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#attitude-clip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.bankRef }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.pitchRef }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-500", y: "-2000", width: "1600", height: "2255", class: "attitude-sky" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-0", y: "254", width: "1600", height: "2205", class: "attitude-ground" }), /* @__PURE__ */ FSComponent.buildComponent(
         "rect",
         {
           ref: this.markerActiveRefDup,

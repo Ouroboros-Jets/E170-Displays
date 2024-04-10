@@ -7,19 +7,11 @@ text {
 }
 
 /* temp_stylePlugin:instruments\src\PFD\Components\AttitudeDisplay\index.scss */
-:root {
-  --attitude-dark-brown: #794f00;
-  --attitude-light-brown: #8f5d00;
-  --attitude-blue: #0001d8;
+.attitude-ground {
+  fill: url(#ground-gradient);
 }
 .attitude-sky {
-  fill: var(--attitude-blue);
-}
-.attitude-ground {
-  fill: var(--attitude-dark-brown);
-}
-.attitude-ground-inner {
-  fill: var(--attitude-light-brown);
+  fill: url(#sky-gradient);
 }
 .foreground-attitude {
   z-index: 999;
