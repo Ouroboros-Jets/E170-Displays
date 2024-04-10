@@ -31,7 +31,7 @@ const DrawChevron = (y: number, direction: number): JSX.Element => {
           } L ${center} ${correctedY - offset - 8}`}
           fill="black"
           fillTop={color}
-          StrokeWidth={strokeWidth}
+          strokeWidth={strokeWidth}
           strokeWidthTop={strokeWidthTop}
           fillTop2="transparent"
           forceTransparent
@@ -49,7 +49,7 @@ const DrawChevron = (y: number, direction: number): JSX.Element => {
           } L ${center} ${correctedY - offset + 8}`}
           fill="black"
           fillTop={color}
-          StrokeWidth={strokeWidth}
+          strokeWidth={strokeWidth}
           strokeWidthTop={strokeWidthTop}
           fillTop2="transparent"
           forceTransparent
@@ -83,7 +83,7 @@ const drawTick = (type: TickType, y: number, value: number): JSX.Element => {
           }`}
           fill="black"
           fillTop="white"
-          StrokeWidth={strokeWidth}
+          strokeWidth={strokeWidth}
           strokeWidthTop={strokeWidthTop}
         />
       )
@@ -95,7 +95,7 @@ const drawTick = (type: TickType, y: number, value: number): JSX.Element => {
           } ${correctedY - offset}`}
           fill="black"
           fillTop="white"
-          StrokeWidth={strokeWidth}
+          strokeWidth={strokeWidth}
           strokeWidthTop={strokeWidthTop}
         />
       )
@@ -107,7 +107,7 @@ const drawTick = (type: TickType, y: number, value: number): JSX.Element => {
           } ${correctedY - offset}`}
           fill="black"
           fillTop="white"
-          StrokeWidth={strokeWidth}
+          strokeWidth={strokeWidth}
           strokeWidthTop={strokeWidthTop}
         />
       )
@@ -119,7 +119,7 @@ const drawTick = (type: TickType, y: number, value: number): JSX.Element => {
           } ${correctedY - offset}`}
           fill="black"
           fillTop="white"
-          StrokeWidth={strokeWidth}
+          strokeWidth={strokeWidth}
           strokeWidthTop={strokeWidthTop}
         />
       )
@@ -145,7 +145,7 @@ const drawTick = (type: TickType, y: number, value: number): JSX.Element => {
             } ${correctedY - offset}`}
             fill="black"
             fillTop="white"
-            StrokeWidth={strokeWidth}
+            strokeWidth={strokeWidth}
             strokeWidthTop={strokeWidthTop}
           />
           <text
@@ -172,7 +172,7 @@ const drawTick = (type: TickType, y: number, value: number): JSX.Element => {
             }`}
             fill="black"
             fillTop="white"
-            StrokeWidth={strokeWidth}
+            strokeWidth={strokeWidth}
             strokeWidthTop={strokeWidthTop}
           />
           <text
@@ -194,7 +194,7 @@ const drawTick = (type: TickType, y: number, value: number): JSX.Element => {
             }`}
             fill="black"
             fillTop="white"
-            StrokeWidth={strokeWidth}
+            strokeWidth={strokeWidth}
             strokeWidthTop={strokeWidthTop}
           />
         </>

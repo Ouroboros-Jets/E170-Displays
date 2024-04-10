@@ -7,21 +7,21 @@
   },
   "elements": [
     {
-      "uuid": "74b3931b-741c-48ff-bbb8-f905666b9fb4",
-      "name": "PFD",
-      "element": "Instrument",
-      "width": 600,
-      "height": 800,
-      "x": 8740,
-      "y": 1680
-    },
-    {
       "uuid": "9a01d170-f34a-4789-9337-2ecd343b7d3f",
       "name": "MFD",
       "element": "Instrument",
       "width": 600,
       "height": 800,
       "x": 9420,
+      "y": 1680
+    },
+    {
+      "uuid": "ce5bdc8f-5945-4474-89ad-c45098b863a9",
+      "name": "PFD",
+      "element": "Instrument",
+      "width": 600,
+      "height": 800,
+      "x": 8680,
       "y": 1680
     }
   ]

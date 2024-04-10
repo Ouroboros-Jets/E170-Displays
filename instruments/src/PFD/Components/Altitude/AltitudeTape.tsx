@@ -13,7 +13,7 @@ const drawChevron = (double: boolean, y: number): JSX.Element => {
           fill="black"
           fillTop="white"
           strokeWidthTop={2}
-          StrokeWidth={4}
+          strokeWidth={4}
           fillTop2="transparent"
           forceTransparent
           forceEndCap
@@ -23,7 +23,7 @@ const drawChevron = (double: boolean, y: number): JSX.Element => {
           fill="black"
           fillTop="white"
           strokeWidthTop={2}
-          StrokeWidth={4}
+          strokeWidth={4}
           fillTop2="transparent"
           forceTransparent
           forceEndCap
@@ -40,7 +40,7 @@ const drawChevron = (double: boolean, y: number): JSX.Element => {
           fill="black"
           fillTop="white"
           strokeWidthTop={2}
-          StrokeWidth={4}
+          strokeWidth={4}
           fillTop2="transparent"
           forceTransparent
           forceEndCap
@@ -59,7 +59,7 @@ const drawTick = (y: number): JSX.Element => {
       fill="black"
       fillTop="white"
       strokeWidthTop={2}
-      StrokeWidth={4}
+      strokeWidth={4}
     />
   )
 }

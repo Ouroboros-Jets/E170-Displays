@@ -6961,22 +6961,22 @@
       if (!start || !end) {
         return void 0;
       }
-      let startValue;
+      let startValue2;
       let endValue;
       if (dimension === this.dimensionCount - 1) {
-        startValue = start.value;
+        startValue2 = start.value;
         endValue = end.value;
       } else {
-        startValue = this.lookupHelper(key, dimension + 1, start.array);
+        startValue2 = this.lookupHelper(key, dimension + 1, start.array);
         endValue = this.lookupHelper(key, dimension + 1, end.array);
       }
-      if (startValue === void 0 || endValue === void 0) {
+      if (startValue2 === void 0 || endValue === void 0) {
         return void 0;
       }
-      if (startValue === endValue) {
-        return startValue;
+      if (startValue2 === endValue) {
+        return startValue2;
       }
-      return MathUtils.lerp(dimensionKey, start.key, end.key, startValue, endValue);
+      return MathUtils.lerp(dimensionKey, start.key, end.key, startValue2, endValue);
     }
   };
   LerpLookupTable.BREAKPOINT_COMPARATOR = (a, b) => a.key - b.key;
@@ -7078,19 +7078,19 @@
       if (!start || !end) {
         return void 0;
       }
-      let startValue;
+      let startValue2;
       let endValue;
       if (dimension === this.dimensionCount - 1) {
-        startValue = start.value;
+        startValue2 = start.value;
         endValue = end.value;
       } else {
-        startValue = this.lookupHelper(key, dimension + 1, start.array, this.tempVectors[dimension * 2]);
+        startValue2 = this.lookupHelper(key, dimension + 1, start.array, this.tempVectors[dimension * 2]);
         endValue = this.lookupHelper(key, dimension + 1, end.array, this.tempVectors[dimension * 2 + 1]);
       }
-      if (startValue === void 0 || endValue === void 0) {
+      if (startValue2 === void 0 || endValue === void 0) {
         return void 0;
       }
-      return MathUtils.lerpVector(out, dimensionKey, start.key, end.key, startValue, endValue);
+      return MathUtils.lerpVector(out, dimensionKey, start.key, end.key, startValue2, endValue);
     }
   };
   LerpVectorLookupTable.BREAKPOINT_COMPARATOR = (a, b) => a.key - b.key;
@@ -10027,9 +10027,9 @@
     constructor() {
       this.procTurnBuilder = new ProcedureTurnBuilder();
     }
-    computeTurns(legs, startIndex, count2, desiredTurnRadius, desiredCourseReversalTurnRadius, desiredTurnAnticipationTurnRadius) {
+    computeTurns(legs, startIndex, count3, desiredTurnRadius, desiredCourseReversalTurnRadius, desiredTurnAnticipationTurnRadius) {
       var _a2, _b, _c, _d;
-      const end = startIndex + count2;
+      const end = startIndex + count3;
       let currentIndex = startIndex;
       while (currentIndex < end) {
         const fromLeg = legs[currentIndex];
@@ -14351,12 +14351,12 @@
     static awaitDelay(delay) {
       return new Promise((resolve) => setTimeout(() => resolve(), delay));
     }
-    static awaitFrames(count2, glassCockpitRefresh = false) {
+    static awaitFrames(count3, glassCockpitRefresh = false) {
       let elapsedFrameCount = 0;
       if (glassCockpitRefresh) {
         return new Promise((resolve) => {
           const callback = () => {
-            if (++elapsedFrameCount > count2) {
+            if (++elapsedFrameCount > count3) {
               resolve();
             } else {
               requestAnimationFrame(callback);
@@ -14367,7 +14367,7 @@
       } else {
         return new Promise((resolve) => {
           const id = setInterval(() => {
-            if (++elapsedFrameCount > count2) {
+            if (++elapsedFrameCount > count3) {
               clearInterval(id);
               resolve();
             }
@@ -25893,9 +25893,9 @@
       }
       return void 0;
     }
-    static getFafIndexReverse(lateralPlan, iterator) {
+    static getFafIndexReverse(lateralPlan, iterator2) {
       let fafIndex = -1;
-      iterator.iterateReverse(lateralPlan, (cursor) => {
+      iterator2.iterateReverse(lateralPlan, (cursor) => {
         if (fafIndex === -1 && cursor.legDefinition && cursor.legDefinition.leg.fixTypeFlags & FixTypeFlags.FAF) {
           fafIndex = cursor.legIndex + cursor.segment.offset;
         }
@@ -29085,12 +29085,12 @@
     }
     handleKeyEvent(key, value) {
       const currentValue = SimVar.GetSimVarValue(this.altitudeHoldSlotSimVar, SimVarValueType.Feet);
-      let startValue = currentValue;
+      let startValue2 = currentValue;
       if (!this.isInitialized) {
         if (this.initToIndicatedAlt) {
-          startValue = SimVar.GetSimVarValue("INDICATED ALTITUDE", SimVarValueType.Feet);
+          startValue2 = SimVar.GetSimVarValue("INDICATED ALTITUDE", SimVarValueType.Feet);
         } else {
-          startValue = 0;
+          startValue2 = 0;
         }
         this.publisher.pub("alt_select_is_initialized", true, true);
         this.isInitialized = true;
@@ -29155,7 +29155,7 @@
         }
       }
       if (direction !== 0) {
-        this.changeSelectedAltitude(startValue, direction, useLargeIncrement);
+        this.changeSelectedAltitude(startValue2, direction, useLargeIncrement);
       }
     }
     setSelectedAltitude(altitudeFeet) {
@@ -29185,7 +29185,7 @@
         SimVar.SetSimVarValue(this.altitudeHoldSlotSimVar, SimVarValueType.Feet, valueToSet);
       }
     }
-    changeSelectedAltitude(startValue, direction, useLargeIncrement = false) {
+    changeSelectedAltitude(startValue2, direction, useLargeIncrement = false) {
       var _a2, _b;
       const roundFunc = direction === 1 ? Math.floor : Math.ceil;
       const isMetric = (_b = (_a2 = this.altimeterMetricSetting) === null || _a2 === void 0 ? void 0 : _a2.value) !== null && _b !== void 0 ? _b : false;
@@ -29205,11 +29205,11 @@
         units = UnitType.FOOT;
         lockAlt = this.lockAltToStepOnIncr;
       }
-      const startValueConverted = Math.round(UnitType.FOOT.convertTo(startValue, units));
+      const startValueConverted = Math.round(UnitType.FOOT.convertTo(startValue2, units));
       useLargeIncrement && (useLargeIncrement = !lockAlt || startValueConverted % incrSmall === 0);
       let valueToSet = UnitType.FOOT.convertFrom(MathUtils.clamp((lockAlt ? roundFunc(startValueConverted / incrSmall) * incrSmall : startValueConverted) + direction * (useLargeIncrement ? incrLarge : incrSmall), min, max), units);
       if (this.stops.length > 0) {
-        let nextStopIndex = this.stops.matchIndex(startValue);
+        let nextStopIndex = this.stops.matchIndex(startValue2);
         if (direction === 1) {
           if (nextStopIndex < 0) {
             nextStopIndex = -nextStopIndex - 1;
@@ -29224,7 +29224,7 @@
           }
         }
         const nextStop = this.stops.peek(nextStopIndex);
-        if (nextStop !== void 0 && Math.abs(valueToSet - startValue) > Math.abs(nextStop - startValue)) {
+        if (nextStop !== void 0 && Math.abs(valueToSet - startValue2) > Math.abs(nextStop - startValue2)) {
           valueToSet = nextStop;
         }
       }
@@ -31696,7 +31696,7 @@
         {
           d: this.props.d,
           fill: this.props.forceTransparent !== null && this.props.forceTransparent === true ? "transparent" : "black",
-          "stroke-width": this.props.StrokeWidth,
+          "stroke-width": this.props.strokeWidth,
           stroke: this.props.fill,
           "stroke-linecap": this.props.forceEndCap !== null && this.props.forceEndCap === true ? "butt" : "round",
           "stroke-linejoin": "round"
@@ -31730,7 +31730,7 @@
           d: `M ${center} ${correctedY - offset - 8} L ${center - 45} ${correctedY - offset - 80} L ${center - 30} ${correctedY - offset - 80} L ${center} ${correctedY - offset - 35} L ${center + 30} ${correctedY - offset - 80} L ${center + 45} ${correctedY - offset - 80} L ${center} ${correctedY - offset - 8}`,
           fill: "black",
           fillTop: color,
-          StrokeWidth: strokeWidth,
+          strokeWidth,
           strokeWidthTop,
           fillTop2: "transparent",
           forceTransparent: true
@@ -31743,7 +31743,7 @@
           d: `M ${center} ${correctedY - offset + 8} L ${center - 45} ${correctedY - offset + 60} L ${center - 30} ${correctedY - offset + 60} L ${center} ${correctedY - offset + 25} L ${center + 30} ${correctedY - offset + 60} L ${center + 45} ${correctedY - offset + 60} L ${center} ${correctedY - offset + 8}`,
           fill: "black",
           fillTop: color,
-          StrokeWidth: strokeWidth,
+          strokeWidth,
           strokeWidthTop,
           fillTop2: "transparent",
           forceTransparent: true
@@ -31772,7 +31772,7 @@
             d: `M ${center - 0.5 * OneTickWidth} ${correctedY - offset} L ${center - 0.5 * OneTickWidth + OneTickWidth} ${correctedY - offset}`,
             fill: "black",
             fillTop: "white",
-            StrokeWidth: strokeWidth,
+            strokeWidth,
             strokeWidthTop
           }
         );
@@ -31783,7 +31783,7 @@
             d: `M ${center - 0.5 * TwoFiveTickWidth} ${correctedY - offset} L ${center - 0.5 * TwoFiveTickWidth + TwoFiveTickWidth} ${correctedY - offset}`,
             fill: "black",
             fillTop: "white",
-            StrokeWidth: strokeWidth,
+            strokeWidth,
             strokeWidthTop
           }
         );
@@ -31794,7 +31794,7 @@
             d: `M ${center - 0.5 * FiveTickWidth} ${correctedY - offset} L ${center - 0.5 * FiveTickWidth + FiveTickWidth} ${correctedY - offset}`,
             fill: "black",
             fillTop: "white",
-            StrokeWidth: strokeWidth,
+            strokeWidth,
             strokeWidthTop
           }
         );
@@ -31805,7 +31805,7 @@
             d: `M ${center - 0.5 * SevenFiveTickWidth} ${correctedY - offset} L ${center - 0.5 * SevenFiveTickWidth + SevenFiveTickWidth} ${correctedY - offset}`,
             fill: "black",
             fillTop: "white",
-            StrokeWidth: strokeWidth,
+            strokeWidth,
             strokeWidthTop
           }
         );
@@ -31830,7 +31830,7 @@
             d: `M ${center - 0.5 * TenTickWidth} ${correctedY - offset} L ${center - 0.5 * TenTickWidth + TenTickWidth} ${correctedY - offset}`,
             fill: "black",
             fillTop: "white",
-            StrokeWidth: strokeWidth,
+            strokeWidth,
             strokeWidthTop
           }
         ), /* @__PURE__ */ FSComponent.buildComponent(
@@ -31855,7 +31855,7 @@
             d: `M ${center - FourtyTickWidth + 35} ${correctedY - offset} L ${center + 35 + FourtyTickWidth} ${correctedY - offset}`,
             fill: "black",
             fillTop: "white",
-            StrokeWidth: strokeWidth,
+            strokeWidth,
             strokeWidthTop
           }
         ), /* @__PURE__ */ FSComponent.buildComponent(
@@ -31878,7 +31878,7 @@
             d: `M ${center - FourtyTickWidth - 35} ${correctedY - offset} L ${center - 35 + FourtyTickWidth} ${correctedY - offset}`,
             fill: "black",
             fillTop: "white",
-            StrokeWidth: strokeWidth,
+            strokeWidth,
             strokeWidthTop
           }
         ));
@@ -32055,7 +32055,7 @@
           d: "M 166 249 L 217 249  L 217 268 L 209 268 L 209 258 L 166 258 L 166 249",
           fill: "black",
           fillTop: "white",
-          StrokeWidth: 3,
+          strokeWidth: 3,
           strokeWidthTop: 2,
           fillTop2: "black"
         }
@@ -32065,7 +32065,7 @@
           d: "M 384 249 L 333 249 L 333 268 L 341 268 L 341 258 L 384 258 L 384 249",
           fill: "black",
           fillTop: "white",
-          StrokeWidth: 3,
+          strokeWidth: 3,
           strokeWidthTop: 2,
           fillTop2: "black"
         }
@@ -32075,7 +32075,7 @@
           d: "M 280 249 L 270 249 L 270 258 L 280 258 L 280 258 L 280 249",
           fill: "black",
           fillTop: "white",
-          StrokeWidth: 3,
+          strokeWidth: 3,
           strokeWidthTop: 2,
           fillTop2: "black"
         }
@@ -32102,7 +32102,7 @@
           fill: "black",
           fillTop: "white",
           strokeWidthTop: 2,
-          StrokeWidth: 4,
+          strokeWidth: 4,
           fillTop2: "transparent",
           forceTransparent: true,
           forceEndCap: true
@@ -32114,7 +32114,7 @@
           fill: "black",
           fillTop: "white",
           strokeWidthTop: 2,
-          StrokeWidth: 4,
+          strokeWidth: 4,
           fillTop2: "transparent",
           forceTransparent: true,
           forceEndCap: true
@@ -32128,7 +32128,7 @@
           fill: "black",
           fillTop: "white",
           strokeWidthTop: 2,
-          StrokeWidth: 4,
+          strokeWidth: 4,
           fillTop2: "transparent",
           forceTransparent: true,
           forceEndCap: true
@@ -32145,7 +32145,7 @@
         fill: "black",
         fillTop: "white",
         strokeWidthTop: 2,
-        StrokeWidth: 4
+        strokeWidth: 4
       }
     );
   };
@@ -32215,7 +32215,7 @@
   // instruments/src/PFD/Components/Altitude/BaroSettingBox.tsx
   var BaroSettingBox = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(426 28)" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "29", y: "391", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", "stroke-width": "2", fill: "black" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "419", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", "stroke-width": "2", fill: "black" }));
     }
   };
 
@@ -32299,97 +32299,58 @@
   };
   var Altitude_default = Altitude;
 
-  // instruments/src/PFD/Util/ClampValue.ts
-  var ClampValue = (value, min, max) => {
-    if (value < min) {
-      return min;
-    } else if (value > max) {
-      return max;
-    } else {
-      return value;
-    }
-  };
-
   // instruments/src/PFD/Components/Airspeed/AirspeedTape.tsx
-  var drawTick3 = (small, y) => {
-    return /* @__PURE__ */ FSComponent.buildComponent(
-      PathWithBlackBackground,
-      {
-        d: `M 81 ${-y} L ${small ? 70 : 58} ${-y}`,
-        fill: "black",
-        fillTop: "white",
-        strokeWidthTop: 3,
-        StrokeWidth: 5
+  var baseline = 254;
+  var startValue = 30;
+  var iterator = 10;
+  var stretch = 3;
+  var count = 600;
+  var renderTape = () => {
+    const elements = [];
+    for (let i = 0; i < count; i += iterator) {
+      if (i >= 0) {
+        elements.push(
+          /* @__PURE__ */ FSComponent.buildComponent(
+            PathWithBlackBackground,
+            {
+              d: `M 60 ${i * stretch} L 80 ${i * stretch}`,
+              fill: "black",
+              fillTop: "white",
+              strokeWidthTop: 2,
+              strokeWidth: 3
+            }
+          )
+        );
+        const textVertOffset = 6;
+        elements.push(
+          /* @__PURE__ */ FSComponent.buildComponent("text", { x: 40, y: i * stretch + textVertOffset, "text-anchor": "middle", "font-size": 17, fill: "white" }, (count - i + startValue).toString())
+        );
       }
-    );
+    }
+    return elements;
   };
   var AirspeedTape = class extends DisplayComponent {
     constructor() {
       super(...arguments);
-      this.asTapeRef = FSComponent.createRef();
-      this.tapeLength = 942;
-      this.spacing = 3.95;
-      this.startOffset = 200;
-      this.airspeedTapeScaling = 3.95;
-      this.array = createArray(this.tapeLength);
-      this.Tape = this.array.map((item, index) => {
-        if (index < 30) {
-          return null;
-        }
-        if (index < 200) {
-          if (index % 10 === 0) {
-            return /* @__PURE__ */ FSComponent.buildComponent("g", { key: index }, drawTick3(false, index * this.spacing), /* @__PURE__ */ FSComponent.buildComponent(
-              "text",
-              {
-                x: "53",
-                y: -index * this.spacing + 9,
-                stroke: "black",
-                "stroke-width": 2,
-                "paint-order": "stroke",
-                "text-anchor": "end",
-                fill: "white",
-                "font-size": "22"
-              },
-              index.toString()
-            ));
-          } else
-            return null;
-        } else {
-          if (index % 20 === 0) {
-            return /* @__PURE__ */ FSComponent.buildComponent("g", { key: index }, drawTick3(false, index * this.spacing), /* @__PURE__ */ FSComponent.buildComponent(
-              "text",
-              {
-                x: "53",
-                y: -index * this.spacing + 9,
-                stroke: "black",
-                "stroke-width": 2,
-                "paint-order": "stroke",
-                "text-anchor": "end",
-                fill: "white",
-                "font-size": "22"
-              },
-              index.toString()
-            ));
-          } else if (index % 20 === 10) {
-            return drawTick3(false, index * this.spacing);
-          } else
-            return null;
-        }
-      });
+      this.aisTapeRef = FSComponent.createRef();
     }
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
       sub.on("airspeed").whenChanged().handle((asi) => {
-        var _a2;
-        (_a2 = this.asTapeRef.instance) == null ? void 0 : _a2.setAttribute(
-          "transform",
-          `translate(0,${ClampValue(asi, 30, 900) * this.airspeedTapeScaling + this.startOffset})`
-        );
+        var _a2, _b;
+        if (asi >= 30) {
+          (_a2 = this.aisTapeRef.instance) == null ? void 0 : _a2.setAttribute(
+            "transform",
+            `translate(0, ${baseline - count * 3 + asi * 3 - startValue * 3})`
+          );
+        } else {
+          (_b = this.aisTapeRef.instance) == null ? void 0 : _b.setAttribute("transform", `translate(0, ${baseline - count * 3})`);
+        }
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(0 54)" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 0, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "tapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 34, width: 81, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#tapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.asTapeRef }, this.Tape)), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 32 L 81 364", fill: "black", fillTop: "white", strokeWidthTop: 2, StrokeWidth: 3 }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 54, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "tapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 88, width: 81, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#tapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.aisTapeRef }, renderTape())), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 86 L 81 418", fill: "black", fillTop: "white", strokeWidthTop: 2, strokeWidth: 3 }));
     }
   };
 
@@ -32428,7 +32389,7 @@
         }
         this.singleDigitScrollRef.instance.setAttribute(
           "transform",
-          `translate(${0}, ${Math.max(ias % 10 * digitSpacing2, 0)})`
+          `translate(${0}, ${Math.max(ias % 10 * digitSpacing2 + 250, 0)})`
         );
         this.tenthDigitScrollRef.instance.setAttribute(
           "transform",
@@ -32450,7 +32411,7 @@
           "stroke-width": 2,
           "stroke-linecap": "round"
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254" })), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#clip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.singleDigitScrollRef }, renderDigitTape2()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenthDigitScrollRef }, renderDigitTape2()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.hundredthDigitScrollRef }, renderDigitTape2(true))), /* @__PURE__ */ FSComponent.buildComponent(
+      ), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "boxClip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254" })), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#boxClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.singleDigitScrollRef }, renderDigitTape2()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenthDigitScrollRef }, renderDigitTape2()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.hundredthDigitScrollRef }, renderDigitTape2(true))), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           d: "M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254",
@@ -32662,16 +32623,16 @@
   var stroke = "white";
   var xAxis = 254;
   var leftBound = 560;
-  var count = 5;
+  var count2 = 5;
   var smallSpacing = 5;
   var bigSpacing = smallSpacing * 5;
   var tiltFactor = 0.1;
   var fpmToPixel = (fpm) => {
-    return -fpm * count * (tiltFactor + 1) * 5e-3;
+    return -fpm * count2 * (tiltFactor + 1) * 5e-3;
   };
   var renderMarkers = () => {
     const markers = [];
-    for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
+    for (let y = 0; y < count2 * smallSpacing; y += smallSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
@@ -32684,7 +32645,7 @@
         )
       );
     }
-    for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
+    for (let y = 0; y < count2 * smallSpacing; y += smallSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
@@ -32697,7 +32658,7 @@
         )
       );
     }
-    for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
+    for (let y = 0; y < count2 * bigSpacing; y += bigSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
@@ -32710,7 +32671,7 @@
         )
       );
     }
-    for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
+    for (let y = 0; y < count2 * bigSpacing; y += bigSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",

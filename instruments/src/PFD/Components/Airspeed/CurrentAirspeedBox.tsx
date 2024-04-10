@@ -50,7 +50,7 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
 
         this.singleDigitScrollRef.instance.setAttribute(
           'transform',
-          `translate(${0}, ${Math.max((ias % 10) * digitSpacing, 0)})`
+          `translate(${0}, ${Math.max((ias % 10) * digitSpacing + 250, 0)})`
         )
 
         this.tenthDigitScrollRef.instance.setAttribute(
@@ -76,11 +76,11 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
           stroke-linecap="round"
         />
 
-        <clipPath id="clip">
+        <clipPath id="boxClip">
           <path d="M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254" />
         </clipPath>
 
-        <g clip-path="url(#clip)">
+        <g clip-path="url(#boxClip)">
           <g ref={this.singleDigitScrollRef}>{renderDigitTape()}</g>
           <g ref={this.tenthDigitScrollRef}>{renderDigitTape()}</g>
           <g ref={this.hundredthDigitScrollRef}>{renderDigitTape(true)}</g>

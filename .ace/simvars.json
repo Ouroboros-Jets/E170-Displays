@@ -17,7 +17,7 @@
     "name": "OBJ_E170_MFD_ROUTER_BOTTOM",
     "index": 0,
     "unit": "Number",
-    "value": 2.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -99,7 +99,7 @@
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 500.0
+      "max": 250.0
     },
     "pinned": null
   },
@@ -108,13 +108,13 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 0.0,
+    "value": 120.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
       "max": 250.0
     },
-    "pinned": null
+    "pinned": true
   },
   {
     "type": "A",
@@ -173,7 +173,7 @@
     "name": "AIRSPEED MACH",
     "index": 0,
     "unit": "Mach",
-    "value": 0.0,
+    "value": 87.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -199,7 +199,7 @@
     "name": "VERTICAL SPEED",
     "index": 0,
     "unit": "Feet per second",
-    "value": 2400.0,
+    "value": 250.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -589,7 +589,7 @@
     "name": "AUTOPILOT HEADING LOCK DIR",
     "index": 0,
     "unit": "degrees",
-    "value": 39.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
