@@ -16,18 +16,18 @@ export default class GspdIndicator extends DisplayComponent<T_GspdIndicatorProps
     sub
       .on('ground_speed')
       .whenChanged()
-      .handle((alt) => {
-        if (alt > 999) {
+      .handle((spd) => {
+        if (spd > 999) {
           this.grndSpdRef.instance.textContent = '999'
           return
         }
 
-        if (alt < -99) {
+        if (spd < -99) {
           this.grndSpdRef.instance.textContent = '-99'
           return
         }
 
-        this.grndSpdRef.instance.textContent = alt.toString()
+        this.grndSpdRef.instance.textContent = spd.toString()
       })
   }
 

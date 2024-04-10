@@ -79,8 +79,8 @@ export default class Compass extends DisplayComponent<T_CompassProps> {
     sub
       .on('heading')
       .whenChanged()
-      .handle((alt) => {
-        this.compassRef.instance?.setAttribute('transform', `rotate(${-alt}, 275, 188)`)
+      .handle((hdg) => {
+        this.compassRef.instance?.setAttribute('transform', `rotate(${-hdg}, 275, 188)`)
       })
   }
 

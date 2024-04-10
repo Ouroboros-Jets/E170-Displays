@@ -84,14 +84,14 @@ export default class VerticalSpeedIndicator extends DisplayComponent<T_VerticalS
     sub
       .on('vertical_speed')
       .whenChanged()
-      .handle((alt) => {
-        alt = Math.min(Math.max(alt, -4000), 4000)
-        const vSpd = fpmToPixel(alt)
-        this.vSpdNeedleRef.instance.setAttribute('d', `M 560 ${vSpd + 254} L 675  254`)
+      .handle((vSpd) => {
+        vSpd = Math.min(Math.max(vSpd, -4000), 4000)
+        const vSpdPx = fpmToPixel(vSpd)
+        this.vSpdNeedleRef.instance.setAttribute('d', `M 560 ${vSpdPx + 254} L 675  254`)
 
-        if (alt >= 500 || alt <= -500) {
+        if (vSpd >= 500 || vSpd <= -500) {
           this.vSpdBoxRef.instance.setAttribute('opacity', '1')
-          this.vSpdValueRef.instance.textContent = (Math.round(alt / 100) * 100).toString()
+          this.vSpdValueRef.instance.textContent = (Math.round(vSpd / 100) * 100).toString()
         } else {
           this.vSpdBoxRef.instance.setAttribute('opacity', '0')
         }

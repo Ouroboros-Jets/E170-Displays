@@ -16,7 +16,7 @@ const renderDigitTape = (removeZeros?: boolean): JSX.Element[] => {
   for (let i = 0; i < 30; i++) {
     const digit = 9 - (i % 10)
     digits.push(
-      <text x={55} y={digitSpacing * i - 460} font-size={30} text-anchor="middle" fill={Colors.GREEN}>
+      <text x={55} y={digitSpacing * i - 264} font-size={30} text-anchor="middle" fill={Colors.GREEN}>
         {removeZeros && digit === 0 ? '' : digit.toString()}
       </text>
     )
@@ -25,7 +25,7 @@ const renderDigitTape = (removeZeros?: boolean): JSX.Element[] => {
   return digits
 }
 
-class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
+class CurrentAltitudeBox extends DisplayComponent<SelectedAirspeedBoxProps> {
   singleDigitScrollRef = FSComponent.createRef<SVGGElement>()
   tenthDigitScrollRef = FSComponent.createRef<SVGGElement>()
   hundredthDigitScrollRef = FSComponent.createRef<SVGGElement>()
@@ -35,10 +35,10 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
 
     const sub = this.props.bus.getSubscriber<PFDSimvars>()
     sub
-      .on('airspeed')
+      .on('altitude')
       .whenChanged()
-      .handle((ias) => {
-        if (ias < 30) {
+      .handle((alt) => {
+        if (alt < 30) {
           this.singleDigitScrollRef.instance.setAttribute('opacity', '0')
           this.tenthDigitScrollRef.instance.setAttribute('opacity', '0')
           this.hundredthDigitScrollRef.instance.setAttribute('opacity', '0')
@@ -50,17 +50,17 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
 
         this.singleDigitScrollRef.instance.setAttribute(
           'transform',
-          `translate(${0}, ${Math.max((ias % 10) * digitSpacing, 0)})`
+          `translate(${0}, ${Math.max((alt % 10) * digitSpacing, 0)})`
         )
 
         this.tenthDigitScrollRef.instance.setAttribute(
           'transform',
-          `translate(${-1 * verticalScrollsSpacing}, ${Math.max(Math.floor((ias / 10) % 10) * digitSpacing, 0)})`
+          `translate(${-1 * verticalScrollsSpacing}, ${Math.max(Math.floor((alt / 10) % 10) * digitSpacing, 0)})`
         )
 
         this.hundredthDigitScrollRef.instance.setAttribute(
           'transform',
-          `translate(${-2 * verticalScrollsSpacing}, ${Math.max(Math.floor((ias / 100) % 100) * digitSpacing, 0)})`
+          `translate(${-2 * verticalScrollsSpacing}, ${Math.max(Math.floor((alt / 100) % 100) * digitSpacing, 0)})`
         )
       })
   }
@@ -69,7 +69,7 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
     return (
       <g>
         <path
-          d="M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254"
+          d="M 536 254 L 536 277 L 515 277 L 515 269 L 470 269 L 456 254 L 470 239 L 514 239 L 514 231 L 536 231 L 536 254"
           fill="black"
           stroke="white"
           stroke-width={2}
@@ -77,7 +77,7 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
         />
 
         <clipPath id="clip">
-          <path d="M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254" />
+          <path d="" />
         </clipPath>
 
         <g clip-path="url(#clip)">
@@ -86,16 +86,10 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
           <g ref={this.hundredthDigitScrollRef}>{renderDigitTape(true)}</g>
         </g>
 
-        <path
-          d="M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254"
-          fill="transparent"
-          stroke="white"
-          stroke-width={2}
-          stroke-linecap="round"
-        />
+        <path d="" fill="transparent" stroke="white" stroke-width={2} stroke-linecap="round" />
       </g>
     )
   }
 }
 
-export default CurrentAirspeedBox
+export default CurrentAltitudeBox

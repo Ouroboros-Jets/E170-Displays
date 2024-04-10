@@ -16,8 +16,8 @@ export default class RealHdgIndicator extends DisplayComponent<T_RealHdgIndicato
     sub
       .on('heading')
       .whenChanged()
-      .handle((alt) => {
-        this.hdgRef.instance.textContent = alt.toString().padStart(3, '0')
+      .handle((hdg) => {
+        this.hdgRef.instance.textContent = hdg.toString().padStart(3, '0')
       })
   }
 

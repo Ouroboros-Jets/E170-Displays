@@ -18,12 +18,12 @@ export default class LockHdgIndicator extends DisplayComponent<T_LockHdgIndicato
     sub
       .on('heading')
       .whenChanged()
-      .handle((alt) => {
-        this.heading = alt
+      .handle((hdg) => {
+        this.heading = hdg
       })
 
-    sub.on('heading_lock').handle((alt) => {
-      this.hdgRef.instance?.setAttribute('transform', `translate(275, 188) rotate(${(-this.heading + alt) % 360})`)
+    sub.on('heading_lock').handle((hdg) => {
+      this.hdgRef.instance?.setAttribute('transform', `translate(275, 188) rotate(${(-this.heading + hdg) % 360})`)
     })
   }
 

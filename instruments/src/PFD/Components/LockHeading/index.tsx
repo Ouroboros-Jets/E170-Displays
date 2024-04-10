@@ -16,8 +16,8 @@ export default class LockHdgIndicator extends DisplayComponent<T_LockHdgIndicato
     sub
       .on('heading_lock')
       .whenChanged()
-      .handle((alt) => {
-        this.hdgRef.instance.textContent = alt.toString().padStart(3, '0')
+      .handle((hdg) => {
+        this.hdgRef.instance.textContent = hdg.toString().padStart(3, '0')
       })
   }
 

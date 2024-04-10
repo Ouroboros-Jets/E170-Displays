@@ -127,7 +127,7 @@ export class AltitudeTape extends DisplayComponent<AltitudeTapeProps> {
 
   public render(): VNode {
     return (
-      <g>
+      <g transform="translate(426 28)">
         <defs>
           <clipPath id="AltitudetapeClip">
             <rect x={29} y={60} width={83} height={333} />
@@ -140,7 +140,7 @@ export class AltitudeTape extends DisplayComponent<AltitudeTapeProps> {
             {this.tape}
           </g>
         </g>
-        <path d="M 29 58 L 29 391" stroke="white" stroke-width="2" fill="none" />
+        <path d="M 29 58 L 29 393" stroke="white" stroke-width="2" fill="none" />
       </g>
     )
   }
