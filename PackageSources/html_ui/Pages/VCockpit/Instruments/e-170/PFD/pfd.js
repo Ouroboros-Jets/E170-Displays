@@ -32093,24 +32093,27 @@
 
   // instruments/src/PFD/Components/Altitude/AltitudeTape.tsx
   var baseline = 254;
-  var maxAltitude = 5e4;
+  var maxAltitude = 5e5;
   var renderTape = () => {
     const elements = [];
-    for (let i = 0; i < maxAltitude; i += maxAltitude / 100) {
-      const iteration = i / (maxAltitude / 100);
+    for (let alt = 0; alt < maxAltitude; alt += maxAltitude / 1e3) {
+      const iteration = alt / (maxAltitude / 1e3);
       if (iteration % 5 !== 0) {
-        elements.push(/* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 455 ${i * 0.06} L 465 ${i * 0.06}`, stroke: "white", "stroke-width": 2 }));
+        elements.push(/* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 455 ${alt * 0.06} L 465 ${alt * 0.06}`, stroke: "white", "stroke-width": 2 }));
       } else {
         elements.push(
           /* @__PURE__ */ FSComponent.buildComponent(
             "path",
             {
-              d: `M 455 ${i * 0.06} L 490 ${i * 0.06 - 35} L 490 ${i * 0.06 - 115} L 455 ${i * 0.06 - 150}`,
+              d: `M 455 ${alt * 0.06} L 500 ${alt * 0.06 - 40} L 500 ${alt * 0.06 - 110} L 455 ${alt * 0.06 - 150}`,
               stroke: "white",
               "stroke-width": 2,
               fill: "transparent"
             }
           )
+        );
+        elements.push(
+          /* @__PURE__ */ FSComponent.buildComponent("text", { x: 470, y: alt * 0.06 + 7, "font-size": 20, "text-anchor": "start", fill: "white" }, ((maxAltitude - alt) / 5).toString())
         );
       }
     }
