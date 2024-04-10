@@ -32225,32 +32225,102 @@
     }
   };
 
+  // instruments/common/util/Colors.ts
+  var Colors = /* @__PURE__ */ ((Colors2) => {
+    Colors2["GREEN"] = "#04E304";
+    Colors2["PINK"] = "#D202D4";
+    Colors2["CYAN"] = "#00FEFE";
+    Colors2["YELLOW"] = "YELLOW";
+    return Colors2;
+  })(Colors || {});
+  var Colors_default = Colors;
+
   // instruments/src/PFD/Components/Airspeed/SelectedAirspeedBox.tsx
   var SelectedAirspeedBox = class extends DisplayComponent {
     constructor() {
       super(...arguments);
-      this.invalidOutput = "---";
-      this.getString = () => {
-        switch (this.props.mode) {
-          case 0 /* FMS */:
-            return {
-              element: /* @__PURE__ */ FSComponent.buildComponent("tspan", null, this.props.selectedAirspeed, this.props.mach ? /* @__PURE__ */ FSComponent.buildComponent("tspan", { fill: "white", "font-size": 14 }, "M") : ""),
-              color: "magenta"
-            };
-          case 1 /* MAN */:
-            return {
-              element: /* @__PURE__ */ FSComponent.buildComponent("tspan", null, this.props.selectedAirspeed, this.props.mach ? /* @__PURE__ */ FSComponent.buildComponent("tspan", { fill: "white", "font-size": 14 }, "M") : ""),
-              color: "cyan"
-            };
-          case 2 /* INOP */:
-            return { element: /* @__PURE__ */ FSComponent.buildComponent("tspan", null, this.invalidOutput), color: "yellow" };
-        }
-      };
+      this.airspeedSelectedRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("airspeed_selected").whenChanged().handle((ais) => {
+        this.airspeedSelectedRef.instance.textContent = ais.toString();
+      });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 1, y: 1, rx: 2, ry: 2, width: 80, height: 33, "stroke-width": 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 41, y: 28, "text-anchor": "middle", fill: this.getString().color, "font-size": "30" }, this.getString().element));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 1, y: 1, rx: 2, ry: 2, width: 80, height: 33, "stroke-width": 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.airspeedSelectedRef, x: 41, y: 29, "text-anchor": "middle", fill: Colors_default.PINK, "font-size": "30" }));
     }
   };
+
+  // instruments/src/PFD/Components/Airspeed/CurrentAirspeedBox.tsx
+  var digitSpacing = 25;
+  var verticalScrollsSpacing = 20;
+  var renderDigitTape = (removeZeros) => {
+    const digits = [];
+    for (let i = 0; i < 30; i++) {
+      const digit = 9 - i % 10;
+      digits.push(
+        /* @__PURE__ */ FSComponent.buildComponent("text", { x: 55, y: digitSpacing * i - 264, "font-size": 30, "text-anchor": "middle", fill: Colors_default.GREEN }, removeZeros && digit === 0 ? "" : digit.toString())
+      );
+    }
+    return digits;
+  };
+  var CurrentAirspeedBox = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.singleDigitScrollRef = FSComponent.createRef();
+      this.tenthDigitScrollRef = FSComponent.createRef();
+      this.hundredthDigitScrollRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("airspeed").whenChanged().handle((ais) => {
+        if (ais < 30) {
+          this.singleDigitScrollRef.instance.setAttribute("opacity", "0");
+          this.tenthDigitScrollRef.instance.setAttribute("opacity", "0");
+          this.hundredthDigitScrollRef.instance.setAttribute("opacity", "0");
+        } else {
+          this.singleDigitScrollRef.instance.setAttribute("opacity", "1");
+          this.tenthDigitScrollRef.instance.setAttribute("opacity", "1");
+          this.hundredthDigitScrollRef.instance.setAttribute("opacity", "1");
+        }
+        this.singleDigitScrollRef.instance.setAttribute(
+          "transform",
+          `translate(${0}, ${Math.max(ais % 10 * digitSpacing, 0)})`
+        );
+        this.tenthDigitScrollRef.instance.setAttribute(
+          "transform",
+          `translate(${-1 * verticalScrollsSpacing}, ${Math.max(Math.floor(ais / 10 % 10) * digitSpacing, 0)})`
+        );
+        this.hundredthDigitScrollRef.instance.setAttribute(
+          "transform",
+          `translate(${-2 * verticalScrollsSpacing}, ${Math.max(Math.floor(ais / 100 % 100) * digitSpacing, 0)})`
+        );
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 2 200 L 2 215 L 45 215 L 45 230 L 65 230 L 65 208 L 80 200 L 65 192 L 65 170 L 45 170 L 45 185 L 2 185 L 2 200",
+          fill: "black",
+          stroke: "white",
+          "stroke-width": 3
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 2 200 L 2 215 L 45 215 L 45 230 L 65 230 L 65 208 L 80 200 L 65 192 L 65 170 L 45 170 L 45 185 L 2 185 L 2 200" })), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#clip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.singleDigitScrollRef }, renderDigitTape()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenthDigitScrollRef }, renderDigitTape()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.hundredthDigitScrollRef }, renderDigitTape(true))), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 2 200 L 2 215 L 45 215 L 45 230 L 65 230 L 65 208 L 80 200 L 65 192 L 65 170 L 45 170 L 45 185 L 2 185 L 2 200",
+          fill: "transparent",
+          stroke: "white",
+          "stroke-width": 3
+        }
+      ));
+    }
+  };
+  var CurrentAirspeedBox_default = CurrentAirspeedBox;
 
   // instruments/src/PFD/Components/Airspeed/AirspeedTape.tsx
   var drawTick3 = (small, y) => {
@@ -32331,7 +32401,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(0 54)" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 0, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "tapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 34, width: 81, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#tapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.asTapeRef }, this.Tape)), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 32 L 81 364", fill: "black", fillTop: "white", strokeWidthTop: 2, StrokeWidth: 3 }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAirspeedBox, { selectedAirspeed: 0.79, mach: true, mode: 1 }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(0 54)" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 0, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "tapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 34, width: 81, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#tapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.asTapeRef }, this.Tape)), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 32 L 81 364", fill: "black", fillTop: "white", strokeWidthTop: 2, StrokeWidth: 3 }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAirspeedBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAirspeedBox_default, { bus: this.props.bus }));
     }
   };
 
@@ -32342,15 +32412,6 @@
     }
   };
   var Airspeed_default = Airspeed;
-
-  // instruments/common/util/Colors.ts
-  var Colors = /* @__PURE__ */ ((Colors2) => {
-    Colors2["GREEN"] = "#04E304";
-    Colors2["PINK"] = "#D202D4";
-    Colors2["CYAN"] = "#00FEFE";
-    return Colors2;
-  })(Colors || {});
-  var Colors_default = Colors;
 
   // instruments/src/PFD/Components/Compass/RealHdg.tsx
   var RealHdgIndicator = class extends DisplayComponent {
@@ -32671,7 +32732,8 @@
     ["heading", { name: "PLANE HEADING DEGREES MAGNETIC" /* heading */, type: SimVarValueType.Degree }],
     ["ground_speed", { name: "GROUND VELOCITY" /* ground_speed */, type: SimVarValueType.Knots }],
     ["heading_lock", { name: "AUTOPILOT HEADING LOCK DIR" /* heading_lock */, type: SimVarValueType.Degree }],
-    ["vertical_speed", { name: "VERTICAL SPEED" /* vertical_speed */, type: SimVarValueType.Feet }]
+    ["vertical_speed", { name: "VERTICAL SPEED" /* vertical_speed */, type: SimVarValueType.Feet }],
+    ["airspeed_selected", { name: "AIRSPEED SELECT INDICATED OR TRUE" /* airspeed_selected */, type: SimVarValueType.Knots }]
   ]);
 
   // instruments/src/PFD/instrument.tsx

@@ -1,61 +1,31 @@
-import { FSComponent, DisplayComponent, type VNode, type ComponentProps } from '@microsoft/msfs-sdk'
-import { E_AirspeedTypes } from './airspeedTypes'
+import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
+import Colors from 'instruments/common/util/Colors'
+import { type PFDSimvars } from '../PFDSimVarPublisher'
 
 type SelectedAirspeedBoxProps = ComponentProps & {
-  selectedAirspeed: number
-  mach: boolean
-  mode: E_AirspeedTypes
+  bus: EventBus
 }
 
 export class SelectedAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
-  invalidOutput: string = '---'
+  airspeedSelectedRef = FSComponent.createRef<SVGTextElement>()
 
-  getString = (): { element: JSX.Element; color: string } => {
-    switch (this.props.mode) {
-      case E_AirspeedTypes.FMS:
-        return {
-          element: (
-            <tspan>
-              {this.props.selectedAirspeed}
-              {this.props.mach ? (
-                <tspan fill="white" font-size={14}>
-                  M
-                </tspan>
-              ) : (
-                ''
-              )}
-            </tspan>
-          ),
-          color: 'magenta'
-        }
-      case E_AirspeedTypes.MAN:
-        return {
-          element: (
-            <tspan>
-              {this.props.selectedAirspeed}
-              {this.props.mach ? (
-                <tspan fill="white" font-size={14}>
-                  M
-                </tspan>
-              ) : (
-                ''
-              )}
-            </tspan>
-          ),
-          color: 'cyan'
-        }
-      case E_AirspeedTypes.INOP:
-        return { element: <tspan>{this.invalidOutput}</tspan>, color: 'yellow' }
-    }
+  public onAfterRender(node: VNode): void {
+    super.onAfterRender(node)
+
+    const sub = this.props.bus.getSubscriber<PFDSimvars>()
+    sub
+      .on('airspeed_selected')
+      .whenChanged()
+      .handle((ais) => {
+        this.airspeedSelectedRef.instance.textContent = ais.toString()
+      })
   }
 
   public render(): VNode {
     return (
       <g>
         <rect x={1} y={1} rx={2} ry={2} width={80} height={33} stroke-width={2} fill="transparent" stroke="white" />
-        <text x={41} y={28} text-anchor="middle" fill={this.getString().color} font-size="30">
-          {this.getString().element}
-        </text>
+        <text ref={this.airspeedSelectedRef} x={41} y={29} text-anchor="middle" fill={Colors.PINK} font-size="30" />
       </g>
     )
   }

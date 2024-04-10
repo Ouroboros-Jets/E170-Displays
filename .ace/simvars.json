@@ -108,11 +108,9 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 0.0,
+    "value": "",
     "control": {
-      "type": "Slider",
-      "min": 0.0,
-      "max": 250.0
+      "type": "Text"
     },
     "pinned": null
   },
@@ -589,7 +587,20 @@
     "name": "AUTOPILOT HEADING LOCK DIR",
     "index": 0,
     "unit": "degrees",
-    "value": 0.0,
+    "value": 39.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "AIRSPEED SELECT INDICATED OR TRUE",
+    "index": 0,
+    "unit": "knots",
+    "value": 250.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

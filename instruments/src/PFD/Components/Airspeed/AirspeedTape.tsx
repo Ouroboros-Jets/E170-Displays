@@ -5,6 +5,7 @@ import { PathWithBlackBackground } from '../../Util/PathWithBlackBackground'
 import { createArray } from 'instruments/common/util/createArray'
 import { type PFDSimvars } from '../PFDSimVarPublisher'
 import { SelectedAirspeedBox } from './SelectedAirspeedBox'
+import CurrentAirspeedBox from './CurrentAirspeedBox'
 
 type AirspeedTapeProps = ComponentProps & {
   bus: EventBus
@@ -110,7 +111,8 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
         </g>
         <PathWithBlackBackground d="M 81 32 L 81 364" fill="black" fillTop="white" strokeWidthTop={2} StrokeWidth={3} />
 
-        <SelectedAirspeedBox selectedAirspeed={0.79} mach={true} mode={1} />
+        <SelectedAirspeedBox bus={this.props.bus} />
+        <CurrentAirspeedBox bus={this.props.bus} />
       </g>
     )
   }
