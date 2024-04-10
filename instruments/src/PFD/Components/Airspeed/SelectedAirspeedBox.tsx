@@ -16,8 +16,8 @@ export class SelectedAirspeedBox extends DisplayComponent<SelectedAirspeedBoxPro
     sub
       .on('airspeed_selected')
       .whenChanged()
-      .handle((ais) => {
-        this.airspeedSelectedRef.instance.textContent = ais.toString()
+      .handle((ias) => {
+        this.airspeedSelectedRef.instance.textContent = ias.toString()
       })
   }
 

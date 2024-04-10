@@ -99,7 +99,7 @@
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 250.0
+      "max": 10000.0
     },
     "pinned": null
   },
@@ -108,13 +108,13 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 120.0,
+    "value": 184.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
       "max": 250.0
     },
-    "pinned": true
+    "pinned": null
   },
   {
     "type": "A",
@@ -199,11 +199,11 @@
     "name": "VERTICAL SPEED",
     "index": 0,
     "unit": "Feet per second",
-    "value": 250.0,
+    "value": 1367.0,
     "control": {
       "type": "Slider",
-      "min": 0.0,
-      "max": 250.0
+      "min": 1.0,
+      "max": 4000.0
     },
     "pinned": null
   },
