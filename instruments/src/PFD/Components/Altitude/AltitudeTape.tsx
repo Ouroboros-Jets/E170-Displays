@@ -6,20 +6,17 @@ type AltitudeTapeProps = ComponentProps & {
 }
 
 const baseline = 254
-const maxAltitude = 500000
+const minAltitude = -2000
+const maxAltitude = 60000 + minAltitude
 
 const renderTape = (): JSX.Element[] => {
   const elements: JSX.Element[] = []
 
-  for (let alt = 0; alt < maxAltitude; alt += maxAltitude / 1000) {
-    const iteration = alt / (maxAltitude / 1000)
-
-    if (iteration % 5 !== 0) {
-      elements.push(<path d={`M 455 ${alt * 0.06} L 465 ${alt * 0.06}`} stroke="white" stroke-width={2} />)
-    } else {
+  for (let alt = minAltitude; alt < maxAltitude; alt += 125) {
+    if (alt % 500 === 0) {
       elements.push(
         <path
-          d={`M 455 ${alt * 0.06} L 500 ${alt * 0.06 - 40} L 500 ${alt * 0.06 - 110} L 455 ${alt * 0.06 - 150}`}
+          d={`M 455 ${alt * 0.3} L 500 ${alt * 0.3 + 40} L 500 ${alt * 0.3 + 110} L 455 ${alt * 0.3 + 150}`}
           stroke="white"
           stroke-width={2}
           fill="transparent"
@@ -27,10 +24,12 @@ const renderTape = (): JSX.Element[] => {
       )
 
       elements.push(
-        <text x={470} y={alt * 0.06 + 7} font-size={20} text-anchor="start" fill="white">
-          {((maxAltitude - alt) / 5).toString()}
+        <text x={470} y={alt * 0.3 + 7} font-size={20} text-anchor="start" fill="white">
+          {(maxAltitude - alt).toString()}
         </text>
       )
+    } else {
+      elements.push(<path d={`M 455 ${alt * 0.3} L 465 ${alt * 0.3}`} stroke="white" stroke-width={2} />)
     }
   }
 
@@ -48,10 +47,7 @@ export class AltitudeTape extends DisplayComponent<AltitudeTapeProps> {
       .on('altitude')
       .whenChanged()
       .handle((alt) => {
-        this.tapeRef.instance?.setAttribute(
-          'transform',
-          `translate(0, ${baseline - maxAltitude * 0.06 + alt * 0.06 * 5})`
-        )
+        this.tapeRef.instance?.setAttribute('transform', `translate(0, ${baseline - maxAltitude * 0.3 + alt * 0.3})`)
       })
   }
 

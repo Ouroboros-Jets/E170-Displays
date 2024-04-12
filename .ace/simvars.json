@@ -95,7 +95,7 @@
     "name": "INDICATED ALTITUDE",
     "index": 0,
     "unit": "Feet",
-    "value": 250.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -108,7 +108,7 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 0.0,
+    "value": 120.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -199,7 +199,7 @@
     "name": "VERTICAL SPEED",
     "index": 0,
     "unit": "Feet per second",
-    "value": 1367.0,
+    "value": 1500.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -537,7 +537,7 @@
     "name": "PLANE HEADING DEGREES MAGNETIC",
     "index": 0,
     "unit": "radians",
-    "value": 0.0,
+    "value": 184.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -563,7 +563,7 @@
     "name": "PLANE HEADING DEGREES TRUE",
     "index": 0,
     "unit": "degrees",
-    "value": 0.0,
+    "value": 111.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -576,7 +576,7 @@
     "name": "GROUND VELOCITY",
     "index": 0,
     "unit": "knots",
-    "value": 0.0,
+    "value": 90.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -589,7 +589,7 @@
     "name": "AUTOPILOT HEADING LOCK DIR",
     "index": 0,
     "unit": "degrees",
-    "value": 0.0,
+    "value": 40.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

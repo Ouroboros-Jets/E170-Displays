@@ -8,14 +8,13 @@ type AirspeedTapeProps = ComponentProps & {
 }
 
 const baseline = 254
-const startValue = 30
-const iterator = 10
 const stretch = 3
-const count = 600
+const minSpeed = 30
+const maxSpeed = 600 - minSpeed
 
 const renderTape = (): JSX.Element[] => {
   const elements: JSX.Element[] = []
-  for (let i = 0; i < count; i += iterator) {
+  for (let i = -minSpeed; i < maxSpeed; i += 10) {
     if (i >= 0) {
       elements.push(
         <PathWithBlackBackground
@@ -30,7 +29,7 @@ const renderTape = (): JSX.Element[] => {
       const textVertOffset = 6
       elements.push(
         <text x={40} y={i * stretch + textVertOffset} text-anchor="middle" font-size={17} fill="white">
-          {(count - i + startValue).toString()}
+          {(maxSpeed - i + minSpeed).toString()}
         </text>
       )
     }
@@ -50,13 +49,13 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
       .on('airspeed')
       .whenChanged()
       .handle((asi) => {
-        if (asi >= 30) {
+        if (asi >= minSpeed) {
           this.aisTapeRef.instance?.setAttribute(
             'transform',
-            `translate(0, ${baseline - count * 3 + asi * 3 - startValue * 3})`
+            `translate(0, ${baseline - maxSpeed * 3 + asi * 3 - minSpeed * 3})`
           )
         } else {
-          this.aisTapeRef.instance?.setAttribute('transform', `translate(0, ${baseline - count * 3})`)
+          this.aisTapeRef.instance?.setAttribute('transform', `translate(0, ${baseline - maxSpeed * 3})`)
         }
       })
   }

@@ -72,7 +72,7 @@ class CurrentAltitudeBox extends DisplayComponent<SelectedAirspeedBoxProps> {
     return (
       <g>
         <path
-          d="M 536 254 L 536 277 L 515 277 L 515 269 L 470 269 L 456 254 L 470 239 L 514 239 L 514 231 L 536 231 L 536 254"
+          d="M 536 254 L 536 277 L 515 277 L 515 269 L 472 269 L 456 254 L 472 239 L 514 239 L 514 231 L 536 231 L 536 254"
           fill="black"
           stroke="white"
           stroke-width={2}
@@ -80,7 +80,7 @@ class CurrentAltitudeBox extends DisplayComponent<SelectedAirspeedBoxProps> {
         />
 
         <clipPath id="clip">
-          <path d="M 536 254 L 536 277 L 515 277 L 515 269 L 470 269 L 456 254 L 470 239 L 514 239 L 514 231 L 536 231 L 536 254" />
+          <path d="M 536 254 L 536 277 L 515 277 L 515 269 L 472 269 L 456 254 L 472 239 L 514 239 L 514 231 L 536 231 L 536 254" />
         </clipPath>
 
         <g clip-path="url(#clip)">
@@ -91,7 +91,7 @@ class CurrentAltitudeBox extends DisplayComponent<SelectedAirspeedBoxProps> {
         </g>
 
         <path
-          d="M 536 254 L 536 277 L 515 277 L 515 269 L 470 269 L 456 254 L 470 239 L 514 239 L 514 231 L 536 231 L 536 254"
+          d="M 536 254 L 536 277 L 515 277 L 515 269 L 472 269 L 456 254 L 472 239 L 514 239 L 514 231 L 536 231 L 536 254"
           fill="transparent"
           stroke="white"
           stroke-width={2}

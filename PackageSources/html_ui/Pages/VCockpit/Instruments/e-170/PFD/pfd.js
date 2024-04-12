@@ -6961,22 +6961,22 @@
       if (!start || !end) {
         return void 0;
       }
-      let startValue2;
+      let startValue;
       let endValue;
       if (dimension === this.dimensionCount - 1) {
-        startValue2 = start.value;
+        startValue = start.value;
         endValue = end.value;
       } else {
-        startValue2 = this.lookupHelper(key, dimension + 1, start.array);
+        startValue = this.lookupHelper(key, dimension + 1, start.array);
         endValue = this.lookupHelper(key, dimension + 1, end.array);
       }
-      if (startValue2 === void 0 || endValue === void 0) {
+      if (startValue === void 0 || endValue === void 0) {
         return void 0;
       }
-      if (startValue2 === endValue) {
-        return startValue2;
+      if (startValue === endValue) {
+        return startValue;
       }
-      return MathUtils.lerp(dimensionKey, start.key, end.key, startValue2, endValue);
+      return MathUtils.lerp(dimensionKey, start.key, end.key, startValue, endValue);
     }
   };
   LerpLookupTable.BREAKPOINT_COMPARATOR = (a, b) => a.key - b.key;
@@ -7078,19 +7078,19 @@
       if (!start || !end) {
         return void 0;
       }
-      let startValue2;
+      let startValue;
       let endValue;
       if (dimension === this.dimensionCount - 1) {
-        startValue2 = start.value;
+        startValue = start.value;
         endValue = end.value;
       } else {
-        startValue2 = this.lookupHelper(key, dimension + 1, start.array, this.tempVectors[dimension * 2]);
+        startValue = this.lookupHelper(key, dimension + 1, start.array, this.tempVectors[dimension * 2]);
         endValue = this.lookupHelper(key, dimension + 1, end.array, this.tempVectors[dimension * 2 + 1]);
       }
-      if (startValue2 === void 0 || endValue === void 0) {
+      if (startValue === void 0 || endValue === void 0) {
         return void 0;
       }
-      return MathUtils.lerpVector(out, dimensionKey, start.key, end.key, startValue2, endValue);
+      return MathUtils.lerpVector(out, dimensionKey, start.key, end.key, startValue, endValue);
     }
   };
   LerpVectorLookupTable.BREAKPOINT_COMPARATOR = (a, b) => a.key - b.key;
@@ -10027,9 +10027,9 @@
     constructor() {
       this.procTurnBuilder = new ProcedureTurnBuilder();
     }
-    computeTurns(legs, startIndex, count3, desiredTurnRadius, desiredCourseReversalTurnRadius, desiredTurnAnticipationTurnRadius) {
+    computeTurns(legs, startIndex, count2, desiredTurnRadius, desiredCourseReversalTurnRadius, desiredTurnAnticipationTurnRadius) {
       var _a2, _b, _c, _d;
-      const end = startIndex + count3;
+      const end = startIndex + count2;
       let currentIndex = startIndex;
       while (currentIndex < end) {
         const fromLeg = legs[currentIndex];
@@ -14351,12 +14351,12 @@
     static awaitDelay(delay) {
       return new Promise((resolve) => setTimeout(() => resolve(), delay));
     }
-    static awaitFrames(count3, glassCockpitRefresh = false) {
+    static awaitFrames(count2, glassCockpitRefresh = false) {
       let elapsedFrameCount = 0;
       if (glassCockpitRefresh) {
         return new Promise((resolve) => {
           const callback = () => {
-            if (++elapsedFrameCount > count3) {
+            if (++elapsedFrameCount > count2) {
               resolve();
             } else {
               requestAnimationFrame(callback);
@@ -14367,7 +14367,7 @@
       } else {
         return new Promise((resolve) => {
           const id = setInterval(() => {
-            if (++elapsedFrameCount > count3) {
+            if (++elapsedFrameCount > count2) {
               clearInterval(id);
               resolve();
             }
@@ -23985,7 +23985,7 @@
       if (primaryType === this._primaryType && secondaryType === this._secondaryType) {
         return;
       }
-      let minSpeed, maxSpeed;
+      let minSpeed2, maxSpeed2;
       const primaryTypeDef = TcasResolutionAdvisoryHostClass.TYPE_DEFS[primaryType];
       this._primaryType = primaryType;
       this._primaryFlags = primaryTypeDef.flags;
@@ -23993,15 +23993,15 @@
       if (secondaryType !== null) {
         const secondaryTypeDef = TcasResolutionAdvisoryHostClass.TYPE_DEFS[secondaryType];
         this._secondaryFlags = secondaryTypeDef.flags;
-        minSpeed = Math.max(primaryTypeDef.minVerticalSpeed, secondaryTypeDef.minVerticalSpeed);
-        maxSpeed = Math.min(primaryTypeDef.maxVerticalSpeed, secondaryTypeDef.maxVerticalSpeed);
+        minSpeed2 = Math.max(primaryTypeDef.minVerticalSpeed, secondaryTypeDef.minVerticalSpeed);
+        maxSpeed2 = Math.min(primaryTypeDef.maxVerticalSpeed, secondaryTypeDef.maxVerticalSpeed);
       } else {
         this._secondaryFlags = 0;
-        minSpeed = primaryTypeDef.minVerticalSpeed;
-        maxSpeed = primaryTypeDef.maxVerticalSpeed;
+        minSpeed2 = primaryTypeDef.minVerticalSpeed;
+        maxSpeed2 = primaryTypeDef.maxVerticalSpeed;
       }
-      this._minVerticalSpeed.set(isFinite(minSpeed) ? minSpeed : NaN);
-      this._maxVerticalSpeed.set(isFinite(maxSpeed) ? maxSpeed : NaN);
+      this._minVerticalSpeed.set(isFinite(minSpeed2) ? minSpeed2 : NaN);
+      this._maxVerticalSpeed.set(isFinite(maxSpeed2) ? maxSpeed2 : NaN);
       this.isInitial = isInitial;
       this.lastStateChangeTime = simTime;
       this.stateChangeDelay = TcasResolutionAdvisoryHostClass.STATE_CHANGE_DELAY_BASE + (isInitial ? this.initialResponseTimeSeconds : this.subsequentResponseTimeSeconds) * 1e3;
@@ -25893,9 +25893,9 @@
       }
       return void 0;
     }
-    static getFafIndexReverse(lateralPlan, iterator2) {
+    static getFafIndexReverse(lateralPlan, iterator) {
       let fafIndex = -1;
-      iterator2.iterateReverse(lateralPlan, (cursor) => {
+      iterator.iterateReverse(lateralPlan, (cursor) => {
         if (fafIndex === -1 && cursor.legDefinition && cursor.legDefinition.leg.fixTypeFlags & FixTypeFlags.FAF) {
           fafIndex = cursor.legIndex + cursor.segment.offset;
         }
@@ -26453,10 +26453,10 @@
       }
       return false;
     }
-    static createConstraint(index, minAltitude, maxAltitude2, name, type = "descent") {
+    static createConstraint(index, minAltitude2, maxAltitude2, name, type = "descent") {
       return {
         index,
-        minAltitude,
+        minAltitude: minAltitude2,
         maxAltitude: maxAltitude2,
         targetAltitude: 0,
         name,
@@ -28695,7 +28695,7 @@
             currentTargetConstraint = void 0;
             break;
           }
-          const minAltitude = currentConstraint.minAltitude;
+          const minAltitude2 = currentConstraint.minAltitude;
           const maxAltitude2 = currentConstraint.maxAltitude;
           if (pathSegmentIsFlat && maxAltitude2 - currentTargetConstraint.targetAltitude > 0) {
             const flatSegmentAltitude = currentTargetConstraint.targetAltitude;
@@ -28732,7 +28732,7 @@
             }
             continue;
           }
-          const minFpa = VNavUtils.getFpa(currentPathSegmentDistance, minAltitude - currentTargetConstraint.targetAltitude);
+          const minFpa = VNavUtils.getFpa(currentPathSegmentDistance, minAltitude2 - currentTargetConstraint.targetAltitude);
           const maxFpa = VNavUtils.getFpa(currentPathSegmentDistance, maxAltitude2 - currentTargetConstraint.targetAltitude);
           const isFpaOutOfBounds = minFpa > currentPathSegmentMaxFpa || maxFpa < currentPathSegmentMinFpa;
           if (isFpaOutOfBounds || isCurrentConstraintFaf || isCurrentConstraintManual || isCurrentConstraintDirect) {
@@ -29085,12 +29085,12 @@
     }
     handleKeyEvent(key, value) {
       const currentValue = SimVar.GetSimVarValue(this.altitudeHoldSlotSimVar, SimVarValueType.Feet);
-      let startValue2 = currentValue;
+      let startValue = currentValue;
       if (!this.isInitialized) {
         if (this.initToIndicatedAlt) {
-          startValue2 = SimVar.GetSimVarValue("INDICATED ALTITUDE", SimVarValueType.Feet);
+          startValue = SimVar.GetSimVarValue("INDICATED ALTITUDE", SimVarValueType.Feet);
         } else {
-          startValue2 = 0;
+          startValue = 0;
         }
         this.publisher.pub("alt_select_is_initialized", true, true);
         this.isInitialized = true;
@@ -29155,7 +29155,7 @@
         }
       }
       if (direction !== 0) {
-        this.changeSelectedAltitude(startValue2, direction, useLargeIncrement);
+        this.changeSelectedAltitude(startValue, direction, useLargeIncrement);
       }
     }
     setSelectedAltitude(altitudeFeet) {
@@ -29185,7 +29185,7 @@
         SimVar.SetSimVarValue(this.altitudeHoldSlotSimVar, SimVarValueType.Feet, valueToSet);
       }
     }
-    changeSelectedAltitude(startValue2, direction, useLargeIncrement = false) {
+    changeSelectedAltitude(startValue, direction, useLargeIncrement = false) {
       var _a2, _b;
       const roundFunc = direction === 1 ? Math.floor : Math.ceil;
       const isMetric = (_b = (_a2 = this.altimeterMetricSetting) === null || _a2 === void 0 ? void 0 : _a2.value) !== null && _b !== void 0 ? _b : false;
@@ -29205,11 +29205,11 @@
         units = UnitType.FOOT;
         lockAlt = this.lockAltToStepOnIncr;
       }
-      const startValueConverted = Math.round(UnitType.FOOT.convertTo(startValue2, units));
+      const startValueConverted = Math.round(UnitType.FOOT.convertTo(startValue, units));
       useLargeIncrement && (useLargeIncrement = !lockAlt || startValueConverted % incrSmall === 0);
       let valueToSet = UnitType.FOOT.convertFrom(MathUtils.clamp((lockAlt ? roundFunc(startValueConverted / incrSmall) * incrSmall : startValueConverted) + direction * (useLargeIncrement ? incrLarge : incrSmall), min, max), units);
       if (this.stops.length > 0) {
-        let nextStopIndex = this.stops.matchIndex(startValue2);
+        let nextStopIndex = this.stops.matchIndex(startValue);
         if (direction === 1) {
           if (nextStopIndex < 0) {
             nextStopIndex = -nextStopIndex - 1;
@@ -29224,7 +29224,7 @@
           }
         }
         const nextStop = this.stops.peek(nextStopIndex);
-        if (nextStop !== void 0 && Math.abs(valueToSet - startValue2) > Math.abs(nextStop - startValue2)) {
+        if (nextStop !== void 0 && Math.abs(valueToSet - startValue) > Math.abs(nextStop - startValue)) {
           valueToSet = nextStop;
         }
       }
@@ -32093,19 +32093,17 @@
 
   // instruments/src/PFD/Components/Altitude/AltitudeTape.tsx
   var baseline = 254;
-  var maxAltitude = 5e5;
+  var minAltitude = -2e3;
+  var maxAltitude = 6e4 + minAltitude;
   var renderTape = () => {
     const elements = [];
-    for (let alt = 0; alt < maxAltitude; alt += maxAltitude / 1e3) {
-      const iteration = alt / (maxAltitude / 1e3);
-      if (iteration % 5 !== 0) {
-        elements.push(/* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 455 ${alt * 0.06} L 465 ${alt * 0.06}`, stroke: "white", "stroke-width": 2 }));
-      } else {
+    for (let alt = minAltitude; alt < maxAltitude; alt += 125) {
+      if (alt % 500 === 0) {
         elements.push(
           /* @__PURE__ */ FSComponent.buildComponent(
             "path",
             {
-              d: `M 455 ${alt * 0.06} L 500 ${alt * 0.06 - 40} L 500 ${alt * 0.06 - 110} L 455 ${alt * 0.06 - 150}`,
+              d: `M 455 ${alt * 0.3} L 500 ${alt * 0.3 + 40} L 500 ${alt * 0.3 + 110} L 455 ${alt * 0.3 + 150}`,
               stroke: "white",
               "stroke-width": 2,
               fill: "transparent"
@@ -32113,8 +32111,10 @@
           )
         );
         elements.push(
-          /* @__PURE__ */ FSComponent.buildComponent("text", { x: 470, y: alt * 0.06 + 7, "font-size": 20, "text-anchor": "start", fill: "white" }, ((maxAltitude - alt) / 5).toString())
+          /* @__PURE__ */ FSComponent.buildComponent("text", { x: 470, y: alt * 0.3 + 7, "font-size": 20, "text-anchor": "start", fill: "white" }, (maxAltitude - alt).toString())
         );
+      } else {
+        elements.push(/* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 455 ${alt * 0.3} L 465 ${alt * 0.3}`, stroke: "white", "stroke-width": 2 }));
       }
     }
     return elements;
@@ -32129,10 +32129,7 @@
       const sub = this.props.bus.getSubscriber();
       sub.on("altitude").whenChanged().handle((alt) => {
         var _a2;
-        (_a2 = this.tapeRef.instance) == null ? void 0 : _a2.setAttribute(
-          "transform",
-          `translate(0, ${baseline - maxAltitude * 0.06 + alt * 0.06 * 5})`
-        );
+        (_a2 = this.tapeRef.instance) == null ? void 0 : _a2.setAttribute("transform", `translate(0, ${baseline - maxAltitude * 0.3 + alt * 0.3})`);
       });
     }
     render() {
@@ -32222,16 +32219,16 @@
       return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
-          d: "M 536 254 L 536 277 L 515 277 L 515 269 L 470 269 L 456 254 L 470 239 L 514 239 L 514 231 L 536 231 L 536 254",
+          d: "M 536 254 L 536 277 L 515 277 L 515 269 L 472 269 L 456 254 L 472 239 L 514 239 L 514 231 L 536 231 L 536 254",
           fill: "black",
           stroke: "white",
           "stroke-width": 2,
           "stroke-linecap": "round"
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 536 254 L 536 277 L 515 277 L 515 269 L 470 269 L 456 254 L 470 239 L 514 239 L 514 231 L 536 231 L 536 254" })), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#clip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenthDigitScrollRef }, renderDigitTape(10)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.hundredthDigitScrollRef }, renderDigitTape(100)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.thousandsDigitScrollRef }, renderDigitTape(1e3)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenThousandsDigitScrollRef }, renderDigitTape(1e4))), /* @__PURE__ */ FSComponent.buildComponent(
+      ), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 536 254 L 536 277 L 515 277 L 515 269 L 472 269 L 456 254 L 472 239 L 514 239 L 514 231 L 536 231 L 536 254" })), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#clip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenthDigitScrollRef }, renderDigitTape(10)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.hundredthDigitScrollRef }, renderDigitTape(100)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.thousandsDigitScrollRef }, renderDigitTape(1e3)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenThousandsDigitScrollRef }, renderDigitTape(1e4))), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
-          d: "M 536 254 L 536 277 L 515 277 L 515 269 L 470 269 L 456 254 L 470 239 L 514 239 L 514 231 L 536 231 L 536 254",
+          d: "M 536 254 L 536 277 L 515 277 L 515 269 L 472 269 L 456 254 L 472 239 L 514 239 L 514 231 L 536 231 L 536 254",
           fill: "transparent",
           stroke: "white",
           "stroke-width": 2,
@@ -32252,13 +32249,12 @@
 
   // instruments/src/PFD/Components/Airspeed/AirspeedTape.tsx
   var baseline2 = 254;
-  var startValue = 30;
-  var iterator = 10;
   var stretch = 3;
-  var count = 600;
+  var minSpeed = 30;
+  var maxSpeed = 600 - minSpeed;
   var renderTape2 = () => {
     const elements = [];
-    for (let i = 0; i < count; i += iterator) {
+    for (let i = -minSpeed; i < maxSpeed; i += 10) {
       if (i >= 0) {
         elements.push(
           /* @__PURE__ */ FSComponent.buildComponent(
@@ -32274,7 +32270,7 @@
         );
         const textVertOffset = 6;
         elements.push(
-          /* @__PURE__ */ FSComponent.buildComponent("text", { x: 40, y: i * stretch + textVertOffset, "text-anchor": "middle", "font-size": 17, fill: "white" }, (count - i + startValue).toString())
+          /* @__PURE__ */ FSComponent.buildComponent("text", { x: 40, y: i * stretch + textVertOffset, "text-anchor": "middle", "font-size": 17, fill: "white" }, (maxSpeed - i + minSpeed).toString())
         );
       }
     }
@@ -32290,13 +32286,13 @@
       const sub = this.props.bus.getSubscriber();
       sub.on("airspeed").whenChanged().handle((asi) => {
         var _a2, _b;
-        if (asi >= 30) {
+        if (asi >= minSpeed) {
           (_a2 = this.aisTapeRef.instance) == null ? void 0 : _a2.setAttribute(
             "transform",
-            `translate(0, ${baseline2 - count * 3 + asi * 3 - startValue * 3})`
+            `translate(0, ${baseline2 - maxSpeed * 3 + asi * 3 - minSpeed * 3})`
           );
         } else {
-          (_b = this.aisTapeRef.instance) == null ? void 0 : _b.setAttribute("transform", `translate(0, ${baseline2 - count * 3})`);
+          (_b = this.aisTapeRef.instance) == null ? void 0 : _b.setAttribute("transform", `translate(0, ${baseline2 - maxSpeed * 3})`);
         }
       });
     }
@@ -32574,16 +32570,16 @@
   var stroke = "white";
   var xAxis = 254;
   var leftBound = 560;
-  var count2 = 5;
+  var count = 5;
   var smallSpacing = 5;
   var bigSpacing = smallSpacing * 5;
   var tiltFactor = 0.1;
   var fpmToPixel = (fpm) => {
-    return -fpm * count2 * (tiltFactor + 1) * 5e-3;
+    return -fpm * count * (tiltFactor + 1) * 5e-3;
   };
   var renderMarkers = () => {
     const markers = [];
-    for (let y = 0; y < count2 * smallSpacing; y += smallSpacing) {
+    for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
@@ -32596,7 +32592,7 @@
         )
       );
     }
-    for (let y = 0; y < count2 * smallSpacing; y += smallSpacing) {
+    for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
@@ -32609,7 +32605,7 @@
         )
       );
     }
-    for (let y = 0; y < count2 * bigSpacing; y += bigSpacing) {
+    for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
@@ -32622,7 +32618,7 @@
         )
       );
     }
-    for (let y = 0; y < count2 * bigSpacing; y += bigSpacing) {
+    for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
