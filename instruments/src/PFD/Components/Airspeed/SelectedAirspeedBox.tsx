@@ -24,7 +24,7 @@ export class SelectedAirspeedBox extends DisplayComponent<SelectedAirspeedBoxPro
   public render(): VNode {
     return (
       <g>
-        <rect x={1} y={53} rx={2} ry={2} width={80} height={33} stroke-width={2} fill="transparent" stroke="white" />
+        <rect x={1} y={55} rx={2} ry={2} width={80} height={33} stroke-width={2} fill="transparent" stroke="white" />
         <text ref={this.airspeedSelectedRef} x={41} y={82} text-anchor="middle" fill={Colors.PINK} font-size="30" />
       </g>
     )

@@ -32137,20 +32137,6 @@
     }
   };
 
-  // instruments/src/PFD/Components/Altitude/SelectedAltitudeBox.tsx
-  var SelectedAltitudeBox = class extends DisplayComponent {
-    render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(426 28)" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "29", y: "27", rx: 2, ry: 2, width: "83", height: "33", stroke: "white", "stroke-width": 2, fill: "transparent" }));
-    }
-  };
-
-  // instruments/src/PFD/Components/Altitude/BaroSettingBox.tsx
-  var BaroSettingBox = class extends DisplayComponent {
-    render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "419", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", "stroke-width": "2", fill: "black" }));
-    }
-  };
-
   // instruments/common/util/Colors.ts
   var Colors = /* @__PURE__ */ ((Colors2) => {
     Colors2["GREEN"] = "#04E304";
@@ -32160,6 +32146,33 @@
     return Colors2;
   })(Colors || {});
   var Colors_default = Colors;
+
+  // instruments/src/PFD/Components/Altitude/SelectedAltitudeBox.tsx
+  var SelectedAltitudeBox = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.altitudeSelectedRef1 = FSComponent.createRef();
+      this.altitudeSelectedRef2 = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("altitude_selected").whenChanged().handle((alt) => {
+        this.altitudeSelectedRef1.instance.textContent = alt.toString().substring(0, 3).padStart(3, "0");
+        this.altitudeSelectedRef2.instance.textContent = alt.toString().substring(3).padStart(2, "0");
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "55", rx: 2, ry: 2, width: "83", height: "33", stroke: "white", "stroke-width": 2, fill: "transparent" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.altitudeSelectedRef1, x: 484, y: 82, "text-anchor": "middle", fill: Colors_default.CYAN, "font-size": "30" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.altitudeSelectedRef2, x: 522, y: 82, "text-anchor": "middle", fill: Colors_default.CYAN, "font-size": "20" }));
+    }
+  };
+
+  // instruments/src/PFD/Components/Altitude/BaroSettingBox.tsx
+  var BaroSettingBox = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "419", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", "stroke-width": "2", fill: "black" }));
+    }
+  };
 
   // instruments/src/PFD/Components/Altitude/CurrentAltitudeBox.tsx
   var digitSpacing = 25;
@@ -32242,7 +32255,7 @@
   // instruments/src/PFD/Components/Altitude/index.tsx
   var Altitude = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "57", width: "82", height: "361", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent(AltitudeTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAltitudeBox, null), /* @__PURE__ */ FSComponent.buildComponent(CurrentAltitudeBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(BaroSettingBox, null));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "57", width: "82", height: "361", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent(AltitudeTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAltitudeBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAltitudeBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(BaroSettingBox, null));
     }
   };
   var Altitude_default = Altitude;
@@ -32386,7 +32399,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 1, y: 53, rx: 2, ry: 2, width: 80, height: 33, "stroke-width": 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.airspeedSelectedRef, x: 41, y: 82, "text-anchor": "middle", fill: Colors_default.PINK, "font-size": "30" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 1, y: 55, rx: 2, ry: 2, width: 80, height: 33, "stroke-width": 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.airspeedSelectedRef, x: 41, y: 82, "text-anchor": "middle", fill: Colors_default.PINK, "font-size": "30" }));
     }
   };
 
@@ -32718,7 +32731,8 @@
     ["ground_speed", { name: "GROUND VELOCITY" /* ground_speed */, type: SimVarValueType.Knots }],
     ["heading_lock", { name: "AUTOPILOT HEADING LOCK DIR" /* heading_lock */, type: SimVarValueType.Degree }],
     ["vertical_speed", { name: "VERTICAL SPEED" /* vertical_speed */, type: SimVarValueType.Feet }],
-    ["airspeed_selected", { name: "AIRSPEED SELECT INDICATED OR TRUE" /* airspeed_selected */, type: SimVarValueType.Knots }]
+    ["airspeed_selected", { name: "AIRSPEED SELECT INDICATED OR TRUE" /* airspeed_selected */, type: SimVarValueType.Knots }],
+    ["altitude_selected", { name: "AUTOPILOT ALTITUDE LOCK VAR" /* altitude_selected */, type: SimVarValueType.Feet }]
   ]);
 
   // instruments/src/PFD/instrument.tsx

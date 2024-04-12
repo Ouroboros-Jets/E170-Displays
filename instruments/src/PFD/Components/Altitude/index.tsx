@@ -14,7 +14,7 @@ class Altitude extends DisplayComponent<AltitudeProps> {
       <g>
         <rect x="455" y="57" width="82" height="361" fill="#000" opacity={0.3} />
         <AltitudeTape bus={this.props.bus} />
-        <SelectedAltitudeBox />
+        <SelectedAltitudeBox bus={this.props.bus} />
         <CurrentAltitudeBox bus={this.props.bus} />
         <BaroSettingBox />
       </g>

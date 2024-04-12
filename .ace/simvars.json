@@ -609,5 +609,18 @@
       "max": 250.0
     },
     "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "AUTOPILOT ALTITUDE LOCK VAR",
+    "index": 0,
+    "unit": "feet",
+    "value": 2500.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
   }
 ]
