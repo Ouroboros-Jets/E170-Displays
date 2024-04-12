@@ -95,20 +95,20 @@
     "name": "INDICATED ALTITUDE",
     "index": 0,
     "unit": "Feet",
-    "value": 1000.0,
+    "value": 250.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 30000.0
+      "max": 250.0
     },
-    "pinned": true
+    "pinned": null
   },
   {
     "type": "A",
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 100.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -202,8 +202,8 @@
     "value": 1367.0,
     "control": {
       "type": "Slider",
-      "min": 1.0,
-      "max": 4000.0
+      "min": 0.0,
+      "max": 250.0
     },
     "pinned": null
   },

@@ -8,16 +8,23 @@ type SelectedAirspeedBoxProps = ComponentProps & {
 }
 
 const digitSpacing = 25
-const verticalScrollsSpacing = 20
+const verticalScrollsSpacing = 15
 
-const renderDigitTape = (removeZeros?: boolean): JSX.Element[] => {
+const renderDigitTape = (max: number): JSX.Element[] => {
+  const tenth = max === 10
   const digits: JSX.Element[] = []
 
   for (let i = 0; i < 30; i++) {
     const digit = 9 - (i % 10)
     digits.push(
-      <text x={55} y={digitSpacing * i - 264} font-size={30} text-anchor="middle" fill={Colors.GREEN}>
-        {removeZeros && digit === 0 ? '' : digit.toString()}
+      <text
+        x={tenth ? 524 : 520}
+        y={digitSpacing * i - 462}
+        font-size={tenth ? 20 : 25}
+        text-anchor="middle"
+        fill={Colors.GREEN}
+      >
+        {tenth ? digit.toString().concat('0') : digit.toString()}
       </text>
     )
   }
@@ -26,9 +33,10 @@ const renderDigitTape = (removeZeros?: boolean): JSX.Element[] => {
 }
 
 class CurrentAltitudeBox extends DisplayComponent<SelectedAirspeedBoxProps> {
-  singleDigitScrollRef = FSComponent.createRef<SVGGElement>()
   tenthDigitScrollRef = FSComponent.createRef<SVGGElement>()
   hundredthDigitScrollRef = FSComponent.createRef<SVGGElement>()
+  thousandsDigitScrollRef = FSComponent.createRef<SVGGElement>()
+  tenThousandsDigitScrollRef = FSComponent.createRef<SVGGElement>()
 
   public onAfterRender(node: VNode): void {
     super.onAfterRender(node)
@@ -38,29 +46,24 @@ class CurrentAltitudeBox extends DisplayComponent<SelectedAirspeedBoxProps> {
       .on('altitude')
       .whenChanged()
       .handle((alt) => {
-        if (alt < 30) {
-          this.singleDigitScrollRef.instance.setAttribute('opacity', '0')
-          this.tenthDigitScrollRef.instance.setAttribute('opacity', '0')
-          this.hundredthDigitScrollRef.instance.setAttribute('opacity', '0')
-        } else {
-          this.singleDigitScrollRef.instance.setAttribute('opacity', '1')
-          this.tenthDigitScrollRef.instance.setAttribute('opacity', '1')
-          this.hundredthDigitScrollRef.instance.setAttribute('opacity', '1')
-        }
-
-        this.singleDigitScrollRef.instance.setAttribute(
-          'transform',
-          `translate(${0}, ${Math.max((alt % 10) * digitSpacing, 0)})`
-        )
-
         this.tenthDigitScrollRef.instance.setAttribute(
           'transform',
-          `translate(${-1 * verticalScrollsSpacing}, ${Math.max(Math.floor((alt / 10) % 10) * digitSpacing, 0)})`
+          `translate(${0 * verticalScrollsSpacing}, ${Math.max(Math.floor((alt / 10) % 10) * digitSpacing, 0)})`
         )
 
         this.hundredthDigitScrollRef.instance.setAttribute(
           'transform',
-          `translate(${-2 * verticalScrollsSpacing}, ${Math.max(Math.floor((alt / 100) % 100) * digitSpacing, 0)})`
+          `translate(${-1 * verticalScrollsSpacing}, ${Math.max(Math.floor((alt / 100) % 10) * digitSpacing, 0)})`
+        )
+
+        this.thousandsDigitScrollRef.instance.setAttribute(
+          'transform',
+          `translate(${-2 * verticalScrollsSpacing}, ${Math.max(Math.floor((alt / 1000) % 10) * digitSpacing, 0)})`
+        )
+
+        this.tenThousandsDigitScrollRef.instance.setAttribute(
+          'transform',
+          `translate(${-3 * verticalScrollsSpacing}, ${Math.max(Math.floor((alt / 10000) % 10) * digitSpacing, 0)})`
         )
       })
   }
@@ -77,16 +80,23 @@ class CurrentAltitudeBox extends DisplayComponent<SelectedAirspeedBoxProps> {
         />
 
         <clipPath id="clip">
-          <path d="" />
+          <path d="M 536 254 L 536 277 L 515 277 L 515 269 L 470 269 L 456 254 L 470 239 L 514 239 L 514 231 L 536 231 L 536 254" />
         </clipPath>
 
         <g clip-path="url(#clip)">
-          <g ref={this.singleDigitScrollRef}>{renderDigitTape()}</g>
-          <g ref={this.tenthDigitScrollRef}>{renderDigitTape()}</g>
-          <g ref={this.hundredthDigitScrollRef}>{renderDigitTape(true)}</g>
+          <g ref={this.tenthDigitScrollRef}>{renderDigitTape(10)}</g>
+          <g ref={this.hundredthDigitScrollRef}>{renderDigitTape(100)}</g>
+          <g ref={this.thousandsDigitScrollRef}>{renderDigitTape(1000)}</g>
+          <g ref={this.tenThousandsDigitScrollRef}>{renderDigitTape(10000)}</g>
         </g>
 
-        <path d="" fill="transparent" stroke="white" stroke-width={2} stroke-linecap="round" />
+        <path
+          d="M 536 254 L 536 277 L 515 277 L 515 269 L 470 269 L 456 254 L 470 239 L 514 239 L 514 231 L 536 231 L 536 254"
+          fill="transparent"
+          stroke="white"
+          stroke-width={2}
+          stroke-linecap="round"
+        />
       </g>
     )
   }

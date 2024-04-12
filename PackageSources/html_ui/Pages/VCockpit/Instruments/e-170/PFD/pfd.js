@@ -32166,13 +32166,24 @@
 
   // instruments/src/PFD/Components/Altitude/CurrentAltitudeBox.tsx
   var digitSpacing = 25;
-  var verticalScrollsSpacing = 20;
-  var renderDigitTape = (removeZeros) => {
+  var verticalScrollsSpacing = 15;
+  var renderDigitTape = (max) => {
+    const tenth = max === 10;
     const digits = [];
     for (let i = 0; i < 30; i++) {
       const digit = 9 - i % 10;
       digits.push(
-        /* @__PURE__ */ FSComponent.buildComponent("text", { x: 55, y: digitSpacing * i - 264, "font-size": 30, "text-anchor": "middle", fill: Colors_default.GREEN }, removeZeros && digit === 0 ? "" : digit.toString())
+        /* @__PURE__ */ FSComponent.buildComponent(
+          "text",
+          {
+            x: tenth ? 524 : 520,
+            y: digitSpacing * i - 462,
+            "font-size": tenth ? 20 : 25,
+            "text-anchor": "middle",
+            fill: Colors_default.GREEN
+          },
+          tenth ? digit.toString().concat("0") : digit.toString()
+        )
       );
     }
     return digits;
@@ -32180,34 +32191,30 @@
   var CurrentAltitudeBox = class extends DisplayComponent {
     constructor() {
       super(...arguments);
-      this.singleDigitScrollRef = FSComponent.createRef();
       this.tenthDigitScrollRef = FSComponent.createRef();
       this.hundredthDigitScrollRef = FSComponent.createRef();
+      this.thousandsDigitScrollRef = FSComponent.createRef();
+      this.tenThousandsDigitScrollRef = FSComponent.createRef();
     }
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
       sub.on("altitude").whenChanged().handle((alt) => {
-        if (alt < 30) {
-          this.singleDigitScrollRef.instance.setAttribute("opacity", "0");
-          this.tenthDigitScrollRef.instance.setAttribute("opacity", "0");
-          this.hundredthDigitScrollRef.instance.setAttribute("opacity", "0");
-        } else {
-          this.singleDigitScrollRef.instance.setAttribute("opacity", "1");
-          this.tenthDigitScrollRef.instance.setAttribute("opacity", "1");
-          this.hundredthDigitScrollRef.instance.setAttribute("opacity", "1");
-        }
-        this.singleDigitScrollRef.instance.setAttribute(
-          "transform",
-          `translate(${0}, ${Math.max(alt % 10 * digitSpacing, 0)})`
-        );
         this.tenthDigitScrollRef.instance.setAttribute(
           "transform",
-          `translate(${-1 * verticalScrollsSpacing}, ${Math.max(Math.floor(alt / 10 % 10) * digitSpacing, 0)})`
+          `translate(${0 * verticalScrollsSpacing}, ${Math.max(Math.floor(alt / 10 % 10) * digitSpacing, 0)})`
         );
         this.hundredthDigitScrollRef.instance.setAttribute(
           "transform",
-          `translate(${-2 * verticalScrollsSpacing}, ${Math.max(Math.floor(alt / 100 % 100) * digitSpacing, 0)})`
+          `translate(${-1 * verticalScrollsSpacing}, ${Math.max(Math.floor(alt / 100 % 10) * digitSpacing, 0)})`
+        );
+        this.thousandsDigitScrollRef.instance.setAttribute(
+          "transform",
+          `translate(${-2 * verticalScrollsSpacing}, ${Math.max(Math.floor(alt / 1e3 % 10) * digitSpacing, 0)})`
+        );
+        this.tenThousandsDigitScrollRef.instance.setAttribute(
+          "transform",
+          `translate(${-3 * verticalScrollsSpacing}, ${Math.max(Math.floor(alt / 1e4 % 10) * digitSpacing, 0)})`
         );
       });
     }
@@ -32221,7 +32228,16 @@
           "stroke-width": 2,
           "stroke-linecap": "round"
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "" })), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#clip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.singleDigitScrollRef }, renderDigitTape()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenthDigitScrollRef }, renderDigitTape()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.hundredthDigitScrollRef }, renderDigitTape(true))), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "", fill: "transparent", stroke: "white", "stroke-width": 2, "stroke-linecap": "round" }));
+      ), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 536 254 L 536 277 L 515 277 L 515 269 L 470 269 L 456 254 L 470 239 L 514 239 L 514 231 L 536 231 L 536 254" })), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#clip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenthDigitScrollRef }, renderDigitTape(10)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.hundredthDigitScrollRef }, renderDigitTape(100)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.thousandsDigitScrollRef }, renderDigitTape(1e3)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenThousandsDigitScrollRef }, renderDigitTape(1e4))), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 536 254 L 536 277 L 515 277 L 515 269 L 470 269 L 456 254 L 470 239 L 514 239 L 514 231 L 536 231 L 536 254",
+          fill: "transparent",
+          stroke: "white",
+          "stroke-width": 2,
+          "stroke-linecap": "round"
+        }
+      ));
     }
   };
   var CurrentAltitudeBox_default = CurrentAltitudeBox;
