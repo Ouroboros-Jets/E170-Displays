@@ -26453,10 +26453,10 @@
       }
       return false;
     }
-    static createConstraint(index, minAltitude2, maxAltitude2, name, type = "descent") {
+    static createConstraint(index, minAltitude, maxAltitude2, name, type = "descent") {
       return {
         index,
-        minAltitude: minAltitude2,
+        minAltitude,
         maxAltitude: maxAltitude2,
         targetAltitude: 0,
         name,
@@ -28695,7 +28695,7 @@
             currentTargetConstraint = void 0;
             break;
           }
-          const minAltitude2 = currentConstraint.minAltitude;
+          const minAltitude = currentConstraint.minAltitude;
           const maxAltitude2 = currentConstraint.maxAltitude;
           if (pathSegmentIsFlat && maxAltitude2 - currentTargetConstraint.targetAltitude > 0) {
             const flatSegmentAltitude = currentTargetConstraint.targetAltitude;
@@ -28732,7 +28732,7 @@
             }
             continue;
           }
-          const minFpa = VNavUtils.getFpa(currentPathSegmentDistance, minAltitude2 - currentTargetConstraint.targetAltitude);
+          const minFpa = VNavUtils.getFpa(currentPathSegmentDistance, minAltitude - currentTargetConstraint.targetAltitude);
           const maxFpa = VNavUtils.getFpa(currentPathSegmentDistance, maxAltitude2 - currentTargetConstraint.targetAltitude);
           const isFpaOutOfBounds = minFpa > currentPathSegmentMaxFpa || maxFpa < currentPathSegmentMinFpa;
           if (isFpaOutOfBounds || isCurrentConstraintFaf || isCurrentConstraintManual || isCurrentConstraintDirect) {
@@ -32093,11 +32093,10 @@
 
   // instruments/src/PFD/Components/Altitude/AltitudeTape.tsx
   var baseline = 254;
-  var minAltitude = -2e3;
-  var maxAltitude = 6e4 + minAltitude;
+  var maxAltitude = 6e4;
   var renderTape = () => {
     const elements = [];
-    for (let alt = minAltitude; alt < maxAltitude; alt += 125) {
+    for (let alt = 0; alt < maxAltitude; alt += 125) {
       if (alt % 500 === 0) {
         elements.push(
           /* @__PURE__ */ FSComponent.buildComponent(
@@ -32110,8 +32109,21 @@
             }
           )
         );
+        if (alt % 1e3 === 0) {
+          elements.push(
+            /* @__PURE__ */ FSComponent.buildComponent(
+              "path",
+              {
+                d: `M 500 ${alt * 0.3 + 40} L 500 ${alt * 0.3 + 31} L 465 ${alt * 0.3} L 500 ${alt * 0.3 - 31} L 500 ${alt * 0.3 - 40}`,
+                stroke: "white",
+                "stroke-width": 2,
+                fill: "transparent"
+              }
+            )
+          );
+        }
         elements.push(
-          /* @__PURE__ */ FSComponent.buildComponent("text", { x: 470, y: alt * 0.3 + 7, "font-size": 20, "text-anchor": "start", fill: "white" }, (maxAltitude - alt).toString())
+          /* @__PURE__ */ FSComponent.buildComponent("text", { x: 530, y: alt * 0.3 + 7, "font-size": 20, "text-anchor": "end", fill: "white" }, (maxAltitude - alt).toString())
         );
       } else {
         elements.push(/* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 455 ${alt * 0.3} L 465 ${alt * 0.3}`, stroke: "white", "stroke-width": 2 }));
@@ -32142,7 +32154,7 @@
     Colors2["GREEN"] = "#04E304";
     Colors2["PINK"] = "#D202D4";
     Colors2["CYAN"] = "#00FEFE";
-    Colors2["YELLOW"] = "YELLOW";
+    Colors2["YELLOW"] = "#FDE501";
     return Colors2;
   })(Colors || {});
   var Colors_default = Colors;
@@ -32169,8 +32181,33 @@
 
   // instruments/src/PFD/Components/Altitude/BaroSettingBox.tsx
   var BaroSettingBox = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.baroValueRef = FSComponent.createRef();
+      this.baroUnitRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("barometric_setting").whenChanged().handle((baroValue) => {
+        this.baroValueRef.instance.textContent = baroValue.toString();
+      });
+      sub.on("barometric_std").whenChanged().handle((baroStd) => {
+        if (baroStd) {
+          this.baroValueRef.instance.textContent = "STD";
+          this.baroValueRef.instance.setAttribute("fill", Colors_default.CYAN);
+          this.baroUnitRef.instance.textContent = "";
+        } else {
+          this.baroValueRef.instance.setAttribute("fill", Colors_default.CYAN);
+          this.baroUnitRef.instance.textContent = "HPA";
+          sub.on("barometric_setting").whenChanged().handle((baroValue) => {
+            this.baroValueRef.instance.textContent = baroValue.toString();
+          });
+        }
+      });
+    }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "419", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", "stroke-width": "2", fill: "black" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "419", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", "stroke-width": "2", fill: "black" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "498", y: "442", "font-size": 18, "text-anchor": "middle" }, /* @__PURE__ */ FSComponent.buildComponent("tspan", { ref: this.baroValueRef, fill: Colors_default.YELLOW }, "----"), /* @__PURE__ */ FSComponent.buildComponent("tspan", { ref: this.baroUnitRef, fill: "white" })));
     }
   };
 
@@ -32186,9 +32223,9 @@
         /* @__PURE__ */ FSComponent.buildComponent(
           "text",
           {
-            x: tenth ? 524 : 520,
-            y: digitSpacing * i - 462,
-            "font-size": tenth ? 20 : 25,
+            x: tenth ? 525 : 520,
+            y: tenth ? digitSpacing * i - 465 : digitSpacing * i - 462,
+            "font-size": tenth ? 17 : 25,
             "text-anchor": "middle",
             fill: Colors_default.GREEN
           },
@@ -32212,11 +32249,11 @@
       sub.on("altitude").whenChanged().handle((alt) => {
         this.tenthDigitScrollRef.instance.setAttribute(
           "transform",
-          `translate(${0 * verticalScrollsSpacing}, ${Math.max(Math.floor(alt / 10 % 10) * digitSpacing, 0)})`
+          `translate(${0 * verticalScrollsSpacing}, ${Math.max(alt / 10 % 10 * digitSpacing, 0)})`
         );
         this.hundredthDigitScrollRef.instance.setAttribute(
           "transform",
-          `translate(${-1 * verticalScrollsSpacing}, ${Math.max(Math.floor(alt / 100 % 10) * digitSpacing, 0)})`
+          `translate(${-1 * verticalScrollsSpacing}, ${Math.max(alt / 100 % 10 * digitSpacing, 0)})`
         );
         this.thousandsDigitScrollRef.instance.setAttribute(
           "transform",
@@ -32255,7 +32292,7 @@
   // instruments/src/PFD/Components/Altitude/index.tsx
   var Altitude = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "57", width: "82", height: "361", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent(AltitudeTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAltitudeBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAltitudeBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(BaroSettingBox, null));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "57", width: "82", height: "361", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent(AltitudeTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAltitudeBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAltitudeBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(BaroSettingBox, { bus: this.props.bus }));
     }
   };
   var Altitude_default = Altitude;
@@ -32353,11 +32390,11 @@
         );
         this.tenthDigitScrollRef.instance.setAttribute(
           "transform",
-          `translate(${-1 * verticalScrollsSpacing2}, ${Math.max(Math.floor(ias / 10 % 10) * digitSpacing2, 0)})`
+          `translate(${-1 * verticalScrollsSpacing2}, ${Math.max(ias / 10 % 10 * digitSpacing2, 0)})`
         );
         this.hundredthDigitScrollRef.instance.setAttribute(
           "transform",
-          `translate(${-2 * verticalScrollsSpacing2}, ${Math.max(Math.floor(ias / 100 % 100) * digitSpacing2, 0)})`
+          `translate(${-2 * verticalScrollsSpacing2}, ${Math.max(Math.floor(ias / 100) % 10 * digitSpacing2, 0)})`
         );
       });
     }
@@ -32583,7 +32620,7 @@
   var stroke = "white";
   var xAxis = 254;
   var leftBound = 560;
-  var count = 5;
+  var count = 6;
   var smallSpacing = 5;
   var bigSpacing = smallSpacing * 5;
   var tiltFactor = 0.1;
@@ -32592,7 +32629,7 @@
   };
   var renderMarkers = () => {
     const markers = [];
-    for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
+    for (let y = 1; y < count * smallSpacing; y += smallSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
@@ -32605,7 +32642,7 @@
         )
       );
     }
-    for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
+    for (let y = 1; y < count * smallSpacing; y += smallSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
@@ -32618,7 +32655,7 @@
         )
       );
     }
-    for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
+    for (let y = 1; y < count * bigSpacing; y += bigSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
@@ -32631,7 +32668,7 @@
         )
       );
     }
-    for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
+    for (let y = 1; y < count * bigSpacing; y += bigSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
@@ -32732,7 +32769,9 @@
     ["heading_lock", { name: "AUTOPILOT HEADING LOCK DIR" /* heading_lock */, type: SimVarValueType.Degree }],
     ["vertical_speed", { name: "VERTICAL SPEED" /* vertical_speed */, type: SimVarValueType.Feet }],
     ["airspeed_selected", { name: "AIRSPEED SELECT INDICATED OR TRUE" /* airspeed_selected */, type: SimVarValueType.Knots }],
-    ["altitude_selected", { name: "AUTOPILOT ALTITUDE LOCK VAR" /* altitude_selected */, type: SimVarValueType.Feet }]
+    ["altitude_selected", { name: "AUTOPILOT ALTITUDE LOCK VAR" /* altitude_selected */, type: SimVarValueType.Feet }],
+    ["barometric_setting", { name: "KOHLSMAN SETTING HG" /* barometric_setting */, type: SimVarValueType.InHG }],
+    ["barometric_std", { name: "KOHLSMAN SETTING STD" /* barometric_std */, type: SimVarValueType.Bool }]
   ]);
 
   // instruments/src/PFD/instrument.tsx

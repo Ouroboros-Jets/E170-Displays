@@ -16,7 +16,7 @@ class Altitude extends DisplayComponent<AltitudeProps> {
         <AltitudeTape bus={this.props.bus} />
         <SelectedAltitudeBox bus={this.props.bus} />
         <CurrentAltitudeBox bus={this.props.bus} />
-        <BaroSettingBox />
+        <BaroSettingBox bus={this.props.bus} />
       </g>
     )
   }

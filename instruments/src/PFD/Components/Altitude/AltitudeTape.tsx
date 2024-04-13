@@ -6,13 +6,14 @@ type AltitudeTapeProps = ComponentProps & {
 }
 
 const baseline = 254
-const minAltitude = -2000
-const maxAltitude = 60000 + minAltitude
+// TODO: - Tape
+// const minAltitude = -2000
+const maxAltitude = 60000
 
 const renderTape = (): JSX.Element[] => {
   const elements: JSX.Element[] = []
 
-  for (let alt = minAltitude; alt < maxAltitude; alt += 125) {
+  for (let alt = 0; alt < maxAltitude; alt += 125) {
     if (alt % 500 === 0) {
       elements.push(
         <path
@@ -23,8 +24,21 @@ const renderTape = (): JSX.Element[] => {
         />
       )
 
+      if (alt % 1000 === 0) {
+        elements.push(
+          <path
+            d={`M 500 ${alt * 0.3 + 40} L 500 ${alt * 0.3 + 31} L 465 ${alt * 0.3} L 500 ${alt * 0.3 - 31} L 500 ${
+              alt * 0.3 - 40
+            }`}
+            stroke="white"
+            stroke-width={2}
+            fill="transparent"
+          />
+        )
+      }
+
       elements.push(
-        <text x={470} y={alt * 0.3 + 7} font-size={20} text-anchor="start" fill="white">
+        <text x={530} y={alt * 0.3 + 7} font-size={20} text-anchor="end" fill="white">
           {(maxAltitude - alt).toString()}
         </text>
       )

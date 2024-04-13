@@ -11,6 +11,8 @@ export type PFDSimvars = {
   vertical_speed: number
   airspeed_selected: number
   altitude_selected: number
+  barometric_setting: number
+  barometric_std: boolean
 }
 
 export enum PFDVars {
@@ -23,7 +25,9 @@ export enum PFDVars {
   heading_lock = 'AUTOPILOT HEADING LOCK DIR',
   vertical_speed = 'VERTICAL SPEED',
   airspeed_selected = 'AIRSPEED SELECT INDICATED OR TRUE',
-  altitude_selected = 'AUTOPILOT ALTITUDE LOCK VAR'
+  altitude_selected = 'AUTOPILOT ALTITUDE LOCK VAR',
+  barometric_setting = 'KOHLSMAN SETTING HG',
+  barometric_std = 'KOHLSMAN SETTING STD'
 }
 
 export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
@@ -37,7 +41,9 @@ export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
     ['heading_lock', { name: PFDVars.heading_lock, type: SimVarValueType.Degree }],
     ['vertical_speed', { name: PFDVars.vertical_speed, type: SimVarValueType.Feet }],
     ['airspeed_selected', { name: PFDVars.airspeed_selected, type: SimVarValueType.Knots }],
-    ['altitude_selected', { name: PFDVars.altitude_selected, type: SimVarValueType.Feet }]
+    ['altitude_selected', { name: PFDVars.altitude_selected, type: SimVarValueType.Feet }],
+    ['barometric_setting', { name: PFDVars.barometric_setting, type: SimVarValueType.InHG }],
+    ['barometric_std', { name: PFDVars.barometric_std, type: SimVarValueType.Bool }]
   ])
 
   public constructor(bus: EventBus) {

@@ -55,12 +55,12 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
 
         this.tenthDigitScrollRef.instance.setAttribute(
           'transform',
-          `translate(${-1 * verticalScrollsSpacing}, ${Math.max(Math.floor((ias / 10) % 10) * digitSpacing, 0)})`
+          `translate(${-1 * verticalScrollsSpacing}, ${Math.max(((ias / 10) % 10) * digitSpacing, 0)})`
         )
 
         this.hundredthDigitScrollRef.instance.setAttribute(
           'transform',
-          `translate(${-2 * verticalScrollsSpacing}, ${Math.max(Math.floor((ias / 100) % 100) * digitSpacing, 0)})`
+          `translate(${-2 * verticalScrollsSpacing}, ${Math.max((Math.floor(ias / 100) % 10) * digitSpacing, 0)})`
         )
       })
   }

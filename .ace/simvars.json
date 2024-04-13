@@ -99,7 +99,7 @@
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 250.0
+      "max": 2500.0
     },
     "pinned": null
   },
@@ -108,7 +108,7 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 120.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -199,7 +199,7 @@
     "name": "VERTICAL SPEED",
     "index": 0,
     "unit": "Feet per second",
-    "value": 1500.0,
+    "value": 2500.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -622,5 +622,27 @@
       "max": 250.0
     },
     "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "KOHLSMAN SETTING HG",
+    "index": 0,
+    "unit": "inches of mercury",
+    "value": 1010.0,
+    "control": {
+      "type": "Numeric"
+    },
+    "pinned": true
+  },
+  {
+    "type": "A",
+    "name": "KOHLSMAN SETTING STD",
+    "index": 0,
+    "unit": "bool",
+    "value": 0.0,
+    "control": {
+      "type": "Numeric"
+    },
+    "pinned": true
   }
 ]

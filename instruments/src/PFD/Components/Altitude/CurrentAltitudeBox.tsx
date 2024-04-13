@@ -18,9 +18,9 @@ const renderDigitTape = (max: number): JSX.Element[] => {
     const digit = 9 - (i % 10)
     digits.push(
       <text
-        x={tenth ? 524 : 520}
-        y={digitSpacing * i - 462}
-        font-size={tenth ? 20 : 25}
+        x={tenth ? 525 : 520}
+        y={tenth ? digitSpacing * i - 465 : digitSpacing * i - 462}
+        font-size={tenth ? 17 : 25}
         text-anchor="middle"
         fill={Colors.GREEN}
       >
@@ -48,12 +48,12 @@ class CurrentAltitudeBox extends DisplayComponent<SelectedAirspeedBoxProps> {
       .handle((alt) => {
         this.tenthDigitScrollRef.instance.setAttribute(
           'transform',
-          `translate(${0 * verticalScrollsSpacing}, ${Math.max(Math.floor((alt / 10) % 10) * digitSpacing, 0)})`
+          `translate(${0 * verticalScrollsSpacing}, ${Math.max(((alt / 10) % 10) * digitSpacing, 0)})`
         )
 
         this.hundredthDigitScrollRef.instance.setAttribute(
           'transform',
-          `translate(${-1 * verticalScrollsSpacing}, ${Math.max(Math.floor((alt / 100) % 10) * digitSpacing, 0)})`
+          `translate(${-1 * verticalScrollsSpacing}, ${Math.max(((alt / 100) % 10) * digitSpacing, 0)})`
         )
 
         this.thousandsDigitScrollRef.instance.setAttribute(

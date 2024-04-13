@@ -11,7 +11,7 @@ type T_VerticalSpeedIndicatorProps = ComponentProps & {
 const stroke = 'white'
 const xAxis = 254
 const leftBound = 560
-const count = 5
+const count = 6
 const smallSpacing = 5
 const bigSpacing = smallSpacing * 5
 const tiltFactor = 0.1
@@ -24,7 +24,7 @@ const renderMarkers = (): JSX.Element[] => {
   const markers: JSX.Element[] = []
 
   // Small markers
-  for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
+  for (let y = 1; y < count * smallSpacing; y += smallSpacing) {
     markers.push(
       <path
         d={`M 565 ${xAxis + y} L ${leftBound}  ${xAxis + y + tiltFactor * y}}`}
@@ -35,7 +35,7 @@ const renderMarkers = (): JSX.Element[] => {
     )
   }
 
-  for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
+  for (let y = 1; y < count * smallSpacing; y += smallSpacing) {
     markers.push(
       <path
         d={`M 565 ${xAxis - y} L ${leftBound}  ${xAxis - y - tiltFactor * y}}`}
@@ -47,7 +47,7 @@ const renderMarkers = (): JSX.Element[] => {
   }
 
   // Big markers
-  for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
+  for (let y = 1; y < count * bigSpacing; y += bigSpacing) {
     markers.push(
       <path
         d={`M 570 ${xAxis + y} L ${leftBound}  ${xAxis + y + tiltFactor * y}`}
@@ -58,7 +58,7 @@ const renderMarkers = (): JSX.Element[] => {
     )
   }
 
-  for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
+  for (let y = 1; y < count * bigSpacing; y += bigSpacing) {
     markers.push(
       <path
         d={`M 570 ${xAxis - y} L ${leftBound}  ${xAxis - y - tiltFactor * y}`}
