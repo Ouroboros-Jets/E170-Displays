@@ -10,11 +10,11 @@ type AirspeedTapeProps = ComponentProps & {
 const baseline = 254
 const stretch = 3
 const minSpeed = 30
-const maxSpeed = 600 - minSpeed
+const maxSpeed = 940
 
 const renderTape = (): JSX.Element[] => {
   const elements: JSX.Element[] = []
-  for (let i = -minSpeed; i < maxSpeed; i += 10) {
+  for (let i = minSpeed - 10; i < maxSpeed; i += 10) {
     if (i >= 0) {
       elements.push(
         <PathWithBlackBackground
@@ -29,7 +29,7 @@ const renderTape = (): JSX.Element[] => {
       const textVertOffset = 6
       elements.push(
         <text x={40} y={i * stretch + textVertOffset} text-anchor="middle" font-size={17} fill="white">
-          {(maxSpeed - i + minSpeed).toString()}
+          {(maxSpeed - i + minSpeed - 10).toString()}
         </text>
       )
     }
@@ -46,16 +46,16 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
 
     const sub = this.props.bus.getSubscriber<PFDSimvars>()
     sub
-      .on('airspeed')
+      .on('indicated_airspeed')
       .whenChanged()
       .handle((asi) => {
         if (asi >= minSpeed) {
           this.aisTapeRef.instance?.setAttribute(
             'transform',
-            `translate(0, ${baseline - maxSpeed * 3 + asi * 3 - minSpeed * 3})`
+            `translate(0, ${baseline - maxSpeed * 3 + asi * 3 - minSpeed - 30})`
           )
         } else {
-          this.aisTapeRef.instance?.setAttribute('transform', `translate(0, ${baseline - maxSpeed * 3})`)
+          this.aisTapeRef.instance?.setAttribute('transform', `translate(0, ${baseline - maxSpeed * 3 + minSpeed})`)
         }
       })
   }

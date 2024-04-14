@@ -35,7 +35,7 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
 
     const sub = this.props.bus.getSubscriber<PFDSimvars>()
     sub
-      .on('airspeed')
+      .on('indicated_airspeed')
       .whenChanged()
       .handle((ias) => {
         if (ias < 30) {

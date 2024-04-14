@@ -99,7 +99,7 @@
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 2500.0
+      "max": 250.0
     },
     "pinned": null
   },
@@ -108,7 +108,7 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 0.0,
+    "value": 176.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -630,9 +630,11 @@
     "unit": "inches of mercury",
     "value": 1010.0,
     "control": {
-      "type": "Numeric"
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
     },
-    "pinned": true
+    "pinned": null
   },
   {
     "type": "A",
@@ -641,8 +643,23 @@
     "unit": "bool",
     "value": 0.0,
     "control": {
-      "type": "Numeric"
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
     },
-    "pinned": true
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "AIRSPEED TRUE",
+    "index": 0,
+    "unit": "knots",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
   }
 ]

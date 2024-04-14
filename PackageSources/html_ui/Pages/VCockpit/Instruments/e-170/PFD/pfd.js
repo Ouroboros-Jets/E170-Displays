@@ -32301,10 +32301,10 @@
   var baseline2 = 254;
   var stretch = 3;
   var minSpeed = 30;
-  var maxSpeed = 600 - minSpeed;
+  var maxSpeed = 940;
   var renderTape2 = () => {
     const elements = [];
-    for (let i = -minSpeed; i < maxSpeed; i += 10) {
+    for (let i = minSpeed - 10; i < maxSpeed; i += 10) {
       if (i >= 0) {
         elements.push(
           /* @__PURE__ */ FSComponent.buildComponent(
@@ -32320,7 +32320,7 @@
         );
         const textVertOffset = 6;
         elements.push(
-          /* @__PURE__ */ FSComponent.buildComponent("text", { x: 40, y: i * stretch + textVertOffset, "text-anchor": "middle", "font-size": 17, fill: "white" }, (maxSpeed - i + minSpeed).toString())
+          /* @__PURE__ */ FSComponent.buildComponent("text", { x: 40, y: i * stretch + textVertOffset, "text-anchor": "middle", "font-size": 17, fill: "white" }, (maxSpeed - i + minSpeed - 10).toString())
         );
       }
     }
@@ -32334,15 +32334,15 @@
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("airspeed").whenChanged().handle((asi) => {
+      sub.on("indicated_airspeed").whenChanged().handle((asi) => {
         var _a2, _b;
         if (asi >= minSpeed) {
           (_a2 = this.aisTapeRef.instance) == null ? void 0 : _a2.setAttribute(
             "transform",
-            `translate(0, ${baseline2 - maxSpeed * 3 + asi * 3 - minSpeed * 3})`
+            `translate(0, ${baseline2 - maxSpeed * 3 + asi * 3 - minSpeed - 30})`
           );
         } else {
-          (_b = this.aisTapeRef.instance) == null ? void 0 : _b.setAttribute("transform", `translate(0, ${baseline2 - maxSpeed * 3})`);
+          (_b = this.aisTapeRef.instance) == null ? void 0 : _b.setAttribute("transform", `translate(0, ${baseline2 - maxSpeed * 3 + minSpeed})`);
         }
       });
     }
@@ -32374,7 +32374,7 @@
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("airspeed").whenChanged().handle((ias) => {
+      sub.on("indicated_airspeed").whenChanged().handle((ias) => {
         if (ias < 30) {
           this.singleDigitScrollRef.instance.setAttribute("opacity", "0");
           this.tenthDigitScrollRef.instance.setAttribute("opacity", "0");
@@ -32440,10 +32440,52 @@
     }
   };
 
+  // instruments/src/PFD/Components/Airspeed/TrendVector.tsx
+  var baseline3 = 254;
+  var TrendVector = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.groupRef = FSComponent.createRef();
+      this.trendVecRef = FSComponent.createRef();
+      this.subscribableAcceleration = Subject.create(0);
+      this.subscribablevelocityHistory = Subject.create([]);
+    }
+    calculateAcceleration() {
+      const sHCpy = this.subscribablevelocityHistory.get();
+      const dv = sHCpy[sHCpy.length - 1] - sHCpy[0];
+      const dt = 10;
+      return dv / dt;
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("true_airspeed").whenChanged().handle((ias) => {
+        const acceleration = this.subscribableAcceleration.get();
+        if (acceleration > 2) {
+          this.groupRef.instance.setAttribute("opacity", "0");
+        } else {
+          this.groupRef.instance.setAttribute("opacity", "1");
+        }
+        const vh = this.subscribablevelocityHistory.get();
+        if (vh.length > 10) {
+          vh.shift();
+          this.subscribableAcceleration.set(this.calculateAcceleration());
+        }
+        console.log(acceleration);
+        vh.push(ias);
+        this.subscribablevelocityHistory.set(vh);
+        this.trendVecRef.instance.setAttribute("d", `M 86 ${baseline3} L 86 ${baseline3 + acceleration}`);
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.groupRef }, /* @__PURE__ */ FSComponent.buildComponent("path", { "stroke-width": 6, stroke: "white", "stroke-linejoin": "round", ref: this.trendVecRef }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 80 ${baseline3} L 90 ${baseline3}`, "stroke-width": 2, stroke: "white", "stroke-linejoin": "round" }));
+    }
+  };
+
   // instruments/src/PFD/Components/Airspeed/index.tsx
   var Airspeed = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(AirspeedTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAirspeedBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAirspeedBox_default, { bus: this.props.bus }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(AirspeedTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAirspeedBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAirspeedBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(TrendVector, { bus: this.props.bus }));
     }
   };
   var Airspeed_default = Airspeed;
@@ -32763,7 +32805,7 @@
     ["pitch", { name: "PLANE PITCH DEGREES" /* pitch */, type: SimVarValueType.Degree }],
     ["bank", { name: "PLANE BANK DEGREES" /* bank */, type: SimVarValueType.Degree }],
     ["altitude", { name: "INDICATED ALTITUDE" /* altitude */, type: SimVarValueType.Feet }],
-    ["airspeed", { name: "AIRSPEED INDICATED" /* airspeed */, type: SimVarValueType.Knots }],
+    ["indicated_airspeed", { name: "AIRSPEED INDICATED" /* indicated_airspeed */, type: SimVarValueType.Knots }],
     ["heading", { name: "PLANE HEADING DEGREES MAGNETIC" /* heading */, type: SimVarValueType.Degree }],
     ["ground_speed", { name: "GROUND VELOCITY" /* ground_speed */, type: SimVarValueType.Knots }],
     ["heading_lock", { name: "AUTOPILOT HEADING LOCK DIR" /* heading_lock */, type: SimVarValueType.Degree }],
@@ -32771,7 +32813,8 @@
     ["airspeed_selected", { name: "AIRSPEED SELECT INDICATED OR TRUE" /* airspeed_selected */, type: SimVarValueType.Knots }],
     ["altitude_selected", { name: "AUTOPILOT ALTITUDE LOCK VAR" /* altitude_selected */, type: SimVarValueType.Feet }],
     ["barometric_setting", { name: "KOHLSMAN SETTING HG" /* barometric_setting */, type: SimVarValueType.InHG }],
-    ["barometric_std", { name: "KOHLSMAN SETTING STD" /* barometric_std */, type: SimVarValueType.Bool }]
+    ["barometric_std", { name: "KOHLSMAN SETTING STD" /* barometric_std */, type: SimVarValueType.Bool }],
+    ["true_airspeed", { name: "AIRSPEED TRUE" /* true_airspeed */, type: SimVarValueType.Knots }]
   ]);
 
   // instruments/src/PFD/instrument.tsx
