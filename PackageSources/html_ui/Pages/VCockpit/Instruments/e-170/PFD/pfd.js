@@ -32460,9 +32460,8 @@
           if (iasPredictionInKnots >= 2 || iasPredictionInKnots <= -2) {
             this.groupRef.instance.style.visibility = "visible";
           } else {
-            this.groupRef.instance.style.visibility = "hiddem";
+            this.groupRef.instance.style.visibility = "hidden";
           }
-          console.log(iasPredictionInKnots);
           this.trendVecRef.instance.setAttribute("d", `M 86 ${baseline3} L 86 ${baseline3 - iasPredictionInKnots * 3}`);
         });
       });

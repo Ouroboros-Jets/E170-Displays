@@ -29,13 +29,13 @@ export class TrendVector extends DisplayComponent<TrendVectorProps> {
             const iasPredictionInKnots = iasPrediction / 1.68781
 
             console.log(iasPredictionInKnots)
+
             if (iasPredictionInKnots >= 2 || iasPredictionInKnots <= -2) {
               this.groupRef.instance.style.visibility = 'visible'
             } else {
-              this.groupRef.instance.style.visibility = 'hiddem'
+              this.groupRef.instance.style.visibility = 'hidden'
             }
 
-            console.log(iasPredictionInKnots)
             this.trendVecRef.instance.setAttribute('d', `M 86 ${baseline} L 86 ${baseline - iasPredictionInKnots * 3}`)
           })
       })
