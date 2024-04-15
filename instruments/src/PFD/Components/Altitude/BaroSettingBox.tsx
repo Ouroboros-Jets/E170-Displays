@@ -18,7 +18,7 @@ export class BaroSettingBox extends DisplayComponent<BaroSettingBoxProps> {
       .on('barometric_setting')
       .whenChanged()
       .handle((baroValue) => {
-        this.baroValueRef.instance.textContent = baroValue.toString()
+        this.baroValueRef.instance.textContent = baroValue.toFixed(2).toString()
       })
 
     sub
@@ -26,12 +26,12 @@ export class BaroSettingBox extends DisplayComponent<BaroSettingBoxProps> {
       .whenChanged()
       .handle((baroStd) => {
         if (baroStd) {
-          this.baroValueRef.instance.textContent = 'STD'
+          this.baroValueRef.instance.textContent = 'IN'
           this.baroValueRef.instance.setAttribute('fill', Colors.CYAN)
           this.baroUnitRef.instance.textContent = ''
         } else {
           this.baroValueRef.instance.setAttribute('fill', Colors.CYAN)
-          this.baroUnitRef.instance.textContent = 'HPA'
+          this.baroUnitRef.instance.textContent = 'IN'
 
           sub
             .on('barometric_setting')

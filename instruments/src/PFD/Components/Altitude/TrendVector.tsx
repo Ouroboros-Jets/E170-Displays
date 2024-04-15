@@ -45,7 +45,7 @@ export class TrendVector extends DisplayComponent<TrendVectorProps> {
       <g ref={this.groupRef}>
         <defs>
           <clipPath id="altTrendVectorClip">
-            <rect x={448} y={88} width={6} height={330} />
+            <rect x={447} y={88} width={6} height={330} />
           </clipPath>
         </defs>
 
@@ -56,7 +56,7 @@ export class TrendVector extends DisplayComponent<TrendVectorProps> {
           ref={this.trendVecRef}
           clip-path="url(#altTrendVectorClip)"
         />
-        <path d={`M 445 ${baseline} L 455 ${baseline}`} stroke-width={2} stroke="white" stroke-linejoin="round" />
+        <path d={`M 446 ${baseline} L 456 ${baseline}`} stroke-width={2} stroke="white" stroke-linejoin="round" />
       </g>
     )
   }

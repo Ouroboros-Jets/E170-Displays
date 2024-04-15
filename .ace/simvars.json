@@ -199,13 +199,13 @@
     "name": "VERTICAL SPEED",
     "index": 0,
     "unit": "Feet per second",
-    "value": 2500.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 250.0
+      "max": 5000.0
     },
-    "pinned": null
+    "pinned": true
   },
   {
     "type": "A",
@@ -667,18 +667,20 @@
     "name": "ACCELERATION BODY Z",
     "index": 0,
     "unit": "feet",
-    "value": "20",
+    "value": 0.0,
     "control": {
-      "type": "Text"
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
     },
-    "pinned": false
+    "pinned": null
   },
   {
     "type": "A",
     "name": "ACCELERATION BODY Y",
     "index": 0,
     "unit": "feet",
-    "value": 12.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

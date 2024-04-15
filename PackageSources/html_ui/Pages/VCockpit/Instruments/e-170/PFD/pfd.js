@@ -10027,9 +10027,9 @@
     constructor() {
       this.procTurnBuilder = new ProcedureTurnBuilder();
     }
-    computeTurns(legs, startIndex, count2, desiredTurnRadius, desiredCourseReversalTurnRadius, desiredTurnAnticipationTurnRadius) {
+    computeTurns(legs, startIndex, count, desiredTurnRadius, desiredCourseReversalTurnRadius, desiredTurnAnticipationTurnRadius) {
       var _a2, _b, _c, _d;
-      const end = startIndex + count2;
+      const end = startIndex + count;
       let currentIndex = startIndex;
       while (currentIndex < end) {
         const fromLeg = legs[currentIndex];
@@ -14351,12 +14351,12 @@
     static awaitDelay(delay) {
       return new Promise((resolve) => setTimeout(() => resolve(), delay));
     }
-    static awaitFrames(count2, glassCockpitRefresh = false) {
+    static awaitFrames(count, glassCockpitRefresh = false) {
       let elapsedFrameCount = 0;
       if (glassCockpitRefresh) {
         return new Promise((resolve) => {
           const callback = () => {
-            if (++elapsedFrameCount > count2) {
+            if (++elapsedFrameCount > count) {
               resolve();
             } else {
               requestAnimationFrame(callback);
@@ -14367,7 +14367,7 @@
       } else {
         return new Promise((resolve) => {
           const id = setInterval(() => {
-            if (++elapsedFrameCount > count2) {
+            if (++elapsedFrameCount > count) {
               clearInterval(id);
               resolve();
             }
@@ -32193,16 +32193,16 @@
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
       sub.on("barometric_setting").whenChanged().handle((baroValue) => {
-        this.baroValueRef.instance.textContent = baroValue.toString();
+        this.baroValueRef.instance.textContent = baroValue.toFixed(2).toString();
       });
       sub.on("barometric_std").whenChanged().handle((baroStd) => {
         if (baroStd) {
-          this.baroValueRef.instance.textContent = "STD";
+          this.baroValueRef.instance.textContent = "IN";
           this.baroValueRef.instance.setAttribute("fill", Colors_default.CYAN);
           this.baroUnitRef.instance.textContent = "";
         } else {
           this.baroValueRef.instance.setAttribute("fill", Colors_default.CYAN);
-          this.baroUnitRef.instance.textContent = "HPA";
+          this.baroUnitRef.instance.textContent = "IN";
           sub.on("barometric_setting").whenChanged().handle((baroValue) => {
             this.baroValueRef.instance.textContent = Math.round(baroValue).toString().padStart(3, "0");
           });
@@ -32319,7 +32319,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.groupRef }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "altTrendVectorClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 448, y: 88, width: 6, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.groupRef }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "altTrendVectorClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 447, y: 88, width: 6, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           "stroke-width": 6,
@@ -32328,7 +32328,7 @@
           ref: this.trendVecRef,
           "clip-path": "url(#altTrendVectorClip)"
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 445 ${baseline2} L 455 ${baseline2}`, "stroke-width": 2, stroke: "white", "stroke-linejoin": "round" }));
+      ), /* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 446 ${baseline2} L 456 ${baseline2}`, "stroke-width": 2, stroke: "white", "stroke-linejoin": "round" }));
     }
   };
 
@@ -32702,21 +32702,25 @@
   var stroke = "white";
   var xAxis = 254;
   var leftBound = 560;
-  var count = 5;
+  var smallCount = 5;
+  var bigCount = 6;
   var smallSpacing = 5;
-  var bigSpacing = smallSpacing * 5;
-  var tiltFactor = 0.1;
+  var bigSpacing = smallSpacing * 3.5;
+  var smallTiltFactor = 0.1;
+  var bigTiltFactor = 0.2;
+  var thousandOffset = 20;
+  var firstThousandOffset = 8;
   var fpmToPixel = (fpm) => {
-    return -fpm * count * (tiltFactor + 1) * 5e-3;
+    return -fpm * (smallCount * (smallTiltFactor + 1) * 0.01 + thousandOffset);
   };
   var renderMarkers = () => {
     const markers = [];
-    for (let y = 1; y < count * smallSpacing; y += smallSpacing) {
+    for (let y = 1 * smallSpacing; y < smallCount * smallSpacing; y += smallSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
           {
-            d: `M 565 ${xAxis + y} L ${leftBound}  ${xAxis + y + tiltFactor * y}}`,
+            d: `M 565 ${xAxis + y} L ${leftBound}  ${xAxis + y + smallTiltFactor * y}}`,
             stroke,
             "stroke-width": 2,
             "stroke-linecap": "round"
@@ -32724,12 +32728,12 @@
         )
       );
     }
-    for (let y = 1; y < count * smallSpacing; y += smallSpacing) {
+    for (let y = 1 * smallSpacing; y < smallCount * smallSpacing; y += smallSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
           {
-            d: `M 565 ${xAxis - y} L ${leftBound}  ${xAxis - y - tiltFactor * y}}`,
+            d: `M 565 ${xAxis - y} L ${leftBound}  ${xAxis - y - smallTiltFactor * y}}`,
             stroke,
             "stroke-width": 2,
             "stroke-linecap": "round"
@@ -32737,12 +32741,12 @@
         )
       );
     }
-    for (let y = 1; y < count * bigSpacing; y += bigSpacing) {
+    for (let y = 1 * bigSpacing; y < bigCount * bigSpacing; y += bigSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
           {
-            d: `M 570 ${xAxis + y} L ${leftBound}  ${xAxis + y + tiltFactor * y}`,
+            d: `M 570 ${y / bigSpacing > 1 ? xAxis + y + thousandOffset : xAxis + y + firstThousandOffset} L ${leftBound}  ${y / bigSpacing > 1 ? xAxis + y + bigTiltFactor * y + thousandOffset : xAxis + y + bigTiltFactor * y + firstThousandOffset}`,
             stroke,
             "stroke-width": 2,
             "stroke-linecap": "round"
@@ -32750,12 +32754,12 @@
         )
       );
     }
-    for (let y = 1; y < count * bigSpacing; y += bigSpacing) {
+    for (let y = 1 * bigSpacing; y < bigCount * bigSpacing; y += bigSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
           {
-            d: `M 570 ${xAxis - y} L ${leftBound}  ${xAxis - y - tiltFactor * y}`,
+            d: `M 570 ${y / bigSpacing > 1 ? xAxis - y - thousandOffset : xAxis - y - firstThousandOffset} L ${leftBound}  ${y / bigSpacing > 1 ? xAxis - y - bigTiltFactor * y - thousandOffset : xAxis - y - bigTiltFactor * y - firstThousandOffset}`,
             stroke,
             "stroke-width": 2,
             "stroke-linecap": "round"
@@ -32776,12 +32780,11 @@
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
       sub.on("vertical_speed").whenChanged().handle((vSpd) => {
-        vSpd = Math.min(Math.max(vSpd, -4e3), 4e3);
-        const vSpdPx = fpmToPixel(vSpd);
+        const vSpdPx = fpmToPixel(Math.min(Math.max(vSpd, -4e3), 4e3));
         this.vSpdNeedleRef.instance.setAttribute("d", `M 560 ${vSpdPx + 254} L 675  254`);
         if (vSpd >= 500 || vSpd <= -500) {
           this.vSpdBoxRef.instance.setAttribute("opacity", "1");
-          this.vSpdValueRef.instance.textContent = (Math.round(vSpd / 100) * 100).toString();
+          this.vSpdValueRef.instance.textContent = Math.min(Math.max(vSpd, -9900), 9900).toString();
         } else {
           this.vSpdBoxRef.instance.setAttribute("opacity", "0");
         }
