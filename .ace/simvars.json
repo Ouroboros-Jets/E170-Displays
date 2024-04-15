@@ -667,7 +667,18 @@
     "name": "ACCELERATION BODY Z",
     "index": 0,
     "unit": "feet",
-    "value": 0.0,
+    "value": "20",
+    "control": {
+      "type": "Text"
+    },
+    "pinned": false
+  },
+  {
+    "type": "A",
+    "name": "ACCELERATION BODY Y",
+    "index": 0,
+    "unit": "feet",
+    "value": 12.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

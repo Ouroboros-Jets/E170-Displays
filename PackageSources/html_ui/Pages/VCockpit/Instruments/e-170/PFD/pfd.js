@@ -32292,16 +32292,56 @@
   };
   var CurrentAltitudeBox_default = CurrentAltitudeBox;
 
+  // instruments/src/PFD/Components/Altitude/TrendVector.tsx
+  var baseline2 = 254;
+  var TrendVector = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.groupRef = FSComponent.createRef();
+      this.trendVecRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("altitude").whenChanged().handle((ias) => {
+        sub.on("acceleration_y").whenChanged().handle((a) => {
+          const iasPredictionInFeetPerSecond = Math.sqrt(ias) + a * 6;
+          if (iasPredictionInFeetPerSecond >= 20 || iasPredictionInFeetPerSecond <= -20) {
+            this.groupRef.instance.style.visibility = "visible";
+          } else {
+            this.groupRef.instance.style.visibility = "hidden";
+          }
+          this.trendVecRef.instance.setAttribute(
+            "d",
+            `M 450 ${baseline2} L 450 ${baseline2 - iasPredictionInFeetPerSecond * 3}`
+          );
+        });
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.groupRef }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "altTrendVectorClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 448, y: 88, width: 6, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          "stroke-width": 6,
+          stroke: "white",
+          "stroke-linejoin": "round",
+          ref: this.trendVecRef,
+          "clip-path": "url(#altTrendVectorClip)"
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 445 ${baseline2} L 455 ${baseline2}`, "stroke-width": 2, stroke: "white", "stroke-linejoin": "round" }));
+    }
+  };
+
   // instruments/src/PFD/Components/Altitude/index.tsx
   var Altitude = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "57", width: "82", height: "361", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent(AltitudeTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAltitudeBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAltitudeBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(BaroSettingBox, { bus: this.props.bus }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "57", width: "82", height: "361", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent(AltitudeTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAltitudeBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAltitudeBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(BaroSettingBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(TrendVector, { bus: this.props.bus }));
     }
   };
   var Altitude_default = Altitude;
 
   // instruments/src/PFD/Components/Airspeed/AirspeedTape.tsx
-  var baseline2 = 254;
+  var baseline3 = 254;
   var stretch = 3;
   var minSpeed = 30;
   var maxSpeed = 940;
@@ -32342,10 +32382,10 @@
         if (ias >= minSpeed) {
           (_a2 = this.aisTapeRef.instance) == null ? void 0 : _a2.setAttribute(
             "transform",
-            `translate(0, ${baseline2 - maxSpeed * 3 + ias * 3 - minSpeed - 30})`
+            `translate(0, ${baseline3 - maxSpeed * 3 + ias * 3 - minSpeed - 30})`
           );
         } else {
-          (_b = this.aisTapeRef.instance) == null ? void 0 : _b.setAttribute("transform", `translate(0, ${baseline2 - maxSpeed * 3 + minSpeed})`);
+          (_b = this.aisTapeRef.instance) == null ? void 0 : _b.setAttribute("transform", `translate(0, ${baseline3 - maxSpeed * 3 + minSpeed})`);
         }
       });
     }
@@ -32444,8 +32484,8 @@
   };
 
   // instruments/src/PFD/Components/Airspeed/TrendVector.tsx
-  var baseline3 = 254;
-  var TrendVector = class extends DisplayComponent {
+  var baseline4 = 254;
+  var TrendVector2 = class extends DisplayComponent {
     constructor() {
       super(...arguments);
       this.groupRef = FSComponent.createRef();
@@ -32456,37 +32496,36 @@
       const sub = this.props.bus.getSubscriber();
       sub.on("true_airspeed").whenChanged().handle((ias) => {
         sub.on("acceleration_z").whenChanged().handle((a) => {
-          const iasInFeetPerSecond = Math.round(ias) * 1.68781;
-          const iasPrediction = Math.sqrt(iasInFeetPerSecond) + a * 10;
-          const iasPredictionInKnots = iasPrediction / 1.68781;
+          const iasPredictionInFeetPerSecond = Math.sqrt(ias) + a * 10;
+          const iasPredictionInKnots = iasPredictionInFeetPerSecond / 1.68781;
           console.log(iasPredictionInKnots);
           if (iasPredictionInKnots >= 2 || iasPredictionInKnots <= -2) {
             this.groupRef.instance.style.visibility = "visible";
           } else {
             this.groupRef.instance.style.visibility = "hidden";
           }
-          this.trendVecRef.instance.setAttribute("d", `M 86 ${baseline3} L 86 ${baseline3 - iasPredictionInKnots * 3}`);
+          this.trendVecRef.instance.setAttribute("d", `M 86 ${baseline4} L 86 ${baseline4 - iasPredictionInKnots * 3}`);
         });
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.groupRef }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "trendVectorClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 83, y: 88, width: 6, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.groupRef }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "iasTrendVectorClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 83, y: 88, width: 6, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           "stroke-width": 6,
           stroke: "white",
           "stroke-linejoin": "round",
           ref: this.trendVecRef,
-          "clip-path": "url(#trendVectorClip)"
+          "clip-path": "url(#iasTrendVectorClip)"
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 80 ${baseline3} L 90 ${baseline3}`, "stroke-width": 2, stroke: "white", "stroke-linejoin": "round" }));
+      ), /* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 80 ${baseline4} L 90 ${baseline4}`, "stroke-width": 2, stroke: "white", "stroke-linejoin": "round" }));
     }
   };
 
   // instruments/src/PFD/Components/Airspeed/index.tsx
   var Airspeed = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(AirspeedTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAirspeedBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAirspeedBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(TrendVector, { bus: this.props.bus }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(AirspeedTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAirspeedBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAirspeedBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(TrendVector2, { bus: this.props.bus }));
     }
   };
   var Airspeed_default = Airspeed;
@@ -32816,7 +32855,8 @@
     ["barometric_setting", { name: "KOHLSMAN SETTING HG" /* barometric_setting */, type: SimVarValueType.InHG }],
     ["barometric_std", { name: "KOHLSMAN SETTING STD" /* barometric_std */, type: SimVarValueType.Bool }],
     ["true_airspeed", { name: "AIRSPEED TRUE" /* true_airspeed */, type: SimVarValueType.Knots }],
-    ["acceleration_z", { name: "ACCELERATION BODY Z" /* acceleration_z */, type: SimVarValueType.Feet }]
+    ["acceleration_z", { name: "ACCELERATION BODY Z" /* acceleration_z */, type: SimVarValueType.Feet }],
+    ["acceleration_y", { name: "ACCELERATION BODY Y" /* acceleration_y */, type: SimVarValueType.Feet }]
   ]);
 
   // instruments/src/PFD/instrument.tsx

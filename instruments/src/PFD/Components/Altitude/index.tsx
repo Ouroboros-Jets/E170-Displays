@@ -3,6 +3,7 @@ import { AltitudeTape } from './AltitudeTape'
 import { SelectedAltitudeBox } from './SelectedAltitudeBox'
 import { BaroSettingBox } from './BaroSettingBox'
 import CurrentAltitudeBox from './CurrentAltitudeBox'
+import { TrendVector } from './TrendVector'
 
 type AltitudeProps = ComponentProps & {
   bus: EventBus
@@ -17,6 +18,7 @@ class Altitude extends DisplayComponent<AltitudeProps> {
         <SelectedAltitudeBox bus={this.props.bus} />
         <CurrentAltitudeBox bus={this.props.bus} />
         <BaroSettingBox bus={this.props.bus} />
+        <TrendVector bus={this.props.bus} />
       </g>
     )
   }

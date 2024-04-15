@@ -17,25 +17,25 @@ export class TrendVector extends DisplayComponent<TrendVectorProps> {
 
     const sub = this.props.bus.getSubscriber<PFDSimvars>()
     sub
-      .on('true_airspeed')
+      .on('altitude')
       .whenChanged()
       .handle((ias) => {
         sub
-          .on('acceleration_z')
+          .on('acceleration_y')
           .whenChanged()
           .handle((a) => {
-            const iasPredictionInFeetPerSecond = Math.sqrt(ias) + a * 10
-            const iasPredictionInKnots = iasPredictionInFeetPerSecond / 1.68781
+            const iasPredictionInFeetPerSecond = Math.sqrt(ias) + a * 6
 
-            console.log(iasPredictionInKnots)
-
-            if (iasPredictionInKnots >= 2 || iasPredictionInKnots <= -2) {
+            if (iasPredictionInFeetPerSecond >= 20 || iasPredictionInFeetPerSecond <= -20) {
               this.groupRef.instance.style.visibility = 'visible'
             } else {
               this.groupRef.instance.style.visibility = 'hidden'
             }
 
-            this.trendVecRef.instance.setAttribute('d', `M 86 ${baseline} L 86 ${baseline - iasPredictionInKnots * 3}`)
+            this.trendVecRef.instance.setAttribute(
+              'd',
+              `M 450 ${baseline} L 450 ${baseline - iasPredictionInFeetPerSecond * 3}`
+            )
           })
       })
   }
@@ -44,8 +44,8 @@ export class TrendVector extends DisplayComponent<TrendVectorProps> {
     return (
       <g ref={this.groupRef}>
         <defs>
-          <clipPath id="iasTrendVectorClip">
-            <rect x={83} y={88} width={6} height={330} />
+          <clipPath id="altTrendVectorClip">
+            <rect x={448} y={88} width={6} height={330} />
           </clipPath>
         </defs>
 
@@ -54,9 +54,9 @@ export class TrendVector extends DisplayComponent<TrendVectorProps> {
           stroke="white"
           stroke-linejoin="round"
           ref={this.trendVecRef}
-          clip-path="url(#iasTrendVectorClip)"
+          clip-path="url(#altTrendVectorClip)"
         />
-        <path d={`M 80 ${baseline} L 90 ${baseline}`} stroke-width={2} stroke="white" stroke-linejoin="round" />
+        <path d={`M 445 ${baseline} L 455 ${baseline}`} stroke-width={2} stroke="white" stroke-linejoin="round" />
       </g>
     )
   }

@@ -18,6 +18,21 @@ text {
   position: absolute;
 }
 
+/* temp_stylePlugin:instruments\src\PFD\Components\Altitude\index.scss */
+.altitude-continer {
+  position: absolute;
+  top: 28px;
+  right: 54px;
+  width: 120px;
+  height: 422px;
+}
+.altitude-svg {
+  position: absolute;
+  left: 0px;
+  width: 120px;
+  height: 100%;
+}
+
 /* temp_stylePlugin:instruments\src\PFD\Components\Airspeed\index.scss */
 
 /* temp_stylePlugin:instruments\src\PFD\Components\VerticalSpeed\index.scss */
