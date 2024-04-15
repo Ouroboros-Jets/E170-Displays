@@ -32096,7 +32096,7 @@
   var maxAltitude = 6e4;
   var renderTape = () => {
     const elements = [];
-    for (let alt = 0; alt < maxAltitude; alt += 125) {
+    for (let alt = 0; alt < maxAltitude; alt += 100) {
       if (alt % 500 === 0) {
         elements.push(
           /* @__PURE__ */ FSComponent.buildComponent(

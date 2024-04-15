@@ -673,6 +673,6 @@
       "min": 0.0,
       "max": 250.0
     },
-    "pinned": true
+    "pinned": null
   }
 ]

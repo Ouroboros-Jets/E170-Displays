@@ -13,7 +13,7 @@ const maxAltitude = 60000
 const renderTape = (): JSX.Element[] => {
   const elements: JSX.Element[] = []
 
-  for (let alt = 0; alt < maxAltitude; alt += 125) {
+  for (let alt = 0; alt < maxAltitude; alt += 100) {
     if (alt % 500 === 0) {
       elements.push(
         <path
