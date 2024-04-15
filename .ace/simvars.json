@@ -685,5 +685,18 @@
       "max": 250.0
     },
     "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_AP_SELECTED_AS",
+    "index": 0,
+    "unit": "knots",
+    "value": 61.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
   }
 ]

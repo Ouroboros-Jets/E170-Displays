@@ -32850,7 +32850,7 @@
     ["ground_speed", { name: "GROUND VELOCITY" /* ground_speed */, type: SimVarValueType.Knots }],
     ["heading_lock", { name: "AUTOPILOT HEADING LOCK DIR" /* heading_lock */, type: SimVarValueType.Degree }],
     ["vertical_speed", { name: "VERTICAL SPEED" /* vertical_speed */, type: SimVarValueType.Feet }],
-    ["airspeed_selected", { name: "AIRSPEED SELECT INDICATED OR TRUE" /* airspeed_selected */, type: SimVarValueType.Knots }],
+    ["airspeed_selected", { name: "L:OBJ_AP_SELECTED_AS" /* airspeed_selected */, type: SimVarValueType.Knots }],
     ["altitude_selected", { name: "AUTOPILOT ALTITUDE LOCK VAR" /* altitude_selected */, type: SimVarValueType.Feet }],
     ["barometric_setting", { name: "KOHLSMAN SETTING HG" /* barometric_setting */, type: SimVarValueType.InHG }],
     ["barometric_std", { name: "KOHLSMAN SETTING STD" /* barometric_std */, type: SimVarValueType.Bool }],

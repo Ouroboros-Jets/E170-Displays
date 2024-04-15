@@ -27,7 +27,7 @@ export enum PFDVars {
   ground_speed = 'GROUND VELOCITY',
   heading_lock = 'AUTOPILOT HEADING LOCK DIR',
   vertical_speed = 'VERTICAL SPEED',
-  airspeed_selected = 'AIRSPEED SELECT INDICATED OR TRUE',
+  airspeed_selected = 'L:OBJ_AP_SELECTED_AS',
   altitude_selected = 'AUTOPILOT ALTITUDE LOCK VAR',
   barometric_setting = 'KOHLSMAN SETTING HG',
   barometric_std = 'KOHLSMAN SETTING STD',
