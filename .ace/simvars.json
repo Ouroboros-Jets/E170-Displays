@@ -108,7 +108,7 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 176.0,
+    "value": 100.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -661,5 +661,18 @@
       "max": 250.0
     },
     "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "ACCELERATION BODY Z",
+    "index": 0,
+    "unit": "feet",
+    "value": 2.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": true
   }
 ]

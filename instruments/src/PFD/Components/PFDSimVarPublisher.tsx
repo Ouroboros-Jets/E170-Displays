@@ -14,6 +14,7 @@ export type PFDSimvars = {
   barometric_setting: number
   barometric_std: boolean
   true_airspeed: number
+  acceleration_z: number
 }
 
 export enum PFDVars {
@@ -29,7 +30,8 @@ export enum PFDVars {
   altitude_selected = 'AUTOPILOT ALTITUDE LOCK VAR',
   barometric_setting = 'KOHLSMAN SETTING HG',
   barometric_std = 'KOHLSMAN SETTING STD',
-  true_airspeed = 'AIRSPEED TRUE'
+  true_airspeed = 'AIRSPEED TRUE',
+  acceleration_z = 'ACCELERATION BODY Z'
 }
 
 export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
@@ -46,7 +48,8 @@ export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
     ['altitude_selected', { name: PFDVars.altitude_selected, type: SimVarValueType.Feet }],
     ['barometric_setting', { name: PFDVars.barometric_setting, type: SimVarValueType.InHG }],
     ['barometric_std', { name: PFDVars.barometric_std, type: SimVarValueType.Bool }],
-    ['true_airspeed', { name: PFDVars.true_airspeed, type: SimVarValueType.Knots }]
+    ['true_airspeed', { name: PFDVars.true_airspeed, type: SimVarValueType.Knots }],
+    ['acceleration_z', { name: PFDVars.acceleration_z, type: SimVarValueType.Feet }]
   ])
 
   public constructor(bus: EventBus) {

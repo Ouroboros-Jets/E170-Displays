@@ -32447,38 +32447,37 @@
       super(...arguments);
       this.groupRef = FSComponent.createRef();
       this.trendVecRef = FSComponent.createRef();
-      this.subscribableAcceleration = Subject.create(0);
-      this.subscribablevelocityHistory = Subject.create([]);
-    }
-    calculateAcceleration() {
-      const sHCpy = this.subscribablevelocityHistory.get();
-      const dv = sHCpy[sHCpy.length - 1] - sHCpy[0];
-      const dt = 10;
-      return dv / dt;
     }
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
       sub.on("true_airspeed").whenChanged().handle((ias) => {
-        const acceleration = this.subscribableAcceleration.get();
-        if (acceleration > 2) {
-          this.groupRef.instance.setAttribute("opacity", "0");
-        } else {
-          this.groupRef.instance.setAttribute("opacity", "1");
-        }
-        const vh = this.subscribablevelocityHistory.get();
-        if (vh.length > 10) {
-          vh.shift();
-          this.subscribableAcceleration.set(this.calculateAcceleration());
-        }
-        console.log(acceleration);
-        vh.push(ias);
-        this.subscribablevelocityHistory.set(vh);
-        this.trendVecRef.instance.setAttribute("d", `M 86 ${baseline3} L 86 ${baseline3 + acceleration}`);
+        sub.on("acceleration_z").whenChanged().handle((a) => {
+          const iasInFeetPerSecond = ias * 1.68781;
+          const iasPrediction = iasInFeetPerSecond + a * 10;
+          const iasPredictionInKnots = iasPrediction / 1.68781;
+          console.log(iasPredictionInKnots);
+          if (iasPredictionInKnots >= 2 || iasPredictionInKnots <= -2) {
+            this.groupRef.instance.style.visibility = "visible";
+          } else {
+            this.groupRef.instance.style.visibility = "hiddem";
+          }
+          console.log(iasPredictionInKnots);
+          this.trendVecRef.instance.setAttribute("d", `M 86 ${baseline3} L 86 ${baseline3 - iasPredictionInKnots * 3}`);
+        });
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.groupRef }, /* @__PURE__ */ FSComponent.buildComponent("path", { "stroke-width": 6, stroke: "white", "stroke-linejoin": "round", ref: this.trendVecRef }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 80 ${baseline3} L 90 ${baseline3}`, "stroke-width": 2, stroke: "white", "stroke-linejoin": "round" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.groupRef }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "trendVectorClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 83, y: 88, width: 6, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          "stroke-width": 6,
+          stroke: "white",
+          "stroke-linejoin": "round",
+          ref: this.trendVecRef,
+          "clip-path": "url(#trendVectorClip)"
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 80 ${baseline3} L 90 ${baseline3}`, "stroke-width": 2, stroke: "white", "stroke-linejoin": "round" }));
     }
   };
 
@@ -32814,7 +32813,8 @@
     ["altitude_selected", { name: "AUTOPILOT ALTITUDE LOCK VAR" /* altitude_selected */, type: SimVarValueType.Feet }],
     ["barometric_setting", { name: "KOHLSMAN SETTING HG" /* barometric_setting */, type: SimVarValueType.InHG }],
     ["barometric_std", { name: "KOHLSMAN SETTING STD" /* barometric_std */, type: SimVarValueType.Bool }],
-    ["true_airspeed", { name: "AIRSPEED TRUE" /* true_airspeed */, type: SimVarValueType.Knots }]
+    ["true_airspeed", { name: "AIRSPEED TRUE" /* true_airspeed */, type: SimVarValueType.Knots }],
+    ["acceleration_z", { name: "ACCELERATION BODY Z" /* acceleration_z */, type: SimVarValueType.Feet }]
   ]);
 
   // instruments/src/PFD/instrument.tsx
