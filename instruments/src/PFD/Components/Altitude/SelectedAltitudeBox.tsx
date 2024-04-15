@@ -18,8 +18,8 @@ export class SelectedAltitudeBox extends DisplayComponent<SelectedAltitudeBoxPro
       .on('altitude_selected')
       .whenChanged()
       .handle((alt) => {
-        this.altitudeSelectedRef1.instance.textContent = alt.toString().substring(0, 3).padStart(3, '0')
-        this.altitudeSelectedRef2.instance.textContent = alt.toString().substring(3).padStart(2, '0')
+        this.altitudeSelectedRef1.instance.textContent = Math.round(alt).toString().substring(0, 3).padStart(3, '0')
+        this.altitudeSelectedRef2.instance.textContent = Math.round(alt).toString().substring(3).padStart(2, '0')
       })
   }
 

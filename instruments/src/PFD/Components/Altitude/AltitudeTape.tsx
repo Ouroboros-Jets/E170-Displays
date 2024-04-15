@@ -61,7 +61,10 @@ export class AltitudeTape extends DisplayComponent<AltitudeTapeProps> {
       .on('altitude')
       .whenChanged()
       .handle((alt) => {
-        this.tapeRef.instance?.setAttribute('transform', `translate(0, ${baseline - maxAltitude * 0.3 + alt * 0.3})`)
+        this.tapeRef.instance?.setAttribute(
+          'transform',
+          `translate(0, ${baseline - maxAltitude * 0.3 + Math.round(alt) * 0.3})`
+        )
       })
   }
 

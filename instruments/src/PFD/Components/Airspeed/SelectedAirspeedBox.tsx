@@ -17,7 +17,7 @@ export class SelectedAirspeedBox extends DisplayComponent<SelectedAirspeedBoxPro
       .on('airspeed_selected')
       .whenChanged()
       .handle((ias) => {
-        this.airspeedSelectedRef.instance.textContent = ias.toString()
+        this.airspeedSelectedRef.instance.textContent = Math.round(ias).toString().padStart(3, '0')
       })
   }
 

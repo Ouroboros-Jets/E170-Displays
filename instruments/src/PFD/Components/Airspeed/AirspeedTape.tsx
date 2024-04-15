@@ -48,11 +48,11 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
     sub
       .on('indicated_airspeed')
       .whenChanged()
-      .handle((asi) => {
-        if (asi >= minSpeed) {
+      .handle((ias) => {
+        if (ias >= minSpeed) {
           this.aisTapeRef.instance?.setAttribute(
             'transform',
-            `translate(0, ${baseline - maxSpeed * 3 + asi * 3 - minSpeed - 30})`
+            `translate(0, ${baseline - maxSpeed * 3 + ias * 3 - minSpeed - 30})`
           )
         } else {
           this.aisTapeRef.instance?.setAttribute('transform', `translate(0, ${baseline - maxSpeed * 3 + minSpeed})`)

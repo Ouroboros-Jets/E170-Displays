@@ -37,7 +37,7 @@ export class BaroSettingBox extends DisplayComponent<BaroSettingBoxProps> {
             .on('barometric_setting')
             .whenChanged()
             .handle((baroValue) => {
-              this.baroValueRef.instance.textContent = baroValue.toString()
+              this.baroValueRef.instance.textContent = Math.round(baroValue).toString().padStart(3, '0')
             })
         }
       })

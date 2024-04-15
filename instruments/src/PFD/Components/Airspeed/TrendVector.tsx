@@ -24,8 +24,8 @@ export class TrendVector extends DisplayComponent<TrendVectorProps> {
           .on('acceleration_z')
           .whenChanged()
           .handle((a) => {
-            const iasInFeetPerSecond = ias * 1.68781
-            const iasPrediction = iasInFeetPerSecond + a * 10
+            const iasInFeetPerSecond = Math.round(ias) * 1.68781
+            const iasPrediction = Math.sqrt(iasInFeetPerSecond) + a * 10
             const iasPredictionInKnots = iasPrediction / 1.68781
 
             console.log(iasPredictionInKnots)

@@ -32141,7 +32141,10 @@
       const sub = this.props.bus.getSubscriber();
       sub.on("altitude").whenChanged().handle((alt) => {
         var _a2;
-        (_a2 = this.tapeRef.instance) == null ? void 0 : _a2.setAttribute("transform", `translate(0, ${baseline - maxAltitude * 0.3 + alt * 0.3})`);
+        (_a2 = this.tapeRef.instance) == null ? void 0 : _a2.setAttribute(
+          "transform",
+          `translate(0, ${baseline - maxAltitude * 0.3 + Math.round(alt) * 0.3})`
+        );
       });
     }
     render() {
@@ -32170,8 +32173,8 @@
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
       sub.on("altitude_selected").whenChanged().handle((alt) => {
-        this.altitudeSelectedRef1.instance.textContent = alt.toString().substring(0, 3).padStart(3, "0");
-        this.altitudeSelectedRef2.instance.textContent = alt.toString().substring(3).padStart(2, "0");
+        this.altitudeSelectedRef1.instance.textContent = Math.round(alt).toString().substring(0, 3).padStart(3, "0");
+        this.altitudeSelectedRef2.instance.textContent = Math.round(alt).toString().substring(3).padStart(2, "0");
       });
     }
     render() {
@@ -32201,7 +32204,7 @@
           this.baroValueRef.instance.setAttribute("fill", Colors_default.CYAN);
           this.baroUnitRef.instance.textContent = "HPA";
           sub.on("barometric_setting").whenChanged().handle((baroValue) => {
-            this.baroValueRef.instance.textContent = baroValue.toString();
+            this.baroValueRef.instance.textContent = Math.round(baroValue).toString().padStart(3, "0");
           });
         }
       });
@@ -32334,12 +32337,12 @@
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("indicated_airspeed").whenChanged().handle((asi) => {
+      sub.on("indicated_airspeed").whenChanged().handle((ias) => {
         var _a2, _b;
-        if (asi >= minSpeed) {
+        if (ias >= minSpeed) {
           (_a2 = this.aisTapeRef.instance) == null ? void 0 : _a2.setAttribute(
             "transform",
-            `translate(0, ${baseline2 - maxSpeed * 3 + asi * 3 - minSpeed - 30})`
+            `translate(0, ${baseline2 - maxSpeed * 3 + ias * 3 - minSpeed - 30})`
           );
         } else {
           (_b = this.aisTapeRef.instance) == null ? void 0 : _b.setAttribute("transform", `translate(0, ${baseline2 - maxSpeed * 3 + minSpeed})`);
@@ -32432,7 +32435,7 @@
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
       sub.on("airspeed_selected").whenChanged().handle((ias) => {
-        this.airspeedSelectedRef.instance.textContent = ias.toString();
+        this.airspeedSelectedRef.instance.textContent = Math.round(ias).toString().padStart(3, "0");
       });
     }
     render() {
@@ -32453,8 +32456,8 @@
       const sub = this.props.bus.getSubscriber();
       sub.on("true_airspeed").whenChanged().handle((ias) => {
         sub.on("acceleration_z").whenChanged().handle((a) => {
-          const iasInFeetPerSecond = ias * 1.68781;
-          const iasPrediction = iasInFeetPerSecond + a * 10;
+          const iasInFeetPerSecond = Math.round(ias) * 1.68781;
+          const iasPrediction = Math.sqrt(iasInFeetPerSecond) + a * 10;
           const iasPredictionInKnots = iasPrediction / 1.68781;
           console.log(iasPredictionInKnots);
           if (iasPredictionInKnots >= 2 || iasPredictionInKnots <= -2) {
@@ -32498,7 +32501,7 @@
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
       sub.on("heading").whenChanged().handle((hdg) => {
-        this.hdgRef.instance.textContent = hdg.toString().padStart(3, "0");
+        this.hdgRef.instance.textContent = Math.round(hdg).toString().padStart(3, "0");
       });
     }
     render() {
@@ -32630,7 +32633,7 @@
           this.grndSpdRef.instance.textContent = "-99";
           return;
         }
-        this.grndSpdRef.instance.textContent = spd.toString();
+        this.grndSpdRef.instance.textContent = Math.round(spd).toString();
       });
     }
     render() {
@@ -32660,7 +32663,7 @@
   var stroke = "white";
   var xAxis = 254;
   var leftBound = 560;
-  var count = 6;
+  var count = 5;
   var smallSpacing = 5;
   var bigSpacing = smallSpacing * 5;
   var tiltFactor = 0.1;

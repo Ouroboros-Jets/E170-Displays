@@ -27,7 +27,7 @@ export default class GspdIndicator extends DisplayComponent<T_GspdIndicatorProps
           return
         }
 
-        this.grndSpdRef.instance.textContent = spd.toString()
+        this.grndSpdRef.instance.textContent = Math.round(spd).toString()
       })
   }
 
