@@ -11,27 +11,23 @@ type T_VerticalSpeedIndicatorProps = ComponentProps & {
 const stroke = 'white'
 const xAxis = 254
 const leftBound = 560
-const smallCount = 5
-const bigCount = 6
+const count = 5
 const smallSpacing = 5
-const bigSpacing = smallSpacing * 3.5
-const smallTiltFactor = 0.1
-const bigTiltFactor = 0.2
-const thousandOffset = 20
-const firstThousandOffset = 8
+const bigSpacing = smallSpacing * 5
+const tiltFactor = 0.1
 
 const fpmToPixel = (fpm: number): number => {
-  return -fpm * (smallCount * (smallTiltFactor + 1) * 0.01 + thousandOffset)
+  return -fpm * count * (tiltFactor + 1) * 0.005
 }
 
 const renderMarkers = (): JSX.Element[] => {
   const markers: JSX.Element[] = []
 
   // Small markers
-  for (let y = 1 * smallSpacing; y < smallCount * smallSpacing; y += smallSpacing) {
+  for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
     markers.push(
       <path
-        d={`M 565 ${xAxis + y} L ${leftBound}  ${xAxis + y + smallTiltFactor * y}}`}
+        d={`M 565 ${xAxis + y} L ${leftBound}  ${xAxis + y + tiltFactor * y}}`}
         stroke={stroke}
         stroke-width={2}
         stroke-linecap="round"
@@ -39,10 +35,10 @@ const renderMarkers = (): JSX.Element[] => {
     )
   }
 
-  for (let y = 1 * smallSpacing; y < smallCount * smallSpacing; y += smallSpacing) {
+  for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
     markers.push(
       <path
-        d={`M 565 ${xAxis - y} L ${leftBound}  ${xAxis - y - smallTiltFactor * y}}`}
+        d={`M 565 ${xAxis - y} L ${leftBound}  ${xAxis - y - tiltFactor * y}}`}
         stroke={stroke}
         stroke-width={2}
         stroke-linecap="round"
@@ -51,16 +47,10 @@ const renderMarkers = (): JSX.Element[] => {
   }
 
   // Big markers
-  for (let y = 1 * bigSpacing; y < bigCount * bigSpacing; y += bigSpacing) {
+  for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
     markers.push(
       <path
-        d={`M 570 ${
-          y / bigSpacing > 1 ? xAxis + y + thousandOffset : xAxis + y + firstThousandOffset
-        } L ${leftBound}  ${
-          y / bigSpacing > 1
-            ? xAxis + y + bigTiltFactor * y + thousandOffset
-            : xAxis + y + bigTiltFactor * y + firstThousandOffset
-        }`}
+        d={`M 570 ${xAxis + y} L ${leftBound}  ${xAxis + y + tiltFactor * y}`}
         stroke={stroke}
         stroke-width={2}
         stroke-linecap="round"
@@ -68,16 +58,10 @@ const renderMarkers = (): JSX.Element[] => {
     )
   }
 
-  for (let y = 1 * bigSpacing; y < bigCount * bigSpacing; y += bigSpacing) {
+  for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
     markers.push(
       <path
-        d={`M 570 ${
-          y / bigSpacing > 1 ? xAxis - y - thousandOffset : xAxis - y - firstThousandOffset
-        } L ${leftBound}  ${
-          y / bigSpacing > 1
-            ? xAxis - y - bigTiltFactor * y - thousandOffset
-            : xAxis - y - bigTiltFactor * y - firstThousandOffset
-        }`}
+        d={`M 570 ${xAxis - y} L ${leftBound}  ${xAxis - y - tiltFactor * y}`}
         stroke={stroke}
         stroke-width={2}
         stroke-linecap="round"
@@ -100,13 +84,14 @@ export default class VerticalSpeedIndicator extends DisplayComponent<T_VerticalS
     sub
       .on('vertical_speed')
       .whenChanged()
-      .handle((vSpd) => {
-        const vSpdPx = fpmToPixel(Math.min(Math.max(vSpd, -4000), 4000))
-        this.vSpdNeedleRef.instance.setAttribute('d', `M 560 ${vSpdPx + 254} L 675  254`)
+      .handle((vs) => {
+        vs = Math.min(Math.max(vs * 60, -4000), 4000)
+        const vSpd = fpmToPixel(vs)
+        this.vSpdNeedleRef.instance.setAttribute('d', `M 560 ${vSpd + 254} L 675  254`)
 
-        if (vSpd >= 500 || vSpd <= -500) {
+        if (vs >= 500 || vs <= -500) {
           this.vSpdBoxRef.instance.setAttribute('opacity', '1')
-          this.vSpdValueRef.instance.textContent = Math.min(Math.max(vSpd, -9900), 9900).toString()
+          this.vSpdValueRef.instance.textContent = (Math.round(vs / 100) * 100).toString()
         } else {
           this.vSpdBoxRef.instance.setAttribute('opacity', '0')
         }

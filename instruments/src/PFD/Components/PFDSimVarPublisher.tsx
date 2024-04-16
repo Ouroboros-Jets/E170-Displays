@@ -15,7 +15,6 @@ export type PFDSimvars = {
   barometric_std: boolean
   true_airspeed: number
   acceleration_z: number
-  acceleration_y: number
 }
 
 export enum PFDVars {
@@ -32,8 +31,7 @@ export enum PFDVars {
   barometric_setting = 'KOHLSMAN SETTING HG',
   barometric_std = 'KOHLSMAN SETTING STD',
   true_airspeed = 'AIRSPEED TRUE',
-  acceleration_z = 'ACCELERATION BODY Z',
-  acceleration_y = 'ACCELERATION BODY Y'
+  acceleration_z = 'ACCELERATION BODY Z'
 }
 
 export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
@@ -51,8 +49,7 @@ export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
     ['barometric_setting', { name: PFDVars.barometric_setting, type: SimVarValueType.InHG }],
     ['barometric_std', { name: PFDVars.barometric_std, type: SimVarValueType.Bool }],
     ['true_airspeed', { name: PFDVars.true_airspeed, type: SimVarValueType.Knots }],
-    ['acceleration_z', { name: PFDVars.acceleration_z, type: SimVarValueType.Feet }],
-    ['acceleration_y', { name: PFDVars.acceleration_y, type: SimVarValueType.Feet }]
+    ['acceleration_z', { name: PFDVars.acceleration_z, type: SimVarValueType.Feet }]
   ])
 
   public constructor(bus: EventBus) {

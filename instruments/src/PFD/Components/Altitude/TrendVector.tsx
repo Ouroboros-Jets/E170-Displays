@@ -16,27 +16,20 @@ export class TrendVector extends DisplayComponent<TrendVectorProps> {
     super.onAfterRender(node)
 
     const sub = this.props.bus.getSubscriber<PFDSimvars>()
+
     sub
-      .on('altitude')
+      .on('vertical_speed')
       .whenChanged()
-      .handle((ias) => {
-        sub
-          .on('acceleration_y')
-          .whenChanged()
-          .handle((a) => {
-            const iasPredictionInFeetPerSecond = Math.sqrt(ias) + a * 6
+      .handle((vs) => {
+        const altPredictionInFeet = vs * 6
 
-            if (iasPredictionInFeetPerSecond >= 20 || iasPredictionInFeetPerSecond <= -20) {
-              this.groupRef.instance.style.visibility = 'visible'
-            } else {
-              this.groupRef.instance.style.visibility = 'hidden'
-            }
+        if (Math.abs(altPredictionInFeet) >= 20) {
+          this.groupRef.instance.style.visibility = 'visible'
+        } else {
+          this.groupRef.instance.style.visibility = 'hidden'
+        }
 
-            this.trendVecRef.instance.setAttribute(
-              'd',
-              `M 450 ${baseline} L 450 ${baseline - iasPredictionInFeetPerSecond * 3}`
-            )
-          })
+        this.trendVecRef.instance.setAttribute('d', `M 450 ${baseline} L 450 ${baseline - altPredictionInFeet * 0.3}`)
       })
   }
 

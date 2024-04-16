@@ -24,18 +24,20 @@ export class TrendVector extends DisplayComponent<TrendVectorProps> {
           .on('acceleration_z')
           .whenChanged()
           .handle((a) => {
-            const iasPredictionInFeetPerSecond = Math.sqrt(ias) + a * 10
-            const iasPredictionInKnots = iasPredictionInFeetPerSecond / 1.68781
+            const iasPredictionInKnotsPerSecond = a * 0.592483801 * 10 * ias
 
-            console.log(iasPredictionInKnots)
+            console.log(iasPredictionInKnotsPerSecond)
 
-            if (iasPredictionInKnots >= 2 || iasPredictionInKnots <= -2) {
+            if (iasPredictionInKnotsPerSecond >= 2 || iasPredictionInKnotsPerSecond <= -2) {
               this.groupRef.instance.style.visibility = 'visible'
             } else {
               this.groupRef.instance.style.visibility = 'hidden'
             }
 
-            this.trendVecRef.instance.setAttribute('d', `M 86 ${baseline} L 86 ${baseline - iasPredictionInKnots * 3}`)
+            this.trendVecRef.instance.setAttribute(
+              'd',
+              `M 86 ${baseline} L 86 ${baseline - iasPredictionInKnotsPerSecond * 0.3}`
+            )
           })
       })
   }

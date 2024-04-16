@@ -10027,9 +10027,9 @@
     constructor() {
       this.procTurnBuilder = new ProcedureTurnBuilder();
     }
-    computeTurns(legs, startIndex, count, desiredTurnRadius, desiredCourseReversalTurnRadius, desiredTurnAnticipationTurnRadius) {
+    computeTurns(legs, startIndex, count2, desiredTurnRadius, desiredCourseReversalTurnRadius, desiredTurnAnticipationTurnRadius) {
       var _a2, _b, _c, _d;
-      const end = startIndex + count;
+      const end = startIndex + count2;
       let currentIndex = startIndex;
       while (currentIndex < end) {
         const fromLeg = legs[currentIndex];
@@ -14351,12 +14351,12 @@
     static awaitDelay(delay) {
       return new Promise((resolve) => setTimeout(() => resolve(), delay));
     }
-    static awaitFrames(count, glassCockpitRefresh = false) {
+    static awaitFrames(count2, glassCockpitRefresh = false) {
       let elapsedFrameCount = 0;
       if (glassCockpitRefresh) {
         return new Promise((resolve) => {
           const callback = () => {
-            if (++elapsedFrameCount > count) {
+            if (++elapsedFrameCount > count2) {
               resolve();
             } else {
               requestAnimationFrame(callback);
@@ -14367,7 +14367,7 @@
       } else {
         return new Promise((resolve) => {
           const id = setInterval(() => {
-            if (++elapsedFrameCount > count) {
+            if (++elapsedFrameCount > count2) {
               clearInterval(id);
               resolve();
             }
@@ -32303,19 +32303,14 @@
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("altitude").whenChanged().handle((ias) => {
-        sub.on("acceleration_y").whenChanged().handle((a) => {
-          const iasPredictionInFeetPerSecond = Math.sqrt(ias) + a * 6;
-          if (iasPredictionInFeetPerSecond >= 20 || iasPredictionInFeetPerSecond <= -20) {
-            this.groupRef.instance.style.visibility = "visible";
-          } else {
-            this.groupRef.instance.style.visibility = "hidden";
-          }
-          this.trendVecRef.instance.setAttribute(
-            "d",
-            `M 450 ${baseline2} L 450 ${baseline2 - iasPredictionInFeetPerSecond * 3}`
-          );
-        });
+      sub.on("vertical_speed").whenChanged().handle((vs) => {
+        const altPredictionInFeet = vs * 6;
+        if (Math.abs(altPredictionInFeet) >= 20) {
+          this.groupRef.instance.style.visibility = "visible";
+        } else {
+          this.groupRef.instance.style.visibility = "hidden";
+        }
+        this.trendVecRef.instance.setAttribute("d", `M 450 ${baseline2} L 450 ${baseline2 - altPredictionInFeet * 0.3}`);
       });
     }
     render() {
@@ -32496,15 +32491,17 @@
       const sub = this.props.bus.getSubscriber();
       sub.on("true_airspeed").whenChanged().handle((ias) => {
         sub.on("acceleration_z").whenChanged().handle((a) => {
-          const iasPredictionInFeetPerSecond = Math.sqrt(ias) + a * 10;
-          const iasPredictionInKnots = iasPredictionInFeetPerSecond / 1.68781;
-          console.log(iasPredictionInKnots);
-          if (iasPredictionInKnots >= 2 || iasPredictionInKnots <= -2) {
+          const iasPredictionInKnotsPerSecond = a * 0.592483801 * 10 * ias;
+          console.log(iasPredictionInKnotsPerSecond);
+          if (iasPredictionInKnotsPerSecond >= 2 || iasPredictionInKnotsPerSecond <= -2) {
             this.groupRef.instance.style.visibility = "visible";
           } else {
             this.groupRef.instance.style.visibility = "hidden";
           }
-          this.trendVecRef.instance.setAttribute("d", `M 86 ${baseline4} L 86 ${baseline4 - iasPredictionInKnots * 3}`);
+          this.trendVecRef.instance.setAttribute(
+            "d",
+            `M 86 ${baseline4} L 86 ${baseline4 - iasPredictionInKnotsPerSecond * 0.3}`
+          );
         });
       });
     }
@@ -32702,25 +32699,21 @@
   var stroke = "white";
   var xAxis = 254;
   var leftBound = 560;
-  var smallCount = 5;
-  var bigCount = 6;
+  var count = 5;
   var smallSpacing = 5;
-  var bigSpacing = smallSpacing * 3.5;
-  var smallTiltFactor = 0.1;
-  var bigTiltFactor = 0.2;
-  var thousandOffset = 20;
-  var firstThousandOffset = 8;
+  var bigSpacing = smallSpacing * 5;
+  var tiltFactor = 0.1;
   var fpmToPixel = (fpm) => {
-    return -fpm * (smallCount * (smallTiltFactor + 1) * 0.01 + thousandOffset);
+    return -fpm * count * (tiltFactor + 1) * 5e-3;
   };
   var renderMarkers = () => {
     const markers = [];
-    for (let y = 1 * smallSpacing; y < smallCount * smallSpacing; y += smallSpacing) {
+    for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
           {
-            d: `M 565 ${xAxis + y} L ${leftBound}  ${xAxis + y + smallTiltFactor * y}}`,
+            d: `M 565 ${xAxis + y} L ${leftBound}  ${xAxis + y + tiltFactor * y}}`,
             stroke,
             "stroke-width": 2,
             "stroke-linecap": "round"
@@ -32728,12 +32721,12 @@
         )
       );
     }
-    for (let y = 1 * smallSpacing; y < smallCount * smallSpacing; y += smallSpacing) {
+    for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
           {
-            d: `M 565 ${xAxis - y} L ${leftBound}  ${xAxis - y - smallTiltFactor * y}}`,
+            d: `M 565 ${xAxis - y} L ${leftBound}  ${xAxis - y - tiltFactor * y}}`,
             stroke,
             "stroke-width": 2,
             "stroke-linecap": "round"
@@ -32741,12 +32734,12 @@
         )
       );
     }
-    for (let y = 1 * bigSpacing; y < bigCount * bigSpacing; y += bigSpacing) {
+    for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
           {
-            d: `M 570 ${y / bigSpacing > 1 ? xAxis + y + thousandOffset : xAxis + y + firstThousandOffset} L ${leftBound}  ${y / bigSpacing > 1 ? xAxis + y + bigTiltFactor * y + thousandOffset : xAxis + y + bigTiltFactor * y + firstThousandOffset}`,
+            d: `M 570 ${xAxis + y} L ${leftBound}  ${xAxis + y + tiltFactor * y}`,
             stroke,
             "stroke-width": 2,
             "stroke-linecap": "round"
@@ -32754,12 +32747,12 @@
         )
       );
     }
-    for (let y = 1 * bigSpacing; y < bigCount * bigSpacing; y += bigSpacing) {
+    for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
           {
-            d: `M 570 ${y / bigSpacing > 1 ? xAxis - y - thousandOffset : xAxis - y - firstThousandOffset} L ${leftBound}  ${y / bigSpacing > 1 ? xAxis - y - bigTiltFactor * y - thousandOffset : xAxis - y - bigTiltFactor * y - firstThousandOffset}`,
+            d: `M 570 ${xAxis - y} L ${leftBound}  ${xAxis - y - tiltFactor * y}`,
             stroke,
             "stroke-width": 2,
             "stroke-linecap": "round"
@@ -32779,12 +32772,13 @@
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("vertical_speed").whenChanged().handle((vSpd) => {
-        const vSpdPx = fpmToPixel(Math.min(Math.max(vSpd, -4e3), 4e3));
-        this.vSpdNeedleRef.instance.setAttribute("d", `M 560 ${vSpdPx + 254} L 675  254`);
-        if (vSpd >= 500 || vSpd <= -500) {
+      sub.on("vertical_speed").whenChanged().handle((vs) => {
+        vs = Math.min(Math.max(vs * 60, -4e3), 4e3);
+        const vSpd = fpmToPixel(vs);
+        this.vSpdNeedleRef.instance.setAttribute("d", `M 560 ${vSpd + 254} L 675  254`);
+        if (vs >= 500 || vs <= -500) {
           this.vSpdBoxRef.instance.setAttribute("opacity", "1");
-          this.vSpdValueRef.instance.textContent = Math.min(Math.max(vSpd, -9900), 9900).toString();
+          this.vSpdValueRef.instance.textContent = (Math.round(vs / 100) * 100).toString();
         } else {
           this.vSpdBoxRef.instance.setAttribute("opacity", "0");
         }
@@ -32858,8 +32852,7 @@
     ["barometric_setting", { name: "KOHLSMAN SETTING HG" /* barometric_setting */, type: SimVarValueType.InHG }],
     ["barometric_std", { name: "KOHLSMAN SETTING STD" /* barometric_std */, type: SimVarValueType.Bool }],
     ["true_airspeed", { name: "AIRSPEED TRUE" /* true_airspeed */, type: SimVarValueType.Knots }],
-    ["acceleration_z", { name: "ACCELERATION BODY Z" /* acceleration_z */, type: SimVarValueType.Feet }],
-    ["acceleration_y", { name: "ACCELERATION BODY Y" /* acceleration_y */, type: SimVarValueType.Feet }]
+    ["acceleration_z", { name: "ACCELERATION BODY Z" /* acceleration_z */, type: SimVarValueType.Feet }]
   ]);
 
   // instruments/src/PFD/instrument.tsx
