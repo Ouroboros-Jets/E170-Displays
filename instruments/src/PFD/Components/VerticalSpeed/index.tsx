@@ -11,20 +11,24 @@ type T_VerticalSpeedIndicatorProps = ComponentProps & {
 const stroke = 'white'
 const xAxis = 254
 const leftBound = 560
-const count = 5
+const smallCount = 5
+const bigCount = 5
 const smallSpacing = 5
-const bigSpacing = smallSpacing * 5
+const bigSpacing = 20
+const bigOffset = 35
 const tiltFactor = 0.1
+const firstBigMarkerOffset = 24
 
 const fpmToPixel = (fpm: number): number => {
-  return -fpm * count * (tiltFactor + 1) * 0.005
+  // TODO
+  return fpm
 }
 
 const renderMarkers = (): JSX.Element[] => {
   const markers: JSX.Element[] = []
 
   // Small markers
-  for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
+  for (let y = smallSpacing; y < smallCount * smallSpacing; y += smallSpacing) {
     markers.push(
       <path
         d={`M 565 ${xAxis + y} L ${leftBound}  ${xAxis + y + tiltFactor * y}}`}
@@ -35,7 +39,7 @@ const renderMarkers = (): JSX.Element[] => {
     )
   }
 
-  for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
+  for (let y = smallSpacing; y < smallCount * smallSpacing; y += smallSpacing) {
     markers.push(
       <path
         d={`M 565 ${xAxis - y} L ${leftBound}  ${xAxis - y - tiltFactor * y}}`}
@@ -46,11 +50,30 @@ const renderMarkers = (): JSX.Element[] => {
     )
   }
 
+  // Big/Small Markers
+  markers.push(
+    <path
+      d={`M 570 ${xAxis + firstBigMarkerOffset} L ${leftBound}  ${xAxis + 2 * 2 + firstBigMarkerOffset}`}
+      stroke={stroke}
+      stroke-width={2}
+      stroke-linecap="round"
+    />
+  )
+
+  markers.push(
+    <path
+      d={`M 570 ${xAxis - firstBigMarkerOffset} L ${leftBound}  ${xAxis - 2 * 2 - firstBigMarkerOffset}`}
+      stroke={stroke}
+      stroke-width={2}
+      stroke-linecap="round"
+    />
+  )
+
   // Big markers
-  for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
+  for (let y = bigSpacing; y < bigCount * bigSpacing; y += bigSpacing) {
     markers.push(
       <path
-        d={`M 570 ${xAxis + y} L ${leftBound}  ${xAxis + y + tiltFactor * y}`}
+        d={`M 570 ${xAxis + y + bigOffset} L ${leftBound}  ${xAxis + y + bigOffset + tiltFactor * y * 2 + 4}`}
         stroke={stroke}
         stroke-width={2}
         stroke-linecap="round"
@@ -58,10 +81,10 @@ const renderMarkers = (): JSX.Element[] => {
     )
   }
 
-  for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
+  for (let y = bigSpacing; y < bigCount * bigSpacing; y += bigSpacing) {
     markers.push(
       <path
-        d={`M 570 ${xAxis - y} L ${leftBound}  ${xAxis - y - tiltFactor * y}`}
+        d={`M 570 ${xAxis - y - bigOffset} L ${leftBound}  ${xAxis - y - bigOffset - tiltFactor * y * 2 - 4}`}
         stroke={stroke}
         stroke-width={2}
         stroke-linecap="round"
@@ -85,13 +108,15 @@ export default class VerticalSpeedIndicator extends DisplayComponent<T_VerticalS
       .on('vertical_speed')
       .whenChanged()
       .handle((vs) => {
-        vs = Math.min(Math.max(vs * 60, -4000), 4000)
-        const vSpd = fpmToPixel(vs)
-        this.vSpdNeedleRef.instance.setAttribute('d', `M 560 ${vSpd + 254} L 675  254`)
+        vs *= 60
+        const vSpd = fpmToPixel(Math.min(Math.max(vs, -4000), 4000))
+        this.vSpdNeedleRef.instance.setAttribute('d', `M 560 ${vSpd + 254} L 630  254`)
 
         if (vs >= 500 || vs <= -500) {
           this.vSpdBoxRef.instance.setAttribute('opacity', '1')
-          this.vSpdValueRef.instance.textContent = (Math.round(vs / 100) * 100).toString()
+          this.vSpdValueRef.instance.textContent = (
+            Math.round(Math.min(Math.max(vs, -9900), 9900) / 100) * 100
+          ).toString()
         } else {
           this.vSpdBoxRef.instance.setAttribute('opacity', '0')
         }

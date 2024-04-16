@@ -89,8 +89,14 @@ export default class Compass extends DisplayComponent<T_CompassProps> {
       <g>
         <g ref={this.compassRef}>{drawCompassTicks()}</g>
         <g>{drawStaticCompassTicks()}</g>
+
         <LockHdgIndicator bus={this.props.bus} />
         <RealHdgIndicator bus={this.props.bus} />
+
+        <circle cx={205} cy={188} r={4} fill="transparent" stroke="white" stroke-width="3" />
+        <circle cx={245} cy={188} r={4} fill="transparent" stroke="white" stroke-width="3" />
+        <circle cx={305} cy={188} r={4} fill="transparent" stroke="white" stroke-width="3" />
+        <circle cx={345} cy={188} r={4} fill="transparent" stroke="white" stroke-width="3" />
       </g>
     )
   }

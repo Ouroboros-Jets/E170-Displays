@@ -23,7 +23,7 @@ export default class LockHdgIndicator extends DisplayComponent<T_LockHdgIndicato
 
   public render(): VNode {
     return (
-      <g transform="translate(110, 20)">
+      <g transform="translate(120, 20)">
         <text x={0} y={0} text-anchor="middle" font-size={17} fill="white">
           HDG
         </text>

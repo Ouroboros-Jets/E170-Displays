@@ -15,6 +15,10 @@ export type PFDSimvars = {
   barometric_std: boolean
   true_airspeed: number
   acceleration_z: number
+  nav_frequency: string
+  nav_standby_frequency: string
+  com_frequency: string
+  com_standby_frequency: string
 }
 
 export enum PFDVars {
@@ -31,7 +35,11 @@ export enum PFDVars {
   barometric_setting = 'KOHLSMAN SETTING HG',
   barometric_std = 'KOHLSMAN SETTING STD',
   true_airspeed = 'AIRSPEED TRUE',
-  acceleration_z = 'ACCELERATION BODY Z'
+  acceleration_z = 'ACCELERATION BODY Z',
+  nav_frequency = 'NAV FREQUENCY',
+  nav_standby_frequency = 'NAV STANDBY FREQUENCY:1',
+  com_frequency = 'COM ACTIVE FREQUENCY:1',
+  com_standby_frequency = 'COM STANDBY FREQUENCY:1'
 }
 
 export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
@@ -49,7 +57,11 @@ export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
     ['barometric_setting', { name: PFDVars.barometric_setting, type: SimVarValueType.InHG }],
     ['barometric_std', { name: PFDVars.barometric_std, type: SimVarValueType.Bool }],
     ['true_airspeed', { name: PFDVars.true_airspeed, type: SimVarValueType.Knots }],
-    ['acceleration_z', { name: PFDVars.acceleration_z, type: SimVarValueType.Feet }]
+    ['acceleration_z', { name: PFDVars.acceleration_z, type: SimVarValueType.Feet }],
+    ['nav_frequency', { name: PFDVars.nav_frequency, type: SimVarValueType.MHz }],
+    ['nav_standby_frequency', { name: PFDVars.nav_standby_frequency, type: SimVarValueType.MHz }],
+    ['com_frequency', { name: PFDVars.com_frequency, type: SimVarValueType.MHz }],
+    ['com_standby_frequency', { name: PFDVars.com_standby_frequency, type: SimVarValueType.MHz }]
   ])
 
   public constructor(bus: EventBus) {

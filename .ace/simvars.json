@@ -199,7 +199,7 @@
     "name": "VERTICAL SPEED",
     "index": 0,
     "unit": "Feet per second",
-    "value": 32.0,
+    "value": 51.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -537,7 +537,7 @@
     "name": "PLANE HEADING DEGREES MAGNETIC",
     "index": 0,
     "unit": "radians",
-    "value": 184.0,
+    "value": 78.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -589,7 +589,7 @@
     "name": "AUTOPILOT HEADING LOCK DIR",
     "index": 0,
     "unit": "degrees",
-    "value": 40.0,
+    "value": 78.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -667,7 +667,7 @@
     "name": "ACCELERATION BODY Z",
     "index": 0,
     "unit": "feet",
-    "value": 0.0,
+    "value": 10.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -700,5 +700,27 @@
       "max": 250.0
     },
     "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "COM ACTIVE FREQUENCY",
+    "index": 1,
+    "unit": "MHz",
+    "value": "126.80",
+    "control": {
+      "type": "Text"
+    },
+    "pinned": true
+  },
+  {
+    "type": "A",
+    "name": "NAV FREQUENCY",
+    "index": 0,
+    "unit": "MHz",
+    "value": "126.80",
+    "control": {
+      "type": "Text"
+    },
+    "pinned": true
   }
 ]

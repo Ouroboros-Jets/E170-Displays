@@ -10027,9 +10027,9 @@
     constructor() {
       this.procTurnBuilder = new ProcedureTurnBuilder();
     }
-    computeTurns(legs, startIndex, count2, desiredTurnRadius, desiredCourseReversalTurnRadius, desiredTurnAnticipationTurnRadius) {
+    computeTurns(legs, startIndex, count, desiredTurnRadius, desiredCourseReversalTurnRadius, desiredTurnAnticipationTurnRadius) {
       var _a2, _b, _c, _d;
-      const end = startIndex + count2;
+      const end = startIndex + count;
       let currentIndex = startIndex;
       while (currentIndex < end) {
         const fromLeg = legs[currentIndex];
@@ -14351,12 +14351,12 @@
     static awaitDelay(delay) {
       return new Promise((resolve) => setTimeout(() => resolve(), delay));
     }
-    static awaitFrames(count2, glassCockpitRefresh = false) {
+    static awaitFrames(count, glassCockpitRefresh = false) {
       let elapsedFrameCount = 0;
       if (glassCockpitRefresh) {
         return new Promise((resolve) => {
           const callback = () => {
-            if (++elapsedFrameCount > count2) {
+            if (++elapsedFrameCount > count) {
               resolve();
             } else {
               requestAnimationFrame(callback);
@@ -14367,7 +14367,7 @@
       } else {
         return new Promise((resolve) => {
           const id = setInterval(() => {
-            if (++elapsedFrameCount > count2) {
+            if (++elapsedFrameCount > count) {
               clearInterval(id);
               resolve();
             }
@@ -32647,7 +32647,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.compassRef }, drawCompassTicks()), /* @__PURE__ */ FSComponent.buildComponent("g", null, drawStaticCompassTicks()), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(RealHdgIndicator, { bus: this.props.bus }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.compassRef }, drawCompassTicks()), /* @__PURE__ */ FSComponent.buildComponent("g", null, drawStaticCompassTicks()), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(RealHdgIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent("circle", { cx: 205, cy: 188, r: 4, fill: "transparent", stroke: "white", "stroke-width": "3" }), /* @__PURE__ */ FSComponent.buildComponent("circle", { cx: 245, cy: 188, r: 4, fill: "transparent", stroke: "white", "stroke-width": "3" }), /* @__PURE__ */ FSComponent.buildComponent("circle", { cx: 305, cy: 188, r: 4, fill: "transparent", stroke: "white", "stroke-width": "3" }), /* @__PURE__ */ FSComponent.buildComponent("circle", { cx: 345, cy: 188, r: 4, fill: "transparent", stroke: "white", "stroke-width": "3" }));
     }
   };
 
@@ -32691,7 +32691,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(110, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "HDG"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 24, "text-anchor": "middle", "font-size": 25, fill: Colors_default.CYAN, ref: this.hdgRef }, "000"));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(120, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "HDG"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 24, "text-anchor": "middle", "font-size": 25, fill: Colors_default.CYAN, ref: this.hdgRef }, "000"));
     }
   };
 
@@ -32699,16 +32699,19 @@
   var stroke = "white";
   var xAxis = 254;
   var leftBound = 560;
-  var count = 5;
+  var smallCount = 5;
+  var bigCount = 5;
   var smallSpacing = 5;
-  var bigSpacing = smallSpacing * 5;
+  var bigSpacing = 20;
+  var bigOffset = 35;
   var tiltFactor = 0.1;
+  var firstBigMarkerOffset = 24;
   var fpmToPixel = (fpm) => {
-    return -fpm * count * (tiltFactor + 1) * 5e-3;
+    return fpm;
   };
   var renderMarkers = () => {
     const markers = [];
-    for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
+    for (let y = smallSpacing; y < smallCount * smallSpacing; y += smallSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
@@ -32721,7 +32724,7 @@
         )
       );
     }
-    for (let y = 0; y < count * smallSpacing; y += smallSpacing) {
+    for (let y = smallSpacing; y < smallCount * smallSpacing; y += smallSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
@@ -32734,12 +32737,34 @@
         )
       );
     }
-    for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
+    markers.push(
+      /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: `M 570 ${xAxis + firstBigMarkerOffset} L ${leftBound}  ${xAxis + 2 * 2 + firstBigMarkerOffset}`,
+          stroke,
+          "stroke-width": 2,
+          "stroke-linecap": "round"
+        }
+      )
+    );
+    markers.push(
+      /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: `M 570 ${xAxis - firstBigMarkerOffset} L ${leftBound}  ${xAxis - 2 * 2 - firstBigMarkerOffset}`,
+          stroke,
+          "stroke-width": 2,
+          "stroke-linecap": "round"
+        }
+      )
+    );
+    for (let y = bigSpacing; y < bigCount * bigSpacing; y += bigSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
           {
-            d: `M 570 ${xAxis + y} L ${leftBound}  ${xAxis + y + tiltFactor * y}`,
+            d: `M 570 ${xAxis + y + bigOffset} L ${leftBound}  ${xAxis + y + bigOffset + tiltFactor * y * 2 + 4}`,
             stroke,
             "stroke-width": 2,
             "stroke-linecap": "round"
@@ -32747,12 +32772,12 @@
         )
       );
     }
-    for (let y = 0; y < count * bigSpacing; y += bigSpacing) {
+    for (let y = bigSpacing; y < bigCount * bigSpacing; y += bigSpacing) {
       markers.push(
         /* @__PURE__ */ FSComponent.buildComponent(
           "path",
           {
-            d: `M 570 ${xAxis - y} L ${leftBound}  ${xAxis - y - tiltFactor * y}`,
+            d: `M 570 ${xAxis - y - bigOffset} L ${leftBound}  ${xAxis - y - bigOffset - tiltFactor * y * 2 - 4}`,
             stroke,
             "stroke-width": 2,
             "stroke-linecap": "round"
@@ -32773,12 +32798,12 @@
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
       sub.on("vertical_speed").whenChanged().handle((vs) => {
-        vs = Math.min(Math.max(vs * 60, -4e3), 4e3);
-        const vSpd = fpmToPixel(vs);
-        this.vSpdNeedleRef.instance.setAttribute("d", `M 560 ${vSpd + 254} L 675  254`);
+        vs *= 60;
+        const vSpd = fpmToPixel(Math.min(Math.max(vs, -4e3), 4e3));
+        this.vSpdNeedleRef.instance.setAttribute("d", `M 560 ${vSpd + 254} L 630  254`);
         if (vs >= 500 || vs <= -500) {
           this.vSpdBoxRef.instance.setAttribute("opacity", "1");
-          this.vSpdValueRef.instance.textContent = (Math.round(vs / 100) * 100).toString();
+          this.vSpdValueRef.instance.textContent = (Math.round(Math.min(Math.max(vs, -9900), 9900) / 100) * 100).toString();
         } else {
           this.vSpdBoxRef.instance.setAttribute("opacity", "0");
         }
@@ -32824,10 +32849,40 @@
     }
   };
 
+  // instruments/src/PFD/Components/Radio/index.tsx
+  var Radio = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.comFrequecyRef = FSComponent.createRef();
+      this.comStandByFrequecyRef = FSComponent.createRef();
+      this.navFrequecyRef = FSComponent.createRef();
+      this.navStandByFrequecyRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("com_frequency").whenChanged().handle((comFreq) => {
+        this.comFrequecyRef.instance.textContent = comFreq;
+      });
+      sub.on("com_frequency").whenChanged().handle((comStandByFreq) => {
+        this.comStandByFrequecyRef.instance.textContent = comStandByFreq;
+      });
+      sub.on("nav_frequency").whenChanged().handle((navFreq) => {
+        this.navFrequecyRef.instance.textContent = navFreq;
+      });
+      sub.on("com_frequency").whenChanged().handle((navStandByFreq) => {
+        this.navStandByFrequecyRef.instance.textContent = navStandByFreq;
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "3", y: "263", width: "90", height: "70", fill: "black", stroke: "white", "stroke-width": "5" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "48", y: "286", fill: "white", "font-size": 20, "text-anchor": "middle" }, "COM1"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "8", y: "304", fill: Colors_default.GREEN, "font-size": 20, "text-anchor": "start", ref: this.comFrequecyRef }, "---"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "8", y: "324", fill: "white", "font-size": 20, "text-anchor": "start", ref: this.comStandByFrequecyRef }, "---"), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "507", y: "263", width: "90", height: "70", fill: "black", stroke: "white", "stroke-width": "5" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "552", y: "286", fill: "white", "font-size": 20, "text-anchor": "middle" }, "NAV1"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "512", y: "304", fill: Colors_default.GREEN, "font-size": 20, "text-anchor": "start", ref: this.navFrequecyRef }, "---"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "512", y: "324", fill: "white", "font-size": 20, "text-anchor": "start", ref: this.navStandByFrequecyRef }, "---"));
+    }
+  };
+
   // instruments/src/PFD/index.tsx
   var PFDRoot = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent(FSComponent.Fragment, null, /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 460" }, /* @__PURE__ */ FSComponent.buildComponent(AttitudeDisplay_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Airspeed_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(VerticalSpeedIndicator, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 340" }, /* @__PURE__ */ FSComponent.buildComponent(GspdIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator2, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Compass, { bus: this.props.bus })));
+      return /* @__PURE__ */ FSComponent.buildComponent(FSComponent.Fragment, null, /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 460" }, /* @__PURE__ */ FSComponent.buildComponent(AttitudeDisplay_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Airspeed_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(VerticalSpeedIndicator, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 340" }, /* @__PURE__ */ FSComponent.buildComponent(GspdIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator2, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Compass, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Radio, { bus: this.props.bus })));
     }
   };
 
@@ -32852,7 +32907,11 @@
     ["barometric_setting", { name: "KOHLSMAN SETTING HG" /* barometric_setting */, type: SimVarValueType.InHG }],
     ["barometric_std", { name: "KOHLSMAN SETTING STD" /* barometric_std */, type: SimVarValueType.Bool }],
     ["true_airspeed", { name: "AIRSPEED TRUE" /* true_airspeed */, type: SimVarValueType.Knots }],
-    ["acceleration_z", { name: "ACCELERATION BODY Z" /* acceleration_z */, type: SimVarValueType.Feet }]
+    ["acceleration_z", { name: "ACCELERATION BODY Z" /* acceleration_z */, type: SimVarValueType.Feet }],
+    ["nav_frequency", { name: "NAV FREQUENCY" /* nav_frequency */, type: SimVarValueType.MHz }],
+    ["nav_standby_frequency", { name: "NAV STANDBY FREQUENCY:1" /* nav_standby_frequency */, type: SimVarValueType.MHz }],
+    ["com_frequency", { name: "COM ACTIVE FREQUENCY:1" /* com_frequency */, type: SimVarValueType.MHz }],
+    ["com_standby_frequency", { name: "COM STANDBY FREQUENCY:1" /* com_standby_frequency */, type: SimVarValueType.MHz }]
   ]);
 
   // instruments/src/PFD/instrument.tsx
