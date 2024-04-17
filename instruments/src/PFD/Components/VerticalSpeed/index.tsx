@@ -157,7 +157,7 @@ export default class VerticalSpeedIndicator extends DisplayComponent<T_VerticalS
 
         <g ref={this.vSpdBoxRef}>
           <rect x="546" y={xAxis - 9} width="48" height="18" fill="black" clip-path="url(#vsClip)" />
-          <text x={588} y={260} text-anchor="end" font-size={17} fill={Colors.GREEN} ref={this.vSpdValueRef} />
+          <text x={593} y={260} text-anchor="end" font-size={17} fill={Colors.GREEN} ref={this.vSpdValueRef} />
           <path
             d={`M 546 ${xAxis - 9} L 594 ${xAxis - 9} M 546 ${xAxis + 9} L 594 ${xAxis + 9}`}
             stroke="white"

@@ -27,8 +27,8 @@ export class SelectedAltitudeBox extends DisplayComponent<SelectedAltitudeBoxPro
     return (
       <g>
         <rect x="455" y="55" rx={2} ry={2} width="83" height="33" stroke="white" stroke-width={2} fill="transparent" />
-        <text ref={this.altitudeSelectedRef1} x={484} y={82} text-anchor="middle" fill={Colors.CYAN} font-size="30" />
-        <text ref={this.altitudeSelectedRef2} x={522} y={82} text-anchor="middle" fill={Colors.CYAN} font-size="20" />
+        <text ref={this.altitudeSelectedRef1} x={487} y={82} text-anchor="middle" fill={Colors.CYAN} font-size="30" />
+        <text ref={this.altitudeSelectedRef2} x={526} y={82} text-anchor="middle" fill={Colors.CYAN} font-size="20" />
       </g>
     )
   }

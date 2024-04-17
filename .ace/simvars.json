@@ -95,7 +95,7 @@
     "name": "INDICATED ALTITUDE",
     "index": 0,
     "unit": "Feet",
-    "value": 4300.0,
+    "value": 250.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -706,21 +706,25 @@
     "name": "COM ACTIVE FREQUENCY",
     "index": 1,
     "unit": "MHz",
-    "value": "126.80",
+    "value": 0.0,
     "control": {
-      "type": "Text"
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
     },
-    "pinned": true
+    "pinned": null
   },
   {
     "type": "A",
     "name": "NAV FREQUENCY",
     "index": 0,
     "unit": "MHz",
-    "value": "126.80",
+    "value": 0.0,
     "control": {
-      "type": "Text"
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
     },
-    "pinned": true
+    "pinned": null
   }
 ]

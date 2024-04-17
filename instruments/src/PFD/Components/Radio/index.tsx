@@ -50,7 +50,7 @@ export default class Radio extends DisplayComponent<T_RadioProps> {
     return (
       <g>
         <rect x="3" y="263" width="90" height="70" fill="black" stroke="white" stroke-width="5" />
-        <text x="48" y="286" fill="white" font-size={20} text-anchor="middle">
+        <text x="50" y="286" fill="white" font-size={20} text-anchor="middle">
           COM1
         </text>
         <text x="8" y="304" fill={Colors.GREEN} font-size={20} text-anchor="start" ref={this.comFrequecyRef}>
@@ -60,7 +60,7 @@ export default class Radio extends DisplayComponent<T_RadioProps> {
           ---
         </text>
         <rect x="507" y="263" width="90" height="70" fill="black" stroke="white" stroke-width="5" />
-        <text x="552" y="286" fill="white" font-size={20} text-anchor="middle">
+        <text x="554" y="286" fill="white" font-size={20} text-anchor="middle">
           NAV1
         </text>
         <text x="512" y="304" fill={Colors.GREEN} font-size={20} text-anchor="start" ref={this.navFrequecyRef}>

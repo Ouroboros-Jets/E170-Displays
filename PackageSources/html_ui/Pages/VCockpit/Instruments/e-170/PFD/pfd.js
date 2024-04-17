@@ -32178,7 +32178,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "55", rx: 2, ry: 2, width: "83", height: "33", stroke: "white", "stroke-width": 2, fill: "transparent" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.altitudeSelectedRef1, x: 484, y: 82, "text-anchor": "middle", fill: Colors_default.CYAN, "font-size": "30" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.altitudeSelectedRef2, x: 522, y: 82, "text-anchor": "middle", fill: Colors_default.CYAN, "font-size": "20" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "55", rx: 2, ry: 2, width: "83", height: "33", stroke: "white", "stroke-width": 2, fill: "transparent" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.altitudeSelectedRef1, x: 487, y: 82, "text-anchor": "middle", fill: Colors_default.CYAN, "font-size": "30" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.altitudeSelectedRef2, x: 526, y: 82, "text-anchor": "middle", fill: Colors_default.CYAN, "font-size": "20" }));
     }
   };
 
@@ -32474,7 +32474,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 1, y: 55, rx: 2, ry: 2, width: 80, height: 33, "stroke-width": 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.airspeedSelectedRef, x: 41, y: 82, "text-anchor": "middle", fill: Colors_default.PINK, "font-size": "30" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 1, y: 55, rx: 2, ry: 2, width: 80, height: 33, "stroke-width": 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.airspeedSelectedRef, x: 45, y: 82, "text-anchor": "middle", fill: Colors_default.PINK, "font-size": "30" }));
     }
   };
 
@@ -32541,7 +32541,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 42.5)" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20 L 25 -20", fill: "black" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.hdgRef, "text-anchor": "middle", "font-size": 25, fill: Colors_default.GREEN }, "000"), /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 42.5)" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20 L 25 -20", fill: "black" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 2, ref: this.hdgRef, "text-anchor": "middle", "font-size": 25, fill: Colors_default.GREEN }, "000"), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           d: "M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20",
@@ -32837,7 +32837,7 @@
           fill: "transparent",
           "stroke-linecap": "round"
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.vSpdBoxRef }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "546", y: xAxis - 9, width: "48", height: "18", fill: "black", "clip-path": "url(#vsClip)" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 588, y: 260, "text-anchor": "end", "font-size": 17, fill: Colors_default.GREEN, ref: this.vSpdValueRef }), /* @__PURE__ */ FSComponent.buildComponent(
+      ), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.vSpdBoxRef }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "546", y: xAxis - 9, width: "48", height: "18", fill: "black", "clip-path": "url(#vsClip)" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 593, y: 260, "text-anchor": "end", "font-size": 17, fill: Colors_default.GREEN, ref: this.vSpdValueRef }), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           d: `M 546 ${xAxis - 9} L 594 ${xAxis - 9} M 546 ${xAxis + 9} L 594 ${xAxis + 9}`,
@@ -32875,7 +32875,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "3", y: "263", width: "90", height: "70", fill: "black", stroke: "white", "stroke-width": "5" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "48", y: "286", fill: "white", "font-size": 20, "text-anchor": "middle" }, "COM1"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "8", y: "304", fill: Colors_default.GREEN, "font-size": 20, "text-anchor": "start", ref: this.comFrequecyRef }, "---"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "8", y: "324", fill: "white", "font-size": 20, "text-anchor": "start", ref: this.comStandByFrequecyRef }, "---"), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "507", y: "263", width: "90", height: "70", fill: "black", stroke: "white", "stroke-width": "5" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "552", y: "286", fill: "white", "font-size": 20, "text-anchor": "middle" }, "NAV1"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "512", y: "304", fill: Colors_default.GREEN, "font-size": 20, "text-anchor": "start", ref: this.navFrequecyRef }, "---"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "512", y: "324", fill: "white", "font-size": 20, "text-anchor": "start", ref: this.navStandByFrequecyRef }, "---"));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "3", y: "263", width: "90", height: "70", fill: "black", stroke: "white", "stroke-width": "5" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "50", y: "286", fill: "white", "font-size": 20, "text-anchor": "middle" }, "COM1"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "8", y: "304", fill: Colors_default.GREEN, "font-size": 20, "text-anchor": "start", ref: this.comFrequecyRef }, "---"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "8", y: "324", fill: "white", "font-size": 20, "text-anchor": "start", ref: this.comStandByFrequecyRef }, "---"), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "507", y: "263", width: "90", height: "70", fill: "black", stroke: "white", "stroke-width": "5" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "554", y: "286", fill: "white", "font-size": 20, "text-anchor": "middle" }, "NAV1"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "512", y: "304", fill: Colors_default.GREEN, "font-size": 20, "text-anchor": "start", ref: this.navFrequecyRef }, "---"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "512", y: "324", fill: "white", "font-size": 20, "text-anchor": "start", ref: this.navStandByFrequecyRef }, "---"));
     }
   };
 
