@@ -34,13 +34,21 @@ export default class GspdIndicator extends DisplayComponent<T_GspdIndicatorProps
   public render(): VNode {
     return (
       <g transform="translate(35, 20)">
-        <text x={0} y={0} text-anchor="middle" font-size={17} fill="white">
+        <text x={0} y={0} text-anchor="middle" font-size={17} fill="white" letter-spacing={-1}>
           GSPD
         </text>
-        <text x={-17} y={18} text-anchor="middle" font-size={17} fill={Colors.GREEN} ref={this.grndSpdRef}>
+        <text
+          x={-17}
+          y={18}
+          text-anchor="middle"
+          font-size={17}
+          fill={Colors.GREEN}
+          ref={this.grndSpdRef}
+          letter-spacing={-2}
+        >
           0
         </text>
-        <text x={0} y={18} text-anchor="right" font-size={17} fill="white">
+        <text x={0} y={18} text-anchor="right" font-size={17} fill="white" letter-spacing={-2}>
           KT
         </text>
       </g>

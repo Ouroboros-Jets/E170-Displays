@@ -8,6 +8,8 @@ import GspdIndicator from './Components/Groundspeed'
 import LockHdgIndicator from './Components/LockHeading'
 import VerticalSpeedIndicator from './Components/VerticalSpeed'
 import Radio from './Components/Radio'
+import HeadingSourceAnnunciator from './Components/HeadingSourceAnnunciator'
+import NavSourceAnnunciator from './Components/NavSourcAnnunciatior'
 
 type PFDProps = ComponentProps & {
   bus: EventBus
@@ -27,6 +29,8 @@ export class PFDRoot extends DisplayComponent<PFDProps> {
         <svg viewBox="0 0 600 340">
           <GspdIndicator bus={this.props.bus} />
           <LockHdgIndicator bus={this.props.bus} />
+          <HeadingSourceAnnunciator bus={this.props.bus} />
+          <NavSourceAnnunciator bus={this.props.bus} />
           <Compass bus={this.props.bus} />
           <Radio bus={this.props.bus} />
         </svg>

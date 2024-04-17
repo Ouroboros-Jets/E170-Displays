@@ -19,6 +19,11 @@ export type PFDSimvars = {
   nav_standby_frequency: string
   com_frequency: string
   com_standby_frequency: string
+  gps_waypoint_active: boolean
+  gps_next_waypoint_id: string
+  gps_next_waypoint_distance: number
+  nav_ident: string
+  nav_dme: number
 }
 
 export enum PFDVars {
@@ -39,7 +44,12 @@ export enum PFDVars {
   nav_frequency = 'NAV FREQUENCY',
   nav_standby_frequency = 'NAV STANDBY FREQUENCY:1',
   com_frequency = 'COM ACTIVE FREQUENCY:1',
-  com_standby_frequency = 'COM STANDBY FREQUENCY:1'
+  com_standby_frequency = 'COM STANDBY FREQUENCY:1',
+  gps_waypoint_active = 'GPS IS ACTIVE WAY POINT',
+  gps_next_waypoint_id = 'GPS WP NEXT ID',
+  gps_next_waypoint_distance = 'GPS WP DISTANCE',
+  nav_ident = 'NAV IDENT',
+  nav_dme = 'NAV DME'
 }
 
 export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
@@ -61,7 +71,12 @@ export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
     ['nav_frequency', { name: PFDVars.nav_frequency, type: SimVarValueType.MHz }],
     ['nav_standby_frequency', { name: PFDVars.nav_standby_frequency, type: SimVarValueType.MHz }],
     ['com_frequency', { name: PFDVars.com_frequency, type: SimVarValueType.MHz }],
-    ['com_standby_frequency', { name: PFDVars.com_standby_frequency, type: SimVarValueType.MHz }]
+    ['com_standby_frequency', { name: PFDVars.com_standby_frequency, type: SimVarValueType.MHz }],
+    ['gps_waypoint_active', { name: PFDVars.gps_waypoint_active, type: SimVarValueType.Bool }],
+    ['gps_next_waypoint_id', { name: PFDVars.gps_next_waypoint_id, type: SimVarValueType.String }],
+    ['gps_next_waypoint_distance', { name: PFDVars.gps_next_waypoint_distance, type: SimVarValueType.Number }],
+    ['nav_ident', { name: PFDVars.nav_ident, type: SimVarValueType.String }],
+    ['nav_dme', { name: PFDVars.nav_dme, type: SimVarValueType.NM }]
   ])
 
   public constructor(bus: EventBus) {

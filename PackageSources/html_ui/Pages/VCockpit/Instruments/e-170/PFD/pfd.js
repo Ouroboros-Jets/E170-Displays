@@ -32178,7 +32178,29 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "55", rx: 2, ry: 2, width: "83", height: "33", stroke: "white", "stroke-width": 2, fill: "transparent" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.altitudeSelectedRef1, x: 487, y: 82, "text-anchor": "middle", fill: Colors_default.CYAN, "font-size": "30" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.altitudeSelectedRef2, x: 526, y: 82, "text-anchor": "middle", fill: Colors_default.CYAN, "font-size": "20" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "55", rx: 2, ry: 2, width: "83", height: "33", stroke: "white", "stroke-width": 2, fill: "transparent" }), /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          ref: this.altitudeSelectedRef1,
+          x: 485,
+          y: 82,
+          "text-anchor": "middle",
+          fill: Colors_default.CYAN,
+          "font-size": "30",
+          "letter-spacing": "-3"
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          ref: this.altitudeSelectedRef2,
+          x: 524,
+          y: 82,
+          "text-anchor": "middle",
+          fill: Colors_default.CYAN,
+          "font-size": "26",
+          "letter-spacing": "-3"
+        }
+      ));
     }
   };
 
@@ -32492,7 +32514,6 @@
       sub.on("true_airspeed").whenChanged().handle((ias) => {
         sub.on("acceleration_z").whenChanged().handle((a) => {
           const iasPredictionInKnotsPerSecond = a * 0.592483801 * 10 * ias;
-          console.log(iasPredictionInKnotsPerSecond);
           if (iasPredictionInKnotsPerSecond >= 2 || iasPredictionInKnotsPerSecond <= -2) {
             this.groupRef.instance.style.visibility = "visible";
           } else {
@@ -32541,7 +32562,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 42.5)" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20 L 25 -20", fill: "black" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 2, ref: this.hdgRef, "text-anchor": "middle", "font-size": 25, fill: Colors_default.GREEN }, "000"), /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 42.5)" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20 L 25 -20", fill: "black" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.hdgRef, "text-anchor": "middle", "font-size": 25, fill: Colors_default.GREEN, "letter-spacing": -4 }, "000"), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           d: "M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20",
@@ -32673,7 +32694,19 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(35, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "GSPD"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: -17, y: 18, "text-anchor": "middle", "font-size": 17, fill: Colors_default.GREEN, ref: this.grndSpdRef }, "0"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 18, "text-anchor": "right", "font-size": 17, fill: "white" }, "KT"));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(35, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white", "letter-spacing": -1 }, "GSPD"), /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          x: -17,
+          y: 18,
+          "text-anchor": "middle",
+          "font-size": 17,
+          fill: Colors_default.GREEN,
+          ref: this.grndSpdRef,
+          "letter-spacing": -2
+        },
+        "0"
+      ), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 18, "text-anchor": "right", "font-size": 17, fill: "white", "letter-spacing": -2 }, "KT"));
     }
   };
 
@@ -32691,7 +32724,19 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(120, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "HDG"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 24, "text-anchor": "middle", "font-size": 25, fill: Colors_default.CYAN, ref: this.hdgRef }, "000"));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(120, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "HDG"), /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          x: -1,
+          y: 24,
+          "text-anchor": "middle",
+          "font-size": 25,
+          fill: Colors_default.CYAN,
+          ref: this.hdgRef,
+          "letter-spacing": -4
+        },
+        "000"
+      ));
     }
   };
 
@@ -32879,10 +32924,143 @@
     }
   };
 
+  // instruments/src/PFD/Components/HeadingSourceAnnunciator/index.tsx
+  var HeadingSourceAnnunciator = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("text", { x: "180", y: "20", fill: Colors_default.GREEN, "font-size": 17, "text-anchor": "middle" }, "MAG1"));
+    }
+  };
+
+  // instruments/src/PFD/Components/NavSourcAnnunciatior/index.tsx
+  var NavSourceAnnunciator = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.primaryNavSourceRef = FSComponent.createRef();
+      this.primaryNavIdRef = FSComponent.createRef();
+      this.primaryNavDistanceReadOutRef = FSComponent.createRef();
+      this.primaryNavDistanceTimeEnroute = FSComponent.createRef();
+      this.activeAnnunciator = 2 /* FMS */;
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("gps_waypoint_active").whenChanged().handle((wpMode) => {
+        if (wpMode) {
+          this.activeAnnunciator = 2 /* FMS */;
+          this.primaryNavSourceRef.instance.textContent = "FMS1";
+          this.primaryNavSourceRef.instance.setAttribute("fill", `${Colors_default.PINK}`);
+          this.primaryNavIdRef.instance.setAttribute("fill", `${Colors_default.PINK}`);
+          this.primaryNavDistanceReadOutRef.instance.setAttribute("fill", `${Colors_default.PINK}`);
+          this.primaryNavDistanceTimeEnroute.instance.setAttribute("fill", `${Colors_default.PINK}`);
+        } else {
+          this.primaryNavSourceRef.instance.setAttribute("fill", `${Colors_default.GREEN}`);
+          this.primaryNavIdRef.instance.setAttribute("fill", `${Colors_default.GREEN}`);
+          this.primaryNavDistanceReadOutRef.instance.setAttribute("fill", `${Colors_default.GREEN}`);
+          this.primaryNavDistanceTimeEnroute.instance.setAttribute("fill", `${Colors_default.GREEN}`);
+          if (this.activeAnnunciator === 1 /* LOC */) {
+            this.activeAnnunciator = 1 /* LOC */;
+            this.primaryNavSourceRef.instance.textContent = "LOC1";
+          } else {
+            this.activeAnnunciator = 0 /* VOR */;
+            this.primaryNavSourceRef.instance.textContent = "VOR1";
+          }
+        }
+      });
+      sub.on("gps_next_waypoint_id").whenChanged().handle((wpId) => {
+        if (this.activeAnnunciator === 2 /* FMS */) {
+          this.primaryNavIdRef.instance.textContent = wpId;
+        }
+      });
+      sub.on("gps_next_waypoint_distance").whenChanged().handle((wpDist) => {
+        if (this.activeAnnunciator === 2 /* FMS */) {
+          this.nextTargetDistanceNm = Math.round(wpDist / 1852);
+          this.primaryNavDistanceReadOutRef.instance.textContent = this.nextTargetDistanceNm.toString();
+        }
+      });
+      sub.on("gps_next_waypoint_distance").whenChanged().handle((wpDist) => {
+        if (this.activeAnnunciator === 2 /* FMS */) {
+          this.nextTargetDistanceNm = Math.round(wpDist / 1852);
+          this.primaryNavDistanceReadOutRef.instance.textContent = this.nextTargetDistanceNm.toString();
+        }
+      });
+      sub.on("true_airspeed").whenChanged().handle((airspd) => {
+        const minutes = Math.round(this.nextTargetDistanceNm / airspd * 60).toString();
+        if (this.activeAnnunciator === 2 /* FMS */) {
+          this.primaryNavDistanceTimeEnroute.instance.textContent = minutes === "Infinity" ? "\u221E" : minutes;
+        } else {
+          this.primaryNavDistanceTimeEnroute.instance.textContent = minutes === "Infinity" ? "\u221E" : minutes;
+        }
+      });
+      sub.on("nav_ident").whenChanged().handle((navIdent) => {
+        console.log(this.activeAnnunciator);
+        if (this.activeAnnunciator !== 2 /* FMS */) {
+          this.primaryNavIdRef.instance.textContent = navIdent;
+        }
+      });
+      sub.on("nav_dme").whenChanged().handle((navDme) => {
+        if (this.activeAnnunciator !== 2 /* FMS */) {
+          this.nextTargetDistanceNm = navDme;
+          this.primaryNavDistanceReadOutRef.instance.textContent = navDme.toString();
+        }
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          x: "5",
+          y: "70",
+          fill: Colors_default.PINK,
+          "font-size": 25,
+          "text-anchor": "start",
+          "letter-spacing": -1,
+          ref: this.primaryNavSourceRef
+        },
+        "FMS1"
+      ), /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          x: "5",
+          y: "95",
+          fill: Colors_default.PINK,
+          "font-size": 20,
+          "text-anchor": "start",
+          "letter-spacing": -1,
+          ref: this.primaryNavIdRef
+        },
+        "---"
+      ), /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          x: "50",
+          y: "115",
+          fill: Colors_default.YELLOW,
+          "font-size": 20,
+          "text-anchor": "end",
+          "letter-spacing": -1,
+          ref: this.primaryNavDistanceReadOutRef
+        },
+        "---"
+      ), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "53", y: "115", fill: "white", "font-size": 20, "text-anchor": "start", "letter-spacing": -1 }, "NM"), /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          x: "50",
+          y: "135",
+          fill: Colors_default.YELLOW,
+          "font-size": 20,
+          "text-anchor": "end",
+          "letter-spacing": -1,
+          ref: this.primaryNavDistanceTimeEnroute
+        },
+        "---"
+      ), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "53", y: "135", fill: "white", "font-size": 20, "text-anchor": "start", "letter-spacing": -1 }, "MIN"));
+    }
+  };
+
   // instruments/src/PFD/index.tsx
   var PFDRoot = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent(FSComponent.Fragment, null, /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 460" }, /* @__PURE__ */ FSComponent.buildComponent(AttitudeDisplay_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Airspeed_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(VerticalSpeedIndicator, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 340" }, /* @__PURE__ */ FSComponent.buildComponent(GspdIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator2, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Compass, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Radio, { bus: this.props.bus })));
+      return /* @__PURE__ */ FSComponent.buildComponent(FSComponent.Fragment, null, /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 460" }, /* @__PURE__ */ FSComponent.buildComponent(AttitudeDisplay_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Airspeed_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(VerticalSpeedIndicator, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 340" }, /* @__PURE__ */ FSComponent.buildComponent(GspdIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator2, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(HeadingSourceAnnunciator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(NavSourceAnnunciator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Compass, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Radio, { bus: this.props.bus })));
     }
   };
 
@@ -32911,7 +33089,12 @@
     ["nav_frequency", { name: "NAV FREQUENCY" /* nav_frequency */, type: SimVarValueType.MHz }],
     ["nav_standby_frequency", { name: "NAV STANDBY FREQUENCY:1" /* nav_standby_frequency */, type: SimVarValueType.MHz }],
     ["com_frequency", { name: "COM ACTIVE FREQUENCY:1" /* com_frequency */, type: SimVarValueType.MHz }],
-    ["com_standby_frequency", { name: "COM STANDBY FREQUENCY:1" /* com_standby_frequency */, type: SimVarValueType.MHz }]
+    ["com_standby_frequency", { name: "COM STANDBY FREQUENCY:1" /* com_standby_frequency */, type: SimVarValueType.MHz }],
+    ["gps_waypoint_active", { name: "GPS IS ACTIVE WAY POINT" /* gps_waypoint_active */, type: SimVarValueType.Bool }],
+    ["gps_next_waypoint_id", { name: "GPS WP NEXT ID" /* gps_next_waypoint_id */, type: SimVarValueType.String }],
+    ["gps_next_waypoint_distance", { name: "GPS WP DISTANCE" /* gps_next_waypoint_distance */, type: SimVarValueType.Number }],
+    ["nav_ident", { name: "NAV IDENT" /* nav_ident */, type: SimVarValueType.String }],
+    ["nav_dme", { name: "NAV DME" /* nav_dme */, type: SimVarValueType.NM }]
   ]);
 
   // instruments/src/PFD/instrument.tsx

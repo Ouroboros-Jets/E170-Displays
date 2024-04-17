@@ -25,7 +25,7 @@ export default class RealHdgIndicator extends DisplayComponent<T_RealHdgIndicato
     return (
       <g transform="translate(275, 42.5)">
         <path d="M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20 L 25 -20" fill="black" />
-        <text x={2} ref={this.hdgRef} text-anchor="middle" font-size={25} fill={Colors.GREEN}>
+        <text ref={this.hdgRef} text-anchor="middle" font-size={25} fill={Colors.GREEN} letter-spacing={-4}>
           000
         </text>
         <path

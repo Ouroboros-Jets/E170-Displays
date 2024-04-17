@@ -108,7 +108,7 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 0.0,
+    "value": 70.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -576,7 +576,7 @@
     "name": "GROUND VELOCITY",
     "index": 0,
     "unit": "knots",
-    "value": 90.0,
+    "value": 250.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -602,7 +602,7 @@
     "name": "AIRSPEED SELECT INDICATED OR TRUE",
     "index": 0,
     "unit": "knots",
-    "value": 250.0,
+    "value": 70.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -654,7 +654,7 @@
     "name": "AIRSPEED TRUE",
     "index": 0,
     "unit": "knots",
-    "value": 5.0,
+    "value": 165.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -693,7 +693,7 @@
     "name": "OBJ_AP_SELECTED_AS",
     "index": 0,
     "unit": "knots",
-    "value": 61.0,
+    "value": 250.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -720,6 +720,67 @@
     "index": 0,
     "unit": "MHz",
     "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "GPS IS ACTIVE WAY POINT",
+    "index": 0,
+    "unit": "bool",
+    "value": 50.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "GPS WP NEXT ID",
+    "index": 0,
+    "unit": "string",
+    "value": "",
+    "control": {
+      "type": "Text"
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "GPS WP DISTANCE",
+    "index": 0,
+    "unit": "number",
+    "value": 21658.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 25000.0
+    },
+    "pinned": false
+  },
+  {
+    "type": "A",
+    "name": "NAV IDENT",
+    "index": 0,
+    "unit": "string",
+    "value": "STD",
+    "control": {
+      "type": "Text"
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "NAV DME",
+    "index": 0,
+    "unit": "nautical mile",
+    "value": 102.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

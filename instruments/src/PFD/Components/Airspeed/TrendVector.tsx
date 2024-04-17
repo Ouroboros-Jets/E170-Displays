@@ -26,8 +26,6 @@ export class TrendVector extends DisplayComponent<TrendVectorProps> {
           .handle((a) => {
             const iasPredictionInKnotsPerSecond = a * 0.592483801 * 10 * ias
 
-            console.log(iasPredictionInKnotsPerSecond)
-
             if (iasPredictionInKnotsPerSecond >= 2 || iasPredictionInKnotsPerSecond <= -2) {
               this.groupRef.instance.style.visibility = 'visible'
             } else {
