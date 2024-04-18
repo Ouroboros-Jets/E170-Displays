@@ -54,7 +54,7 @@ export enum PFDVars {
   nav_ident = 'NAV IDENT',
   nav_dme = 'NAV DME',
   vstall = 'L:VSTALL',
-  overspeed = 'L:OVERSPEEDSPEED',
+  overspeed = 'L:OVERSPEED',
   onGround = 'SIM ON GROUND'
 }
 

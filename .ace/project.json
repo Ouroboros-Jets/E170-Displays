@@ -7,13 +7,13 @@
   },
   "elements": [
     {
-      "uuid": "ce5bdc8f-5945-4474-89ad-c45098b863a9",
+      "uuid": "0dac2d5a-89ef-4e02-be8f-a40a85f17411",
       "name": "PFD",
       "element": "Instrument",
       "width": 600,
       "height": 800,
-      "x": 8680,
-      "y": 1680
+      "x": 9320,
+      "y": 1780
     }
   ]
 }

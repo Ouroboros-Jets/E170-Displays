@@ -93,11 +93,11 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
           const stallHeight = (maxSpeed - stall) * stretch + minSpeed * stretch
           const stallPosition = (maxSpeed - stall) * stretch + minSpeed * stretch
 
-          this.redLsaRef.instance.setAttribute('height', `${stallHeight - 30}`)
-          this.redLsaRef.instance.style.y = `${stallPosition - 30}`
+          this.redLsaRef.instance.setAttribute('height', `${stallHeight - minSpeed}`)
+          this.redLsaRef.instance.style.y = `${stallPosition - minSpeed}`
 
-          this.yellowLsaRef.instance.setAttribute('height', `${stallHeight - 60}`)
-          this.yellowLsaRef.instance.style.y = `${stallPosition - 60}`
+          this.yellowLsaRef.instance.setAttribute('height', `${stallHeight - minSpeed * 2}`)
+          this.yellowLsaRef.instance.style.y = `${stallPosition - minSpeed * 2}`
         }
       })
   }

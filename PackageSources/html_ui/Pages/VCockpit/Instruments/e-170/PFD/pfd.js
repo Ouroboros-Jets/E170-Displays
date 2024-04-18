@@ -32005,7 +32005,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "attitude-clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" })), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("linearGradient", { gradientTransform: "rotate(0, 0.5, 0.5)", x1: "50%", y1: "0%", x2: "50%", y2: "100%", id: "sky-gradient" }, /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#0964b5", "stop-opacity": "1", offset: "95%" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#5098c3", "stop-opacity": "1", offset: "100%" })), /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "attitude-clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" })), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("linearGradient", { gradientTransform: "rotate(0, 0.5, 0.5)", x1: "50%", y1: "0%", x2: "50%", y2: "100%", id: "sky-gradient" }, /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#004dba", "stop-opacity": "1", offset: "95%" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#7592d4", "stop-opacity": "1", offset: "100%" })), /* @__PURE__ */ FSComponent.buildComponent(
         "linearGradient",
         {
           gradientTransform: "rotate(0, 0.5, 0.5)",
@@ -32015,8 +32015,8 @@
           y2: "100%",
           id: "ground-gradient"
         },
-        /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#a7811a", "stop-opacity": "1", offset: "0%" }),
-        /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#a36a27", "stop-opacity": "1", offset: "5%" })
+        /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#9c661e", "stop-opacity": "1", offset: "0%" }),
+        /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#4b241d", "stop-opacity": "1", offset: "10%" })
       )), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.bankRefDup, opacity: "0.75" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.pitchRefDup }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", class: "attitude-sky" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-2000", y: "254", width: "4600", height: "2205", class: "attitude-ground" }), /* @__PURE__ */ FSComponent.buildComponent(
         "rect",
         {
@@ -32426,10 +32426,10 @@
           this.yellowLsaRef.instance.style.visibility = "visible";
           const stallHeight = (maxSpeed - stall) * stretch + minSpeed * stretch;
           const stallPosition = (maxSpeed - stall) * stretch + minSpeed * stretch;
-          this.redLsaRef.instance.setAttribute("height", `${stallHeight - 30}`);
-          this.redLsaRef.instance.style.y = `${stallPosition - 30}`;
-          this.yellowLsaRef.instance.setAttribute("height", `${stallHeight - 60}`);
-          this.yellowLsaRef.instance.style.y = `${stallPosition - 60}`;
+          this.redLsaRef.instance.setAttribute("height", `${stallHeight - minSpeed}`);
+          this.redLsaRef.instance.style.y = `${stallPosition - minSpeed}`;
+          this.yellowLsaRef.instance.setAttribute("height", `${stallHeight - minSpeed * 2}`);
+          this.yellowLsaRef.instance.style.y = `${stallPosition - minSpeed * 2}`;
         }
       });
     }
@@ -32441,27 +32441,50 @@
   // instruments/src/PFD/Components/Airspeed/CurrentAirspeedBox.tsx
   var digitSpacing2 = 25;
   var verticalScrollsSpacing2 = 20;
-  var renderDigitTape2 = (removeZeros) => {
-    const digits = [];
-    for (let i = 0; i < 30; i++) {
-      const digit = 9 - i % 10;
-      digits.push(
-        /* @__PURE__ */ FSComponent.buildComponent("text", { x: 55, y: digitSpacing2 * i - 460, "font-size": 30, "text-anchor": "middle", fill: Colors_default.GREEN }, removeZeros && digit === 0 ? "" : digit.toString())
-      );
-    }
-    return digits;
-  };
   var CurrentAirspeedBox = class extends DisplayComponent {
     constructor() {
       super(...arguments);
+      this.boxDigitScrollRef = FSComponent.createRef();
       this.singleDigitScrollRef = FSComponent.createRef();
       this.tenthDigitScrollRef = FSComponent.createRef();
       this.hundredthDigitScrollRef = FSComponent.createRef();
+      this.digitRefs = [];
+      this.renderDigitTape = (removeZeros) => {
+        const digits = [];
+        for (let i = 0; i < 30; i++) {
+          const digit = 9 - i % 10;
+          const ref = FSComponent.createRef();
+          const digitElement = /* @__PURE__ */ FSComponent.buildComponent("text", { x: 55, y: digitSpacing2 * i - 460, "font-size": 30, "text-anchor": "middle", fill: Colors_default.GREEN, ref }, removeZeros && digit === 0 ? "" : digit.toString());
+          this.digitRefs.push(ref);
+          digits.push(digitElement);
+        }
+        return digits;
+      };
+      this.vStallCheck = () => {
+        console.log(this.ias);
+        if (!this.onGround && this.ias <= this.vstall) {
+          for (const ref of this.digitRefs) {
+            ref.instance.setAttribute("fill", "white");
+            this.boxDigitScrollRef.instance.setAttribute("fill", `${Colors_default.RED}`);
+          }
+        } else if (!this.onGround && this.ias <= this.vstall + 10) {
+          for (const ref of this.digitRefs) {
+            ref.instance.setAttribute("fill", `${Colors_default.YELLOW}`);
+            this.boxDigitScrollRef.instance.setAttribute("fill", "transparent");
+          }
+        } else {
+          for (const ref of this.digitRefs) {
+            ref.instance.setAttribute("fill", `${Colors_default.GREEN}`);
+            this.boxDigitScrollRef.instance.setAttribute("fill", "transparent");
+          }
+        }
+      };
     }
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
       sub.on("indicated_airspeed").whenChanged().handle((ias) => {
+        this.ias = ias;
         if (ias < 30) {
           this.singleDigitScrollRef.instance.setAttribute("opacity", "0");
           this.tenthDigitScrollRef.instance.setAttribute("opacity", "0");
@@ -32483,6 +32506,15 @@
           "transform",
           `translate(${-2 * verticalScrollsSpacing2}, ${Math.max(Math.floor(ias / 100) % 10 * digitSpacing2, 0)})`
         );
+        this.vStallCheck();
+      });
+      sub.on("vstall").whenChanged().handle((vstall) => {
+        this.vstall = vstall;
+        this.vStallCheck();
+      });
+      sub.on("onGround").whenChanged().handle((onGround) => {
+        this.onGround = onGround;
+        this.vStallCheck();
       });
     }
     render() {
@@ -32495,16 +32527,17 @@
           "stroke-width": 2,
           "stroke-linecap": "round"
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "boxClip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254" })), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#boxClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.singleDigitScrollRef }, renderDigitTape2()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenthDigitScrollRef }, renderDigitTape2()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.hundredthDigitScrollRef }, renderDigitTape2(true))), /* @__PURE__ */ FSComponent.buildComponent(
+      ), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "boxClip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254" })), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           d: "M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254",
           fill: "transparent",
           stroke: "white",
           "stroke-width": 2,
-          "stroke-linecap": "round"
+          "stroke-linecap": "round",
+          ref: this.boxDigitScrollRef
         }
-      ));
+      ), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#boxClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.singleDigitScrollRef }, this.renderDigitTape()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenthDigitScrollRef }, this.renderDigitTape()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.hundredthDigitScrollRef }, this.renderDigitTape(true))));
     }
   };
   var CurrentAirspeedBox_default = CurrentAirspeedBox;
@@ -33123,7 +33156,7 @@
     ["nav_ident", { name: "NAV IDENT" /* nav_ident */, type: SimVarValueType.String }],
     ["nav_dme", { name: "NAV DME" /* nav_dme */, type: SimVarValueType.NM }],
     ["vstall", { name: "L:VSTALL" /* vstall */, type: SimVarValueType.Knots }],
-    ["overspeed", { name: "L:OVERSPEEDSPEED" /* overspeed */, type: SimVarValueType.Knots }],
+    ["overspeed", { name: "L:OVERSPEED" /* overspeed */, type: SimVarValueType.Knots }],
     ["onGround", { name: "SIM ON GROUND" /* onGround */, type: SimVarValueType.Bool }]
   ]);
 

@@ -346,8 +346,8 @@ export class AttitudeForeground extends DisplayComponent<AttitudeForegroundProps
 
         <defs>
           <linearGradient gradientTransform="rotate(0, 0.5, 0.5)" x1="50%" y1="0%" x2="50%" y2="100%" id="sky-gradient">
-            <stop stop-color="#0964b5" stop-opacity="1" offset="95%"></stop>
-            <stop stop-color="#5098c3" stop-opacity="1" offset="100%"></stop>
+            <stop stop-color="#004dba" stop-opacity="1" offset="95%"></stop>
+            <stop stop-color="#7592d4" stop-opacity="1" offset="100%"></stop>
           </linearGradient>
           <linearGradient
             gradientTransform="rotate(0, 0.5, 0.5)"
@@ -357,8 +357,8 @@ export class AttitudeForeground extends DisplayComponent<AttitudeForegroundProps
             y2="100%"
             id="ground-gradient"
           >
-            <stop stop-color="#a7811a" stop-opacity="1" offset="0%"></stop>
-            <stop stop-color="#a36a27" stop-opacity="1" offset="5%"></stop>
+            <stop stop-color="#9c661e" stop-opacity="1" offset="0%"></stop>
+            <stop stop-color="#4b241d" stop-opacity="1" offset="10%"></stop>
           </linearGradient>
         </defs>
 
