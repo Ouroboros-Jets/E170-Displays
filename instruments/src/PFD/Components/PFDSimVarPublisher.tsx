@@ -24,6 +24,9 @@ export type PFDSimvars = {
   gps_next_waypoint_distance: number
   nav_ident: string
   nav_dme: number
+  vstall: number
+  overspeed: number
+  onGround: boolean
 }
 
 export enum PFDVars {
@@ -49,7 +52,10 @@ export enum PFDVars {
   gps_next_waypoint_id = 'GPS WP NEXT ID',
   gps_next_waypoint_distance = 'GPS WP DISTANCE',
   nav_ident = 'NAV IDENT',
-  nav_dme = 'NAV DME'
+  nav_dme = 'NAV DME',
+  vstall = 'L:VSTALL',
+  overspeed = 'L:OVERSPEEDSPEED',
+  onGround = 'SIM ON GROUND'
 }
 
 export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
@@ -76,7 +82,10 @@ export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
     ['gps_next_waypoint_id', { name: PFDVars.gps_next_waypoint_id, type: SimVarValueType.String }],
     ['gps_next_waypoint_distance', { name: PFDVars.gps_next_waypoint_distance, type: SimVarValueType.Number }],
     ['nav_ident', { name: PFDVars.nav_ident, type: SimVarValueType.String }],
-    ['nav_dme', { name: PFDVars.nav_dme, type: SimVarValueType.NM }]
+    ['nav_dme', { name: PFDVars.nav_dme, type: SimVarValueType.NM }],
+    ['vstall', { name: PFDVars.vstall, type: SimVarValueType.Knots }],
+    ['overspeed', { name: PFDVars.overspeed, type: SimVarValueType.Knots }],
+    ['onGround', { name: PFDVars.onGround, type: SimVarValueType.Bool }]
   ])
 
   public constructor(bus: EventBus) {

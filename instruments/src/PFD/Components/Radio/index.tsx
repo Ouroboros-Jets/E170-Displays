@@ -21,28 +21,28 @@ export default class Radio extends DisplayComponent<T_RadioProps> {
       .on('com_frequency')
       .whenChanged()
       .handle((comFreq) => {
-        this.comFrequecyRef.instance.textContent = comFreq
+        this.comFrequecyRef.instance.textContent = parseFloat(comFreq).toFixed(2).toString()
       })
 
     sub
-      .on('com_frequency')
+      .on('com_standby_frequency')
       .whenChanged()
       .handle((comStandByFreq) => {
-        this.comStandByFrequecyRef.instance.textContent = comStandByFreq
+        this.comStandByFrequecyRef.instance.textContent = parseFloat(comStandByFreq).toFixed(2).toString()
       })
 
     sub
       .on('nav_frequency')
       .whenChanged()
       .handle((navFreq) => {
-        this.navFrequecyRef.instance.textContent = navFreq
+        this.navFrequecyRef.instance.textContent = parseFloat(navFreq).toFixed(2).toString()
       })
 
     sub
-      .on('com_frequency')
+      .on('nav_standby_frequency')
       .whenChanged()
       .handle((navStandByFreq) => {
-        this.navStandByFrequecyRef.instance.textContent = navStandByFreq
+        this.navStandByFrequecyRef.instance.textContent = parseFloat(navStandByFreq).toFixed(2).toString()
       })
   }
 

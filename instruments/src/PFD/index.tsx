@@ -9,7 +9,7 @@ import LockHdgIndicator from './Components/LockHeading'
 import VerticalSpeedIndicator from './Components/VerticalSpeed'
 import Radio from './Components/Radio'
 import HeadingSourceAnnunciator from './Components/HeadingSourceAnnunciator'
-import NavSourceAnnunciator from './Components/NavSourcAnnunciatior'
+import NavSourceAnnunciator from './Components/NavSourceAnnunciatior'
 
 type PFDProps = ComponentProps & {
   bus: EventBus

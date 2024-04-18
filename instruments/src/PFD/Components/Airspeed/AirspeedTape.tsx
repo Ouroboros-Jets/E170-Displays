@@ -2,6 +2,7 @@ import './index.scss'
 import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
 import { PathWithBlackBackground } from '../../Util/PathWithBlackBackground'
 import { type PFDSimvars } from '../PFDSimVarPublisher'
+import Colors from 'instruments/common/util/Colors'
 
 type AirspeedTapeProps = ComponentProps & {
   bus: EventBus
@@ -40,6 +41,10 @@ const renderTape = (): JSX.Element[] => {
 
 export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
   private readonly aisTapeRef = FSComponent.createRef<SVGGElement>()
+  private readonly yellowLsaRef = FSComponent.createRef<SVGRectElement>()
+  private readonly redLsaRef = FSComponent.createRef<SVGRectElement>()
+
+  private onGround: boolean
 
   public onAfterRender(node: VNode): void {
     super.onAfterRender(node)
@@ -52,10 +57,47 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
         if (ias >= minSpeed) {
           this.aisTapeRef.instance?.setAttribute(
             'transform',
-            `translate(0, ${baseline - maxSpeed * 3 + ias * 3 - minSpeed - 30})`
+            `translate(0, ${baseline - maxSpeed * stretch + ias * stretch - minSpeed - 30})`
           )
         } else {
           this.aisTapeRef.instance?.setAttribute('transform', `translate(0, ${baseline - maxSpeed * 3 + minSpeed})`)
+        }
+      })
+
+    sub
+      .on('onGround')
+      .whenChanged()
+      .handle((onGround) => {
+        this.onGround = onGround
+
+        if (onGround) {
+          this.redLsaRef.instance.style.visibility = 'hidden'
+          this.yellowLsaRef.instance.style.visibility = 'hidden'
+        }
+      })
+
+    sub
+      .on('vstall')
+      .whenChanged()
+      .handle((stall) => {
+        if (!this.onGround) {
+          if (stall <= 30) {
+            this.redLsaRef.instance.style.visibility = 'hidden'
+            this.yellowLsaRef.instance.style.visibility = 'hidden'
+            return
+          }
+
+          this.redLsaRef.instance.style.visibility = 'visible'
+          this.yellowLsaRef.instance.style.visibility = 'visible'
+
+          const stallHeight = (maxSpeed - stall) * stretch + minSpeed * stretch
+          const stallPosition = (maxSpeed - stall) * stretch + minSpeed * stretch
+
+          this.redLsaRef.instance.setAttribute('height', `${stallHeight - 30}`)
+          this.redLsaRef.instance.style.y = `${stallPosition - 30}`
+
+          this.yellowLsaRef.instance.setAttribute('height', `${stallHeight - 60}`)
+          this.yellowLsaRef.instance.style.y = `${stallPosition - 60}`
         }
       })
   }
@@ -72,7 +114,15 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
         </defs>
 
         <g clip-path="url(#tapeClip)">
-          <g ref={this.aisTapeRef}>{renderTape()}</g>
+          <g ref={this.aisTapeRef}>
+            {renderTape()}
+
+            <g id="OBP"></g>
+            <g id="LSA">
+              <rect x={66} y={0} width={10} height={0} fill={Colors.YELLOW} ref={this.yellowLsaRef} />
+              <rect x={66} y={0} width={10} height={0} fill={Colors.RED} ref={this.redLsaRef} />
+            </g>
+          </g>
         </g>
 
         <PathWithBlackBackground d="M 81 86 L 81 418" fill="black" fillTop="white" strokeWidthTop={2} strokeWidth={3} />

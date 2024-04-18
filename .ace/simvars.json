@@ -95,7 +95,7 @@
     "name": "INDICATED ALTITUDE",
     "index": 0,
     "unit": "Feet",
-    "value": 250.0,
+    "value": 106.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -108,7 +108,7 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 70.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -654,7 +654,7 @@
     "name": "AIRSPEED TRUE",
     "index": 0,
     "unit": "knots",
-    "value": 165.0,
+    "value": 113.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -706,26 +706,22 @@
     "name": "COM ACTIVE FREQUENCY",
     "index": 1,
     "unit": "MHz",
-    "value": 0.0,
+    "value": "135.10533",
     "control": {
-      "type": "Slider",
-      "min": 0.0,
-      "max": 250.0
+      "type": "Text"
     },
-    "pinned": null
+    "pinned": false
   },
   {
     "type": "A",
     "name": "NAV FREQUENCY",
     "index": 0,
     "unit": "MHz",
-    "value": 0.0,
+    "value": "127.6666",
     "control": {
-      "type": "Slider",
-      "min": 0.0,
-      "max": 250.0
+      "type": "Text"
     },
-    "pinned": null
+    "pinned": false
   },
   {
     "type": "A",
@@ -760,9 +756,9 @@
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 25000.0
+      "max": 250.0
     },
-    "pinned": false
+    "pinned": null
   },
   {
     "type": "A",
@@ -781,6 +777,58 @@
     "index": 0,
     "unit": "nautical mile",
     "value": 102.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "VSTALL",
+    "index": 0,
+    "unit": "knots",
+    "value": 57.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "SIM ON GROUND",
+    "index": 0,
+    "unit": "bool",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "NAV STANDBY FREQUENCY",
+    "index": 1,
+    "unit": "MHz",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "COM STANDBY FREQUENCY",
+    "index": 1,
+    "unit": "MHz",
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

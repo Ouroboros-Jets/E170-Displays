@@ -32158,6 +32158,7 @@
     Colors2["PINK"] = "#D202D4";
     Colors2["CYAN"] = "#00FEFE";
     Colors2["YELLOW"] = "#FDE501";
+    Colors2["RED"] = "#FE0000";
     return Colors2;
   })(Colors || {});
   var Colors_default = Colors;
@@ -32390,6 +32391,8 @@
     constructor() {
       super(...arguments);
       this.aisTapeRef = FSComponent.createRef();
+      this.yellowLsaRef = FSComponent.createRef();
+      this.redLsaRef = FSComponent.createRef();
     }
     onAfterRender(node) {
       super.onAfterRender(node);
@@ -32399,15 +32402,39 @@
         if (ias >= minSpeed) {
           (_a2 = this.aisTapeRef.instance) == null ? void 0 : _a2.setAttribute(
             "transform",
-            `translate(0, ${baseline3 - maxSpeed * 3 + ias * 3 - minSpeed - 30})`
+            `translate(0, ${baseline3 - maxSpeed * stretch + ias * stretch - minSpeed - 30})`
           );
         } else {
           (_b = this.aisTapeRef.instance) == null ? void 0 : _b.setAttribute("transform", `translate(0, ${baseline3 - maxSpeed * 3 + minSpeed})`);
         }
       });
+      sub.on("onGround").whenChanged().handle((onGround) => {
+        this.onGround = onGround;
+        if (onGround) {
+          this.redLsaRef.instance.style.visibility = "hidden";
+          this.yellowLsaRef.instance.style.visibility = "hidden";
+        }
+      });
+      sub.on("vstall").whenChanged().handle((stall) => {
+        if (!this.onGround) {
+          if (stall <= 30) {
+            this.redLsaRef.instance.style.visibility = "hidden";
+            this.yellowLsaRef.instance.style.visibility = "hidden";
+            return;
+          }
+          this.redLsaRef.instance.style.visibility = "visible";
+          this.yellowLsaRef.instance.style.visibility = "visible";
+          const stallHeight = (maxSpeed - stall) * stretch + minSpeed * stretch;
+          const stallPosition = (maxSpeed - stall) * stretch + minSpeed * stretch;
+          this.redLsaRef.instance.setAttribute("height", `${stallHeight - 30}`);
+          this.redLsaRef.instance.style.y = `${stallPosition - 30}`;
+          this.yellowLsaRef.instance.setAttribute("height", `${stallHeight - 60}`);
+          this.yellowLsaRef.instance.style.y = `${stallPosition - 60}`;
+        }
+      });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 54, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "tapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 88, width: 81, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#tapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.aisTapeRef }, renderTape2())), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 86 L 81 418", fill: "black", fillTop: "white", strokeWidthTop: 2, strokeWidth: 3 }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 54, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "tapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 88, width: 81, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#tapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.aisTapeRef }, renderTape2(), /* @__PURE__ */ FSComponent.buildComponent("g", { id: "OBP" }), /* @__PURE__ */ FSComponent.buildComponent("g", { id: "LSA" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.YELLOW, ref: this.yellowLsaRef }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.RED, ref: this.redLsaRef })))), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 86 L 81 418", fill: "black", fillTop: "white", strokeWidthTop: 2, strokeWidth: 3 }));
     }
   };
 
@@ -32907,16 +32934,16 @@
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
       sub.on("com_frequency").whenChanged().handle((comFreq) => {
-        this.comFrequecyRef.instance.textContent = comFreq;
+        this.comFrequecyRef.instance.textContent = parseFloat(comFreq).toFixed(2).toString();
       });
-      sub.on("com_frequency").whenChanged().handle((comStandByFreq) => {
-        this.comStandByFrequecyRef.instance.textContent = comStandByFreq;
+      sub.on("com_standby_frequency").whenChanged().handle((comStandByFreq) => {
+        this.comStandByFrequecyRef.instance.textContent = parseFloat(comStandByFreq).toFixed(2).toString();
       });
       sub.on("nav_frequency").whenChanged().handle((navFreq) => {
-        this.navFrequecyRef.instance.textContent = navFreq;
+        this.navFrequecyRef.instance.textContent = parseFloat(navFreq).toFixed(2).toString();
       });
-      sub.on("com_frequency").whenChanged().handle((navStandByFreq) => {
-        this.navStandByFrequecyRef.instance.textContent = navStandByFreq;
+      sub.on("nav_standby_frequency").whenChanged().handle((navStandByFreq) => {
+        this.navStandByFrequecyRef.instance.textContent = parseFloat(navStandByFreq).toFixed(2).toString();
       });
     }
     render() {
@@ -32931,7 +32958,7 @@
     }
   };
 
-  // instruments/src/PFD/Components/NavSourcAnnunciatior/index.tsx
+  // instruments/src/PFD/Components/NavSourceAnnunciatior/index.tsx
   var NavSourceAnnunciator = class extends DisplayComponent {
     constructor() {
       super(...arguments);
@@ -33094,7 +33121,10 @@
     ["gps_next_waypoint_id", { name: "GPS WP NEXT ID" /* gps_next_waypoint_id */, type: SimVarValueType.String }],
     ["gps_next_waypoint_distance", { name: "GPS WP DISTANCE" /* gps_next_waypoint_distance */, type: SimVarValueType.Number }],
     ["nav_ident", { name: "NAV IDENT" /* nav_ident */, type: SimVarValueType.String }],
-    ["nav_dme", { name: "NAV DME" /* nav_dme */, type: SimVarValueType.NM }]
+    ["nav_dme", { name: "NAV DME" /* nav_dme */, type: SimVarValueType.NM }],
+    ["vstall", { name: "L:VSTALL" /* vstall */, type: SimVarValueType.Knots }],
+    ["overspeed", { name: "L:OVERSPEEDSPEED" /* overspeed */, type: SimVarValueType.Knots }],
+    ["onGround", { name: "SIM ON GROUND" /* onGround */, type: SimVarValueType.Bool }]
   ]);
 
   // instruments/src/PFD/instrument.tsx
