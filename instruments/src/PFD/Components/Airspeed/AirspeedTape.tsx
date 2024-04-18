@@ -41,6 +41,7 @@ const renderTape = (): JSX.Element[] => {
 
 export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
   private readonly aisTapeRef = FSComponent.createRef<SVGGElement>()
+  private readonly overspdRef = FSComponent.createRef<SVGRectElement>()
   private readonly yellowLsaRef = FSComponent.createRef<SVGRectElement>()
   private readonly redLsaRef = FSComponent.createRef<SVGRectElement>()
 
@@ -90,14 +91,25 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
           this.redLsaRef.instance.style.visibility = 'visible'
           this.yellowLsaRef.instance.style.visibility = 'visible'
 
-          const stallHeight = (maxSpeed - stall) * stretch + minSpeed * stretch
           const stallPosition = (maxSpeed - stall) * stretch + minSpeed * stretch
 
-          this.redLsaRef.instance.setAttribute('height', `${stallHeight - minSpeed}`)
+          this.redLsaRef.instance.setAttribute('height', `${stallPosition - minSpeed}`)
           this.redLsaRef.instance.style.y = `${stallPosition - minSpeed}`
 
-          this.yellowLsaRef.instance.setAttribute('height', `${stallHeight - minSpeed * 2}`)
+          this.yellowLsaRef.instance.setAttribute('height', `${stallPosition - minSpeed * 2}`)
           this.yellowLsaRef.instance.style.y = `${stallPosition - minSpeed * 2}`
+        }
+      })
+
+    sub
+      .on('overspeed')
+      .whenChanged()
+      .handle((overspd) => {
+        if (!this.onGround) {
+          const overspdPosition = (maxSpeed - overspd) * stretch + minSpeed * stretch
+
+          this.overspdRef.instance.setAttribute('height', `${overspdPosition - minSpeed}`)
+          this.overspdRef.instance.setAttribute('y', `${maxSpeed - overspdPosition}`)
         }
       })
   }
@@ -116,8 +128,21 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
         <g clip-path="url(#tapeClip)">
           <g ref={this.aisTapeRef}>
             {renderTape()}
-
-            <g id="OBP"></g>
+            <g id="OBP">
+              <defs>
+                <pattern
+                  id="diagonal"
+                  width={5}
+                  height={10}
+                  patternTransform="rotate(45 0 0)"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <line x1={0} y1={0} x2={0} y2={10} stroke={Colors.RED} stroke-width={5} />
+                  <line x1={5} y1={0} x2={5} y2={10} stroke="white" stroke-width={5} />
+                </pattern>
+              </defs>
+              <rect x={75} y={0} width={10} height={0} fill="url(#diagonal)" ref={this.overspdRef} />
+            </g>
             <g id="LSA">
               <rect x={66} y={0} width={10} height={0} fill={Colors.YELLOW} ref={this.yellowLsaRef} />
               <rect x={66} y={0} width={10} height={0} fill={Colors.RED} ref={this.redLsaRef} />

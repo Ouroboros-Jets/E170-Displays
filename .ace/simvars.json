@@ -95,7 +95,7 @@
     "name": "INDICATED ALTITUDE",
     "index": 0,
     "unit": "Feet",
-    "value": 218.0,
+    "value": 213.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -108,11 +108,11 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 193.0,
+    "value": 51.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 250.0
+      "max": 940.0
     },
     "pinned": true
   },
@@ -706,22 +706,26 @@
     "name": "COM ACTIVE FREQUENCY",
     "index": 1,
     "unit": "MHz",
-    "value": "135.10533",
+    "value": 0.0,
     "control": {
-      "type": "Text"
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
     },
-    "pinned": false
+    "pinned": null
   },
   {
     "type": "A",
     "name": "NAV FREQUENCY",
     "index": 0,
     "unit": "MHz",
-    "value": "127.6666",
+    "value": 0.0,
     "control": {
-      "type": "Text"
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
     },
-    "pinned": false
+    "pinned": null
   },
   {
     "type": "A",
@@ -789,7 +793,7 @@
     "name": "VSTALL",
     "index": 0,
     "unit": "knots",
-    "value": 167.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -835,5 +839,18 @@
       "max": 250.0
     },
     "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OVERSPEED",
+    "index": 0,
+    "unit": "knots",
+    "value": 84.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": true
   }
 ]

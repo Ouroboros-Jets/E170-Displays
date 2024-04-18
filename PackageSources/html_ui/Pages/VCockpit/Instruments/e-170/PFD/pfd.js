@@ -32391,6 +32391,7 @@
     constructor() {
       super(...arguments);
       this.aisTapeRef = FSComponent.createRef();
+      this.overspdRef = FSComponent.createRef();
       this.yellowLsaRef = FSComponent.createRef();
       this.redLsaRef = FSComponent.createRef();
     }
@@ -32424,17 +32425,34 @@
           }
           this.redLsaRef.instance.style.visibility = "visible";
           this.yellowLsaRef.instance.style.visibility = "visible";
-          const stallHeight = (maxSpeed - stall) * stretch + minSpeed * stretch;
           const stallPosition = (maxSpeed - stall) * stretch + minSpeed * stretch;
-          this.redLsaRef.instance.setAttribute("height", `${stallHeight - minSpeed}`);
+          this.redLsaRef.instance.setAttribute("height", `${stallPosition - minSpeed}`);
           this.redLsaRef.instance.style.y = `${stallPosition - minSpeed}`;
-          this.yellowLsaRef.instance.setAttribute("height", `${stallHeight - minSpeed * 2}`);
+          this.yellowLsaRef.instance.setAttribute("height", `${stallPosition - minSpeed * 2}`);
           this.yellowLsaRef.instance.style.y = `${stallPosition - minSpeed * 2}`;
+        }
+      });
+      sub.on("overspeed").whenChanged().handle((overspd) => {
+        if (!this.onGround) {
+          const overspdPosition = (maxSpeed - overspd) * stretch + minSpeed * stretch;
+          this.overspdRef.instance.setAttribute("height", `${overspdPosition - minSpeed}`);
+          this.overspdRef.instance.setAttribute("y", `${maxSpeed - overspdPosition}`);
         }
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 54, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "tapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 88, width: 81, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#tapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.aisTapeRef }, renderTape2(), /* @__PURE__ */ FSComponent.buildComponent("g", { id: "OBP" }), /* @__PURE__ */ FSComponent.buildComponent("g", { id: "LSA" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.YELLOW, ref: this.yellowLsaRef }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.RED, ref: this.redLsaRef })))), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 86 L 81 418", fill: "black", fillTop: "white", strokeWidthTop: 2, strokeWidth: 3 }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 54, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "tapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 88, width: 81, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#tapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.aisTapeRef }, renderTape2(), /* @__PURE__ */ FSComponent.buildComponent("g", { id: "OBP" }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent(
+        "pattern",
+        {
+          id: "diagonal",
+          width: 5,
+          height: 10,
+          patternTransform: "rotate(45 0 0)",
+          patternUnits: "userSpaceOnUse"
+        },
+        /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 0, y1: 0, x2: 0, y2: 10, stroke: Colors_default.RED, "stroke-width": 5 }),
+        /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 5, y1: 0, x2: 5, y2: 10, stroke: "white", "stroke-width": 5 })
+      )), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 75, y: 0, width: 10, height: 0, fill: "url(#diagonal)", ref: this.overspdRef })), /* @__PURE__ */ FSComponent.buildComponent("g", { id: "LSA" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.YELLOW, ref: this.yellowLsaRef }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.RED, ref: this.redLsaRef })))), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 86 L 81 418", fill: "black", fillTop: "white", strokeWidthTop: 2, strokeWidth: 3 }));
     }
   };
 
