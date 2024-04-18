@@ -17,7 +17,7 @@
     "name": "OBJ_E170_MFD_ROUTER_BOTTOM",
     "index": 0,
     "unit": "Number",
-    "value": 2.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -95,7 +95,7 @@
     "name": "INDICATED ALTITUDE",
     "index": 0,
     "unit": "Feet",
-    "value": 0.0,
+    "value": 213.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -108,13 +108,13 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 0.0,
+    "value": 51.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 250.0
+      "max": 940.0
     },
-    "pinned": null
+    "pinned": true
   },
   {
     "type": "A",
@@ -173,7 +173,7 @@
     "name": "AIRSPEED MACH",
     "index": 0,
     "unit": "Mach",
-    "value": 0.0,
+    "value": 87.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -199,7 +199,7 @@
     "name": "VERTICAL SPEED",
     "index": 0,
     "unit": "Feet per second",
-    "value": 0.0,
+    "value": 51.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -537,7 +537,7 @@
     "name": "PLANE HEADING DEGREES MAGNETIC",
     "index": 0,
     "unit": "radians",
-    "value": 170.0,
+    "value": 78.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -563,7 +563,7 @@
     "name": "PLANE HEADING DEGREES TRUE",
     "index": 0,
     "unit": "degrees",
-    "value": 0.0,
+    "value": 111.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -576,6 +576,71 @@
     "name": "GROUND VELOCITY",
     "index": 0,
     "unit": "knots",
+    "value": 250.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "AUTOPILOT HEADING LOCK DIR",
+    "index": 0,
+    "unit": "degrees",
+    "value": 78.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "AIRSPEED SELECT INDICATED OR TRUE",
+    "index": 0,
+    "unit": "knots",
+    "value": 70.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "AUTOPILOT ALTITUDE LOCK VAR",
+    "index": 0,
+    "unit": "feet",
+    "value": 2500.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "KOHLSMAN SETTING HG",
+    "index": 0,
+    "unit": "inches of mercury",
+    "value": 1010.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "KOHLSMAN SETTING STD",
+    "index": 0,
+    "unit": "bool",
     "value": 0.0,
     "control": {
       "type": "Slider",
@@ -583,5 +648,209 @@
       "max": 250.0
     },
     "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "AIRSPEED TRUE",
+    "index": 0,
+    "unit": "knots",
+    "value": 113.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "ACCELERATION BODY Z",
+    "index": 0,
+    "unit": "feet",
+    "value": 10.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "ACCELERATION BODY Y",
+    "index": 0,
+    "unit": "feet",
+    "value": 2.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_AP_SELECTED_AS",
+    "index": 0,
+    "unit": "knots",
+    "value": 250.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "COM ACTIVE FREQUENCY",
+    "index": 1,
+    "unit": "MHz",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "NAV FREQUENCY",
+    "index": 0,
+    "unit": "MHz",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "GPS IS ACTIVE WAY POINT",
+    "index": 0,
+    "unit": "bool",
+    "value": 50.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "GPS WP NEXT ID",
+    "index": 0,
+    "unit": "string",
+    "value": "",
+    "control": {
+      "type": "Text"
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "GPS WP DISTANCE",
+    "index": 0,
+    "unit": "number",
+    "value": 21658.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "NAV IDENT",
+    "index": 0,
+    "unit": "string",
+    "value": "STD",
+    "control": {
+      "type": "Text"
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "NAV DME",
+    "index": 0,
+    "unit": "nautical mile",
+    "value": 102.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "VSTALL",
+    "index": 0,
+    "unit": "knots",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "SIM ON GROUND",
+    "index": 0,
+    "unit": "bool",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "NAV STANDBY FREQUENCY",
+    "index": 1,
+    "unit": "MHz",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "COM STANDBY FREQUENCY",
+    "index": 1,
+    "unit": "MHz",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OVERSPEED",
+    "index": 0,
+    "unit": "knots",
+    "value": 84.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": true
   }
 ]

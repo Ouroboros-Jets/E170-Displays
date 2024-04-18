@@ -1,3 +1,4 @@
+import Colors from 'instruments/common/util/Colors'
 import type { PFDSimvars } from '../PFDSimVarPublisher'
 import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
 
@@ -15,31 +16,39 @@ export default class GspdIndicator extends DisplayComponent<T_GspdIndicatorProps
     sub
       .on('ground_speed')
       .whenChanged()
-      .handle((alt) => {
-        if (alt > 999) {
+      .handle((spd) => {
+        if (spd > 999) {
           this.grndSpdRef.instance.textContent = '999'
           return
         }
 
-        if (alt < -99) {
+        if (spd < -99) {
           this.grndSpdRef.instance.textContent = '-99'
           return
         }
 
-        this.grndSpdRef.instance.textContent = alt.toString()
+        this.grndSpdRef.instance.textContent = Math.round(spd).toString()
       })
   }
 
   public render(): VNode {
     return (
       <g transform="translate(35, 20)">
-        <text x={0} y={0} text-anchor="middle" font-size={17} fill="white">
+        <text x={0} y={0} text-anchor="middle" font-size={17} fill="white" letter-spacing={-1}>
           GSPD
         </text>
-        <text x={-11} y={18} text-anchor="middle" font-size={17} fill="#04E304" ref={this.grndSpdRef}>
+        <text
+          x={-17}
+          y={18}
+          text-anchor="middle"
+          font-size={17}
+          fill={Colors.GREEN}
+          ref={this.grndSpdRef}
+          letter-spacing={-2}
+        >
           0
         </text>
-        <text x={0} y={18} text-anchor="right" font-size={17} fill="white">
+        <text x={0} y={18} text-anchor="right" font-size={17} fill="white" letter-spacing={-2}>
           KT
         </text>
       </g>

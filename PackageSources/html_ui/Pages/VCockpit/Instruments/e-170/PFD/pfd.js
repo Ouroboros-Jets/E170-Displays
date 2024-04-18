@@ -23985,7 +23985,7 @@
       if (primaryType === this._primaryType && secondaryType === this._secondaryType) {
         return;
       }
-      let minSpeed, maxSpeed;
+      let minSpeed2, maxSpeed2;
       const primaryTypeDef = TcasResolutionAdvisoryHostClass.TYPE_DEFS[primaryType];
       this._primaryType = primaryType;
       this._primaryFlags = primaryTypeDef.flags;
@@ -23993,15 +23993,15 @@
       if (secondaryType !== null) {
         const secondaryTypeDef = TcasResolutionAdvisoryHostClass.TYPE_DEFS[secondaryType];
         this._secondaryFlags = secondaryTypeDef.flags;
-        minSpeed = Math.max(primaryTypeDef.minVerticalSpeed, secondaryTypeDef.minVerticalSpeed);
-        maxSpeed = Math.min(primaryTypeDef.maxVerticalSpeed, secondaryTypeDef.maxVerticalSpeed);
+        minSpeed2 = Math.max(primaryTypeDef.minVerticalSpeed, secondaryTypeDef.minVerticalSpeed);
+        maxSpeed2 = Math.min(primaryTypeDef.maxVerticalSpeed, secondaryTypeDef.maxVerticalSpeed);
       } else {
         this._secondaryFlags = 0;
-        minSpeed = primaryTypeDef.minVerticalSpeed;
-        maxSpeed = primaryTypeDef.maxVerticalSpeed;
+        minSpeed2 = primaryTypeDef.minVerticalSpeed;
+        maxSpeed2 = primaryTypeDef.maxVerticalSpeed;
       }
-      this._minVerticalSpeed.set(isFinite(minSpeed) ? minSpeed : NaN);
-      this._maxVerticalSpeed.set(isFinite(maxSpeed) ? maxSpeed : NaN);
+      this._minVerticalSpeed.set(isFinite(minSpeed2) ? minSpeed2 : NaN);
+      this._maxVerticalSpeed.set(isFinite(maxSpeed2) ? maxSpeed2 : NaN);
       this.isInitial = isInitial;
       this.lastStateChangeTime = simTime;
       this.stateChangeDelay = TcasResolutionAdvisoryHostClass.STATE_CHANGE_DELAY_BASE + (isInitial ? this.initialResponseTimeSeconds : this.subsequentResponseTimeSeconds) * 1e3;
@@ -26453,11 +26453,11 @@
       }
       return false;
     }
-    static createConstraint(index, minAltitude, maxAltitude, name, type = "descent") {
+    static createConstraint(index, minAltitude, maxAltitude2, name, type = "descent") {
       return {
         index,
         minAltitude,
-        maxAltitude,
+        maxAltitude: maxAltitude2,
         targetAltitude: 0,
         name,
         isTarget: false,
@@ -28681,8 +28681,8 @@
           if (isCurrentConstraintClimb) {
             if (currentConstraintIndex - 1 > targetConstraintIndex) {
               currentTargetConstraint.fpa = MathUtils.clamp(this.flightPathAngle, currentPathSegmentMinFpa, currentPathSegmentMaxFpa);
-              const maxAltitude2 = pathSegmentIsFlat ? currentTargetConstraint.targetAltitude : verticalPlan.constraints[currentConstraintIndex - 1].maxAltitude;
-              const terminatedIndex = this.terminateSmoothedPath(verticalPlan, targetConstraintIndex, currentConstraintIndex, maxAltitude2, false);
+              const maxAltitude3 = pathSegmentIsFlat ? currentTargetConstraint.targetAltitude : verticalPlan.constraints[currentConstraintIndex - 1].maxAltitude;
+              const terminatedIndex = this.terminateSmoothedPath(verticalPlan, targetConstraintIndex, currentConstraintIndex, maxAltitude3, false);
               if (terminatedIndex < currentConstraintIndex) {
                 targetConstraintIndex = terminatedIndex - 1;
                 currentTargetConstraint = verticalPlan.constraints[terminatedIndex];
@@ -28696,8 +28696,8 @@
             break;
           }
           const minAltitude = currentConstraint.minAltitude;
-          const maxAltitude = currentConstraint.maxAltitude;
-          if (pathSegmentIsFlat && maxAltitude - currentTargetConstraint.targetAltitude > 0) {
+          const maxAltitude2 = currentConstraint.maxAltitude;
+          if (pathSegmentIsFlat && maxAltitude2 - currentTargetConstraint.targetAltitude > 0) {
             const flatSegmentAltitude = currentTargetConstraint.targetAltitude;
             const newTargetConstraintIndex = currentConstraintIndex - 1;
             SmoothingPathCalculator.applyPathValuesToSmoothedConstraints(
@@ -28712,7 +28712,7 @@
             currentTargetConstraint.targetAltitude = flatSegmentAltitude;
             currentTargetConstraint.isTarget = true;
             break;
-          } else if (!currentTargetConstraintHasFixedFpa && maxAltitude - currentTargetConstraint.targetAltitude <= 0) {
+          } else if (!currentTargetConstraintHasFixedFpa && maxAltitude2 - currentTargetConstraint.targetAltitude <= 0) {
             pathSegmentIsFlat = true;
             currentTargetConstraint.fpa = 0;
             if (isCurrentConstraintFirstDescent) {
@@ -28733,7 +28733,7 @@
             continue;
           }
           const minFpa = VNavUtils.getFpa(currentPathSegmentDistance, minAltitude - currentTargetConstraint.targetAltitude);
-          const maxFpa = VNavUtils.getFpa(currentPathSegmentDistance, maxAltitude - currentTargetConstraint.targetAltitude);
+          const maxFpa = VNavUtils.getFpa(currentPathSegmentDistance, maxAltitude2 - currentTargetConstraint.targetAltitude);
           const isFpaOutOfBounds = minFpa > currentPathSegmentMaxFpa || maxFpa < currentPathSegmentMinFpa;
           if (isFpaOutOfBounds || isCurrentConstraintFaf || isCurrentConstraintManual || isCurrentConstraintDirect) {
             if (isFpaOutOfBounds) {
@@ -28773,15 +28773,15 @@
       }
       return true;
     }
-    terminateSmoothedPath(verticalPlan, targetConstraintIndex, terminatingConstraintIndex, maxAltitude, terminatingConstraintIsTarget) {
-      const [maxAltitudeViolatedIndex, smoothedSegmentDistance] = SmoothingPathCalculator.applyPathValuesToSmoothedConstraints(verticalPlan, targetConstraintIndex, terminatingConstraintIndex, maxAltitude, this.applyPathValuesResult);
+    terminateSmoothedPath(verticalPlan, targetConstraintIndex, terminatingConstraintIndex, maxAltitude2, terminatingConstraintIsTarget) {
+      const [maxAltitudeViolatedIndex, smoothedSegmentDistance] = SmoothingPathCalculator.applyPathValuesToSmoothedConstraints(verticalPlan, targetConstraintIndex, terminatingConstraintIndex, maxAltitude2, this.applyPathValuesResult);
       if (terminatingConstraintIsTarget || maxAltitudeViolatedIndex !== void 0) {
         const currentTargetConstraint = verticalPlan.constraints[targetConstraintIndex];
         const proposedNewTargetConstraintAltitude = currentTargetConstraint.targetAltitude + VNavUtils.altitudeForDistance(currentTargetConstraint.fpa, smoothedSegmentDistance);
         const newTargetConstraintIndex = maxAltitudeViolatedIndex !== null && maxAltitudeViolatedIndex !== void 0 ? maxAltitudeViolatedIndex : terminatingConstraintIndex;
         const newTargetConstraint = verticalPlan.constraints[newTargetConstraintIndex];
         newTargetConstraint.isTarget = true;
-        newTargetConstraint.targetAltitude = MathUtils.clamp(proposedNewTargetConstraintAltitude, newTargetConstraint.minAltitude, Math.min(newTargetConstraint.maxAltitude, maxAltitude));
+        newTargetConstraint.targetAltitude = MathUtils.clamp(proposedNewTargetConstraintAltitude, newTargetConstraint.minAltitude, Math.min(newTargetConstraint.maxAltitude, maxAltitude2));
       }
       return maxAltitudeViolatedIndex !== null && maxAltitudeViolatedIndex !== void 0 ? maxAltitudeViolatedIndex : terminatingConstraintIndex;
     }
@@ -28915,13 +28915,13 @@
       }
       return Infinity;
     }
-    static applyPathValuesToSmoothedConstraints(verticalPlan, targetConstraintIndex, endConstraintIndex, maxAltitude, out) {
+    static applyPathValuesToSmoothedConstraints(verticalPlan, targetConstraintIndex, endConstraintIndex, maxAltitude2, out) {
       const currentTargetConstraint = verticalPlan.constraints[targetConstraintIndex];
       let distance = currentTargetConstraint.distance;
       for (let i = targetConstraintIndex + 1; i < endConstraintIndex; i++) {
         const smoothedConstraint = verticalPlan.constraints[i];
         const targetAltitude = currentTargetConstraint.targetAltitude + VNavUtils.altitudeForDistance(currentTargetConstraint.fpa, distance);
-        if (targetAltitude < maxAltitude) {
+        if (targetAltitude < maxAltitude2) {
           smoothedConstraint.fpa = currentTargetConstraint.fpa;
           smoothedConstraint.targetAltitude = targetAltitude;
           distance += smoothedConstraint.distance;
@@ -31696,7 +31696,7 @@
         {
           d: this.props.d,
           fill: this.props.forceTransparent !== null && this.props.forceTransparent === true ? "transparent" : "black",
-          "stroke-width": this.props.StrokeWidth,
+          "stroke-width": this.props.strokeWidth,
           stroke: this.props.fill,
           "stroke-linecap": this.props.forceEndCap !== null && this.props.forceEndCap === true ? "butt" : "round",
           "stroke-linejoin": "round"
@@ -31730,7 +31730,7 @@
           d: `M ${center} ${correctedY - offset - 8} L ${center - 45} ${correctedY - offset - 80} L ${center - 30} ${correctedY - offset - 80} L ${center} ${correctedY - offset - 35} L ${center + 30} ${correctedY - offset - 80} L ${center + 45} ${correctedY - offset - 80} L ${center} ${correctedY - offset - 8}`,
           fill: "black",
           fillTop: color,
-          StrokeWidth: strokeWidth,
+          strokeWidth,
           strokeWidthTop,
           fillTop2: "transparent",
           forceTransparent: true
@@ -31743,7 +31743,7 @@
           d: `M ${center} ${correctedY - offset + 8} L ${center - 45} ${correctedY - offset + 60} L ${center - 30} ${correctedY - offset + 60} L ${center} ${correctedY - offset + 25} L ${center + 30} ${correctedY - offset + 60} L ${center + 45} ${correctedY - offset + 60} L ${center} ${correctedY - offset + 8}`,
           fill: "black",
           fillTop: color,
-          StrokeWidth: strokeWidth,
+          strokeWidth,
           strokeWidthTop,
           fillTop2: "transparent",
           forceTransparent: true
@@ -31772,7 +31772,7 @@
             d: `M ${center - 0.5 * OneTickWidth} ${correctedY - offset} L ${center - 0.5 * OneTickWidth + OneTickWidth} ${correctedY - offset}`,
             fill: "black",
             fillTop: "white",
-            StrokeWidth: strokeWidth,
+            strokeWidth,
             strokeWidthTop
           }
         );
@@ -31783,7 +31783,7 @@
             d: `M ${center - 0.5 * TwoFiveTickWidth} ${correctedY - offset} L ${center - 0.5 * TwoFiveTickWidth + TwoFiveTickWidth} ${correctedY - offset}`,
             fill: "black",
             fillTop: "white",
-            StrokeWidth: strokeWidth,
+            strokeWidth,
             strokeWidthTop
           }
         );
@@ -31794,7 +31794,7 @@
             d: `M ${center - 0.5 * FiveTickWidth} ${correctedY - offset} L ${center - 0.5 * FiveTickWidth + FiveTickWidth} ${correctedY - offset}`,
             fill: "black",
             fillTop: "white",
-            StrokeWidth: strokeWidth,
+            strokeWidth,
             strokeWidthTop
           }
         );
@@ -31805,7 +31805,7 @@
             d: `M ${center - 0.5 * SevenFiveTickWidth} ${correctedY - offset} L ${center - 0.5 * SevenFiveTickWidth + SevenFiveTickWidth} ${correctedY - offset}`,
             fill: "black",
             fillTop: "white",
-            StrokeWidth: strokeWidth,
+            strokeWidth,
             strokeWidthTop
           }
         );
@@ -31830,7 +31830,7 @@
             d: `M ${center - 0.5 * TenTickWidth} ${correctedY - offset} L ${center - 0.5 * TenTickWidth + TenTickWidth} ${correctedY - offset}`,
             fill: "black",
             fillTop: "white",
-            StrokeWidth: strokeWidth,
+            strokeWidth,
             strokeWidthTop
           }
         ), /* @__PURE__ */ FSComponent.buildComponent(
@@ -31855,7 +31855,7 @@
             d: `M ${center - FourtyTickWidth + 35} ${correctedY - offset} L ${center + 35 + FourtyTickWidth} ${correctedY - offset}`,
             fill: "black",
             fillTop: "white",
-            StrokeWidth: strokeWidth,
+            strokeWidth,
             strokeWidthTop
           }
         ), /* @__PURE__ */ FSComponent.buildComponent(
@@ -31878,7 +31878,7 @@
             d: `M ${center - FourtyTickWidth - 35} ${correctedY - offset} L ${center - 35 + FourtyTickWidth} ${correctedY - offset}`,
             fill: "black",
             fillTop: "white",
-            StrokeWidth: strokeWidth,
+            strokeWidth,
             strokeWidthTop
           }
         ));
@@ -32005,7 +32005,19 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { class: "foreground-attitude" }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "attitude-clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" })), /* @__PURE__ */ FSComponent.buildComponent("linearGradient", { id: "SkyGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "0%", "stop-color": "#020383" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "88%", "stop-color": "#020383" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "100%", "stop-color": "#1717cf" })), /* @__PURE__ */ FSComponent.buildComponent("linearGradient", { id: "GroundGradiant", x1: "0", x2: "0", y1: "0", y2: "1" }, /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "0%", "stop-color": "#674200" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "25%", "stop-color": "#352200" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { offset: "100%", "stop-color": "#352201" }))), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.bankRefDup }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.pitchRefDup }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", fill: "url(#SkyGradiant)" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-2000", y: "254", width: "4600", height: "2205", fill: "url(#GroundGradiant)" }), /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "attitude-clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" })), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("linearGradient", { gradientTransform: "rotate(0, 0.5, 0.5)", x1: "50%", y1: "0%", x2: "50%", y2: "100%", id: "sky-gradient" }, /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#004dba", "stop-opacity": "1", offset: "95%" }), /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#7592d4", "stop-opacity": "1", offset: "100%" })), /* @__PURE__ */ FSComponent.buildComponent(
+        "linearGradient",
+        {
+          gradientTransform: "rotate(0, 0.5, 0.5)",
+          x1: "50%",
+          y1: "0%",
+          x2: "50%",
+          y2: "100%",
+          id: "ground-gradient"
+        },
+        /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#9c661e", "stop-opacity": "1", offset: "0%" }),
+        /* @__PURE__ */ FSComponent.buildComponent("stop", { "stop-color": "#4b241d", "stop-opacity": "1", offset: "10%" })
+      )), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.bankRefDup, opacity: "0.75" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.pitchRefDup }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-2000", y: "-2000", width: "4600", height: "2255", class: "attitude-sky" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-2000", y: "254", width: "4600", height: "2205", class: "attitude-ground" }), /* @__PURE__ */ FSComponent.buildComponent(
         "rect",
         {
           ref: this.markerActiveRef,
@@ -32015,9 +32027,10 @@
           height: "4",
           fill: "white",
           stroke: "black",
-          "stroke-width": 1
+          "stroke-width": 1,
+          opacity: "1.0"
         }
-      ))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#attitude-clip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.bankRef }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.pitchRef }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-500", y: "-2000", width: "1600", height: "2255", class: "attitude-sky" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-0", y: "254", width: "1600", height: "2205", class: "attitude-ground-inner" }), /* @__PURE__ */ FSComponent.buildComponent(
+      ))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#attitude-clip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.bankRef }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.pitchRef }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-500", y: "-2000", width: "1600", height: "2255", class: "attitude-sky" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "-0", y: "254", width: "1600", height: "2205", class: "attitude-ground" }), /* @__PURE__ */ FSComponent.buildComponent(
         "rect",
         {
           ref: this.markerActiveRefDup,
@@ -32042,7 +32055,7 @@
           d: "M 166 249 L 217 249  L 217 268 L 209 268 L 209 258 L 166 258 L 166 249",
           fill: "black",
           fillTop: "white",
-          StrokeWidth: 3,
+          strokeWidth: 3,
           strokeWidthTop: 2,
           fillTop2: "black"
         }
@@ -32052,7 +32065,7 @@
           d: "M 384 249 L 333 249 L 333 268 L 341 268 L 341 258 L 384 258 L 384 249",
           fill: "black",
           fillTop: "white",
-          StrokeWidth: 3,
+          strokeWidth: 3,
           strokeWidthTop: 2,
           fillTop2: "black"
         }
@@ -32062,7 +32075,7 @@
           d: "M 280 249 L 270 249 L 270 258 L 280 258 L 280 258 L 280 249",
           fill: "black",
           fillTop: "white",
-          StrokeWidth: 3,
+          strokeWidth: 3,
           strokeWidthTop: 2,
           fillTop2: "black"
         }
@@ -32070,286 +32083,550 @@
     }
   };
 
-  // instruments/src/PFD/Components/AttitudeDisplay/AttitudeDisplay.tsx
+  // instruments/src/PFD/Components/AttitudeDisplay/index.tsx
   var Attitude = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "attitude-continer" }, /* @__PURE__ */ FSComponent.buildComponent("svg", { class: "attitude-svg", viewBox: "0 0 600 460", width: "100%", height: "100%" }, /* @__PURE__ */ FSComponent.buildComponent(AttitudeForeground, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(AttitudeMarkers, null), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "100", y: "100", "font-size": "20", fill: "white", "text-anchor": "middle" })));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(AttitudeForeground, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(AttitudeMarkers, null), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "100", y: "100", "font-size": "20", fill: "white", "text-anchor": "middle" }));
     }
   };
+  var AttitudeDisplay_default = Attitude;
 
   // instruments/src/PFD/Components/Altitude/AltitudeTape.tsx
-  var drawChevron = (double, y) => {
-    const offset = -y / 3.31;
-    if (double) {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
-        PathWithBlackBackground,
-        {
-          d: `M 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181}`,
-          fill: "black",
-          fillTop: "white",
-          strokeWidthTop: 2,
-          StrokeWidth: 4,
-          fillTop2: "transparent",
-          forceTransparent: true,
-          forceEndCap: true
+  var baseline = 254;
+  var maxAltitude = 6e4;
+  var renderTape = () => {
+    const elements = [];
+    for (let alt = 0; alt < maxAltitude; alt += 100) {
+      if (alt % 500 === 0) {
+        elements.push(
+          /* @__PURE__ */ FSComponent.buildComponent(
+            "path",
+            {
+              d: `M 455 ${alt * 0.3} L 500 ${alt * 0.3 + 40} L 500 ${alt * 0.3 + 110} L 455 ${alt * 0.3 + 150}`,
+              stroke: "white",
+              "stroke-width": 2,
+              fill: "transparent"
+            }
+          )
+        );
+        if (alt % 1e3 === 0) {
+          elements.push(
+            /* @__PURE__ */ FSComponent.buildComponent(
+              "path",
+              {
+                d: `M 500 ${alt * 0.3 + 40} L 500 ${alt * 0.3 + 31} L 465 ${alt * 0.3} L 500 ${alt * 0.3 - 31} L 500 ${alt * 0.3 - 40}`,
+                stroke: "white",
+                "stroke-width": 2,
+                fill: "transparent"
+              }
+            )
+          );
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent(
-        PathWithBlackBackground,
-        {
-          d: `M 70 ${offset + 300} L 70 ${offset + 255} L38 ${offset + 223} L 70 ${offset + 190} L 70 ${offset + 148}`,
-          fill: "black",
-          fillTop: "white",
-          strokeWidthTop: 2,
-          StrokeWidth: 4,
-          fillTop2: "transparent",
-          forceTransparent: true,
-          forceEndCap: true
-        }
-      ), drawNumber(y));
-    } else {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
-        PathWithBlackBackground,
-        {
-          d: `M 70 ${offset + 300} L 70 ${offset + 265} L30 ${offset + 223} L 70 ${offset + 181} L 70 ${offset + 148}`,
-          fill: "black",
-          fillTop: "white",
-          strokeWidthTop: 2,
-          StrokeWidth: 4,
-          fillTop2: "transparent",
-          forceTransparent: true,
-          forceEndCap: true
-        }
-      ), drawNumber(y));
-    }
-  };
-  var drawTick2 = (y) => {
-    const offset = -y / 3.31;
-    return /* @__PURE__ */ FSComponent.buildComponent(
-      PathWithBlackBackground,
-      {
-        d: `M 30 ${offset + 222} L ${42} ${offset + 222}`,
-        fill: "black",
-        fillTop: "white",
-        strokeWidthTop: 2,
-        StrokeWidth: 4
+        elements.push(
+          /* @__PURE__ */ FSComponent.buildComponent("text", { x: 530, y: alt * 0.3 + 7, "font-size": 20, "text-anchor": "end", fill: "white" }, (maxAltitude - alt).toString())
+        );
+      } else {
+        elements.push(/* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 455 ${alt * 0.3} L 465 ${alt * 0.3}`, stroke: "white", "stroke-width": 2 }));
       }
-    );
-  };
-  var drawNumber = (y) => {
-    const offset = -y / 3.31;
-    return /* @__PURE__ */ FSComponent.buildComponent(
-      "text",
-      {
-        x: "46",
-        y: (offset + 224).toString(),
-        stroke: "black",
-        "stroke-width": "2",
-        "paint-order": "stroke",
-        fill: "white",
-        "font-size": "22px",
-        "text-anchor": "start",
-        "dominant-baseline": "middle"
-      },
-      y.toString()
-    );
+    }
+    return elements;
   };
   var AltitudeTape = class extends DisplayComponent {
     constructor() {
       super(...arguments);
       this.tapeRef = FSComponent.createRef();
-      this.tickMarks = createArray(600);
-      this.negativeTickMarks = createArray(30);
-      this.tape = this.tickMarks.map((tick) => {
-        if (tick % 10 === 0) {
-          return drawChevron(true, tick * 100);
-        }
-        if (tick % 5 === 0) {
-          return drawChevron(false, tick * 100);
-        }
-        return drawTick2(tick * 100);
-      });
-      this.negativeTape = this.negativeTickMarks.map((tick) => {
-        if (tick % 10 === 0) {
-          return drawChevron(true, tick * -100);
-        }
-        if (tick % 5 === 0) {
-          return drawChevron(false, tick * -100);
-        }
-        return drawTick2(tick * -100);
-      });
     }
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
       sub.on("altitude").whenChanged().handle((alt) => {
         var _a2;
-        (_a2 = this.tapeRef.instance) == null ? void 0 : _a2.setAttribute("transform", `translate(0, ${alt / 3.309})`);
+        (_a2 = this.tapeRef.instance) == null ? void 0 : _a2.setAttribute(
+          "transform",
+          `translate(0, ${baseline - maxAltitude * 0.3 + Math.round(alt) * 0.3})`
+        );
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "AltitudetapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 29, y: 60, width: 83, height: 333 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#AltitudetapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tapeRef }, this.negativeTape, this.tape)), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 29 58 L 29 391", stroke: "white", "stroke-width": "2", fill: "none" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "TapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 455, y: 88, width: 83, height: 333 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#TapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tapeRef }, renderTape())), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 455 86 L 455 421", stroke: "white", "stroke-width": "2", fill: "none" }));
     }
   };
 
+  // instruments/common/util/Colors.ts
+  var Colors = /* @__PURE__ */ ((Colors2) => {
+    Colors2["GREEN"] = "#04E304";
+    Colors2["PINK"] = "#D202D4";
+    Colors2["CYAN"] = "#00FEFE";
+    Colors2["YELLOW"] = "#FDE501";
+    Colors2["RED"] = "#FE0000";
+    return Colors2;
+  })(Colors || {});
+  var Colors_default = Colors;
+
   // instruments/src/PFD/Components/Altitude/SelectedAltitudeBox.tsx
   var SelectedAltitudeBox = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.altitudeSelectedRef1 = FSComponent.createRef();
+      this.altitudeSelectedRef2 = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("altitude_selected").whenChanged().handle((alt) => {
+        this.altitudeSelectedRef1.instance.textContent = Math.round(alt).toString().substring(0, 3).padStart(3, "0");
+        this.altitudeSelectedRef2.instance.textContent = Math.round(alt).toString().substring(3).padStart(2, "0");
+      });
+    }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "31", y: "1", rx: 2, ry: 2, width: "81", height: "58", stroke: "white", "stroke-width": 2, fill: "transparent" }), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 31 27 L 112 27", stroke: "white", "stroke-width": "2", fill: "none" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "55", rx: 2, ry: 2, width: "83", height: "33", stroke: "white", "stroke-width": 2, fill: "transparent" }), /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          ref: this.altitudeSelectedRef1,
+          x: 485,
+          y: 82,
+          "text-anchor": "middle",
+          fill: Colors_default.CYAN,
+          "font-size": "30",
+          "letter-spacing": "-3"
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          ref: this.altitudeSelectedRef2,
+          x: 524,
+          y: 82,
+          "text-anchor": "middle",
+          fill: Colors_default.CYAN,
+          "font-size": "26",
+          "letter-spacing": "-3"
+        }
+      ));
     }
   };
 
   // instruments/src/PFD/Components/Altitude/BaroSettingBox.tsx
   var BaroSettingBox = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.baroValueRef = FSComponent.createRef();
+      this.baroUnitRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("barometric_setting").whenChanged().handle((baroValue) => {
+        this.baroValueRef.instance.textContent = baroValue.toFixed(2).toString();
+      });
+      sub.on("barometric_std").whenChanged().handle((baroStd) => {
+        if (baroStd) {
+          this.baroValueRef.instance.textContent = "IN";
+          this.baroValueRef.instance.setAttribute("fill", Colors_default.CYAN);
+          this.baroUnitRef.instance.textContent = "";
+        } else {
+          this.baroValueRef.instance.setAttribute("fill", Colors_default.CYAN);
+          this.baroUnitRef.instance.textContent = "IN";
+          sub.on("barometric_setting").whenChanged().handle((baroValue) => {
+            this.baroValueRef.instance.textContent = Math.round(baroValue).toString().padStart(3, "0");
+          });
+        }
+      });
+    }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "29", y: "391", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", "stroke-width": "2", fill: "black" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "419", rx: 2, ry: 2, width: "90", height: "30", stroke: "white", "stroke-width": "2", fill: "black" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "498", y: "442", "font-size": 18, "text-anchor": "middle" }, /* @__PURE__ */ FSComponent.buildComponent("tspan", { ref: this.baroValueRef, fill: Colors_default.YELLOW }, "----"), /* @__PURE__ */ FSComponent.buildComponent("tspan", { ref: this.baroUnitRef, fill: "white" })));
     }
   };
 
-  // instruments/src/PFD/Components/Altitude/Altitude.tsx
+  // instruments/src/PFD/Components/Altitude/CurrentAltitudeBox.tsx
+  var digitSpacing = 25;
+  var verticalScrollsSpacing = 15;
+  var renderDigitTape = (max) => {
+    const tenth = max === 10;
+    const digits = [];
+    for (let i = 0; i < 30; i++) {
+      const digit = 9 - i % 10;
+      digits.push(
+        /* @__PURE__ */ FSComponent.buildComponent(
+          "text",
+          {
+            x: tenth ? 525 : 520,
+            y: tenth ? digitSpacing * i - 465 : digitSpacing * i - 462,
+            "font-size": tenth ? 17 : 25,
+            "text-anchor": "middle",
+            fill: Colors_default.GREEN
+          },
+          tenth ? digit.toString().concat("0") : digit.toString()
+        )
+      );
+    }
+    return digits;
+  };
+  var CurrentAltitudeBox = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.tenthDigitScrollRef = FSComponent.createRef();
+      this.hundredthDigitScrollRef = FSComponent.createRef();
+      this.thousandsDigitScrollRef = FSComponent.createRef();
+      this.tenThousandsDigitScrollRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("altitude").whenChanged().handle((alt) => {
+        this.tenthDigitScrollRef.instance.setAttribute(
+          "transform",
+          `translate(${0 * verticalScrollsSpacing}, ${Math.max(alt / 10 % 10 * digitSpacing, 0)})`
+        );
+        this.hundredthDigitScrollRef.instance.setAttribute(
+          "transform",
+          `translate(${-1 * verticalScrollsSpacing}, ${Math.max(alt / 100 % 10 * digitSpacing, 0)})`
+        );
+        this.thousandsDigitScrollRef.instance.setAttribute(
+          "transform",
+          `translate(${-2 * verticalScrollsSpacing}, ${Math.max(Math.floor(alt / 1e3 % 10) * digitSpacing, 0)})`
+        );
+        this.tenThousandsDigitScrollRef.instance.setAttribute(
+          "transform",
+          `translate(${-3 * verticalScrollsSpacing}, ${Math.max(Math.floor(alt / 1e4 % 10) * digitSpacing, 0)})`
+        );
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 536 254 L 536 277 L 515 277 L 515 269 L 472 269 L 456 254 L 472 239 L 514 239 L 514 231 L 536 231 L 536 254",
+          fill: "black",
+          stroke: "white",
+          "stroke-width": 2,
+          "stroke-linecap": "round"
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 536 254 L 536 277 L 515 277 L 515 269 L 472 269 L 456 254 L 472 239 L 514 239 L 514 231 L 536 231 L 536 254" })), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#clip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenthDigitScrollRef }, renderDigitTape(10)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.hundredthDigitScrollRef }, renderDigitTape(100)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.thousandsDigitScrollRef }, renderDigitTape(1e3)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenThousandsDigitScrollRef }, renderDigitTape(1e4))), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 536 254 L 536 277 L 515 277 L 515 269 L 472 269 L 456 254 L 472 239 L 514 239 L 514 231 L 536 231 L 536 254",
+          fill: "transparent",
+          stroke: "white",
+          "stroke-width": 2,
+          "stroke-linecap": "round"
+        }
+      ));
+    }
+  };
+  var CurrentAltitudeBox_default = CurrentAltitudeBox;
+
+  // instruments/src/PFD/Components/Altitude/TrendVector.tsx
+  var baseline2 = 254;
+  var TrendVector = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.groupRef = FSComponent.createRef();
+      this.trendVecRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("vertical_speed").whenChanged().handle((vs) => {
+        const altPredictionInFeet = vs * 6;
+        if (Math.abs(altPredictionInFeet) >= 20) {
+          this.groupRef.instance.style.visibility = "visible";
+        } else {
+          this.groupRef.instance.style.visibility = "hidden";
+        }
+        this.trendVecRef.instance.setAttribute("d", `M 450 ${baseline2} L 450 ${baseline2 - altPredictionInFeet * 0.3}`);
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.groupRef }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "altTrendVectorClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 447, y: 88, width: 6, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          "stroke-width": 6,
+          stroke: "white",
+          "stroke-linejoin": "round",
+          ref: this.trendVecRef,
+          "clip-path": "url(#altTrendVectorClip)"
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 446 ${baseline2} L 456 ${baseline2}`, "stroke-width": 2, stroke: "white", "stroke-linejoin": "round" }));
+    }
+  };
+
+  // instruments/src/PFD/Components/Altitude/index.tsx
   var Altitude = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "altitude-continer" }, /* @__PURE__ */ FSComponent.buildComponent("svg", { class: "altitude-svg", viewBox: "0 0 120 422" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "29", y: "0", width: "83", height: "422", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent(AltitudeTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAltitudeBox, null), /* @__PURE__ */ FSComponent.buildComponent(BaroSettingBox, null)));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "57", width: "82", height: "361", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent(AltitudeTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAltitudeBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAltitudeBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(BaroSettingBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(TrendVector, { bus: this.props.bus }));
+    }
+  };
+  var Altitude_default = Altitude;
+
+  // instruments/src/PFD/Components/Airspeed/AirspeedTape.tsx
+  var baseline3 = 254;
+  var stretch = 3;
+  var minSpeed = 30;
+  var maxSpeed = 940;
+  var renderTape2 = () => {
+    const elements = [];
+    for (let i = minSpeed - 10; i < maxSpeed; i += 10) {
+      if (i >= 0) {
+        elements.push(
+          /* @__PURE__ */ FSComponent.buildComponent(
+            PathWithBlackBackground,
+            {
+              d: `M 60 ${i * stretch} L 80 ${i * stretch}`,
+              fill: "black",
+              fillTop: "white",
+              strokeWidthTop: 2,
+              strokeWidth: 3
+            }
+          )
+        );
+        const textVertOffset = 6;
+        elements.push(
+          /* @__PURE__ */ FSComponent.buildComponent("text", { x: 40, y: i * stretch + textVertOffset, "text-anchor": "middle", "font-size": 17, fill: "white" }, (maxSpeed - i + minSpeed - 10).toString())
+        );
+      }
+    }
+    return elements;
+  };
+  var AirspeedTape = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.aisTapeRef = FSComponent.createRef();
+      this.overspdRef = FSComponent.createRef();
+      this.yellowLsaRef = FSComponent.createRef();
+      this.redLsaRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("indicated_airspeed").whenChanged().handle((ias) => {
+        var _a2, _b;
+        if (ias >= minSpeed) {
+          (_a2 = this.aisTapeRef.instance) == null ? void 0 : _a2.setAttribute(
+            "transform",
+            `translate(0, ${baseline3 - maxSpeed * stretch + ias * stretch - minSpeed - 30})`
+          );
+        } else {
+          (_b = this.aisTapeRef.instance) == null ? void 0 : _b.setAttribute("transform", `translate(0, ${baseline3 - maxSpeed * 3 + minSpeed})`);
+        }
+      });
+      sub.on("onGround").whenChanged().handle((onGround) => {
+        this.onGround = onGround;
+        if (onGround) {
+          this.redLsaRef.instance.style.visibility = "hidden";
+          this.yellowLsaRef.instance.style.visibility = "hidden";
+        }
+      });
+      sub.on("vstall").whenChanged().handle((stall) => {
+        if (!this.onGround) {
+          if (stall <= 30) {
+            this.redLsaRef.instance.style.visibility = "hidden";
+            this.yellowLsaRef.instance.style.visibility = "hidden";
+            return;
+          }
+          this.redLsaRef.instance.style.visibility = "visible";
+          this.yellowLsaRef.instance.style.visibility = "visible";
+          const stallPosition = (maxSpeed - stall) * stretch + minSpeed * stretch;
+          this.redLsaRef.instance.setAttribute("height", `${stallPosition - minSpeed}`);
+          this.redLsaRef.instance.style.y = `${stallPosition - minSpeed}`;
+          this.yellowLsaRef.instance.setAttribute("height", `${stallPosition - minSpeed * 2}`);
+          this.yellowLsaRef.instance.style.y = `${stallPosition - minSpeed * 2}`;
+        }
+      });
+      sub.on("overspeed").whenChanged().handle((overspd) => {
+        if (!this.onGround) {
+          const overspdPosition = (maxSpeed - overspd) * stretch + minSpeed * stretch;
+          this.overspdRef.instance.setAttribute("height", `${overspdPosition - minSpeed}`);
+          this.overspdRef.instance.setAttribute("y", `${maxSpeed - overspdPosition}`);
+        }
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 54, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "tapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 88, width: 81, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#tapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.aisTapeRef }, renderTape2(), /* @__PURE__ */ FSComponent.buildComponent("g", { id: "OBP" }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent(
+        "pattern",
+        {
+          id: "diagonal",
+          width: 5,
+          height: 10,
+          patternTransform: "rotate(45 0 0)",
+          patternUnits: "userSpaceOnUse"
+        },
+        /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 0, y1: 0, x2: 0, y2: 10, stroke: Colors_default.RED, "stroke-width": 5 }),
+        /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 5, y1: 0, x2: 5, y2: 10, stroke: "white", "stroke-width": 5 })
+      )), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 75, y: 0, width: 10, height: 0, fill: "url(#diagonal)", ref: this.overspdRef })), /* @__PURE__ */ FSComponent.buildComponent("g", { id: "LSA" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.YELLOW, ref: this.yellowLsaRef }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.RED, ref: this.redLsaRef })))), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 86 L 81 418", fill: "black", fillTop: "white", strokeWidthTop: 2, strokeWidth: 3 }));
     }
   };
 
-  // instruments/src/PFD/Util/ClampValue.ts
-  var ClampValue = (value, min, max) => {
-    if (value < min) {
-      return min;
-    } else if (value > max) {
-      return max;
-    } else {
-      return value;
+  // instruments/src/PFD/Components/Airspeed/CurrentAirspeedBox.tsx
+  var digitSpacing2 = 25;
+  var verticalScrollsSpacing2 = 20;
+  var CurrentAirspeedBox = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.boxDigitScrollRef = FSComponent.createRef();
+      this.singleDigitScrollRef = FSComponent.createRef();
+      this.tenthDigitScrollRef = FSComponent.createRef();
+      this.hundredthDigitScrollRef = FSComponent.createRef();
+      this.digitRefs = [];
+      this.renderDigitTape = (removeZeros) => {
+        const digits = [];
+        for (let i = 0; i < 30; i++) {
+          const digit = 9 - i % 10;
+          const ref = FSComponent.createRef();
+          const digitElement = /* @__PURE__ */ FSComponent.buildComponent("text", { x: 55, y: digitSpacing2 * i - 460, "font-size": 30, "text-anchor": "middle", fill: Colors_default.GREEN, ref }, removeZeros && digit === 0 ? "" : digit.toString());
+          this.digitRefs.push(ref);
+          digits.push(digitElement);
+        }
+        return digits;
+      };
+      this.vStallCheck = () => {
+        console.log(this.ias);
+        if (!this.onGround && this.ias <= this.vstall) {
+          for (const ref of this.digitRefs) {
+            ref.instance.setAttribute("fill", "white");
+            this.boxDigitScrollRef.instance.setAttribute("fill", `${Colors_default.RED}`);
+          }
+        } else if (!this.onGround && this.ias <= this.vstall + 10) {
+          for (const ref of this.digitRefs) {
+            ref.instance.setAttribute("fill", `${Colors_default.YELLOW}`);
+            this.boxDigitScrollRef.instance.setAttribute("fill", "transparent");
+          }
+        } else {
+          for (const ref of this.digitRefs) {
+            ref.instance.setAttribute("fill", `${Colors_default.GREEN}`);
+            this.boxDigitScrollRef.instance.setAttribute("fill", "transparent");
+          }
+        }
+      };
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("indicated_airspeed").whenChanged().handle((ias) => {
+        this.ias = ias;
+        if (ias < 30) {
+          this.singleDigitScrollRef.instance.setAttribute("opacity", "0");
+          this.tenthDigitScrollRef.instance.setAttribute("opacity", "0");
+          this.hundredthDigitScrollRef.instance.setAttribute("opacity", "0");
+        } else {
+          this.singleDigitScrollRef.instance.setAttribute("opacity", "1");
+          this.tenthDigitScrollRef.instance.setAttribute("opacity", "1");
+          this.hundredthDigitScrollRef.instance.setAttribute("opacity", "1");
+        }
+        this.singleDigitScrollRef.instance.setAttribute(
+          "transform",
+          `translate(${0}, ${Math.max(ias % 10 * digitSpacing2 + 250, 0)})`
+        );
+        this.tenthDigitScrollRef.instance.setAttribute(
+          "transform",
+          `translate(${-1 * verticalScrollsSpacing2}, ${Math.max(ias / 10 % 10 * digitSpacing2, 0)})`
+        );
+        this.hundredthDigitScrollRef.instance.setAttribute(
+          "transform",
+          `translate(${-2 * verticalScrollsSpacing2}, ${Math.max(Math.floor(ias / 100) % 10 * digitSpacing2, 0)})`
+        );
+        this.vStallCheck();
+      });
+      sub.on("vstall").whenChanged().handle((vstall) => {
+        this.vstall = vstall;
+        this.vStallCheck();
+      });
+      sub.on("onGround").whenChanged().handle((onGround) => {
+        this.onGround = onGround;
+        this.vStallCheck();
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254",
+          fill: "black",
+          stroke: "white",
+          "stroke-width": 2,
+          "stroke-linecap": "round"
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "boxClip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254" })), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254",
+          fill: "transparent",
+          stroke: "white",
+          "stroke-width": 2,
+          "stroke-linecap": "round",
+          ref: this.boxDigitScrollRef
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#boxClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.singleDigitScrollRef }, this.renderDigitTape()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenthDigitScrollRef }, this.renderDigitTape()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.hundredthDigitScrollRef }, this.renderDigitTape(true))));
     }
   };
+  var CurrentAirspeedBox_default = CurrentAirspeedBox;
 
   // instruments/src/PFD/Components/Airspeed/SelectedAirspeedBox.tsx
   var SelectedAirspeedBox = class extends DisplayComponent {
     constructor() {
       super(...arguments);
-      this.invalidOutput = "---";
-      this.getString = () => {
-        switch (this.props.mode) {
-          case 0 /* FMS */:
-            return {
-              element: /* @__PURE__ */ FSComponent.buildComponent("tspan", null, this.props.selectedAirspeed, this.props.mach ? /* @__PURE__ */ FSComponent.buildComponent("tspan", { fill: "white", "font-size": 14 }, "M") : ""),
-              color: "magenta"
-            };
-          case 1 /* MAN */:
-            return {
-              element: /* @__PURE__ */ FSComponent.buildComponent("tspan", null, this.props.selectedAirspeed, this.props.mach ? /* @__PURE__ */ FSComponent.buildComponent("tspan", { fill: "white", "font-size": 14 }, "M") : ""),
-              color: "cyan"
-            };
-          case 2 /* INOP */:
-            return { element: /* @__PURE__ */ FSComponent.buildComponent("tspan", null, this.invalidOutput), color: "yellow" };
-        }
-      };
-    }
-    render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 1, y: 1, rx: 2, ry: 2, width: 80, height: 33, "stroke-width": 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 41, y: 28, "text-anchor": "middle", fill: this.getString().color, "font-size": "30" }, this.getString().element));
-    }
-  };
-
-  // instruments/src/PFD/Components/Airspeed/AirspeedTape.tsx
-  var drawTick3 = (small, y) => {
-    return /* @__PURE__ */ FSComponent.buildComponent(
-      PathWithBlackBackground,
-      {
-        d: `M 81 ${-y} L ${small ? 70 : 58} ${-y}`,
-        fill: "black",
-        fillTop: "white",
-        strokeWidthTop: 3,
-        StrokeWidth: 5
-      }
-    );
-  };
-  var AirspeedTape = class extends DisplayComponent {
-    constructor() {
-      super(...arguments);
-      this.asTapeRef = FSComponent.createRef();
-      this.tapeLength = 942;
-      this.spacing = 3.95;
-      this.startOffset = 200;
-      this.airspeedTapeScaling = 3.95;
-      this.array = createArray(this.tapeLength);
-      this.Tape = this.array.map((item, index) => {
-        if (index < 30) {
-          return null;
-        }
-        if (index < 200) {
-          if (index % 10 === 0) {
-            return /* @__PURE__ */ FSComponent.buildComponent("g", { key: index }, drawTick3(false, index * this.spacing), /* @__PURE__ */ FSComponent.buildComponent(
-              "text",
-              {
-                x: "53",
-                y: -index * this.spacing + 9,
-                stroke: "black",
-                "stroke-width": 2,
-                "paint-order": "stroke",
-                "text-anchor": "end",
-                fill: "white",
-                "font-size": "22"
-              },
-              index.toString()
-            ));
-          } else
-            return null;
-        } else {
-          if (index % 20 === 0) {
-            return /* @__PURE__ */ FSComponent.buildComponent("g", { key: index }, drawTick3(false, index * this.spacing), /* @__PURE__ */ FSComponent.buildComponent(
-              "text",
-              {
-                x: "53",
-                y: -index * this.spacing + 9,
-                stroke: "black",
-                "stroke-width": 2,
-                "paint-order": "stroke",
-                "text-anchor": "end",
-                fill: "white",
-                "font-size": "22"
-              },
-              index.toString()
-            ));
-          } else if (index % 20 === 10) {
-            return drawTick3(false, index * this.spacing);
-          } else
-            return null;
-        }
-      });
+      this.airspeedSelectedRef = FSComponent.createRef();
     }
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("airspeed").whenChanged().handle((asi) => {
-        var _a2;
-        (_a2 = this.asTapeRef.instance) == null ? void 0 : _a2.setAttribute(
-          "transform",
-          `translate(0,${ClampValue(asi, 30, 900) * this.airspeedTapeScaling + this.startOffset})`
-        );
+      sub.on("airspeed_selected").whenChanged().handle((ias) => {
+        this.airspeedSelectedRef.instance.textContent = Math.round(ias).toString().padStart(3, "0");
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "airspeed-container" }, /* @__PURE__ */ FSComponent.buildComponent("svg", { class: "airspeed-svg", viewBox: "0 0 82 396" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 0, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "tapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 34, width: 81, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#tapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.asTapeRef }, this.Tape)), /* @__PURE__ */ FSComponent.buildComponent(
-        PathWithBlackBackground,
-        {
-          d: "M 81 32 L 81 364",
-          fill: "black",
-          fillTop: "white",
-          strokeWidthTop: 2,
-          StrokeWidth: 3
-        }
-      ), /* @__PURE__ */ FSComponent.buildComponent(SelectedAirspeedBox, { selectedAirspeed: 0.79, mach: true, mode: 1 })));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 1, y: 55, rx: 2, ry: 2, width: 80, height: 33, "stroke-width": 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.airspeedSelectedRef, x: 45, y: 82, "text-anchor": "middle", fill: Colors_default.PINK, "font-size": "30" }));
     }
   };
 
-  // instruments/src/PFD/Components/Airspeed/Airspeed.tsx
+  // instruments/src/PFD/Components/Airspeed/TrendVector.tsx
+  var baseline4 = 254;
+  var TrendVector2 = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.groupRef = FSComponent.createRef();
+      this.trendVecRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("true_airspeed").whenChanged().handle((ias) => {
+        sub.on("acceleration_z").whenChanged().handle((a) => {
+          const iasPredictionInKnotsPerSecond = a * 0.592483801 * 10 * ias;
+          if (iasPredictionInKnotsPerSecond >= 2 || iasPredictionInKnotsPerSecond <= -2) {
+            this.groupRef.instance.style.visibility = "visible";
+          } else {
+            this.groupRef.instance.style.visibility = "hidden";
+          }
+          this.trendVecRef.instance.setAttribute(
+            "d",
+            `M 86 ${baseline4} L 86 ${baseline4 - iasPredictionInKnotsPerSecond * 0.3}`
+          );
+        });
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.groupRef }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "iasTrendVectorClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 83, y: 88, width: 6, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          "stroke-width": 6,
+          stroke: "white",
+          "stroke-linejoin": "round",
+          ref: this.trendVecRef,
+          "clip-path": "url(#iasTrendVectorClip)"
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 80 ${baseline4} L 90 ${baseline4}`, "stroke-width": 2, stroke: "white", "stroke-linejoin": "round" }));
+    }
+  };
+
+  // instruments/src/PFD/Components/Airspeed/index.tsx
   var Airspeed = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", null, /* @__PURE__ */ FSComponent.buildComponent(AirspeedTape, { bus: this.props.bus }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(AirspeedTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAirspeedBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAirspeedBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(TrendVector2, { bus: this.props.bus }));
     }
   };
+  var Airspeed_default = Airspeed;
 
-  // instruments/src/PFD/Components/Compass/RealHdgIndicator.tsx
+  // instruments/src/PFD/Components/Compass/RealHdg.tsx
   var RealHdgIndicator = class extends DisplayComponent {
     constructor() {
       super(...arguments);
@@ -32358,12 +32635,12 @@
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("heading").whenChanged().handle((alt) => {
-        this.hdgRef.instance.textContent = alt.toString().padStart(3, "0");
+      sub.on("heading").whenChanged().handle((hdg) => {
+        this.hdgRef.instance.textContent = Math.round(hdg).toString().padStart(3, "0");
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 42.5)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.hdgRef, "text-anchor": "middle", "font-size": 25, fill: "#04E304" }, "000"), /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 42.5)" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20 L 25 -20", fill: "black" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.hdgRef, "text-anchor": "middle", "font-size": 25, fill: Colors_default.GREEN, "letter-spacing": -4 }, "000"), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           d: "M 0 12.5 L 8.5 5 L 25 5 L 25 -20 M 0 12.5 L -8.5 5 L -25 5 L -25 -20",
@@ -32376,27 +32653,32 @@
     }
   };
 
-  // instruments/src/PFD/Components/Compass/LockHdgIndicator.tsx
+  // instruments/src/PFD/Components/Compass/LockHdg.tsx
   var LockHdgIndicator = class extends DisplayComponent {
     constructor() {
       super(...arguments);
+      this.heading = 0;
       this.hdgRef = FSComponent.createRef();
     }
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("lock_heading").whenChanged().handle((alt) => {
-        this.hdgRef.instance.setAttribute("transform", `translate(275, 188) rotate(${alt})`);
+      sub.on("heading").whenChanged().handle((hdg) => {
+        this.heading = hdg;
+      });
+      sub.on("heading_lock").handle((hdg) => {
+        var _a2;
+        (_a2 = this.hdgRef.instance) == null ? void 0 : _a2.setAttribute("transform", `translate(275, 188) rotate(${(-this.heading + hdg) % 360})`);
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 188) rotate(0)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(0, -128)" }, /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 188) rotate(0)", ref: this.hdgRef }, /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(0, -128)" }, /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           d: "M 0 -1 L -15 -1 L -15 -10 L -9 -10 L 0 -3 L 9 -10 L 15 -10 L 15 -1 L 0 -1",
-          fill: "#00FEFE",
+          fill: Colors_default.CYAN,
           "stroke-width": 2,
-          stroke: "#00FEFE",
+          stroke: Colors_default.CYAN,
           "stroke-linecap": "round"
         }
       )));
@@ -32458,17 +32740,17 @@
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("heading").whenChanged().handle((alt) => {
+      sub.on("heading").whenChanged().handle((hdg) => {
         var _a2;
-        (_a2 = this.compassRef.instance) == null ? void 0 : _a2.setAttribute("transform", `rotate(${-alt}, 275, 188)`);
+        (_a2 = this.compassRef.instance) == null ? void 0 : _a2.setAttribute("transform", `rotate(${-hdg}, 275, 188)`);
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.compassRef }, drawCompassTicks()), /* @__PURE__ */ FSComponent.buildComponent("g", null, drawStaticCompassTicks()), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(RealHdgIndicator, { bus: this.props.bus }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.compassRef }, drawCompassTicks()), /* @__PURE__ */ FSComponent.buildComponent("g", null, drawStaticCompassTicks()), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(RealHdgIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent("circle", { cx: 205, cy: 188, r: 4, fill: "transparent", stroke: "white", "stroke-width": "3" }), /* @__PURE__ */ FSComponent.buildComponent("circle", { cx: 245, cy: 188, r: 4, fill: "transparent", stroke: "white", "stroke-width": "3" }), /* @__PURE__ */ FSComponent.buildComponent("circle", { cx: 305, cy: 188, r: 4, fill: "transparent", stroke: "white", "stroke-width": "3" }), /* @__PURE__ */ FSComponent.buildComponent("circle", { cx: 345, cy: 188, r: 4, fill: "transparent", stroke: "white", "stroke-width": "3" }));
     }
   };
 
-  // instruments/src/PFD/Components/GspdIndicator/index.tsx
+  // instruments/src/PFD/Components/Groundspeed/index.tsx
   var GspdIndicator = class extends DisplayComponent {
     constructor() {
       super(...arguments);
@@ -32477,24 +32759,36 @@
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("ground_speed").whenChanged().handle((alt) => {
-        if (alt > 999) {
+      sub.on("ground_speed").whenChanged().handle((spd) => {
+        if (spd > 999) {
           this.grndSpdRef.instance.textContent = "999";
           return;
         }
-        if (alt < -99) {
+        if (spd < -99) {
           this.grndSpdRef.instance.textContent = "-99";
           return;
         }
-        this.grndSpdRef.instance.textContent = alt.toString();
+        this.grndSpdRef.instance.textContent = Math.round(spd).toString();
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(35, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "GSPD"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: -11, y: 18, "text-anchor": "middle", "font-size": 17, fill: "#04E304", ref: this.grndSpdRef }, "0"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 18, "text-anchor": "right", "font-size": 17, fill: "white" }, "KT"));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(35, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white", "letter-spacing": -1 }, "GSPD"), /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          x: -17,
+          y: 18,
+          "text-anchor": "middle",
+          "font-size": 17,
+          fill: Colors_default.GREEN,
+          ref: this.grndSpdRef,
+          "letter-spacing": -2
+        },
+        "0"
+      ), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 18, "text-anchor": "right", "font-size": 17, fill: "white", "letter-spacing": -2 }, "KT"));
     }
   };
 
-  // instruments/src/PFD/Components/LockHdgIndicator/index.tsx
+  // instruments/src/PFD/Components/LockHeading/index.tsx
   var LockHdgIndicator2 = class extends DisplayComponent {
     constructor() {
       super(...arguments);
@@ -32503,19 +32797,348 @@
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("lock_heading").whenChanged().handle((alt) => {
-        this.hdgRef.instance.textContent = alt.toString().padStart(3, "0");
+      sub.on("heading_lock").whenChanged().handle((hdg) => {
+        this.hdgRef.instance.textContent = hdg.toString().padStart(3, "0");
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(110, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "HDG"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 24, "text-anchor": "middle", "font-size": 25, fill: "#00FEFE", ref: this.hdgRef }, "000"));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(120, 20)" }, /* @__PURE__ */ FSComponent.buildComponent("text", { x: 0, y: 0, "text-anchor": "middle", "font-size": 17, fill: "white" }, "HDG"), /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          x: -1,
+          y: 24,
+          "text-anchor": "middle",
+          "font-size": 25,
+          fill: Colors_default.CYAN,
+          ref: this.hdgRef,
+          "letter-spacing": -4
+        },
+        "000"
+      ));
+    }
+  };
+
+  // instruments/src/PFD/Components/VerticalSpeed/index.tsx
+  var stroke = "white";
+  var xAxis = 254;
+  var leftBound = 560;
+  var smallCount = 5;
+  var bigCount = 5;
+  var smallSpacing = 5;
+  var bigSpacing = 20;
+  var bigOffset = 35;
+  var tiltFactor = 0.1;
+  var firstBigMarkerOffset = 24;
+  var fpmToPixel = (fpm) => {
+    return fpm;
+  };
+  var renderMarkers = () => {
+    const markers = [];
+    for (let y = smallSpacing; y < smallCount * smallSpacing; y += smallSpacing) {
+      markers.push(
+        /* @__PURE__ */ FSComponent.buildComponent(
+          "path",
+          {
+            d: `M 565 ${xAxis + y} L ${leftBound}  ${xAxis + y + tiltFactor * y}}`,
+            stroke,
+            "stroke-width": 2,
+            "stroke-linecap": "round"
+          }
+        )
+      );
+    }
+    for (let y = smallSpacing; y < smallCount * smallSpacing; y += smallSpacing) {
+      markers.push(
+        /* @__PURE__ */ FSComponent.buildComponent(
+          "path",
+          {
+            d: `M 565 ${xAxis - y} L ${leftBound}  ${xAxis - y - tiltFactor * y}}`,
+            stroke,
+            "stroke-width": 2,
+            "stroke-linecap": "round"
+          }
+        )
+      );
+    }
+    markers.push(
+      /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: `M 570 ${xAxis + firstBigMarkerOffset} L ${leftBound}  ${xAxis + 2 * 2 + firstBigMarkerOffset}`,
+          stroke,
+          "stroke-width": 2,
+          "stroke-linecap": "round"
+        }
+      )
+    );
+    markers.push(
+      /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: `M 570 ${xAxis - firstBigMarkerOffset} L ${leftBound}  ${xAxis - 2 * 2 - firstBigMarkerOffset}`,
+          stroke,
+          "stroke-width": 2,
+          "stroke-linecap": "round"
+        }
+      )
+    );
+    for (let y = bigSpacing; y < bigCount * bigSpacing; y += bigSpacing) {
+      markers.push(
+        /* @__PURE__ */ FSComponent.buildComponent(
+          "path",
+          {
+            d: `M 570 ${xAxis + y + bigOffset} L ${leftBound}  ${xAxis + y + bigOffset + tiltFactor * y * 2 + 4}`,
+            stroke,
+            "stroke-width": 2,
+            "stroke-linecap": "round"
+          }
+        )
+      );
+    }
+    for (let y = bigSpacing; y < bigCount * bigSpacing; y += bigSpacing) {
+      markers.push(
+        /* @__PURE__ */ FSComponent.buildComponent(
+          "path",
+          {
+            d: `M 570 ${xAxis - y - bigOffset} L ${leftBound}  ${xAxis - y - bigOffset - tiltFactor * y * 2 - 4}`,
+            stroke,
+            "stroke-width": 2,
+            "stroke-linecap": "round"
+          }
+        )
+      );
+    }
+    return markers;
+  };
+  var VerticalSpeedIndicator = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.vSpdNeedleRef = FSComponent.createRef();
+      this.vSpdValueRef = FSComponent.createRef();
+      this.vSpdBoxRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("vertical_speed").whenChanged().handle((vs) => {
+        vs *= 60;
+        const vSpd = fpmToPixel(Math.min(Math.max(vs, -4e3), 4e3));
+        this.vSpdNeedleRef.instance.setAttribute("d", `M 560 ${vSpd + 254} L 630  254`);
+        if (vs >= 500 || vs <= -500) {
+          this.vSpdBoxRef.instance.setAttribute("opacity", "1");
+          this.vSpdValueRef.instance.textContent = (Math.round(Math.min(Math.max(vs, -9900), 9900) / 100) * 100).toString();
+        } else {
+          this.vSpdBoxRef.instance.setAttribute("opacity", "0");
+        }
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 545 104 L 545 404 L 570 404 L 595 354 L 595 154 L 570 104 L 545 104",
+          fill: "black",
+          "stroke-linecap": "round",
+          opacity: 0.3
+        }
+      ), renderMarkers(), /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "vsClip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 545 108 L 545 408 L 570 408 L 595 358 L 595 158 L 570 108 L 545 108" })), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          ref: this.vSpdNeedleRef,
+          stroke: Colors_default.GREEN,
+          "stroke-width": 4,
+          fill: "transparent",
+          "stroke-linecap": "round",
+          "clip-path": "url(#vsClip)"
+        }
+      )), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 545 104 L 545 404 L 570 404 L 595 354 L 595 154 L 570 104 L 545 104",
+          stroke: "white",
+          "stroke-width": 2,
+          fill: "transparent",
+          "stroke-linecap": "round"
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.vSpdBoxRef }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "546", y: xAxis - 9, width: "48", height: "18", fill: "black", "clip-path": "url(#vsClip)" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 593, y: 260, "text-anchor": "end", "font-size": 17, fill: Colors_default.GREEN, ref: this.vSpdValueRef }), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: `M 546 ${xAxis - 9} L 594 ${xAxis - 9} M 546 ${xAxis + 9} L 594 ${xAxis + 9}`,
+          stroke: "white",
+          "stroke-width": 2,
+          "stroke-linecap": "round"
+        }
+      )));
+    }
+  };
+
+  // instruments/src/PFD/Components/Radio/index.tsx
+  var Radio = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.comFrequecyRef = FSComponent.createRef();
+      this.comStandByFrequecyRef = FSComponent.createRef();
+      this.navFrequecyRef = FSComponent.createRef();
+      this.navStandByFrequecyRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("com_frequency").whenChanged().handle((comFreq) => {
+        this.comFrequecyRef.instance.textContent = parseFloat(comFreq).toFixed(2).toString();
+      });
+      sub.on("com_standby_frequency").whenChanged().handle((comStandByFreq) => {
+        this.comStandByFrequecyRef.instance.textContent = parseFloat(comStandByFreq).toFixed(2).toString();
+      });
+      sub.on("nav_frequency").whenChanged().handle((navFreq) => {
+        this.navFrequecyRef.instance.textContent = parseFloat(navFreq).toFixed(2).toString();
+      });
+      sub.on("nav_standby_frequency").whenChanged().handle((navStandByFreq) => {
+        this.navStandByFrequecyRef.instance.textContent = parseFloat(navStandByFreq).toFixed(2).toString();
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "3", y: "263", width: "90", height: "70", fill: "black", stroke: "white", "stroke-width": "5" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "50", y: "286", fill: "white", "font-size": 20, "text-anchor": "middle" }, "COM1"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "8", y: "304", fill: Colors_default.GREEN, "font-size": 20, "text-anchor": "start", ref: this.comFrequecyRef }, "---"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "8", y: "324", fill: "white", "font-size": 20, "text-anchor": "start", ref: this.comStandByFrequecyRef }, "---"), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "507", y: "263", width: "90", height: "70", fill: "black", stroke: "white", "stroke-width": "5" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "554", y: "286", fill: "white", "font-size": 20, "text-anchor": "middle" }, "NAV1"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "512", y: "304", fill: Colors_default.GREEN, "font-size": 20, "text-anchor": "start", ref: this.navFrequecyRef }, "---"), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "512", y: "324", fill: "white", "font-size": 20, "text-anchor": "start", ref: this.navStandByFrequecyRef }, "---"));
+    }
+  };
+
+  // instruments/src/PFD/Components/HeadingSourceAnnunciator/index.tsx
+  var HeadingSourceAnnunciator = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("text", { x: "180", y: "20", fill: Colors_default.GREEN, "font-size": 17, "text-anchor": "middle" }, "MAG1"));
+    }
+  };
+
+  // instruments/src/PFD/Components/NavSourceAnnunciatior/index.tsx
+  var NavSourceAnnunciator = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.primaryNavSourceRef = FSComponent.createRef();
+      this.primaryNavIdRef = FSComponent.createRef();
+      this.primaryNavDistanceReadOutRef = FSComponent.createRef();
+      this.primaryNavDistanceTimeEnroute = FSComponent.createRef();
+      this.activeAnnunciator = 2 /* FMS */;
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("gps_waypoint_active").whenChanged().handle((wpMode) => {
+        if (wpMode) {
+          this.activeAnnunciator = 2 /* FMS */;
+          this.primaryNavSourceRef.instance.textContent = "FMS1";
+          this.primaryNavSourceRef.instance.setAttribute("fill", `${Colors_default.PINK}`);
+          this.primaryNavIdRef.instance.setAttribute("fill", `${Colors_default.PINK}`);
+          this.primaryNavDistanceReadOutRef.instance.setAttribute("fill", `${Colors_default.PINK}`);
+          this.primaryNavDistanceTimeEnroute.instance.setAttribute("fill", `${Colors_default.PINK}`);
+        } else {
+          this.primaryNavSourceRef.instance.setAttribute("fill", `${Colors_default.GREEN}`);
+          this.primaryNavIdRef.instance.setAttribute("fill", `${Colors_default.GREEN}`);
+          this.primaryNavDistanceReadOutRef.instance.setAttribute("fill", `${Colors_default.GREEN}`);
+          this.primaryNavDistanceTimeEnroute.instance.setAttribute("fill", `${Colors_default.GREEN}`);
+          if (this.activeAnnunciator === 1 /* LOC */) {
+            this.activeAnnunciator = 1 /* LOC */;
+            this.primaryNavSourceRef.instance.textContent = "LOC1";
+          } else {
+            this.activeAnnunciator = 0 /* VOR */;
+            this.primaryNavSourceRef.instance.textContent = "VOR1";
+          }
+        }
+      });
+      sub.on("gps_next_waypoint_id").whenChanged().handle((wpId) => {
+        if (this.activeAnnunciator === 2 /* FMS */) {
+          this.primaryNavIdRef.instance.textContent = wpId;
+        }
+      });
+      sub.on("gps_next_waypoint_distance").whenChanged().handle((wpDist) => {
+        if (this.activeAnnunciator === 2 /* FMS */) {
+          this.nextTargetDistanceNm = Math.round(wpDist / 1852);
+          this.primaryNavDistanceReadOutRef.instance.textContent = this.nextTargetDistanceNm.toString();
+        }
+      });
+      sub.on("gps_next_waypoint_distance").whenChanged().handle((wpDist) => {
+        if (this.activeAnnunciator === 2 /* FMS */) {
+          this.nextTargetDistanceNm = Math.round(wpDist / 1852);
+          this.primaryNavDistanceReadOutRef.instance.textContent = this.nextTargetDistanceNm.toString();
+        }
+      });
+      sub.on("true_airspeed").whenChanged().handle((airspd) => {
+        const minutes = Math.round(this.nextTargetDistanceNm / airspd * 60).toString();
+        if (this.activeAnnunciator === 2 /* FMS */) {
+          this.primaryNavDistanceTimeEnroute.instance.textContent = minutes === "Infinity" ? "\u221E" : minutes;
+        } else {
+          this.primaryNavDistanceTimeEnroute.instance.textContent = minutes === "Infinity" ? "\u221E" : minutes;
+        }
+      });
+      sub.on("nav_ident").whenChanged().handle((navIdent) => {
+        console.log(this.activeAnnunciator);
+        if (this.activeAnnunciator !== 2 /* FMS */) {
+          this.primaryNavIdRef.instance.textContent = navIdent;
+        }
+      });
+      sub.on("nav_dme").whenChanged().handle((navDme) => {
+        if (this.activeAnnunciator !== 2 /* FMS */) {
+          this.nextTargetDistanceNm = navDme;
+          this.primaryNavDistanceReadOutRef.instance.textContent = navDme.toString();
+        }
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          x: "5",
+          y: "70",
+          fill: Colors_default.PINK,
+          "font-size": 25,
+          "text-anchor": "start",
+          "letter-spacing": -1,
+          ref: this.primaryNavSourceRef
+        },
+        "FMS1"
+      ), /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          x: "5",
+          y: "95",
+          fill: Colors_default.PINK,
+          "font-size": 20,
+          "text-anchor": "start",
+          "letter-spacing": -1,
+          ref: this.primaryNavIdRef
+        },
+        "---"
+      ), /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          x: "50",
+          y: "115",
+          fill: Colors_default.YELLOW,
+          "font-size": 20,
+          "text-anchor": "end",
+          "letter-spacing": -1,
+          ref: this.primaryNavDistanceReadOutRef
+        },
+        "---"
+      ), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "53", y: "115", fill: "white", "font-size": 20, "text-anchor": "start", "letter-spacing": -1 }, "NM"), /* @__PURE__ */ FSComponent.buildComponent(
+        "text",
+        {
+          x: "50",
+          y: "135",
+          fill: Colors_default.YELLOW,
+          "font-size": 20,
+          "text-anchor": "end",
+          "letter-spacing": -1,
+          ref: this.primaryNavDistanceTimeEnroute
+        },
+        "---"
+      ), /* @__PURE__ */ FSComponent.buildComponent("text", { x: "53", y: "135", fill: "white", "font-size": 20, "text-anchor": "start", "letter-spacing": -1 }, "MIN"));
     }
   };
 
   // instruments/src/PFD/index.tsx
   var PFDRoot = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("div", { class: "PFD-ROOT" }, /* @__PURE__ */ FSComponent.buildComponent("div", { class: "top-component" }, /* @__PURE__ */ FSComponent.buildComponent(Attitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent("div", null, "fma"), /* @__PURE__ */ FSComponent.buildComponent(Airspeed, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("div", { class: "bottom-component" }, /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 800" }, /* @__PURE__ */ FSComponent.buildComponent(GspdIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator2, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Compass, { bus: this.props.bus }))));
+      return /* @__PURE__ */ FSComponent.buildComponent(FSComponent.Fragment, null, /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 460" }, /* @__PURE__ */ FSComponent.buildComponent(AttitudeDisplay_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Airspeed_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(VerticalSpeedIndicator, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 340" }, /* @__PURE__ */ FSComponent.buildComponent(GspdIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator2, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(HeadingSourceAnnunciator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(NavSourceAnnunciator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Compass, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Radio, { bus: this.props.bus })));
     }
   };
 
@@ -32530,10 +33153,29 @@
     ["pitch", { name: "PLANE PITCH DEGREES" /* pitch */, type: SimVarValueType.Degree }],
     ["bank", { name: "PLANE BANK DEGREES" /* bank */, type: SimVarValueType.Degree }],
     ["altitude", { name: "INDICATED ALTITUDE" /* altitude */, type: SimVarValueType.Feet }],
-    ["airspeed", { name: "AIRSPEED INDICATED" /* airspeed */, type: SimVarValueType.Knots }],
+    ["indicated_airspeed", { name: "AIRSPEED INDICATED" /* indicated_airspeed */, type: SimVarValueType.Knots }],
     ["heading", { name: "PLANE HEADING DEGREES MAGNETIC" /* heading */, type: SimVarValueType.Degree }],
     ["ground_speed", { name: "GROUND VELOCITY" /* ground_speed */, type: SimVarValueType.Knots }],
-    ["heading_lock", { name: "AUTOPILOT HEADING LOCK DIR" /* heading_lock */, type: SimVarValueType.Degree }]
+    ["heading_lock", { name: "AUTOPILOT HEADING LOCK DIR" /* heading_lock */, type: SimVarValueType.Degree }],
+    ["vertical_speed", { name: "VERTICAL SPEED" /* vertical_speed */, type: SimVarValueType.Feet }],
+    ["airspeed_selected", { name: "L:OBJ_AP_SELECTED_AS" /* airspeed_selected */, type: SimVarValueType.Knots }],
+    ["altitude_selected", { name: "AUTOPILOT ALTITUDE LOCK VAR" /* altitude_selected */, type: SimVarValueType.Feet }],
+    ["barometric_setting", { name: "KOHLSMAN SETTING HG" /* barometric_setting */, type: SimVarValueType.InHG }],
+    ["barometric_std", { name: "KOHLSMAN SETTING STD" /* barometric_std */, type: SimVarValueType.Bool }],
+    ["true_airspeed", { name: "AIRSPEED TRUE" /* true_airspeed */, type: SimVarValueType.Knots }],
+    ["acceleration_z", { name: "ACCELERATION BODY Z" /* acceleration_z */, type: SimVarValueType.Feet }],
+    ["nav_frequency", { name: "NAV FREQUENCY" /* nav_frequency */, type: SimVarValueType.MHz }],
+    ["nav_standby_frequency", { name: "NAV STANDBY FREQUENCY:1" /* nav_standby_frequency */, type: SimVarValueType.MHz }],
+    ["com_frequency", { name: "COM ACTIVE FREQUENCY:1" /* com_frequency */, type: SimVarValueType.MHz }],
+    ["com_standby_frequency", { name: "COM STANDBY FREQUENCY:1" /* com_standby_frequency */, type: SimVarValueType.MHz }],
+    ["gps_waypoint_active", { name: "GPS IS ACTIVE WAY POINT" /* gps_waypoint_active */, type: SimVarValueType.Bool }],
+    ["gps_next_waypoint_id", { name: "GPS WP NEXT ID" /* gps_next_waypoint_id */, type: SimVarValueType.String }],
+    ["gps_next_waypoint_distance", { name: "GPS WP DISTANCE" /* gps_next_waypoint_distance */, type: SimVarValueType.Number }],
+    ["nav_ident", { name: "NAV IDENT" /* nav_ident */, type: SimVarValueType.String }],
+    ["nav_dme", { name: "NAV DME" /* nav_dme */, type: SimVarValueType.NM }],
+    ["vstall", { name: "L:VSTALL" /* vstall */, type: SimVarValueType.Knots }],
+    ["overspeed", { name: "L:OVERSPEED" /* overspeed */, type: SimVarValueType.Knots }],
+    ["onGround", { name: "SIM ON GROUND" /* onGround */, type: SimVarValueType.Bool }]
   ]);
 
   // instruments/src/PFD/instrument.tsx

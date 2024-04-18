@@ -1,7 +1,7 @@
 import type { PFDSimvars } from '../PFDSimVarPublisher'
 import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
-import RealHdgIndicator from './RealHdgIndicator'
-import LockHdgIndicator from './LockHdgIndicator'
+import RealHdgIndicator from './RealHdg'
+import LockHdgIndicator from './LockHdg'
 
 type T_CompassProps = ComponentProps & {
   bus: EventBus
@@ -79,8 +79,8 @@ export default class Compass extends DisplayComponent<T_CompassProps> {
     sub
       .on('heading')
       .whenChanged()
-      .handle((alt) => {
-        this.compassRef.instance?.setAttribute('transform', `rotate(${-alt}, 275, 188)`)
+      .handle((hdg) => {
+        this.compassRef.instance?.setAttribute('transform', `rotate(${-hdg}, 275, 188)`)
       })
   }
 
@@ -89,8 +89,14 @@ export default class Compass extends DisplayComponent<T_CompassProps> {
       <g>
         <g ref={this.compassRef}>{drawCompassTicks()}</g>
         <g>{drawStaticCompassTicks()}</g>
+
         <LockHdgIndicator bus={this.props.bus} />
         <RealHdgIndicator bus={this.props.bus} />
+
+        <circle cx={205} cy={188} r={4} fill="transparent" stroke="white" stroke-width="3" />
+        <circle cx={245} cy={188} r={4} fill="transparent" stroke="white" stroke-width="3" />
+        <circle cx={305} cy={188} r={4} fill="transparent" stroke="white" stroke-width="3" />
+        <circle cx={345} cy={188} r={4} fill="transparent" stroke="white" stroke-width="3" />
       </g>
     )
   }

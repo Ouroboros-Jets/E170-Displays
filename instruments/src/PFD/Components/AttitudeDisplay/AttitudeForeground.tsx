@@ -2,7 +2,7 @@ import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type Ev
 import { createArray } from '../../../../../instruments/common/util/createArray'
 import { PathWithBlackBackground } from '../../Util/PathWithBlackBackground'
 import { type PFDSimvars } from '../PFDSimVarPublisher'
-import './Attitude.scss'
+import './index.scss'
 
 enum TickType {
   TWO_FIVE = 0,
@@ -31,7 +31,7 @@ const DrawChevron = (y: number, direction: number): JSX.Element => {
           } L ${center} ${correctedY - offset - 8}`}
           fill="black"
           fillTop={color}
-          StrokeWidth={strokeWidth}
+          strokeWidth={strokeWidth}
           strokeWidthTop={strokeWidthTop}
           fillTop2="transparent"
           forceTransparent
@@ -49,7 +49,7 @@ const DrawChevron = (y: number, direction: number): JSX.Element => {
           } L ${center} ${correctedY - offset + 8}`}
           fill="black"
           fillTop={color}
-          StrokeWidth={strokeWidth}
+          strokeWidth={strokeWidth}
           strokeWidthTop={strokeWidthTop}
           fillTop2="transparent"
           forceTransparent
@@ -83,7 +83,7 @@ const drawTick = (type: TickType, y: number, value: number): JSX.Element => {
           }`}
           fill="black"
           fillTop="white"
-          StrokeWidth={strokeWidth}
+          strokeWidth={strokeWidth}
           strokeWidthTop={strokeWidthTop}
         />
       )
@@ -95,7 +95,7 @@ const drawTick = (type: TickType, y: number, value: number): JSX.Element => {
           } ${correctedY - offset}`}
           fill="black"
           fillTop="white"
-          StrokeWidth={strokeWidth}
+          strokeWidth={strokeWidth}
           strokeWidthTop={strokeWidthTop}
         />
       )
@@ -107,7 +107,7 @@ const drawTick = (type: TickType, y: number, value: number): JSX.Element => {
           } ${correctedY - offset}`}
           fill="black"
           fillTop="white"
-          StrokeWidth={strokeWidth}
+          strokeWidth={strokeWidth}
           strokeWidthTop={strokeWidthTop}
         />
       )
@@ -119,7 +119,7 @@ const drawTick = (type: TickType, y: number, value: number): JSX.Element => {
           } ${correctedY - offset}`}
           fill="black"
           fillTop="white"
-          StrokeWidth={strokeWidth}
+          strokeWidth={strokeWidth}
           strokeWidthTop={strokeWidthTop}
         />
       )
@@ -145,7 +145,7 @@ const drawTick = (type: TickType, y: number, value: number): JSX.Element => {
             } ${correctedY - offset}`}
             fill="black"
             fillTop="white"
-            StrokeWidth={strokeWidth}
+            strokeWidth={strokeWidth}
             strokeWidthTop={strokeWidthTop}
           />
           <text
@@ -172,7 +172,7 @@ const drawTick = (type: TickType, y: number, value: number): JSX.Element => {
             }`}
             fill="black"
             fillTop="white"
-            StrokeWidth={strokeWidth}
+            strokeWidth={strokeWidth}
             strokeWidthTop={strokeWidthTop}
           />
           <text
@@ -194,7 +194,7 @@ const drawTick = (type: TickType, y: number, value: number): JSX.Element => {
             }`}
             fill="black"
             fillTop="white"
-            StrokeWidth={strokeWidth}
+            strokeWidth={strokeWidth}
             strokeWidthTop={strokeWidthTop}
           />
         </>
@@ -339,27 +339,33 @@ export class AttitudeForeground extends DisplayComponent<AttitudeForegroundProps
 
   public render(): VNode {
     return (
-      <g class="foreground-attitude">
+      <g>
+        <clipPath id="attitude-clip">
+          <path d="m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" />
+        </clipPath>
+
         <defs>
-          <clipPath id="attitude-clip">
-            <path d="m 150, 255 L 150 350 C 190 460, 360 460, 400 350 L 400 255 L 400 190 C 360 85, 190 85, 150 190 L 150 255" />
-          </clipPath>
-          <linearGradient id="SkyGradiant" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stop-color="#020383" />
-            <stop offset="88%" stop-color="#020383" />
-            <stop offset="100%" stop-color="#1717cf" />
+          <linearGradient gradientTransform="rotate(0, 0.5, 0.5)" x1="50%" y1="0%" x2="50%" y2="100%" id="sky-gradient">
+            <stop stop-color="#004dba" stop-opacity="1" offset="95%"></stop>
+            <stop stop-color="#7592d4" stop-opacity="1" offset="100%"></stop>
           </linearGradient>
-          <linearGradient id="GroundGradiant" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stop-color="#674200" />
-            <stop offset="25%" stop-color="#352200" />
-            <stop offset="100%" stop-color="#352201" />
+          <linearGradient
+            gradientTransform="rotate(0, 0.5, 0.5)"
+            x1="50%"
+            y1="0%"
+            x2="50%"
+            y2="100%"
+            id="ground-gradient"
+          >
+            <stop stop-color="#9c661e" stop-opacity="1" offset="0%"></stop>
+            <stop stop-color="#4b241d" stop-opacity="1" offset="10%"></stop>
           </linearGradient>
         </defs>
 
-        <g ref={this.bankRefDup}>
+        <g ref={this.bankRefDup} opacity="0.75">
           <g ref={this.pitchRefDup}>
-            <rect x="-2000" y="-2000" width="4600" height="2255" fill="url(#SkyGradiant)" />
-            <rect x="-2000" y="254" width="4600" height="2205" fill="url(#GroundGradiant)" />
+            <rect x="-2000" y="-2000" width="4600" height="2255" class="attitude-sky" />
+            <rect x="-2000" y="254" width="4600" height="2205" class="attitude-ground" />
 
             <rect
               ref={this.markerActiveRef}
@@ -370,6 +376,7 @@ export class AttitudeForeground extends DisplayComponent<AttitudeForegroundProps
               fill="white"
               stroke="black"
               stroke-width={1}
+              opacity="1.0"
             />
           </g>
         </g>
@@ -377,7 +384,7 @@ export class AttitudeForeground extends DisplayComponent<AttitudeForegroundProps
           <g ref={this.bankRef}>
             <g ref={this.pitchRef}>
               <rect x="-500" y="-2000" width="1600" height="2255" class="attitude-sky" />
-              <rect x="-0" y="254" width="1600" height="2205" class="attitude-ground-inner" />
+              <rect x="-0" y="254" width="1600" height="2205" class="attitude-ground" />
 
               <rect
                 ref={this.markerActiveRefDup}

@@ -1,125 +1,157 @@
-import './airspeed.scss'
+import './index.scss'
 import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
-import { ClampValue } from '../../Util/ClampValue'
 import { PathWithBlackBackground } from '../../Util/PathWithBlackBackground'
-import { createArray } from 'instruments/common/util/createArray'
 import { type PFDSimvars } from '../PFDSimVarPublisher'
-import { SelectedAirspeedBox } from './SelectedAirspeedBox'
+import Colors from 'instruments/common/util/Colors'
 
 type AirspeedTapeProps = ComponentProps & {
   bus: EventBus
 }
 
-const drawTick = (small: boolean, y: number): any => {
-  return (
-    <PathWithBlackBackground
-      d={`M 81 ${-y} L ${small ? 70 : 58} ${-y}`}
-      fill="black"
-      fillTop="white"
-      strokeWidthTop={3}
-      StrokeWidth={5}
-    />
-  )
-}
-//
-export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
-  private readonly asTapeRef = FSComponent.createRef<SVGElement>()
-  private readonly tapeLength = 942
-  private readonly spacing = 3.95
-  private readonly startOffset = 200
-  private readonly airspeedTapeScaling = 3.95
-  private readonly array = createArray(this.tapeLength)
+const baseline = 254
+const stretch = 3
+const minSpeed = 30
+const maxSpeed = 940
 
-  private readonly Tape = this.array.map((item, index) => {
-    if (index < 30) {
-      return null
+const renderTape = (): JSX.Element[] => {
+  const elements: JSX.Element[] = []
+  for (let i = minSpeed - 10; i < maxSpeed; i += 10) {
+    if (i >= 0) {
+      elements.push(
+        <PathWithBlackBackground
+          d={`M 60 ${i * stretch} L 80 ${i * stretch}`}
+          fill="black"
+          fillTop="white"
+          strokeWidthTop={2}
+          strokeWidth={3}
+        />
+      )
+
+      const textVertOffset = 6
+      elements.push(
+        <text x={40} y={i * stretch + textVertOffset} text-anchor="middle" font-size={17} fill="white">
+          {(maxSpeed - i + minSpeed - 10).toString()}
+        </text>
+      )
     }
-    if (index < 200) {
-      if (index % 10 === 0) {
-        return (
-          <g key={index}>
-            {drawTick(false, index * this.spacing)}
-            <text
-              x="53"
-              y={-index * this.spacing + 9}
-              stroke="black"
-              stroke-width={2}
-              paint-order="stroke"
-              text-anchor="end"
-              fill="white"
-              font-size="22"
-            >
-              {index.toString()}
-            </text>
-          </g>
-        )
-      } else return null
-    } else {
-      if (index % 20 === 0) {
-        return (
-          <g key={index}>
-            {drawTick(false, index * this.spacing)}
-            <text
-              x="53"
-              y={-index * this.spacing + 9}
-              stroke="black"
-              stroke-width={2}
-              paint-order="stroke"
-              text-anchor="end"
-              fill="white"
-              font-size="22"
-            >
-              {index.toString()}
-            </text>
-          </g>
-        )
-      } else if (index % 20 === 10) {
-        return drawTick(false, index * this.spacing)
-      } else return null
-    }
-  })
+  }
+
+  return elements
+}
+
+export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
+  private readonly aisTapeRef = FSComponent.createRef<SVGGElement>()
+  private readonly overspdRef = FSComponent.createRef<SVGRectElement>()
+  private readonly yellowLsaRef = FSComponent.createRef<SVGRectElement>()
+  private readonly redLsaRef = FSComponent.createRef<SVGRectElement>()
+
+  private onGround: boolean
 
   public onAfterRender(node: VNode): void {
     super.onAfterRender(node)
 
     const sub = this.props.bus.getSubscriber<PFDSimvars>()
     sub
-      .on('airspeed')
+      .on('indicated_airspeed')
       .whenChanged()
-      .handle((asi) => {
-        this.asTapeRef.instance?.setAttribute(
-          'transform',
-          `translate(0,${ClampValue(asi, 30, 900) * this.airspeedTapeScaling + this.startOffset})`
-        )
+      .handle((ias) => {
+        if (ias >= minSpeed) {
+          this.aisTapeRef.instance?.setAttribute(
+            'transform',
+            `translate(0, ${baseline - maxSpeed * stretch + ias * stretch - minSpeed - 30})`
+          )
+        } else {
+          this.aisTapeRef.instance?.setAttribute('transform', `translate(0, ${baseline - maxSpeed * 3 + minSpeed})`)
+        }
+      })
+
+    sub
+      .on('onGround')
+      .whenChanged()
+      .handle((onGround) => {
+        this.onGround = onGround
+
+        if (onGround) {
+          this.redLsaRef.instance.style.visibility = 'hidden'
+          this.yellowLsaRef.instance.style.visibility = 'hidden'
+        }
+      })
+
+    sub
+      .on('vstall')
+      .whenChanged()
+      .handle((stall) => {
+        if (!this.onGround) {
+          if (stall <= 30) {
+            this.redLsaRef.instance.style.visibility = 'hidden'
+            this.yellowLsaRef.instance.style.visibility = 'hidden'
+            return
+          }
+
+          this.redLsaRef.instance.style.visibility = 'visible'
+          this.yellowLsaRef.instance.style.visibility = 'visible'
+
+          const stallPosition = (maxSpeed - stall) * stretch + minSpeed * stretch
+
+          this.redLsaRef.instance.setAttribute('height', `${stallPosition - minSpeed}`)
+          this.redLsaRef.instance.style.y = `${stallPosition - minSpeed}`
+
+          this.yellowLsaRef.instance.setAttribute('height', `${stallPosition - minSpeed * 2}`)
+          this.yellowLsaRef.instance.style.y = `${stallPosition - minSpeed * 2}`
+        }
+      })
+
+    sub
+      .on('overspeed')
+      .whenChanged()
+      .handle((overspd) => {
+        if (!this.onGround) {
+          const overspdPosition = (maxSpeed - overspd) * stretch + minSpeed * stretch
+
+          this.overspdRef.instance.setAttribute('height', `${overspdPosition - minSpeed}`)
+          this.overspdRef.instance.setAttribute('y', `${maxSpeed - overspdPosition}`)
+        }
       })
   }
 
   public render(): VNode {
     return (
-      <div class="airspeed-container">
-        <svg class="airspeed-svg" viewBox="0 0 82 396">
-          <rect x={0} y={0} width={82} height={396} fill="black" opacity={0.3} />
+      <g>
+        <rect x={0} y={54} width={82} height={396} fill="black" opacity={0.3} />
 
-          <defs>
-            <clipPath id="tapeClip">
-              <rect x={0} y={34} width={81} height={330} />
-            </clipPath>
-          </defs>
+        <defs>
+          <clipPath id="tapeClip">
+            <rect x={0} y={88} width={81} height={330} />
+          </clipPath>
+        </defs>
 
-          <g clip-path="url(#tapeClip)">
-            <g ref={this.asTapeRef}>{this.Tape}</g>
+        <g clip-path="url(#tapeClip)">
+          <g ref={this.aisTapeRef}>
+            {renderTape()}
+            <g id="OBP">
+              <defs>
+                <pattern
+                  id="diagonal"
+                  width={5}
+                  height={10}
+                  patternTransform="rotate(45 0 0)"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <line x1={0} y1={0} x2={0} y2={10} stroke={Colors.RED} stroke-width={5} />
+                  <line x1={5} y1={0} x2={5} y2={10} stroke="white" stroke-width={5} />
+                </pattern>
+              </defs>
+              <rect x={75} y={0} width={10} height={0} fill="url(#diagonal)" ref={this.overspdRef} />
+            </g>
+            <g id="LSA">
+              <rect x={66} y={0} width={10} height={0} fill={Colors.YELLOW} ref={this.yellowLsaRef} />
+              <rect x={66} y={0} width={10} height={0} fill={Colors.RED} ref={this.redLsaRef} />
+            </g>
           </g>
-          <PathWithBlackBackground
-            d="M 81 32 L 81 364"
-            fill="black"
-            fillTop="white"
-            strokeWidthTop={2}
-            StrokeWidth={3}
-          />
+        </g>
 
-          <SelectedAirspeedBox selectedAirspeed={0.79} mach={true} mode={1} />
-        </svg>
-      </div>
+        <PathWithBlackBackground d="M 81 86 L 81 418" fill="black" fillTop="white" strokeWidthTop={2} strokeWidth={3} />
+      </g>
     )
   }
 }

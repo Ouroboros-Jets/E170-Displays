@@ -4,7 +4,7 @@ type PathWithBlackBackgroundProps = ComponentProps & {
   d: string
   fill: string
   fillTop: string
-  StrokeWidth: number
+  strokeWidth: number
   strokeWidthTop: number
   forceTransparent?: boolean
   fillTop2?: string
@@ -18,7 +18,7 @@ export class PathWithBlackBackground extends DisplayComponent<PathWithBlackBackg
         <path
           d={this.props.d}
           fill={this.props.forceTransparent !== null && this.props.forceTransparent === true ? 'transparent' : 'black'}
-          stroke-width={this.props.StrokeWidth}
+          stroke-width={this.props.strokeWidth}
           stroke={this.props.fill}
           stroke-linecap={this.props.forceEndCap !== null && this.props.forceEndCap === true ? 'butt' : 'round'}
           stroke-linejoin="round"

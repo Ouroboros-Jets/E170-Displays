@@ -4,17 +4,58 @@ export type PFDSimvars = {
   pitch: number
   bank: number
   altitude: number
-  airspeed: number
+  indicated_airspeed: number
+  heading: number
+  ground_speed: number
+  heading_lock: number
+  vertical_speed: number
+  airspeed_selected: number
+  altitude_selected: number
+  barometric_setting: number
+  barometric_std: boolean
+  true_airspeed: number
+  acceleration_z: number
+  nav_frequency: string
+  nav_standby_frequency: string
+  com_frequency: string
+  com_standby_frequency: string
+  gps_waypoint_active: boolean
+  gps_next_waypoint_id: string
+  gps_next_waypoint_distance: number
+  nav_ident: string
+  nav_dme: number
+  vstall: number
+  overspeed: number
+  onGround: boolean
 }
 
 export enum PFDVars {
   pitch = 'PLANE PITCH DEGREES',
   bank = 'PLANE BANK DEGREES',
   altitude = 'INDICATED ALTITUDE',
-  airspeed = 'AIRSPEED INDICATED',
+  indicated_airspeed = 'AIRSPEED INDICATED',
   heading = 'PLANE HEADING DEGREES MAGNETIC',
   ground_speed = 'GROUND VELOCITY',
-  heading_lock = 'AUTOPILOT HEADING LOCK DIR'
+  heading_lock = 'AUTOPILOT HEADING LOCK DIR',
+  vertical_speed = 'VERTICAL SPEED',
+  airspeed_selected = 'L:OBJ_AP_SELECTED_AS',
+  altitude_selected = 'AUTOPILOT ALTITUDE LOCK VAR',
+  barometric_setting = 'KOHLSMAN SETTING HG',
+  barometric_std = 'KOHLSMAN SETTING STD',
+  true_airspeed = 'AIRSPEED TRUE',
+  acceleration_z = 'ACCELERATION BODY Z',
+  nav_frequency = 'NAV FREQUENCY',
+  nav_standby_frequency = 'NAV STANDBY FREQUENCY:1',
+  com_frequency = 'COM ACTIVE FREQUENCY:1',
+  com_standby_frequency = 'COM STANDBY FREQUENCY:1',
+  gps_waypoint_active = 'GPS IS ACTIVE WAY POINT',
+  gps_next_waypoint_id = 'GPS WP NEXT ID',
+  gps_next_waypoint_distance = 'GPS WP DISTANCE',
+  nav_ident = 'NAV IDENT',
+  nav_dme = 'NAV DME',
+  vstall = 'L:VSTALL',
+  overspeed = 'L:OVERSPEED',
+  onGround = 'SIM ON GROUND'
 }
 
 export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
@@ -22,10 +63,29 @@ export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
     ['pitch', { name: PFDVars.pitch, type: SimVarValueType.Degree }],
     ['bank', { name: PFDVars.bank, type: SimVarValueType.Degree }],
     ['altitude', { name: PFDVars.altitude, type: SimVarValueType.Feet }],
-    ['airspeed', { name: PFDVars.airspeed, type: SimVarValueType.Knots }],
+    ['indicated_airspeed', { name: PFDVars.indicated_airspeed, type: SimVarValueType.Knots }],
     ['heading', { name: PFDVars.heading, type: SimVarValueType.Degree }],
     ['ground_speed', { name: PFDVars.ground_speed, type: SimVarValueType.Knots }],
-    ['heading_lock', { name: PFDVars.heading_lock, type: SimVarValueType.Degree }]
+    ['heading_lock', { name: PFDVars.heading_lock, type: SimVarValueType.Degree }],
+    ['vertical_speed', { name: PFDVars.vertical_speed, type: SimVarValueType.Feet }],
+    ['airspeed_selected', { name: PFDVars.airspeed_selected, type: SimVarValueType.Knots }],
+    ['altitude_selected', { name: PFDVars.altitude_selected, type: SimVarValueType.Feet }],
+    ['barometric_setting', { name: PFDVars.barometric_setting, type: SimVarValueType.InHG }],
+    ['barometric_std', { name: PFDVars.barometric_std, type: SimVarValueType.Bool }],
+    ['true_airspeed', { name: PFDVars.true_airspeed, type: SimVarValueType.Knots }],
+    ['acceleration_z', { name: PFDVars.acceleration_z, type: SimVarValueType.Feet }],
+    ['nav_frequency', { name: PFDVars.nav_frequency, type: SimVarValueType.MHz }],
+    ['nav_standby_frequency', { name: PFDVars.nav_standby_frequency, type: SimVarValueType.MHz }],
+    ['com_frequency', { name: PFDVars.com_frequency, type: SimVarValueType.MHz }],
+    ['com_standby_frequency', { name: PFDVars.com_standby_frequency, type: SimVarValueType.MHz }],
+    ['gps_waypoint_active', { name: PFDVars.gps_waypoint_active, type: SimVarValueType.Bool }],
+    ['gps_next_waypoint_id', { name: PFDVars.gps_next_waypoint_id, type: SimVarValueType.String }],
+    ['gps_next_waypoint_distance', { name: PFDVars.gps_next_waypoint_distance, type: SimVarValueType.Number }],
+    ['nav_ident', { name: PFDVars.nav_ident, type: SimVarValueType.String }],
+    ['nav_dme', { name: PFDVars.nav_dme, type: SimVarValueType.NM }],
+    ['vstall', { name: PFDVars.vstall, type: SimVarValueType.Knots }],
+    ['overspeed', { name: PFDVars.overspeed, type: SimVarValueType.Knots }],
+    ['onGround', { name: PFDVars.onGround, type: SimVarValueType.Bool }]
   ])
 
   public constructor(bus: EventBus) {

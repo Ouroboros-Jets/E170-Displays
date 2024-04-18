@@ -1,0 +1,17 @@
+:root {
+  
+}
+
+
+.attitude-ground {
+  fill:  url(#ground-gradient);
+}
+
+.attitude-sky {
+  fill: url(#sky-gradient);
+}
+
+.foreground-attitude {
+  z-index: 999;
+  position: absolute;
+}
