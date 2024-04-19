@@ -32,10 +32,11 @@ export class OverspeedTape extends DisplayComponent<OverspeedTapeProps> {
       .handle((overspd) => {
         if (!this.onGround) {
           const overspdPosition =
-            (this.props.maxSpeed - overspd) * this.props.stretch + this.props.minSpeed * this.props.stretch
+            (this.props.maxSpeed - overspd) * this.props.stretch +
+            this.props.minSpeed * this.props.stretch -
+            this.props.minSpeed
 
-          this.overspdRef.instance.setAttribute('height', `${overspdPosition - this.props.minSpeed}`)
-          this.overspdRef.instance.setAttribute('y', `${this.props.maxSpeed - overspdPosition}`)
+          this.overspdRef.instance.setAttribute('height', `${overspdPosition}`)
         }
       })
   }
@@ -49,7 +50,7 @@ export class OverspeedTape extends DisplayComponent<OverspeedTapeProps> {
             <line x1={5} y1={0} x2={5} y2={10} stroke="white" stroke-width={5} />
           </pattern>
         </defs>
-        <rect x={73} y={0} width={7} height={0} fill="url(#diagonal)" ref={this.overspdRef} />
+        <rect x={73} y={this.props.minSpeed * 2} width={7} height={0} fill="url(#diagonal)" ref={this.overspdRef} />
       </g>
     )
   }

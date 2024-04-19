@@ -32404,14 +32404,13 @@
       });
       sub.on("overspeed").whenChanged().handle((overspd) => {
         if (!this.onGround) {
-          const overspdPosition = (this.props.maxSpeed - overspd) * this.props.stretch + this.props.minSpeed * this.props.stretch;
-          this.overspdRef.instance.setAttribute("height", `${overspdPosition - this.props.minSpeed}`);
-          this.overspdRef.instance.setAttribute("y", `${this.props.maxSpeed - overspdPosition}`);
+          const overspdPosition = (this.props.maxSpeed - overspd) * this.props.stretch + this.props.minSpeed * this.props.stretch - this.props.minSpeed;
+          this.overspdRef.instance.setAttribute("height", `${overspdPosition}`);
         }
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { id: "OBP" }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("pattern", { id: "diagonal", width: 5, height: 10, patternTransform: "rotate(45 0 0)", patternUnits: "userSpaceOnUse" }, /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 0, y1: 0, x2: 0, y2: 10, stroke: Colors_default.RED, "stroke-width": 5 }), /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 5, y1: 0, x2: 5, y2: 10, stroke: "white", "stroke-width": 5 }))), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 73, y: 0, width: 7, height: 0, fill: "url(#diagonal)", ref: this.overspdRef }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { id: "OBP" }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("pattern", { id: "diagonal", width: 5, height: 10, patternTransform: "rotate(45 0 0)", patternUnits: "userSpaceOnUse" }, /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 0, y1: 0, x2: 0, y2: 10, stroke: Colors_default.RED, "stroke-width": 5 }), /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 5, y1: 0, x2: 5, y2: 10, stroke: "white", "stroke-width": 5 }))), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 73, y: this.props.minSpeed * 2, width: 7, height: 0, fill: "url(#diagonal)", ref: this.overspdRef }));
     }
   };
 
