@@ -108,7 +108,7 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 194.0,
+    "value": 477.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -693,7 +693,7 @@
     "name": "OBJ_AP_SELECTED_AS",
     "index": 0,
     "unit": "knots",
-    "value": 189.0,
+    "value": 250.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

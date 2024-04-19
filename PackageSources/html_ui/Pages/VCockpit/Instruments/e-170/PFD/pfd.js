@@ -23985,7 +23985,7 @@
       if (primaryType === this._primaryType && secondaryType === this._secondaryType) {
         return;
       }
-      let minSpeed2, maxSpeed2;
+      let minSpeed, maxSpeed;
       const primaryTypeDef = TcasResolutionAdvisoryHostClass.TYPE_DEFS[primaryType];
       this._primaryType = primaryType;
       this._primaryFlags = primaryTypeDef.flags;
@@ -23993,15 +23993,15 @@
       if (secondaryType !== null) {
         const secondaryTypeDef = TcasResolutionAdvisoryHostClass.TYPE_DEFS[secondaryType];
         this._secondaryFlags = secondaryTypeDef.flags;
-        minSpeed2 = Math.max(primaryTypeDef.minVerticalSpeed, secondaryTypeDef.minVerticalSpeed);
-        maxSpeed2 = Math.min(primaryTypeDef.maxVerticalSpeed, secondaryTypeDef.maxVerticalSpeed);
+        minSpeed = Math.max(primaryTypeDef.minVerticalSpeed, secondaryTypeDef.minVerticalSpeed);
+        maxSpeed = Math.min(primaryTypeDef.maxVerticalSpeed, secondaryTypeDef.maxVerticalSpeed);
       } else {
         this._secondaryFlags = 0;
-        minSpeed2 = primaryTypeDef.minVerticalSpeed;
-        maxSpeed2 = primaryTypeDef.maxVerticalSpeed;
+        minSpeed = primaryTypeDef.minVerticalSpeed;
+        maxSpeed = primaryTypeDef.maxVerticalSpeed;
       }
-      this._minVerticalSpeed.set(isFinite(minSpeed2) ? minSpeed2 : NaN);
-      this._maxVerticalSpeed.set(isFinite(maxSpeed2) ? maxSpeed2 : NaN);
+      this._minVerticalSpeed.set(isFinite(minSpeed) ? minSpeed : NaN);
+      this._maxVerticalSpeed.set(isFinite(maxSpeed) ? maxSpeed : NaN);
       this.isInitial = isInitial;
       this.lastStateChangeTime = simTime;
       this.stateChangeDelay = TcasResolutionAdvisoryHostClass.STATE_CHANGE_DELAY_BASE + (isInitial ? this.initialResponseTimeSeconds : this.subsequentResponseTimeSeconds) * 1e3;
@@ -32359,64 +32359,72 @@
   };
   var Altitude_default = Altitude;
 
-  // instruments/src/PFD/Components/Airspeed/AirspeedTape.tsx
-  var baseline3 = 254;
-  var stretch = 3;
-  var minSpeed = 30;
-  var maxSpeed = 940;
-  var renderTape2 = () => {
-    const elements = [];
-    for (let i = minSpeed - 10; i < maxSpeed; i += 10) {
-      if (i >= 0) {
-        elements.push(
-          /* @__PURE__ */ FSComponent.buildComponent(
-            PathWithBlackBackground,
-            {
-              d: `M 60 ${i * stretch} L 80 ${i * stretch}`,
-              fill: "black",
-              fillTop: "white",
-              strokeWidthTop: 2,
-              strokeWidth: 3
-            }
-          )
-        );
-        const textVertOffset = 6;
-        elements.push(
-          /* @__PURE__ */ FSComponent.buildComponent("text", { x: 40, y: i * stretch + textVertOffset, "text-anchor": "middle", "font-size": 17, fill: "white" }, (maxSpeed - i + minSpeed - 10).toString())
-        );
-      }
-    }
-    return elements;
-  };
-  var AirspeedTape = class extends DisplayComponent {
+  // instruments/src/PFD/Components/Airspeed/AirspeedSelectorBug.tsx
+  var AirspeedSelectorBug = class extends DisplayComponent {
     constructor() {
       super(...arguments);
-      this.aisTapeRef = FSComponent.createRef();
-      this.overspdRef = FSComponent.createRef();
-      this.yellowLsaRef = FSComponent.createRef();
       this.iasSelBug = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("airspeed_selected").whenChanged().handle((ias) => {
+        this.iasSelBug.instance.setAttribute(
+          "transform",
+          `translate(80, ${(this.props.maxSpeed - ias) * this.props.stretch + this.props.minSpeed * this.props.stretch - this.props.minSpeed})`
+        );
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(80, 201)", ref: this.iasSelBug }, /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 0 -1 L -15 -1 L -15 -10 L -7 -10 L 0 -2 L 7 -10 L 15 -10 L 15 -1 L 0 -1",
+          transform: "rotate(270)",
+          fill: Colors_default.CYAN,
+          "stroke-width": 2,
+          stroke: Colors_default.CYAN,
+          "stroke-linecap": "round"
+        }
+      ));
+    }
+  };
+
+  // instruments/src/PFD/Components/Airspeed/OverspeedTape.tsx
+  var OverspeedTape = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.overspdRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("onGround").whenChanged().handle((onGround) => {
+        this.onGround = onGround;
+      });
+      sub.on("overspeed").whenChanged().handle((overspd) => {
+        if (!this.onGround) {
+          const overspdPosition = (this.props.maxSpeed - overspd) * this.props.stretch + this.props.minSpeed * this.props.stretch;
+          this.overspdRef.instance.setAttribute("height", `${overspdPosition - this.props.minSpeed}`);
+          this.overspdRef.instance.setAttribute("y", `${this.props.maxSpeed - overspdPosition}`);
+        }
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { id: "OBP" }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("pattern", { id: "diagonal", width: 5, height: 10, patternTransform: "rotate(45 0 0)", patternUnits: "userSpaceOnUse" }, /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 0, y1: 0, x2: 0, y2: 10, stroke: Colors_default.RED, "stroke-width": 5 }), /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 5, y1: 0, x2: 5, y2: 10, stroke: "white", "stroke-width": 5 }))), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 73, y: 0, width: 7, height: 0, fill: "url(#diagonal)", ref: this.overspdRef }));
+    }
+  };
+
+  // instruments/src/PFD/Components/Airspeed/StallSpeedTape.tsx
+  var StallSpeedTape = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.yellowLsaRef = FSComponent.createRef();
       this.redLsaRef = FSComponent.createRef();
     }
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("indicated_airspeed").whenChanged().handle((ias) => {
-        var _a2, _b;
-        if (ias >= minSpeed) {
-          (_a2 = this.aisTapeRef.instance) == null ? void 0 : _a2.setAttribute(
-            "transform",
-            `translate(0, ${baseline3 - maxSpeed * stretch + ias * stretch - minSpeed - 30})`
-          );
-        } else {
-          (_b = this.aisTapeRef.instance) == null ? void 0 : _b.setAttribute("transform", `translate(0, ${baseline3 - maxSpeed * 3 + minSpeed})`);
-        }
-      });
-      sub.on("airspeed_selected").whenChanged().handle((ias) => {
-        this.iasSelBug.instance.setAttribute(
-          "transform",
-          `translate(80, ${(maxSpeed - ias) * stretch + minSpeed * stretch - minSpeed})`
-        );
-      });
       sub.on("onGround").whenChanged().handle((onGround) => {
         this.onGround = onGround;
         if (onGround) {
@@ -32433,44 +32441,93 @@
           }
           this.redLsaRef.instance.style.visibility = "visible";
           this.yellowLsaRef.instance.style.visibility = "visible";
-          const stallPosition = (maxSpeed - stall) * stretch + minSpeed * stretch;
-          this.redLsaRef.instance.setAttribute("height", `${stallPosition - minSpeed}`);
-          this.redLsaRef.instance.style.y = `${stallPosition - minSpeed}`;
-          this.yellowLsaRef.instance.setAttribute("height", `${stallPosition - minSpeed * 2}`);
-          this.yellowLsaRef.instance.style.y = `${stallPosition - minSpeed * 2}`;
-        }
-      });
-      sub.on("overspeed").whenChanged().handle((overspd) => {
-        if (!this.onGround) {
-          const overspdPosition = (maxSpeed - overspd) * stretch + minSpeed * stretch;
-          this.overspdRef.instance.setAttribute("height", `${overspdPosition - minSpeed}`);
-          this.overspdRef.instance.setAttribute("y", `${maxSpeed - overspdPosition}`);
+          const stallPosition = (this.props.maxSpeed - stall) * this.props.stretch + this.props.minSpeed * this.props.stretch;
+          this.redLsaRef.instance.setAttribute("height", `${stallPosition - this.props.minSpeed}`);
+          this.redLsaRef.instance.style.y = `${stallPosition - this.props.minSpeed}`;
+          this.yellowLsaRef.instance.setAttribute("height", `${stallPosition - this.props.minSpeed * 2}`);
+          this.yellowLsaRef.instance.style.y = `${stallPosition - this.props.minSpeed * 2}`;
         }
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 54, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "tapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 88, width: 81, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#tapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.aisTapeRef }, renderTape2(), /* @__PURE__ */ FSComponent.buildComponent("g", { id: "OBP" }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent(
-        "pattern",
-        {
-          id: "diagonal",
-          width: 5,
-          height: 10,
-          patternTransform: "rotate(45 0 0)",
-          patternUnits: "userSpaceOnUse"
-        },
-        /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 0, y1: 0, x2: 0, y2: 10, stroke: Colors_default.RED, "stroke-width": 5 }),
-        /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 5, y1: 0, x2: 5, y2: 10, stroke: "white", "stroke-width": 5 })
-      )), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 73, y: 0, width: 7, height: 0, fill: "url(#diagonal)", ref: this.overspdRef })), /* @__PURE__ */ FSComponent.buildComponent("g", { id: "LSA" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.YELLOW, ref: this.yellowLsaRef }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.RED, ref: this.redLsaRef })), /* @__PURE__ */ FSComponent.buildComponent("g", { id: "SelectedSpeedBug", transform: "translate(80, 201)", ref: this.iasSelBug }, /* @__PURE__ */ FSComponent.buildComponent(
-        "path",
-        {
-          d: "M 0 -1 L -15 -1 L -15 -10 L -7 -10 L 0 -2 L 7 -10 L 15 -10 L 15 -1 L 0 -1",
-          transform: "rotate(270)",
-          fill: Colors_default.CYAN,
-          "stroke-width": 2,
-          stroke: Colors_default.CYAN,
-          "stroke-linecap": "round"
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { id: "LSA" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.YELLOW, ref: this.yellowLsaRef }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.RED, ref: this.redLsaRef }));
+    }
+  };
+
+  // instruments/src/PFD/Components/Airspeed/AirspeedTape.tsx
+  var AirspeedTape = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.aisTapeRef = FSComponent.createRef();
+      this.renderTape = () => {
+        const elements = [];
+        for (let i = this.props.minSpeed - 10; i < this.props.maxSpeed; i += 10) {
+          if (i >= 0) {
+            elements.push(
+              /* @__PURE__ */ FSComponent.buildComponent(
+                PathWithBlackBackground,
+                {
+                  d: `M 60 ${i * this.props.stretch} L 80 ${i * this.props.stretch}`,
+                  fill: "black",
+                  fillTop: "white",
+                  strokeWidthTop: 2,
+                  strokeWidth: 3
+                }
+              )
+            );
+            const textVertOffset = 6;
+            elements.push(
+              /* @__PURE__ */ FSComponent.buildComponent("text", { x: 40, y: i * this.props.stretch + textVertOffset, "text-anchor": "middle", "font-size": 17, fill: "white" }, (this.props.maxSpeed - i + this.props.minSpeed - 10).toString())
+            );
+          }
         }
-      )))), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 86 L 81 418", fill: "black", fillTop: "white", strokeWidthTop: 2, strokeWidth: 3 }));
+        return elements;
+      };
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("indicated_airspeed").whenChanged().handle((ias) => {
+        var _a2, _b;
+        if (ias >= this.props.minSpeed) {
+          (_a2 = this.aisTapeRef.instance) == null ? void 0 : _a2.setAttribute(
+            "transform",
+            `translate(0, ${this.props.baseline - this.props.maxSpeed * this.props.stretch + ias * this.props.stretch - this.props.minSpeed - 30})`
+          );
+        } else {
+          (_b = this.aisTapeRef.instance) == null ? void 0 : _b.setAttribute(
+            "transform",
+            `translate(0, ${this.props.baseline - this.props.maxSpeed * 3 + this.props.minSpeed})`
+          );
+        }
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 54, width: 82, height: 396, fill: "black", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "tapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 0, y: 88, width: 81, height: 330 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#tapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.aisTapeRef }, this.renderTape(), /* @__PURE__ */ FSComponent.buildComponent(
+        OverspeedTape,
+        {
+          bus: this.props.bus,
+          stretch: this.props.stretch,
+          minSpeed: this.props.minSpeed,
+          maxSpeed: this.props.maxSpeed
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent(
+        StallSpeedTape,
+        {
+          bus: this.props.bus,
+          stretch: this.props.stretch,
+          minSpeed: this.props.minSpeed,
+          maxSpeed: this.props.maxSpeed
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent(
+        AirspeedSelectorBug,
+        {
+          bus: this.props.bus,
+          stretch: this.props.stretch,
+          minSpeed: this.props.minSpeed,
+          maxSpeed: this.props.maxSpeed
+        }
+      ))), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 86 L 81 418", fill: "black", fillTop: "white", strokeWidthTop: 2, strokeWidth: 3 }));
     }
   };
 
@@ -32589,7 +32646,7 @@
   };
 
   // instruments/src/PFD/Components/Airspeed/TrendVector.tsx
-  var baseline4 = 254;
+  var baseline3 = 254;
   var TrendVector2 = class extends DisplayComponent {
     constructor() {
       super(...arguments);
@@ -32611,7 +32668,7 @@
         }
         this.trendVecRef.instance.setAttribute(
           "d",
-          `M 86 ${baseline4} L 86 ${baseline4 - iasPredictionInKnotsPerSecond * 0.3}`
+          `M 86 ${baseline3} L 86 ${baseline3 - iasPredictionInKnotsPerSecond * 0.3}`
         );
       });
     }
@@ -32625,14 +32682,27 @@
           ref: this.trendVecRef,
           "clip-path": "url(#iasTrendVectorClip)"
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 80 ${baseline4} L 90 ${baseline4}`, "stroke-width": 2, stroke: "white", "stroke-linejoin": "round" }));
+      ), /* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 80 ${baseline3} L 90 ${baseline3}`, "stroke-width": 2, stroke: "white", "stroke-linejoin": "round" }));
     }
   };
 
   // instruments/src/PFD/Components/Airspeed/index.tsx
+  var baselineInPx = 254;
+  var stretch = 3;
+  var minSpeedInKnots = 30;
+  var maxSpeedInKnots = 940;
   var Airspeed = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(AirspeedTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAirspeedBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAirspeedBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(TrendVector2, { bus: this.props.bus }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+        AirspeedTape,
+        {
+          bus: this.props.bus,
+          baseline: baselineInPx,
+          stretch,
+          minSpeed: minSpeedInKnots,
+          maxSpeed: maxSpeedInKnots
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent(SelectedAirspeedBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAirspeedBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(TrendVector2, { bus: this.props.bus }));
     }
   };
   var Airspeed_default = Airspeed;
