@@ -32463,6 +32463,7 @@
         const elements = [];
         for (let i = this.props.minSpeed - 10; i < this.props.maxSpeed; i += 10) {
           if (i >= 0) {
+            const digit = this.props.maxSpeed - i + this.props.minSpeed - 10;
             elements.push(
               /* @__PURE__ */ FSComponent.buildComponent(
                 PathWithBlackBackground,
@@ -32476,9 +32477,11 @@
               )
             );
             const textVertOffset = 6;
-            elements.push(
-              /* @__PURE__ */ FSComponent.buildComponent("text", { x: 40, y: i * this.props.stretch + textVertOffset, "text-anchor": "middle", "font-size": 17, fill: "white" }, (this.props.maxSpeed - i + this.props.minSpeed - 10).toString())
-            );
+            if (digit <= 200 && i % 10 === 0 || digit > 200 && i % 20 === 0) {
+              elements.push(
+                /* @__PURE__ */ FSComponent.buildComponent("text", { x: 40, y: i * this.props.stretch + textVertOffset, "text-anchor": "middle", "font-size": 17, fill: "white" }, digit.toString())
+              );
+            }
           }
         }
         return elements;
@@ -32646,7 +32649,6 @@
   };
 
   // instruments/src/PFD/Components/Airspeed/TrendVector.tsx
-  var baseline3 = 254;
   var TrendVector2 = class extends DisplayComponent {
     constructor() {
       super(...arguments);
@@ -32668,7 +32670,7 @@
         }
         this.trendVecRef.instance.setAttribute(
           "d",
-          `M 86 ${baseline3} L 86 ${baseline3 - iasPredictionInKnotsPerSecond * 0.3}`
+          `M 86 ${this.props.baseline} L 86 ${this.props.baseline - iasPredictionInKnotsPerSecond * 0.3}`
         );
       });
     }
@@ -32682,7 +32684,15 @@
           ref: this.trendVecRef,
           "clip-path": "url(#iasTrendVectorClip)"
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 80 ${baseline3} L 90 ${baseline3}`, "stroke-width": 2, stroke: "white", "stroke-linejoin": "round" }));
+      ), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: `M 80 ${this.props.baseline} L 90 ${this.props.baseline}`,
+          "stroke-width": 2,
+          stroke: "white",
+          "stroke-linejoin": "round"
+        }
+      ));
     }
   };
 
@@ -32702,7 +32712,7 @@
           minSpeed: minSpeedInKnots,
           maxSpeed: maxSpeedInKnots
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent(SelectedAirspeedBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAirspeedBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(TrendVector2, { bus: this.props.bus }));
+      ), /* @__PURE__ */ FSComponent.buildComponent(SelectedAirspeedBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAirspeedBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(TrendVector2, { bus: this.props.bus, baseline: baselineInPx }));
     }
   };
   var Airspeed_default = Airspeed;

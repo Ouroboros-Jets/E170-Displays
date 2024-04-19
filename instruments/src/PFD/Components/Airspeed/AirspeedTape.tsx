@@ -21,6 +21,8 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
     const elements: JSX.Element[] = []
     for (let i = this.props.minSpeed - 10; i < this.props.maxSpeed; i += 10) {
       if (i >= 0) {
+        const digit = this.props.maxSpeed - i + this.props.minSpeed - 10
+
         elements.push(
           <PathWithBlackBackground
             d={`M 60 ${i * this.props.stretch} L 80 ${i * this.props.stretch}`}
@@ -32,11 +34,13 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
         )
 
         const textVertOffset = 6
-        elements.push(
-          <text x={40} y={i * this.props.stretch + textVertOffset} text-anchor="middle" font-size={17} fill="white">
-            {(this.props.maxSpeed - i + this.props.minSpeed - 10).toString()}
-          </text>
-        )
+        if ((digit <= 200 && i % 10 === 0) || (digit > 200 && i % 20 === 0)) {
+          elements.push(
+            <text x={40} y={i * this.props.stretch + textVertOffset} text-anchor="middle" font-size={17} fill="white">
+              {digit.toString()}
+            </text>
+          )
+        }
       }
     }
 

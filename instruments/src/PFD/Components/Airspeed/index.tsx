@@ -27,7 +27,7 @@ class Airspeed extends DisplayComponent<AirspeedProps> {
         />
         <SelectedAirspeedBox bus={this.props.bus} />
         <CurrentAirspeedBox bus={this.props.bus} />
-        <TrendVector bus={this.props.bus} />
+        <TrendVector bus={this.props.bus} baseline={baselineInPx} />
       </g>
     )
   }
