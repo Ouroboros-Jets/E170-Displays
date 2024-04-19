@@ -27,6 +27,8 @@ export class TrendVector extends DisplayComponent<TrendVectorProps> {
       .on('acceleration_z')
       .whenChanged()
       .handle((a) => {
+        // TODO: The trend calculation seems wrong
+        // When fixing: fix also the calculation for the trend value inside /CurrentAirspeedBox.tsx
         const iasPredictionInKnotsPerSecond = a * 0.592483801 * 10 * this.ias
 
         if (iasPredictionInKnotsPerSecond >= 2 || iasPredictionInKnotsPerSecond <= -2) {

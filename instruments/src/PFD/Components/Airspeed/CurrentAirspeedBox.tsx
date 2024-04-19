@@ -30,6 +30,8 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
   private onGround: boolean
   private vstall: number
   private ias: number
+  private overspeed: number
+  private trend: number
 
   private readonly renderDigitTape = (removeZeros?: boolean): SVGTextElement[] => {
     const digits: SVGTextElement[] = []
@@ -52,12 +54,12 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
 
   private readonly vStallCheck = (): void => {
     console.log(this.ias)
-    if (!this.onGround && this.ias <= this.vstall) {
+    if (!this.onGround && (this.ias <= this.vstall || this.overspeed <= this.ias)) {
       for (const ref of this.digitRefs) {
         ref.instance.setAttribute('fill', 'white')
         this.boxDigitScrollRef.instance.setAttribute('fill', `${Colors.RED}`)
       }
-    } else if (!this.onGround && this.ias <= this.vstall + 10) {
+    } else if (!this.onGround && (this.ias <= this.vstall + 10 || this.trend >= this.ias)) {
       for (const ref of this.digitRefs) {
         ref.instance.setAttribute('fill', `${Colors.YELLOW}`)
         this.boxDigitScrollRef.instance.setAttribute('fill', 'transparent')
@@ -112,6 +114,23 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
       .whenChanged()
       .handle((vstall) => {
         this.vstall = vstall
+        this.vStallCheck()
+      })
+
+    sub
+      .on('acceleration_z')
+      .whenChanged()
+      .handle((a) => {
+        // TODO: Calculation seems wrong
+        this.trend = a * 0.592483801 * 10 * this.ias
+        this.vStallCheck()
+      })
+
+    sub
+      .on('overspeed')
+      .whenChanged()
+      .handle((overspd) => {
+        this.overspeed = overspd
         this.vStallCheck()
       })
 

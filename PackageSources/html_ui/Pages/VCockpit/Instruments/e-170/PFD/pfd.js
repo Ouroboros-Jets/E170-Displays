@@ -32402,15 +32402,25 @@
       sub.on("onGround").whenChanged().handle((onGround) => {
         this.onGround = onGround;
       });
+      sub.on("indicated_airspeed").whenChanged().handle((ias) => {
+        this.ias = ias;
+      });
       sub.on("overspeed").whenChanged().handle((overspd) => {
         if (!this.onGround) {
-          const overspdPosition = (this.props.maxSpeed - overspd) * this.props.stretch + this.props.minSpeed * this.props.stretch - this.props.minSpeed;
+          const overspdPosition = (this.props.maxSpeed - overspd) * this.props.stretch + this.props.minSpeed * this.props.stretch - this.props.minSpeed * this.props.stretch;
           this.overspdRef.instance.setAttribute("height", `${overspdPosition}`);
+        }
+        if (this.ias >= overspd) {
+          this.overspdRef.instance.setAttribute("width", "8");
+          this.overspdRef.instance.setAttribute("x", "72");
+        } else {
+          this.overspdRef.instance.setAttribute("width", "4");
+          this.overspdRef.instance.setAttribute("x", "76");
         }
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { id: "OBP" }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("pattern", { id: "diagonal", width: 5, height: 10, patternTransform: "rotate(45 0 0)", patternUnits: "userSpaceOnUse" }, /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 0, y1: 0, x2: 0, y2: 10, stroke: Colors_default.RED, "stroke-width": 5 }), /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 5, y1: 0, x2: 5, y2: 10, stroke: "white", "stroke-width": 5 }))), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 73, y: this.props.minSpeed * 2, width: 7, height: 0, fill: "url(#diagonal)", ref: this.overspdRef }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { id: "OBP" }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("pattern", { id: "diagonal", width: 10, height: 10, patternTransform: "rotate(45 0 0)", patternUnits: "userSpaceOnUse" }, /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 0, x2: 0, y1: 0, y2: 10, stroke: Colors_default.RED, "stroke-width": 20 }), /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 5, x2: 5, y1: 0, y2: 10, stroke: "white", "stroke-width": 4 }))), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 76, y: this.props.minSpeed * 2, width: 4, height: 0, fill: "url(#diagonal)", ref: this.overspdRef }));
     }
   };
 
@@ -32558,12 +32568,12 @@
       };
       this.vStallCheck = () => {
         console.log(this.ias);
-        if (!this.onGround && this.ias <= this.vstall) {
+        if (!this.onGround && (this.ias <= this.vstall || this.overspeed <= this.ias)) {
           for (const ref of this.digitRefs) {
             ref.instance.setAttribute("fill", "white");
             this.boxDigitScrollRef.instance.setAttribute("fill", `${Colors_default.RED}`);
           }
-        } else if (!this.onGround && this.ias <= this.vstall + 10) {
+        } else if (!this.onGround && (this.ias <= this.vstall + 10 || this.trend >= this.ias)) {
           for (const ref of this.digitRefs) {
             ref.instance.setAttribute("fill", `${Colors_default.YELLOW}`);
             this.boxDigitScrollRef.instance.setAttribute("fill", "transparent");
@@ -32606,6 +32616,14 @@
       });
       sub.on("vstall").whenChanged().handle((vstall) => {
         this.vstall = vstall;
+        this.vStallCheck();
+      });
+      sub.on("acceleration_z").whenChanged().handle((a) => {
+        this.trend = a * 0.592483801 * 10 * this.ias;
+        this.vStallCheck();
+      });
+      sub.on("overspeed").whenChanged().handle((overspd) => {
+        this.overspeed = overspd;
         this.vStallCheck();
       });
       sub.on("onGround").whenChanged().handle((onGround) => {

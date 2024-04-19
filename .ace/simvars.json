@@ -108,13 +108,13 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 298.0,
+    "value": 124.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 940.0
+      "max": 250.0
     },
-    "pinned": true
+    "pinned": null
   },
   {
     "type": "A",
@@ -667,7 +667,7 @@
     "name": "ACCELERATION BODY Z",
     "index": 0,
     "unit": "feet",
-    "value": 10.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -680,7 +680,7 @@
     "name": "ACCELERATION BODY Y",
     "index": 0,
     "unit": "feet",
-    "value": 2.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -793,7 +793,7 @@
     "name": "VSTALL",
     "index": 0,
     "unit": "knots",
-    "value": 0.0,
+    "value": 77.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -845,12 +845,12 @@
     "name": "OVERSPEED",
     "index": 0,
     "unit": "knots",
-    "value": 363.0,
+    "value": 150.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 940.0
+      "max": 250.0
     },
-    "pinned": true
+    "pinned": null
   }
 ]
