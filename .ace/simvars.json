@@ -108,13 +108,13 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 51.0,
+    "value": 194.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 940.0
+      "max": 900.0
     },
-    "pinned": true
+    "pinned": null
   },
   {
     "type": "A",
@@ -537,7 +537,7 @@
     "name": "PLANE HEADING DEGREES MAGNETIC",
     "index": 0,
     "unit": "radians",
-    "value": 78.0,
+    "value": 68.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -602,7 +602,7 @@
     "name": "AIRSPEED SELECT INDICATED OR TRUE",
     "index": 0,
     "unit": "knots",
-    "value": 70.0,
+    "value": 147.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -693,7 +693,7 @@
     "name": "OBJ_AP_SELECTED_AS",
     "index": 0,
     "unit": "knots",
-    "value": 250.0,
+    "value": 189.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -851,6 +851,6 @@
       "min": 0.0,
       "max": 250.0
     },
-    "pinned": true
+    "pinned": null
   }
 ]

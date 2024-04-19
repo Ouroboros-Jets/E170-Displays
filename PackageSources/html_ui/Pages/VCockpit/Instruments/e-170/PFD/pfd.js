@@ -32249,11 +32249,12 @@
         /* @__PURE__ */ FSComponent.buildComponent(
           "text",
           {
-            x: tenth ? 525 : 520,
+            x: tenth ? 525 : 525,
             y: tenth ? digitSpacing * i - 465 : digitSpacing * i - 462,
             "font-size": tenth ? 17 : 25,
             "text-anchor": "middle",
-            fill: Colors_default.GREEN
+            fill: Colors_default.GREEN,
+            "letter-spacing": -2
           },
           tenth ? digit.toString().concat("0") : digit.toString()
         )
@@ -32393,6 +32394,7 @@
       this.aisTapeRef = FSComponent.createRef();
       this.overspdRef = FSComponent.createRef();
       this.yellowLsaRef = FSComponent.createRef();
+      this.iasSelBug = FSComponent.createRef();
       this.redLsaRef = FSComponent.createRef();
     }
     onAfterRender(node) {
@@ -32408,6 +32410,12 @@
         } else {
           (_b = this.aisTapeRef.instance) == null ? void 0 : _b.setAttribute("transform", `translate(0, ${baseline3 - maxSpeed * 3 + minSpeed})`);
         }
+      });
+      sub.on("airspeed_selected").whenChanged().handle((ias) => {
+        this.iasSelBug.instance.setAttribute(
+          "transform",
+          `translate(80, ${(maxSpeed - ias) * stretch + minSpeed * stretch - minSpeed})`
+        );
       });
       sub.on("onGround").whenChanged().handle((onGround) => {
         this.onGround = onGround;
@@ -32452,13 +32460,24 @@
         },
         /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 0, y1: 0, x2: 0, y2: 10, stroke: Colors_default.RED, "stroke-width": 5 }),
         /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 5, y1: 0, x2: 5, y2: 10, stroke: "white", "stroke-width": 5 })
-      )), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 75, y: 0, width: 10, height: 0, fill: "url(#diagonal)", ref: this.overspdRef })), /* @__PURE__ */ FSComponent.buildComponent("g", { id: "LSA" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.YELLOW, ref: this.yellowLsaRef }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.RED, ref: this.redLsaRef })))), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 86 L 81 418", fill: "black", fillTop: "white", strokeWidthTop: 2, strokeWidth: 3 }));
+      )), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 73, y: 0, width: 7, height: 0, fill: "url(#diagonal)", ref: this.overspdRef })), /* @__PURE__ */ FSComponent.buildComponent("g", { id: "LSA" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.YELLOW, ref: this.yellowLsaRef }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.RED, ref: this.redLsaRef })), /* @__PURE__ */ FSComponent.buildComponent("g", { id: "SelectedSpeedBug", transform: "translate(80, 201)", ref: this.iasSelBug }, /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 0 -1 L -15 -1 L -15 -10 L -7 -10 L 0 -2 L 7 -10 L 15 -10 L 15 -1 L 0 -1",
+          transform: "rotate(270)",
+          fill: Colors_default.CYAN,
+          "stroke-width": 2,
+          stroke: Colors_default.CYAN,
+          "stroke-linecap": "round"
+        }
+      )))), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 86 L 81 418", fill: "black", fillTop: "white", strokeWidthTop: 2, strokeWidth: 3 }));
     }
   };
 
   // instruments/src/PFD/Components/Airspeed/CurrentAirspeedBox.tsx
   var digitSpacing2 = 25;
   var verticalScrollsSpacing2 = 20;
+  var boxShape = "M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254";
   var CurrentAirspeedBox = class extends DisplayComponent {
     constructor() {
       super(...arguments);
@@ -32472,7 +32491,7 @@
         for (let i = 0; i < 30; i++) {
           const digit = 9 - i % 10;
           const ref = FSComponent.createRef();
-          const digitElement = /* @__PURE__ */ FSComponent.buildComponent("text", { x: 55, y: digitSpacing2 * i - 460, "font-size": 30, "text-anchor": "middle", fill: Colors_default.GREEN, ref }, removeZeros && digit === 0 ? "" : digit.toString());
+          const digitElement = /* @__PURE__ */ FSComponent.buildComponent("text", { x: 58, y: digitSpacing2 * i - 460, "font-size": 30, "text-anchor": "middle", fill: Colors_default.GREEN, ref }, removeZeros && digit === 0 ? "" : digit.toString());
           this.digitRefs.push(ref);
           digits.push(digitElement);
         }
@@ -32536,26 +32555,17 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("path", { d: boxShape, fill: "black", stroke: "white", "stroke-width": 2, "stroke-linecap": "round" }), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "boxClip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: boxShape })), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
-          d: "M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254",
-          fill: "black",
-          stroke: "white",
-          "stroke-width": 2,
-          "stroke-linecap": "round"
-        }
-      ), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "boxClip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254" })), /* @__PURE__ */ FSComponent.buildComponent(
-        "path",
-        {
-          d: "M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254",
+          d: boxShape,
           fill: "transparent",
           stroke: "white",
           "stroke-width": 2,
           "stroke-linecap": "round",
           ref: this.boxDigitScrollRef
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#boxClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.singleDigitScrollRef }, this.renderDigitTape()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenthDigitScrollRef }, this.renderDigitTape()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.hundredthDigitScrollRef }, this.renderDigitTape(true))));
+      ), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#boxClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.singleDigitScrollRef }, this.renderDigitTape()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenthDigitScrollRef }, this.renderDigitTape()), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.hundredthDigitScrollRef }, this.renderDigitTape(true))), /* @__PURE__ */ FSComponent.buildComponent("path", { d: boxShape, fill: "transparent", stroke: "white", "stroke-width": 2, "stroke-linecap": "round" }));
     }
   };
   var CurrentAirspeedBox_default = CurrentAirspeedBox;
@@ -32574,7 +32584,7 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 1, y: 55, rx: 2, ry: 2, width: 80, height: 33, "stroke-width": 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.airspeedSelectedRef, x: 45, y: 82, "text-anchor": "middle", fill: Colors_default.PINK, "font-size": "30" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 1, y: 55, rx: 2, ry: 2, width: 80, height: 33, "stroke-width": 2, fill: "transparent", stroke: "white" }), /* @__PURE__ */ FSComponent.buildComponent("text", { ref: this.airspeedSelectedRef, x: 45, y: 82, "text-anchor": "middle", fill: Colors_default.CYAN, "font-size": "30" }));
     }
   };
 
@@ -32590,18 +32600,19 @@
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
       sub.on("true_airspeed").whenChanged().handle((ias) => {
-        sub.on("acceleration_z").whenChanged().handle((a) => {
-          const iasPredictionInKnotsPerSecond = a * 0.592483801 * 10 * ias;
-          if (iasPredictionInKnotsPerSecond >= 2 || iasPredictionInKnotsPerSecond <= -2) {
-            this.groupRef.instance.style.visibility = "visible";
-          } else {
-            this.groupRef.instance.style.visibility = "hidden";
-          }
-          this.trendVecRef.instance.setAttribute(
-            "d",
-            `M 86 ${baseline4} L 86 ${baseline4 - iasPredictionInKnotsPerSecond * 0.3}`
-          );
-        });
+        this.ias = ias;
+      });
+      sub.on("acceleration_z").whenChanged().handle((a) => {
+        const iasPredictionInKnotsPerSecond = a * 0.592483801 * 10 * this.ias;
+        if (iasPredictionInKnotsPerSecond >= 2 || iasPredictionInKnotsPerSecond <= -2) {
+          this.groupRef.instance.style.visibility = "visible";
+        } else {
+          this.groupRef.instance.style.visibility = "hidden";
+        }
+        this.trendVecRef.instance.setAttribute(
+          "d",
+          `M 86 ${baseline4} L 86 ${baseline4 - iasPredictionInKnotsPerSecond * 0.3}`
+        );
       });
     }
     render() {
@@ -32675,7 +32686,7 @@
       return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(275, 188) rotate(0)", ref: this.hdgRef }, /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(0, -128)" }, /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
-          d: "M 0 -1 L -15 -1 L -15 -10 L -9 -10 L 0 -3 L 9 -10 L 15 -10 L 15 -1 L 0 -1",
+          d: "M 0 -1 L -15 -1 L -15 -10 L -7 -10 L 0 -2 L 7 -10 L 15 -10 L 15 -1 L 0 -1",
           fill: Colors_default.CYAN,
           "stroke-width": 2,
           stroke: Colors_default.CYAN,

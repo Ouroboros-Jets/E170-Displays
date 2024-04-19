@@ -32,7 +32,7 @@ export default class LockHdgIndicator extends DisplayComponent<T_LockHdgIndicato
       <g transform="translate(275, 188) rotate(0)" ref={this.hdgRef}>
         <g transform="translate(0, -128)">
           <path
-            d="M 0 -1 L -15 -1 L -15 -10 L -9 -10 L 0 -3 L 9 -10 L 15 -10 L 15 -1 L 0 -1"
+            d="M 0 -1 L -15 -1 L -15 -10 L -7 -10 L 0 -2 L 7 -10 L 15 -10 L 15 -1 L 0 -1"
             fill={Colors.CYAN}
             stroke-width={2}
             stroke={Colors.CYAN}

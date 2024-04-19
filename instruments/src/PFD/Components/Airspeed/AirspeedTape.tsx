@@ -43,6 +43,7 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
   private readonly aisTapeRef = FSComponent.createRef<SVGGElement>()
   private readonly overspdRef = FSComponent.createRef<SVGRectElement>()
   private readonly yellowLsaRef = FSComponent.createRef<SVGRectElement>()
+  private readonly iasSelBug = FSComponent.createRef<SVGGElement>()
   private readonly redLsaRef = FSComponent.createRef<SVGRectElement>()
 
   private onGround: boolean
@@ -63,6 +64,16 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
         } else {
           this.aisTapeRef.instance?.setAttribute('transform', `translate(0, ${baseline - maxSpeed * 3 + minSpeed})`)
         }
+      })
+
+    sub
+      .on('airspeed_selected')
+      .whenChanged()
+      .handle((ias) => {
+        this.iasSelBug.instance.setAttribute(
+          'transform',
+          `translate(80, ${(maxSpeed - ias) * stretch + minSpeed * stretch - minSpeed})`
+        )
       })
 
     sub
@@ -128,6 +139,7 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
         <g clip-path="url(#tapeClip)">
           <g ref={this.aisTapeRef}>
             {renderTape()}
+
             <g id="OBP">
               <defs>
                 <pattern
@@ -141,11 +153,23 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
                   <line x1={5} y1={0} x2={5} y2={10} stroke="white" stroke-width={5} />
                 </pattern>
               </defs>
-              <rect x={75} y={0} width={10} height={0} fill="url(#diagonal)" ref={this.overspdRef} />
+              <rect x={73} y={0} width={7} height={0} fill="url(#diagonal)" ref={this.overspdRef} />
             </g>
+
             <g id="LSA">
               <rect x={66} y={0} width={10} height={0} fill={Colors.YELLOW} ref={this.yellowLsaRef} />
               <rect x={66} y={0} width={10} height={0} fill={Colors.RED} ref={this.redLsaRef} />
+            </g>
+
+            <g id="SelectedSpeedBug" transform="translate(80, 201)" ref={this.iasSelBug}>
+              <path
+                d="M 0 -1 L -15 -1 L -15 -10 L -7 -10 L 0 -2 L 7 -10 L 15 -10 L 15 -1 L 0 -1"
+                transform="rotate(270)"
+                fill={Colors.CYAN}
+                stroke-width={2}
+                stroke={Colors.CYAN}
+                stroke-linecap="round"
+              />
             </g>
           </g>
         </g>

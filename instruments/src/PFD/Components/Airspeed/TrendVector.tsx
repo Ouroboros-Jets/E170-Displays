@@ -11,6 +11,7 @@ const baseline = 254
 export class TrendVector extends DisplayComponent<TrendVectorProps> {
   private readonly groupRef = FSComponent.createRef<SVGGElement>()
   private readonly trendVecRef = FSComponent.createRef<SVGPathElement>()
+  private ias: number
 
   public onAfterRender(node: VNode): void {
     super.onAfterRender(node)
@@ -20,23 +21,25 @@ export class TrendVector extends DisplayComponent<TrendVectorProps> {
       .on('true_airspeed')
       .whenChanged()
       .handle((ias) => {
-        sub
-          .on('acceleration_z')
-          .whenChanged()
-          .handle((a) => {
-            const iasPredictionInKnotsPerSecond = a * 0.592483801 * 10 * ias
+        this.ias = ias
+      })
 
-            if (iasPredictionInKnotsPerSecond >= 2 || iasPredictionInKnotsPerSecond <= -2) {
-              this.groupRef.instance.style.visibility = 'visible'
-            } else {
-              this.groupRef.instance.style.visibility = 'hidden'
-            }
+    sub
+      .on('acceleration_z')
+      .whenChanged()
+      .handle((a) => {
+        const iasPredictionInKnotsPerSecond = a * 0.592483801 * 10 * this.ias
 
-            this.trendVecRef.instance.setAttribute(
-              'd',
-              `M 86 ${baseline} L 86 ${baseline - iasPredictionInKnotsPerSecond * 0.3}`
-            )
-          })
+        if (iasPredictionInKnotsPerSecond >= 2 || iasPredictionInKnotsPerSecond <= -2) {
+          this.groupRef.instance.style.visibility = 'visible'
+        } else {
+          this.groupRef.instance.style.visibility = 'hidden'
+        }
+
+        this.trendVecRef.instance.setAttribute(
+          'd',
+          `M 86 ${baseline} L 86 ${baseline - iasPredictionInKnotsPerSecond * 0.3}`
+        )
       })
   }
 

@@ -16,6 +16,8 @@ type SelectedAirspeedBoxProps = ComponentProps & {
 
 const digitSpacing = 25
 const verticalScrollsSpacing = 20
+const boxShape =
+  'M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254'
 
 class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
   private readonly boxDigitScrollRef = FSComponent.createRef<SVGPathElement>()
@@ -37,7 +39,7 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
       const ref = FSComponent.createRef<SVGTextElement>()
 
       const digitElement = (
-        <text x={55} y={digitSpacing * i - 460} font-size={30} text-anchor="middle" fill={Colors.GREEN} ref={ref}>
+        <text x={58} y={digitSpacing * i - 460} font-size={30} text-anchor="middle" fill={Colors.GREEN} ref={ref}>
           {removeZeros && digit === 0 ? '' : digit.toString()}
         </text>
       )
@@ -125,20 +127,14 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
   public render(): VNode {
     return (
       <g>
-        <path
-          d="M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254"
-          fill="black"
-          stroke="white"
-          stroke-width={2}
-          stroke-linecap="round"
-        />
+        <path d={boxShape} fill="black" stroke="white" stroke-width={2} stroke-linecap="round" />
 
         <clipPath id="boxClip">
-          <path d="M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254" />
+          <path d={boxShape} />
         </clipPath>
 
         <path
-          d="M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254"
+          d={boxShape}
           fill="transparent"
           stroke="white"
           stroke-width={2}
@@ -151,6 +147,8 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
           <g ref={this.tenthDigitScrollRef}>{this.renderDigitTape()}</g>
           <g ref={this.hundredthDigitScrollRef}>{this.renderDigitTape(true)}</g>
         </g>
+
+        <path d={boxShape} fill="transparent" stroke="white" stroke-width={2} stroke-linecap="round" />
       </g>
     )
   }

@@ -25,7 +25,7 @@ export class SelectedAirspeedBox extends DisplayComponent<SelectedAirspeedBoxPro
     return (
       <g>
         <rect x={1} y={55} rx={2} ry={2} width={80} height={33} stroke-width={2} fill="transparent" stroke="white" />
-        <text ref={this.airspeedSelectedRef} x={45} y={82} text-anchor="middle" fill={Colors.PINK} font-size="30" />
+        <text ref={this.airspeedSelectedRef} x={45} y={82} text-anchor="middle" fill={Colors.CYAN} font-size="30" />
       </g>
     )
   }
