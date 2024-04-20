@@ -32521,6 +32521,19 @@
     constructor() {
       super(...arguments);
       this.overspdRef = FSComponent.createRef();
+      this.checkOverspped = () => {
+        if (!this.onGround) {
+          const overspdPosition = (this.props.maxSpeed - this.overspeed) * this.props.stretch + this.props.minSpeed * this.props.stretch - this.props.minSpeed * this.props.stretch;
+          this.overspdRef.instance.setAttribute("height", `${overspdPosition}`);
+        }
+        if (this.ias >= this.overspeed) {
+          this.overspdRef.instance.setAttribute("width", "8");
+          this.overspdRef.instance.setAttribute("x", "72");
+        } else {
+          this.overspdRef.instance.setAttribute("width", "4");
+          this.overspdRef.instance.setAttribute("x", "76");
+        }
+      };
     }
     onAfterRender(node) {
       super.onAfterRender(node);
@@ -32530,19 +32543,11 @@
       });
       sub.on("indicated_airspeed").whenChanged().handle((ias) => {
         this.ias = ias;
+        this.checkOverspped();
       });
       sub.on("overspeed").whenChanged().handle((overspd) => {
-        if (!this.onGround) {
-          const overspdPosition = (this.props.maxSpeed - overspd) * this.props.stretch + this.props.minSpeed * this.props.stretch - this.props.minSpeed * this.props.stretch;
-          this.overspdRef.instance.setAttribute("height", `${overspdPosition}`);
-        }
-        if (this.ias >= overspd) {
-          this.overspdRef.instance.setAttribute("width", "8");
-          this.overspdRef.instance.setAttribute("x", "72");
-        } else {
-          this.overspdRef.instance.setAttribute("width", "4");
-          this.overspdRef.instance.setAttribute("x", "76");
-        }
+        this.overspeed = overspd;
+        this.checkOverspped();
       });
     }
     render() {
@@ -32613,6 +32618,14 @@
       return /* @__PURE__ */ FSComponent.buildComponent("g", { id: "LSA" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.YELLOW, ref: this.yellowLsaRef }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 66, y: 0, width: 10, height: 0, fill: Colors_default.RED, ref: this.redLsaRef }));
     }
   };
+
+  // instruments/src/PFD/Components/Airspeed/VSpeedBugs.tsx
+  var VSpeedBugs = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null);
+    }
+  };
+  var VSpeedBugs_default = VSpeedBugs;
 
   // instruments/src/PFD/Components/Airspeed/AirspeedTape.tsx
   var AirspeedTape = class extends DisplayComponent {
@@ -32690,7 +32703,7 @@
           minSpeed: this.props.minSpeed,
           maxSpeed: this.props.maxSpeed
         }
-      ))), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 86 L 81 418", fill: "black", fillTop: "white", strokeWidthTop: 2, strokeWidth: 3 }));
+      ), /* @__PURE__ */ FSComponent.buildComponent(VSpeedBugs_default, { bus: this.props.bus }))), /* @__PURE__ */ FSComponent.buildComponent(PathWithBlackBackground, { d: "M 81 86 L 81 418", fill: "black", fillTop: "white", strokeWidthTop: 2, strokeWidth: 3 }));
     }
   };
 

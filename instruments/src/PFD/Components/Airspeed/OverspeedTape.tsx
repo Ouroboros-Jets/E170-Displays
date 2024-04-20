@@ -13,7 +13,27 @@ export class OverspeedTape extends DisplayComponent<OverspeedTapeProps> {
   private readonly overspdRef = FSComponent.createRef<SVGGElement>()
 
   private onGround: boolean
+  private overspeed: number
   private ias: number
+
+  private readonly checkOverspped = (): void => {
+    if (!this.onGround) {
+      const overspdPosition =
+        (this.props.maxSpeed - this.overspeed) * this.props.stretch +
+        this.props.minSpeed * this.props.stretch -
+        this.props.minSpeed * this.props.stretch
+
+      this.overspdRef.instance.setAttribute('height', `${overspdPosition}`)
+    }
+
+    if (this.ias >= this.overspeed) {
+      this.overspdRef.instance.setAttribute('width', '8')
+      this.overspdRef.instance.setAttribute('x', '72')
+    } else {
+      this.overspdRef.instance.setAttribute('width', '4')
+      this.overspdRef.instance.setAttribute('x', '76')
+    }
+  }
 
   public onAfterRender(node: VNode): void {
     super.onAfterRender(node)
@@ -32,28 +52,15 @@ export class OverspeedTape extends DisplayComponent<OverspeedTapeProps> {
       .whenChanged()
       .handle((ias) => {
         this.ias = ias
+        this.checkOverspped()
       })
 
     sub
       .on('overspeed')
       .whenChanged()
       .handle((overspd) => {
-        if (!this.onGround) {
-          const overspdPosition =
-            (this.props.maxSpeed - overspd) * this.props.stretch +
-            this.props.minSpeed * this.props.stretch -
-            this.props.minSpeed * this.props.stretch
-
-          this.overspdRef.instance.setAttribute('height', `${overspdPosition}`)
-        }
-
-        if (this.ias >= overspd) {
-          this.overspdRef.instance.setAttribute('width', '8')
-          this.overspdRef.instance.setAttribute('x', '72')
-        } else {
-          this.overspdRef.instance.setAttribute('width', '4')
-          this.overspdRef.instance.setAttribute('x', '76')
-        }
+        this.overspeed = overspd
+        this.checkOverspped()
       })
   }
 

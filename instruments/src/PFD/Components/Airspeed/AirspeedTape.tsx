@@ -5,6 +5,7 @@ import { type PFDSimvars } from '../PFDSimVarPublisher'
 import { AirspeedSelectorBug } from './AirspeedSelectorBug'
 import { OverspeedTape } from './OverspeedTape'
 import { StallSpeedTape } from './StallSpeedTape'
+import VSpeedBugs from './VSpeedBugs'
 
 type AirspeedTapeProps = ComponentProps & {
   bus: EventBus
@@ -110,6 +111,8 @@ export class AirspeedTape extends DisplayComponent<AirspeedTapeProps> {
               minSpeed={this.props.minSpeed}
               maxSpeed={this.props.maxSpeed}
             />
+
+            <VSpeedBugs bus={this.props.bus} />
           </g>
         </g>
 

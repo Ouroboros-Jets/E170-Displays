@@ -99,7 +99,7 @@
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 60000.0
+      "max": 250.0
     },
     "pinned": null
   },
@@ -108,7 +108,7 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 114.0,
+    "value": 170.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -845,7 +845,7 @@
     "name": "OVERSPEED",
     "index": 0,
     "unit": "knots",
-    "value": 155.0,
+    "value": 202.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
