@@ -135,7 +135,7 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
       })
 
     sub
-      .on('onGround')
+      .on('on_ground')
       .whenChanged()
       .handle((onGround) => {
         this.onGround = onGround

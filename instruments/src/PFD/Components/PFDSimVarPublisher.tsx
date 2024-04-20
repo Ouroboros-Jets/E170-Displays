@@ -26,7 +26,8 @@ export type PFDSimvars = {
   nav_dme: number
   vstall: number
   overspeed: number
-  onGround: boolean
+  on_ground: boolean
+  alt_above_ground: number
 }
 
 export enum PFDVars {
@@ -55,7 +56,8 @@ export enum PFDVars {
   nav_dme = 'NAV DME',
   vstall = 'L:VSTALL',
   overspeed = 'L:OVERSPEED',
-  onGround = 'SIM ON GROUND'
+  on_ground = 'SIM ON GROUND',
+  alt_above_ground = 'PLANE ALT ABOVE GROUND'
 }
 
 export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
@@ -85,7 +87,8 @@ export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
     ['nav_dme', { name: PFDVars.nav_dme, type: SimVarValueType.NM }],
     ['vstall', { name: PFDVars.vstall, type: SimVarValueType.Knots }],
     ['overspeed', { name: PFDVars.overspeed, type: SimVarValueType.Knots }],
-    ['onGround', { name: PFDVars.onGround, type: SimVarValueType.Bool }]
+    ['on_ground', { name: PFDVars.on_ground, type: SimVarValueType.Bool }],
+    ['alt_above_ground', { name: PFDVars.alt_above_ground, type: SimVarValueType.Feet }]
   ])
 
   public constructor(bus: EventBus) {

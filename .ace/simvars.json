@@ -95,18 +95,20 @@
     "name": "INDICATED ALTITUDE",
     "index": 0,
     "unit": "Feet",
-    "value": "",
+    "value": 0.0,
     "control": {
-      "type": "Text"
+      "type": "Slider",
+      "min": 0.0,
+      "max": 60000.0
     },
-    "pinned": true
+    "pinned": null
   },
   {
     "type": "A",
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 108.0,
+    "value": 114.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -791,7 +793,7 @@
     "name": "VSTALL",
     "index": 0,
     "unit": "knots",
-    "value": 66.0,
+    "value": 76.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -843,7 +845,20 @@
     "name": "OVERSPEED",
     "index": 0,
     "unit": "knots",
-    "value": 174.0,
+    "value": 155.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "PLANE ALT ABOVE GROUND",
+    "index": 0,
+    "unit": "feet",
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

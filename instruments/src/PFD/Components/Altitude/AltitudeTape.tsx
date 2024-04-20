@@ -1,6 +1,7 @@
 import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
 import { type PFDSimvars } from '../PFDSimVarPublisher'
 import { AltitudeSelectorBug } from './AltitudeSelectorBug'
+import { LowAltitudeAwarenessDisplay } from './LowAltitudeAwarenessDisplay'
 
 type AltitudeTapeProps = ComponentProps & {
   bus: EventBus
@@ -93,7 +94,15 @@ export class AltitudeTape extends DisplayComponent<AltitudeTapeProps> {
 
         <g clip-path="url(#TapeClip)">
           <g ref={this.tapeRef}>
-            {this.renderTape()}
+            <g clip-path="url(#laadClipPath)"> {this.renderTape()}</g>
+
+            <LowAltitudeAwarenessDisplay
+              bus={this.props.bus}
+              baseline={this.props.baseline}
+              stretch={this.props.stretch}
+              minAltitude={this.props.minAltitude}
+              maxAltitude={this.props.maxAltitude}
+            />
 
             <AltitudeSelectorBug
               bus={this.props.bus}

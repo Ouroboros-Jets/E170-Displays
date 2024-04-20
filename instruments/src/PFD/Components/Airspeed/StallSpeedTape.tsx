@@ -47,7 +47,7 @@ export class StallSpeedTape extends DisplayComponent<StallSpeedTapeProps> {
     const sub = this.props.bus.getSubscriber<PFDSimvars>()
 
     sub
-      .on('onGround')
+      .on('on_ground')
       .whenChanged()
       .handle((onGround) => {
         this.onGround = onGround

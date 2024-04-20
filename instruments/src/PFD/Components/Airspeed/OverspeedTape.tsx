@@ -21,7 +21,7 @@ export class OverspeedTape extends DisplayComponent<OverspeedTapeProps> {
     const sub = this.props.bus.getSubscriber<PFDSimvars>()
 
     sub
-      .on('onGround')
+      .on('on_ground')
       .whenChanged()
       .handle((onGround) => {
         this.onGround = onGround
@@ -61,12 +61,25 @@ export class OverspeedTape extends DisplayComponent<OverspeedTapeProps> {
     return (
       <g id="OBP">
         <defs>
-          <pattern id="diagonal" width={10} height={10} patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+          <pattern
+            id="overspeedPattern"
+            width={10}
+            height={10}
+            patternTransform="rotate(45 0 0)"
+            patternUnits="userSpaceOnUse"
+          >
             <line x1={0} x2={0} y1={0} y2={10} stroke={Colors.RED} stroke-width={20} />
             <line x1={5} x2={5} y1={0} y2={10} stroke="white" stroke-width={4} />
           </pattern>
         </defs>
-        <rect x={76} y={this.props.minSpeed * 2} width={4} height={0} fill="url(#diagonal)" ref={this.overspdRef} />
+        <rect
+          x={76}
+          y={this.props.minSpeed * 2}
+          width={4}
+          height={0}
+          fill="url(#overspeedPattern)"
+          ref={this.overspdRef}
+        />
       </g>
     )
   }

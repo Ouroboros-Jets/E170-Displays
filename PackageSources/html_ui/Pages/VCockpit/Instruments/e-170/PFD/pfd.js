@@ -32133,6 +32133,52 @@
     }
   };
 
+  // instruments/src/PFD/Components/Altitude/LowAltitudeAwarenessDisplay.tsx
+  var LowAltitudeAwarenessDisplay = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.grndBox = FSComponent.createRef();
+      this.grndBoxClipPath = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("alt_above_ground").whenChanged().handle((alt) => {
+        const boxPosition = (this.props.maxAltitude - alt) * this.props.stretch + this.props.minAltitude * this.props.stretch - this.props.minAltitude * this.props.stretch;
+        this.grndBox.instance.setAttribute("height", `${boxPosition}`);
+        this.grndBox.instance.setAttribute("y", `${boxPosition}`);
+        const clipPathHeight = this.props.maxAltitude * this.props.stretch;
+        this.grndBoxClipPath.instance.setAttribute("height", `${clipPathHeight}`);
+        this.grndBoxClipPath.instance.setAttribute("y", `${boxPosition - clipPathHeight}`);
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent(
+        "pattern",
+        {
+          id: "laadPattern",
+          width: 10,
+          height: 10,
+          patternTransform: "rotate(45 0 0)",
+          patternUnits: "userSpaceOnUse"
+        },
+        /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 5, x2: 5, y1: 0, y2: 10, stroke: Colors_default.YELLOW, "stroke-width": 2 })
+      ), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "laadClipPath" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 455, y: 0, width: 82, height: 0, ref: this.grndBoxClipPath }))), /* @__PURE__ */ FSComponent.buildComponent(
+        "rect",
+        {
+          x: 455,
+          y: 0,
+          width: 82,
+          height: 0,
+          fill: "url(#laadPattern)",
+          stroke: Colors_default.YELLOW,
+          "stroke-width": 2,
+          ref: this.grndBox
+        }
+      ));
+    }
+  };
+
   // instruments/src/PFD/Components/Altitude/AltitudeTape.tsx
   var AltitudeTape = class extends DisplayComponent {
     constructor() {
@@ -32199,7 +32245,16 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "TapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 455, y: 88, width: 83, height: 333 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#TapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tapeRef }, this.renderTape(), /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "TapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 455, y: 88, width: 83, height: 333 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#TapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tapeRef }, /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#laadClipPath)" }, " ", this.renderTape()), /* @__PURE__ */ FSComponent.buildComponent(
+        LowAltitudeAwarenessDisplay,
+        {
+          bus: this.props.bus,
+          baseline: this.props.baseline,
+          stretch: this.props.stretch,
+          minAltitude: this.props.minAltitude,
+          maxAltitude: this.props.maxAltitude
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent(
         AltitudeSelectorBug,
         {
           bus: this.props.bus,
@@ -32470,7 +32525,7 @@
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("onGround").whenChanged().handle((onGround) => {
+      sub.on("on_ground").whenChanged().handle((onGround) => {
         this.onGround = onGround;
       });
       sub.on("indicated_airspeed").whenChanged().handle((ias) => {
@@ -32491,7 +32546,28 @@
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", { id: "OBP" }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("pattern", { id: "diagonal", width: 10, height: 10, patternTransform: "rotate(45 0 0)", patternUnits: "userSpaceOnUse" }, /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 0, x2: 0, y1: 0, y2: 10, stroke: Colors_default.RED, "stroke-width": 20 }), /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 5, x2: 5, y1: 0, y2: 10, stroke: "white", "stroke-width": 4 }))), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 76, y: this.props.minSpeed * 2, width: 4, height: 0, fill: "url(#diagonal)", ref: this.overspdRef }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { id: "OBP" }, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent(
+        "pattern",
+        {
+          id: "overspeedPattern",
+          width: 10,
+          height: 10,
+          patternTransform: "rotate(45 0 0)",
+          patternUnits: "userSpaceOnUse"
+        },
+        /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 0, x2: 0, y1: 0, y2: 10, stroke: Colors_default.RED, "stroke-width": 20 }),
+        /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 5, x2: 5, y1: 0, y2: 10, stroke: "white", "stroke-width": 4 })
+      )), /* @__PURE__ */ FSComponent.buildComponent(
+        "rect",
+        {
+          x: 76,
+          y: this.props.minSpeed * 2,
+          width: 4,
+          height: 0,
+          fill: "url(#overspeedPattern)",
+          ref: this.overspdRef
+        }
+      ));
     }
   };
 
@@ -32524,7 +32600,7 @@
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("onGround").whenChanged().handle((onGround) => {
+      sub.on("on_ground").whenChanged().handle((onGround) => {
         this.onGround = onGround;
         this.checkStall();
       });
@@ -32701,7 +32777,7 @@
         this.overspeed = overspd;
         this.vStallCheck();
       });
-      sub.on("onGround").whenChanged().handle((onGround) => {
+      sub.on("on_ground").whenChanged().handle((onGround) => {
         this.onGround = onGround;
         this.vStallCheck();
       });
@@ -33356,7 +33432,8 @@
     ["nav_dme", { name: "NAV DME" /* nav_dme */, type: SimVarValueType.NM }],
     ["vstall", { name: "L:VSTALL" /* vstall */, type: SimVarValueType.Knots }],
     ["overspeed", { name: "L:OVERSPEED" /* overspeed */, type: SimVarValueType.Knots }],
-    ["onGround", { name: "SIM ON GROUND" /* onGround */, type: SimVarValueType.Bool }]
+    ["on_ground", { name: "SIM ON GROUND" /* on_ground */, type: SimVarValueType.Bool }],
+    ["alt_above_ground", { name: "PLANE ALT ABOVE GROUND" /* alt_above_ground */, type: SimVarValueType.Feet }]
   ]);
 
   // instruments/src/PFD/instrument.tsx
