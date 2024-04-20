@@ -32140,7 +32140,9 @@
       this.tapeRef = FSComponent.createRef();
       this.renderTape = () => {
         const elements = [];
-        for (let alt = 0; alt < this.props.maxAltitude; alt += 100) {
+        const increment = 100;
+        const totalIncrements = Math.ceil(Math.abs(this.props.minAltitude) / increment) + Math.ceil(this.props.maxAltitude / increment);
+        for (let alt = 0; alt < totalIncrements * increment; alt += increment) {
           if (alt % 500 === 0) {
             elements.push(
               /* @__PURE__ */ FSComponent.buildComponent(
@@ -32499,32 +32501,36 @@
       super(...arguments);
       this.yellowLsaRef = FSComponent.createRef();
       this.redLsaRef = FSComponent.createRef();
-    }
-    onAfterRender(node) {
-      super.onAfterRender(node);
-      const sub = this.props.bus.getSubscriber();
-      sub.on("onGround").whenChanged().handle((onGround) => {
-        this.onGround = onGround;
-        if (onGround) {
-          this.redLsaRef.instance.style.visibility = "hidden";
-          this.yellowLsaRef.instance.style.visibility = "hidden";
-        }
-      });
-      sub.on("vstall").whenChanged().handle((stall) => {
+      this.checkStall = () => {
         if (!this.onGround) {
-          if (stall <= 30) {
+          if (this.stall <= 30) {
             this.redLsaRef.instance.style.visibility = "hidden";
             this.yellowLsaRef.instance.style.visibility = "hidden";
             return;
           }
           this.redLsaRef.instance.style.visibility = "visible";
           this.yellowLsaRef.instance.style.visibility = "visible";
-          const stallPosition = (this.props.maxSpeed - stall) * this.props.stretch + this.props.minSpeed * this.props.stretch;
+          const stallPosition = (this.props.maxSpeed - this.stall) * this.props.stretch + this.props.minSpeed * this.props.stretch;
           this.redLsaRef.instance.setAttribute("height", `${stallPosition - this.props.minSpeed}`);
           this.redLsaRef.instance.style.y = `${stallPosition - this.props.minSpeed}`;
           this.yellowLsaRef.instance.setAttribute("height", `${stallPosition - this.props.minSpeed * 2}`);
           this.yellowLsaRef.instance.style.y = `${stallPosition - this.props.minSpeed * 2}`;
+        } else {
+          this.redLsaRef.instance.style.visibility = "hidden";
+          this.yellowLsaRef.instance.style.visibility = "hidden";
         }
+      };
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("onGround").whenChanged().handle((onGround) => {
+        this.onGround = onGround;
+        this.checkStall();
+      });
+      sub.on("vstall").whenChanged().handle((stall) => {
+        this.stall = stall;
+        this.checkStall();
       });
     }
     render() {
@@ -33195,6 +33201,14 @@
       this.primaryNavDistanceReadOutRef = FSComponent.createRef();
       this.primaryNavDistanceTimeEnroute = FSComponent.createRef();
       this.activeAnnunciator = 2 /* FMS */;
+      this.checkDistance = () => {
+        const minutes = Math.round(this.nextTargetDistanceNm / this.trueAirspeed * 60).toString();
+        if (this.activeAnnunciator === 2 /* FMS */) {
+          this.primaryNavDistanceTimeEnroute.instance.textContent = minutes === "Infinity" ? "\u221E" : minutes;
+        } else {
+          this.primaryNavDistanceTimeEnroute.instance.textContent = minutes === "Infinity" ? "\u221E" : minutes;
+        }
+      };
     }
     onAfterRender(node) {
       super.onAfterRender(node);
@@ -33232,22 +33246,11 @@
           this.primaryNavDistanceReadOutRef.instance.textContent = this.nextTargetDistanceNm.toString();
         }
       });
-      sub.on("gps_next_waypoint_distance").whenChanged().handle((wpDist) => {
-        if (this.activeAnnunciator === 2 /* FMS */) {
-          this.nextTargetDistanceNm = Math.round(wpDist / 1852);
-          this.primaryNavDistanceReadOutRef.instance.textContent = this.nextTargetDistanceNm.toString();
-        }
-      });
       sub.on("true_airspeed").whenChanged().handle((airspd) => {
-        const minutes = Math.round(this.nextTargetDistanceNm / airspd * 60).toString();
-        if (this.activeAnnunciator === 2 /* FMS */) {
-          this.primaryNavDistanceTimeEnroute.instance.textContent = minutes === "Infinity" ? "\u221E" : minutes;
-        } else {
-          this.primaryNavDistanceTimeEnroute.instance.textContent = minutes === "Infinity" ? "\u221E" : minutes;
-        }
+        this.trueAirspeed = airspd;
+        this.checkDistance();
       });
       sub.on("nav_ident").whenChanged().handle((navIdent) => {
-        console.log(this.activeAnnunciator);
         if (this.activeAnnunciator !== 2 /* FMS */) {
           this.primaryNavIdRef.instance.textContent = navIdent;
         }
@@ -33257,6 +33260,7 @@
           this.nextTargetDistanceNm = navDme;
           this.primaryNavDistanceReadOutRef.instance.textContent = navDme.toString();
         }
+        this.checkDistance();
       });
     }
     render() {

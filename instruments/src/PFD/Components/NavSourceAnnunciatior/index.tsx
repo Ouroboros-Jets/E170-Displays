@@ -21,6 +21,16 @@ export default class NavSourceAnnunciator extends DisplayComponent<T_NavSourceAn
 
   private activeAnnunciator: Annunciators = Annunciators.FMS
   private nextTargetDistanceNm: number
+  private trueAirspeed: number
+
+  private readonly checkDistance = (): void => {
+    const minutes = Math.round((this.nextTargetDistanceNm / this.trueAirspeed) * 60).toString()
+    if (this.activeAnnunciator === Annunciators.FMS) {
+      this.primaryNavDistanceTimeEnroute.instance.textContent = minutes === 'Infinity' ? '∞' : minutes
+    } else {
+      this.primaryNavDistanceTimeEnroute.instance.textContent = minutes === 'Infinity' ? '∞' : minutes
+    }
+  }
 
   public onAfterRender(node: VNode): void {
     super.onAfterRender(node)
@@ -74,32 +84,17 @@ export default class NavSourceAnnunciator extends DisplayComponent<T_NavSourceAn
       })
 
     sub
-      .on('gps_next_waypoint_distance')
-      .whenChanged()
-      .handle((wpDist) => {
-        if (this.activeAnnunciator === Annunciators.FMS) {
-          this.nextTargetDistanceNm = Math.round(wpDist / 1852)
-          this.primaryNavDistanceReadOutRef.instance.textContent = this.nextTargetDistanceNm.toString()
-        }
-      })
-
-    sub
       .on('true_airspeed')
       .whenChanged()
       .handle((airspd) => {
-        const minutes = Math.round((this.nextTargetDistanceNm / airspd) * 60).toString()
-        if (this.activeAnnunciator === Annunciators.FMS) {
-          this.primaryNavDistanceTimeEnroute.instance.textContent = minutes === 'Infinity' ? '∞' : minutes
-        } else {
-          this.primaryNavDistanceTimeEnroute.instance.textContent = minutes === 'Infinity' ? '∞' : minutes
-        }
+        this.trueAirspeed = airspd
+        this.checkDistance()
       })
 
     sub
       .on('nav_ident')
       .whenChanged()
       .handle((navIdent) => {
-        console.log(this.activeAnnunciator)
         if (this.activeAnnunciator !== Annunciators.FMS) {
           this.primaryNavIdRef.instance.textContent = navIdent
         }
@@ -113,6 +108,7 @@ export default class NavSourceAnnunciator extends DisplayComponent<T_NavSourceAn
           this.nextTargetDistanceNm = navDme
           this.primaryNavDistanceReadOutRef.instance.textContent = navDme.toString()
         }
+        this.checkDistance()
       })
   }
 

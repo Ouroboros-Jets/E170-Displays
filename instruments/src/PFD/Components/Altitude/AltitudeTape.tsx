@@ -16,7 +16,11 @@ export class AltitudeTape extends DisplayComponent<AltitudeTapeProps> {
   private readonly renderTape = (): JSX.Element[] => {
     const elements: JSX.Element[] = []
 
-    for (let alt = 0; alt < this.props.maxAltitude; alt += 100) {
+    const increment = 100
+    const totalIncrements =
+      Math.ceil(Math.abs(this.props.minAltitude) / increment) + Math.ceil(this.props.maxAltitude / increment)
+
+    for (let alt = 0; alt < totalIncrements * increment; alt += increment) {
       if (alt % 500 === 0) {
         elements.push(
           <path
