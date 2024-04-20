@@ -95,7 +95,7 @@
     "name": "INDICATED ALTITUDE",
     "index": 0,
     "unit": "Feet",
-    "value": 213.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -199,7 +199,7 @@
     "name": "VERTICAL SPEED",
     "index": 0,
     "unit": "Feet per second",
-    "value": 25.0,
+    "value": 36.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -615,7 +615,7 @@
     "name": "AUTOPILOT ALTITUDE LOCK VAR",
     "index": 0,
     "unit": "feet",
-    "value": 2500.0,
+    "value": 1.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -793,7 +793,7 @@
     "name": "VSTALL",
     "index": 0,
     "unit": "knots",
-    "value": 77.0,
+    "value": 81.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -845,7 +845,7 @@
     "name": "OVERSPEED",
     "index": 0,
     "unit": "knots",
-    "value": 150.0,
+    "value": 157.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

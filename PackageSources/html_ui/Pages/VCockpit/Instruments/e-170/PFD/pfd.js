@@ -26453,11 +26453,11 @@
       }
       return false;
     }
-    static createConstraint(index, minAltitude, maxAltitude2, name, type = "descent") {
+    static createConstraint(index, minAltitude, maxAltitude, name, type = "descent") {
       return {
         index,
         minAltitude,
-        maxAltitude: maxAltitude2,
+        maxAltitude,
         targetAltitude: 0,
         name,
         isTarget: false,
@@ -28681,8 +28681,8 @@
           if (isCurrentConstraintClimb) {
             if (currentConstraintIndex - 1 > targetConstraintIndex) {
               currentTargetConstraint.fpa = MathUtils.clamp(this.flightPathAngle, currentPathSegmentMinFpa, currentPathSegmentMaxFpa);
-              const maxAltitude3 = pathSegmentIsFlat ? currentTargetConstraint.targetAltitude : verticalPlan.constraints[currentConstraintIndex - 1].maxAltitude;
-              const terminatedIndex = this.terminateSmoothedPath(verticalPlan, targetConstraintIndex, currentConstraintIndex, maxAltitude3, false);
+              const maxAltitude2 = pathSegmentIsFlat ? currentTargetConstraint.targetAltitude : verticalPlan.constraints[currentConstraintIndex - 1].maxAltitude;
+              const terminatedIndex = this.terminateSmoothedPath(verticalPlan, targetConstraintIndex, currentConstraintIndex, maxAltitude2, false);
               if (terminatedIndex < currentConstraintIndex) {
                 targetConstraintIndex = terminatedIndex - 1;
                 currentTargetConstraint = verticalPlan.constraints[terminatedIndex];
@@ -28696,8 +28696,8 @@
             break;
           }
           const minAltitude = currentConstraint.minAltitude;
-          const maxAltitude2 = currentConstraint.maxAltitude;
-          if (pathSegmentIsFlat && maxAltitude2 - currentTargetConstraint.targetAltitude > 0) {
+          const maxAltitude = currentConstraint.maxAltitude;
+          if (pathSegmentIsFlat && maxAltitude - currentTargetConstraint.targetAltitude > 0) {
             const flatSegmentAltitude = currentTargetConstraint.targetAltitude;
             const newTargetConstraintIndex = currentConstraintIndex - 1;
             SmoothingPathCalculator.applyPathValuesToSmoothedConstraints(
@@ -28712,7 +28712,7 @@
             currentTargetConstraint.targetAltitude = flatSegmentAltitude;
             currentTargetConstraint.isTarget = true;
             break;
-          } else if (!currentTargetConstraintHasFixedFpa && maxAltitude2 - currentTargetConstraint.targetAltitude <= 0) {
+          } else if (!currentTargetConstraintHasFixedFpa && maxAltitude - currentTargetConstraint.targetAltitude <= 0) {
             pathSegmentIsFlat = true;
             currentTargetConstraint.fpa = 0;
             if (isCurrentConstraintFirstDescent) {
@@ -28733,7 +28733,7 @@
             continue;
           }
           const minFpa = VNavUtils.getFpa(currentPathSegmentDistance, minAltitude - currentTargetConstraint.targetAltitude);
-          const maxFpa = VNavUtils.getFpa(currentPathSegmentDistance, maxAltitude2 - currentTargetConstraint.targetAltitude);
+          const maxFpa = VNavUtils.getFpa(currentPathSegmentDistance, maxAltitude - currentTargetConstraint.targetAltitude);
           const isFpaOutOfBounds = minFpa > currentPathSegmentMaxFpa || maxFpa < currentPathSegmentMinFpa;
           if (isFpaOutOfBounds || isCurrentConstraintFaf || isCurrentConstraintManual || isCurrentConstraintDirect) {
             if (isFpaOutOfBounds) {
@@ -28773,15 +28773,15 @@
       }
       return true;
     }
-    terminateSmoothedPath(verticalPlan, targetConstraintIndex, terminatingConstraintIndex, maxAltitude2, terminatingConstraintIsTarget) {
-      const [maxAltitudeViolatedIndex, smoothedSegmentDistance] = SmoothingPathCalculator.applyPathValuesToSmoothedConstraints(verticalPlan, targetConstraintIndex, terminatingConstraintIndex, maxAltitude2, this.applyPathValuesResult);
+    terminateSmoothedPath(verticalPlan, targetConstraintIndex, terminatingConstraintIndex, maxAltitude, terminatingConstraintIsTarget) {
+      const [maxAltitudeViolatedIndex, smoothedSegmentDistance] = SmoothingPathCalculator.applyPathValuesToSmoothedConstraints(verticalPlan, targetConstraintIndex, terminatingConstraintIndex, maxAltitude, this.applyPathValuesResult);
       if (terminatingConstraintIsTarget || maxAltitudeViolatedIndex !== void 0) {
         const currentTargetConstraint = verticalPlan.constraints[targetConstraintIndex];
         const proposedNewTargetConstraintAltitude = currentTargetConstraint.targetAltitude + VNavUtils.altitudeForDistance(currentTargetConstraint.fpa, smoothedSegmentDistance);
         const newTargetConstraintIndex = maxAltitudeViolatedIndex !== null && maxAltitudeViolatedIndex !== void 0 ? maxAltitudeViolatedIndex : terminatingConstraintIndex;
         const newTargetConstraint = verticalPlan.constraints[newTargetConstraintIndex];
         newTargetConstraint.isTarget = true;
-        newTargetConstraint.targetAltitude = MathUtils.clamp(proposedNewTargetConstraintAltitude, newTargetConstraint.minAltitude, Math.min(newTargetConstraint.maxAltitude, maxAltitude2));
+        newTargetConstraint.targetAltitude = MathUtils.clamp(proposedNewTargetConstraintAltitude, newTargetConstraint.minAltitude, Math.min(newTargetConstraint.maxAltitude, maxAltitude));
       }
       return maxAltitudeViolatedIndex !== null && maxAltitudeViolatedIndex !== void 0 ? maxAltitudeViolatedIndex : terminatingConstraintIndex;
     }
@@ -28915,13 +28915,13 @@
       }
       return Infinity;
     }
-    static applyPathValuesToSmoothedConstraints(verticalPlan, targetConstraintIndex, endConstraintIndex, maxAltitude2, out) {
+    static applyPathValuesToSmoothedConstraints(verticalPlan, targetConstraintIndex, endConstraintIndex, maxAltitude, out) {
       const currentTargetConstraint = verticalPlan.constraints[targetConstraintIndex];
       let distance = currentTargetConstraint.distance;
       for (let i = targetConstraintIndex + 1; i < endConstraintIndex; i++) {
         const smoothedConstraint = verticalPlan.constraints[i];
         const targetAltitude = currentTargetConstraint.targetAltitude + VNavUtils.altitudeForDistance(currentTargetConstraint.fpa, distance);
-        if (targetAltitude < maxAltitude2) {
+        if (targetAltitude < maxAltitude) {
           smoothedConstraint.fpa = currentTargetConstraint.fpa;
           smoothedConstraint.targetAltitude = targetAltitude;
           distance += smoothedConstraint.distance;
@@ -32091,67 +32091,6 @@
   };
   var AttitudeDisplay_default = Attitude;
 
-  // instruments/src/PFD/Components/Altitude/AltitudeTape.tsx
-  var baseline = 254;
-  var maxAltitude = 6e4;
-  var renderTape = () => {
-    const elements = [];
-    for (let alt = 0; alt < maxAltitude; alt += 100) {
-      if (alt % 500 === 0) {
-        elements.push(
-          /* @__PURE__ */ FSComponent.buildComponent(
-            "path",
-            {
-              d: `M 455 ${alt * 0.3} L 500 ${alt * 0.3 + 40} L 500 ${alt * 0.3 + 110} L 455 ${alt * 0.3 + 150}`,
-              stroke: "white",
-              "stroke-width": 2,
-              fill: "transparent"
-            }
-          )
-        );
-        if (alt % 1e3 === 0) {
-          elements.push(
-            /* @__PURE__ */ FSComponent.buildComponent(
-              "path",
-              {
-                d: `M 500 ${alt * 0.3 + 40} L 500 ${alt * 0.3 + 31} L 465 ${alt * 0.3} L 500 ${alt * 0.3 - 31} L 500 ${alt * 0.3 - 40}`,
-                stroke: "white",
-                "stroke-width": 2,
-                fill: "transparent"
-              }
-            )
-          );
-        }
-        elements.push(
-          /* @__PURE__ */ FSComponent.buildComponent("text", { x: 530, y: alt * 0.3 + 7, "font-size": 20, "text-anchor": "end", fill: "white" }, (maxAltitude - alt).toString())
-        );
-      } else {
-        elements.push(/* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 455 ${alt * 0.3} L 465 ${alt * 0.3}`, stroke: "white", "stroke-width": 2 }));
-      }
-    }
-    return elements;
-  };
-  var AltitudeTape = class extends DisplayComponent {
-    constructor() {
-      super(...arguments);
-      this.tapeRef = FSComponent.createRef();
-    }
-    onAfterRender(node) {
-      super.onAfterRender(node);
-      const sub = this.props.bus.getSubscriber();
-      sub.on("altitude").whenChanged().handle((alt) => {
-        var _a2;
-        (_a2 = this.tapeRef.instance) == null ? void 0 : _a2.setAttribute(
-          "transform",
-          `translate(0, ${baseline - maxAltitude * 0.3 + Math.round(alt) * 0.3})`
-        );
-      });
-    }
-    render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "TapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 455, y: 88, width: 83, height: 333 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#TapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tapeRef }, renderTape())), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 455 86 L 455 421", stroke: "white", "stroke-width": "2", fill: "none" }));
-    }
-  };
-
   // instruments/common/util/Colors.ts
   var Colors = /* @__PURE__ */ ((Colors2) => {
     Colors2["GREEN"] = "#04E304";
@@ -32162,6 +32101,112 @@
     return Colors2;
   })(Colors || {});
   var Colors_default = Colors;
+
+  // instruments/src/PFD/Components/Altitude/AltitudeSelectorBug.tsx
+  var AltitudeSelectorBug = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.altSelBug = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("altitude_selected").whenChanged().handle((alt) => {
+        this.altSelBug.instance.setAttribute(
+          "transform",
+          `translate(455, ${this.props.maxAltitude * this.props.stretch - alt * this.props.stretch})`
+        );
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", { transform: "translate(455, 0)", ref: this.altSelBug }, /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: "M 0 -1 L -15 -1 L -15 -10 L -7 -10 L 0 -2 L 7 -10 L 15 -10 L 15 -1 L 0 -1",
+          transform: "rotate(90)",
+          fill: Colors_default.CYAN,
+          "stroke-width": 2,
+          stroke: Colors_default.CYAN,
+          "stroke-linecap": "round"
+        }
+      ));
+    }
+  };
+
+  // instruments/src/PFD/Components/Altitude/AltitudeTape.tsx
+  var AltitudeTape = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.tapeRef = FSComponent.createRef();
+      this.renderTape = () => {
+        const elements = [];
+        for (let alt = 0; alt < this.props.maxAltitude; alt += 100) {
+          if (alt % 500 === 0) {
+            elements.push(
+              /* @__PURE__ */ FSComponent.buildComponent(
+                "path",
+                {
+                  d: `M 455 ${alt * this.props.stretch} L 500 ${alt * this.props.stretch + 40} L 500 ${alt * this.props.stretch + 110} L 455 ${alt * this.props.stretch + 150}`,
+                  stroke: "white",
+                  "stroke-width": 2,
+                  fill: "transparent"
+                }
+              )
+            );
+            if (alt % 1e3 === 0) {
+              elements.push(
+                /* @__PURE__ */ FSComponent.buildComponent(
+                  "path",
+                  {
+                    d: `M 500 ${alt * this.props.stretch + 40} L 500 ${alt * this.props.stretch + 31} L 465 ${alt * this.props.stretch} L 500 ${alt * this.props.stretch - 31} L 500 ${alt * this.props.stretch - 40}`,
+                    stroke: "white",
+                    "stroke-width": 2,
+                    fill: "transparent"
+                  }
+                )
+              );
+            }
+            elements.push(
+              /* @__PURE__ */ FSComponent.buildComponent("text", { x: 535, y: alt * this.props.stretch + 7, "font-size": 15, "text-anchor": "end", fill: "white" }, (this.props.maxAltitude - alt).toString())
+            );
+          } else {
+            elements.push(
+              /* @__PURE__ */ FSComponent.buildComponent(
+                "path",
+                {
+                  d: `M 455 ${alt * this.props.stretch} L 465 ${alt * this.props.stretch}`,
+                  stroke: "white",
+                  "stroke-width": 2
+                }
+              )
+            );
+          }
+        }
+        return elements;
+      };
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("altitude").whenChanged().handle((alt) => {
+        var _a2;
+        (_a2 = this.tapeRef.instance) == null ? void 0 : _a2.setAttribute(
+          "transform",
+          `translate(0, ${this.props.baseline - this.props.maxAltitude * this.props.stretch + Math.round(alt) * this.props.stretch})`
+        );
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "TapeClip" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 455, y: 88, width: 83, height: 333 }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#TapeClip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tapeRef }, this.renderTape(), /* @__PURE__ */ FSComponent.buildComponent(
+        AltitudeSelectorBug,
+        {
+          bus: this.props.bus,
+          stretch: this.props.stretch,
+          maxAltitude: this.props.maxAltitude
+        }
+      ))), /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 455 86 L 455 421", stroke: "white", "stroke-width": "2", fill: "none" }));
+    }
+  };
 
   // instruments/src/PFD/Components/Altitude/SelectedAltitudeBox.tsx
   var SelectedAltitudeBox = class extends DisplayComponent {
@@ -32174,8 +32219,9 @@
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
       sub.on("altitude_selected").whenChanged().handle((alt) => {
-        this.altitudeSelectedRef1.instance.textContent = Math.round(alt).toString().substring(0, 3).padStart(3, "0");
-        this.altitudeSelectedRef2.instance.textContent = Math.round(alt).toString().substring(3).padStart(2, "0");
+        const altStr = Math.round(alt).toString().padStart(5, "0");
+        this.altitudeSelectedRef1.instance.textContent = altStr.substring(0, 3);
+        this.altitudeSelectedRef2.instance.textContent = altStr.substring(3, 5);
       });
     }
     render() {
@@ -32317,7 +32363,6 @@
   var CurrentAltitudeBox_default = CurrentAltitudeBox;
 
   // instruments/src/PFD/Components/Altitude/TrendVector.tsx
-  var baseline2 = 254;
   var TrendVector = class extends DisplayComponent {
     constructor() {
       super(...arguments);
@@ -32334,7 +32379,10 @@
         } else {
           this.groupRef.instance.style.visibility = "hidden";
         }
-        this.trendVecRef.instance.setAttribute("d", `M 450 ${baseline2} L 450 ${baseline2 - altPredictionInFeet * 0.3}`);
+        this.trendVecRef.instance.setAttribute(
+          "d",
+          `M 450 ${this.props.baseline} L 450 ${this.props.baseline - altPredictionInFeet * this.props.stretch}`
+        );
       });
     }
     render() {
@@ -32347,14 +32395,35 @@
           ref: this.trendVecRef,
           "clip-path": "url(#altTrendVectorClip)"
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent("path", { d: `M 446 ${baseline2} L 456 ${baseline2}`, "stroke-width": 2, stroke: "white", "stroke-linejoin": "round" }));
+      ), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: `M 446 ${this.props.baseline} L 456 ${this.props.baseline}`,
+          "stroke-width": 2,
+          stroke: "white",
+          "stroke-linejoin": "round"
+        }
+      ));
     }
   };
 
   // instruments/src/PFD/Components/Altitude/index.tsx
+  var baselineinPx = 254;
+  var stretch = 0.3;
+  var minAltitudeinFt = -2e3;
+  var maxAltitudeInFt = 6e4;
   var Altitude = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "57", width: "82", height: "361", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent(AltitudeTape, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SelectedAltitudeBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAltitudeBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(BaroSettingBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(TrendVector, { bus: this.props.bus }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: "455", y: "57", width: "82", height: "361", fill: "#000", opacity: 0.3 }), /* @__PURE__ */ FSComponent.buildComponent(
+        AltitudeTape,
+        {
+          bus: this.props.bus,
+          baseline: baselineinPx,
+          stretch,
+          minAltitude: minAltitudeinFt,
+          maxAltitude: maxAltitudeInFt
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent(SelectedAltitudeBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(CurrentAltitudeBox_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(BaroSettingBox, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(TrendVector, { bus: this.props.bus, baseline: baselineinPx, stretch }));
     }
   };
   var Altitude_default = Altitude;
@@ -32715,7 +32784,7 @@
 
   // instruments/src/PFD/Components/Airspeed/index.tsx
   var baselineInPx = 254;
-  var stretch = 3;
+  var stretch2 = 3;
   var minSpeedInKnots = 30;
   var maxSpeedInKnots = 940;
   var Airspeed = class extends DisplayComponent {
@@ -32725,7 +32794,7 @@
         {
           bus: this.props.bus,
           baseline: baselineInPx,
-          stretch,
+          stretch: stretch2,
           minSpeed: minSpeedInKnots,
           maxSpeed: maxSpeedInKnots
         }
