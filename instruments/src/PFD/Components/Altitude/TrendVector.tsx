@@ -4,9 +4,9 @@ import { type PFDSimvars } from '../PFDSimVarPublisher'
 
 type TrendVectorProps = ComponentProps & {
   bus: EventBus
+  baseline: number
+  stretch: number
 }
-
-const baseline = 254
 
 export class TrendVector extends DisplayComponent<TrendVectorProps> {
   private readonly groupRef = FSComponent.createRef<SVGGElement>()
@@ -29,7 +29,10 @@ export class TrendVector extends DisplayComponent<TrendVectorProps> {
           this.groupRef.instance.style.visibility = 'hidden'
         }
 
-        this.trendVecRef.instance.setAttribute('d', `M 450 ${baseline} L 450 ${baseline - altPredictionInFeet * 0.3}`)
+        this.trendVecRef.instance.setAttribute(
+          'd',
+          `M 450 ${this.props.baseline} L 450 ${this.props.baseline - altPredictionInFeet * this.props.stretch}`
+        )
       })
   }
 
@@ -49,7 +52,12 @@ export class TrendVector extends DisplayComponent<TrendVectorProps> {
           ref={this.trendVecRef}
           clip-path="url(#altTrendVectorClip)"
         />
-        <path d={`M 446 ${baseline} L 456 ${baseline}`} stroke-width={2} stroke="white" stroke-linejoin="round" />
+        <path
+          d={`M 446 ${this.props.baseline} L 456 ${this.props.baseline}`}
+          stroke-width={2}
+          stroke="white"
+          stroke-linejoin="round"
+        />
       </g>
     )
   }

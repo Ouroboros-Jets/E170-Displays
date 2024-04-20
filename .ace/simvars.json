@@ -95,7 +95,7 @@
     "name": "INDICATED ALTITUDE",
     "index": 0,
     "unit": "Feet",
-    "value": 213.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -108,13 +108,13 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 51.0,
+    "value": 170.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 940.0
+      "max": 250.0
     },
-    "pinned": true
+    "pinned": null
   },
   {
     "type": "A",
@@ -199,7 +199,7 @@
     "name": "VERTICAL SPEED",
     "index": 0,
     "unit": "Feet per second",
-    "value": 51.0,
+    "value": 36.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -537,7 +537,7 @@
     "name": "PLANE HEADING DEGREES MAGNETIC",
     "index": 0,
     "unit": "radians",
-    "value": 78.0,
+    "value": 68.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -602,7 +602,7 @@
     "name": "AIRSPEED SELECT INDICATED OR TRUE",
     "index": 0,
     "unit": "knots",
-    "value": 70.0,
+    "value": 55.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -615,7 +615,7 @@
     "name": "AUTOPILOT ALTITUDE LOCK VAR",
     "index": 0,
     "unit": "feet",
-    "value": 2500.0,
+    "value": 167.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -654,7 +654,7 @@
     "name": "AIRSPEED TRUE",
     "index": 0,
     "unit": "knots",
-    "value": 113.0,
+    "value": 118.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -667,7 +667,7 @@
     "name": "ACCELERATION BODY Z",
     "index": 0,
     "unit": "feet",
-    "value": 10.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -680,7 +680,7 @@
     "name": "ACCELERATION BODY Y",
     "index": 0,
     "unit": "feet",
-    "value": 2.0,
+    "value": 0.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -693,7 +693,7 @@
     "name": "OBJ_AP_SELECTED_AS",
     "index": 0,
     "unit": "knots",
-    "value": 250.0,
+    "value": 137.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -756,7 +756,7 @@
     "name": "GPS WP DISTANCE",
     "index": 0,
     "unit": "number",
-    "value": 21658.0,
+    "value": 177.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -769,7 +769,7 @@
     "name": "NAV IDENT",
     "index": 0,
     "unit": "string",
-    "value": "STD",
+    "value": "HAM",
     "control": {
       "type": "Text"
     },
@@ -793,7 +793,7 @@
     "name": "VSTALL",
     "index": 0,
     "unit": "knots",
-    "value": 0.0,
+    "value": 76.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -845,12 +845,25 @@
     "name": "OVERSPEED",
     "index": 0,
     "unit": "knots",
-    "value": 84.0,
+    "value": 202.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
       "max": 250.0
     },
-    "pinned": true
+    "pinned": null
+  },
+  {
+    "type": "A",
+    "name": "PLANE ALT ABOVE GROUND",
+    "index": 0,
+    "unit": "feet",
+    "value": 0.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
   }
 ]

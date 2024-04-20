@@ -18,11 +18,12 @@ const renderDigitTape = (max: number): JSX.Element[] => {
     const digit = 9 - (i % 10)
     digits.push(
       <text
-        x={tenth ? 525 : 520}
+        x={tenth ? 525 : 525}
         y={tenth ? digitSpacing * i - 465 : digitSpacing * i - 462}
         font-size={tenth ? 17 : 25}
         text-anchor="middle"
         fill={Colors.GREEN}
+        letter-spacing={-2}
       >
         {tenth ? digit.toString().concat('0') : digit.toString()}
       </text>

@@ -1,57 +1,70 @@
 import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
 import { type PFDSimvars } from '../PFDSimVarPublisher'
+import { AltitudeSelectorBug } from './AltitudeSelectorBug'
+import { LowAltitudeAwarenessDisplay } from './LowAltitudeAwarenessDisplay'
 
 type AltitudeTapeProps = ComponentProps & {
   bus: EventBus
+  baseline: number
+  stretch: number
+  minAltitude: number
+  maxAltitude: number
 }
 
-const baseline = 254
-// TODO: - Tape
-// const minAltitude = -2000
-const maxAltitude = 60000
+export class AltitudeTape extends DisplayComponent<AltitudeTapeProps> {
+  private readonly tapeRef = FSComponent.createRef<SVGElement>()
 
-const renderTape = (): JSX.Element[] => {
-  const elements: JSX.Element[] = []
+  private readonly renderTape = (): JSX.Element[] => {
+    const elements: JSX.Element[] = []
 
-  for (let alt = 0; alt < maxAltitude; alt += 100) {
-    if (alt % 500 === 0) {
-      elements.push(
-        <path
-          d={`M 455 ${alt * 0.3} L 500 ${alt * 0.3 + 40} L 500 ${alt * 0.3 + 110} L 455 ${alt * 0.3 + 150}`}
-          stroke="white"
-          stroke-width={2}
-          fill="transparent"
-        />
-      )
+    const increment = 100
+    const totalIncrements =
+      Math.ceil(Math.abs(this.props.minAltitude) / increment) + Math.ceil(this.props.maxAltitude / increment)
 
-      if (alt % 1000 === 0) {
+    for (let alt = 0; alt < totalIncrements * increment; alt += increment) {
+      if (alt % 500 === 0) {
         elements.push(
           <path
-            d={`M 500 ${alt * 0.3 + 40} L 500 ${alt * 0.3 + 31} L 465 ${alt * 0.3} L 500 ${alt * 0.3 - 31} L 500 ${
-              alt * 0.3 - 40
-            }`}
+            d={`M 455 ${alt * this.props.stretch} L 500 ${alt * this.props.stretch + 40} L 500 ${
+              alt * this.props.stretch + 110
+            } L 455 ${alt * this.props.stretch + 150}`}
             stroke="white"
             stroke-width={2}
             fill="transparent"
           />
         )
+
+        if (alt % 1000 === 0) {
+          elements.push(
+            <path
+              d={`M 500 ${alt * this.props.stretch + 40} L 500 ${alt * this.props.stretch + 31} L 465 ${
+                alt * this.props.stretch
+              } L 500 ${alt * this.props.stretch - 31} L 500 ${alt * this.props.stretch - 40}`}
+              stroke="white"
+              stroke-width={2}
+              fill="transparent"
+            />
+          )
+        }
+
+        elements.push(
+          <text x={535} y={alt * this.props.stretch + 7} font-size={15} text-anchor="end" fill="white">
+            {(this.props.maxAltitude - alt).toString()}
+          </text>
+        )
+      } else {
+        elements.push(
+          <path
+            d={`M 455 ${alt * this.props.stretch} L 465 ${alt * this.props.stretch}`}
+            stroke="white"
+            stroke-width={2}
+          />
+        )
       }
-
-      elements.push(
-        <text x={530} y={alt * 0.3 + 7} font-size={20} text-anchor="end" fill="white">
-          {(maxAltitude - alt).toString()}
-        </text>
-      )
-    } else {
-      elements.push(<path d={`M 455 ${alt * 0.3} L 465 ${alt * 0.3}`} stroke="white" stroke-width={2} />)
     }
+
+    return elements
   }
-
-  return elements
-}
-
-export class AltitudeTape extends DisplayComponent<AltitudeTapeProps> {
-  private readonly tapeRef = FSComponent.createRef<SVGElement>()
 
   public onAfterRender(node: VNode): void {
     super.onAfterRender(node)
@@ -63,7 +76,9 @@ export class AltitudeTape extends DisplayComponent<AltitudeTapeProps> {
       .handle((alt) => {
         this.tapeRef.instance?.setAttribute(
           'transform',
-          `translate(0, ${baseline - maxAltitude * 0.3 + Math.round(alt) * 0.3})`
+          `translate(0, ${
+            this.props.baseline - this.props.maxAltitude * this.props.stretch + Math.round(alt) * this.props.stretch
+          })`
         )
       })
   }
@@ -78,7 +93,23 @@ export class AltitudeTape extends DisplayComponent<AltitudeTapeProps> {
         </defs>
 
         <g clip-path="url(#TapeClip)">
-          <g ref={this.tapeRef}>{renderTape()}</g>
+          <g ref={this.tapeRef}>
+            <g clip-path="url(#laadClipPath)"> {this.renderTape()}</g>
+
+            <LowAltitudeAwarenessDisplay
+              bus={this.props.bus}
+              baseline={this.props.baseline}
+              stretch={this.props.stretch}
+              minAltitude={this.props.minAltitude}
+              maxAltitude={this.props.maxAltitude}
+            />
+
+            <AltitudeSelectorBug
+              bus={this.props.bus}
+              stretch={this.props.stretch}
+              maxAltitude={this.props.maxAltitude}
+            />
+          </g>
         </g>
 
         <path d="M 455 86 L 455 421" stroke="white" stroke-width="2" fill="none" />

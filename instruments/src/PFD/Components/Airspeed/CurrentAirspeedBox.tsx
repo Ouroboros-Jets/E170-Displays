@@ -16,6 +16,8 @@ type SelectedAirspeedBoxProps = ComponentProps & {
 
 const digitSpacing = 25
 const verticalScrollsSpacing = 20
+const boxShape =
+  'M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254'
 
 class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
   private readonly boxDigitScrollRef = FSComponent.createRef<SVGPathElement>()
@@ -28,6 +30,8 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
   private onGround: boolean
   private vstall: number
   private ias: number
+  private overspeed: number
+  private trend: number
 
   private readonly renderDigitTape = (removeZeros?: boolean): SVGTextElement[] => {
     const digits: SVGTextElement[] = []
@@ -37,7 +41,7 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
       const ref = FSComponent.createRef<SVGTextElement>()
 
       const digitElement = (
-        <text x={55} y={digitSpacing * i - 460} font-size={30} text-anchor="middle" fill={Colors.GREEN} ref={ref}>
+        <text x={58} y={digitSpacing * i - 460} font-size={30} text-anchor="middle" fill={Colors.GREEN} ref={ref}>
           {removeZeros && digit === 0 ? '' : digit.toString()}
         </text>
       )
@@ -50,12 +54,12 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
 
   private readonly vStallCheck = (): void => {
     console.log(this.ias)
-    if (!this.onGround && this.ias <= this.vstall) {
+    if (!this.onGround && (this.ias <= this.vstall || this.overspeed <= this.ias)) {
       for (const ref of this.digitRefs) {
         ref.instance.setAttribute('fill', 'white')
         this.boxDigitScrollRef.instance.setAttribute('fill', `${Colors.RED}`)
       }
-    } else if (!this.onGround && this.ias <= this.vstall + 10) {
+    } else if (!this.onGround && (this.ias <= this.vstall + 10 || this.trend >= this.ias)) {
       for (const ref of this.digitRefs) {
         ref.instance.setAttribute('fill', `${Colors.YELLOW}`)
         this.boxDigitScrollRef.instance.setAttribute('fill', 'transparent')
@@ -114,7 +118,24 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
       })
 
     sub
-      .on('onGround')
+      .on('acceleration_z')
+      .whenChanged()
+      .handle((a) => {
+        // TODO: Calculation seems wrong
+        this.trend = a * 0.592483801 * 10 * this.ias
+        this.vStallCheck()
+      })
+
+    sub
+      .on('overspeed')
+      .whenChanged()
+      .handle((overspd) => {
+        this.overspeed = overspd
+        this.vStallCheck()
+      })
+
+    sub
+      .on('on_ground')
       .whenChanged()
       .handle((onGround) => {
         this.onGround = onGround
@@ -125,20 +146,14 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
   public render(): VNode {
     return (
       <g>
-        <path
-          d="M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254"
-          fill="black"
-          stroke="white"
-          stroke-width={2}
-          stroke-linecap="round"
-        />
+        <path d={boxShape} fill="black" stroke="white" stroke-width={2} stroke-linecap="round" />
 
         <clipPath id="boxClip">
-          <path d="M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254" />
+          <path d={boxShape} />
         </clipPath>
 
         <path
-          d="M 1 254 L 1 269 L 45 269 L 45 284 L 65 284 L 65 262 L 80 254 L 65 246 L 65 224 L 45 224 L 45 239 L 1 239 L 1 254"
+          d={boxShape}
           fill="transparent"
           stroke="white"
           stroke-width={2}
@@ -151,6 +166,8 @@ class CurrentAirspeedBox extends DisplayComponent<SelectedAirspeedBoxProps> {
           <g ref={this.tenthDigitScrollRef}>{this.renderDigitTape()}</g>
           <g ref={this.hundredthDigitScrollRef}>{this.renderDigitTape(true)}</g>
         </g>
+
+        <path d={boxShape} fill="transparent" stroke="white" stroke-width={2} stroke-linecap="round" />
       </g>
     )
   }
