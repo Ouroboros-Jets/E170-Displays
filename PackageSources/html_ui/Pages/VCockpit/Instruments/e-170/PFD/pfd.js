@@ -32143,8 +32143,8 @@
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("alt_above_ground").whenChanged().handle((alt) => {
-        const boxPosition = (this.props.maxAltitude - alt) * this.props.stretch + this.props.minAltitude * this.props.stretch - this.props.minAltitude * this.props.stretch;
+      sub.on("ground_altitude").whenChanged().handle((alt) => {
+        const boxPosition = this.props.maxAltitude * this.props.stretch - alt * 3.281 * this.props.stretch;
         this.grndBox.instance.setAttribute("height", `${boxPosition}`);
         this.grndBox.instance.setAttribute("y", `${boxPosition}`);
         const clipPathHeight = this.props.maxAltitude * this.props.stretch;
@@ -33446,7 +33446,7 @@
     ["vstall", { name: "L:VSTALL" /* vstall */, type: SimVarValueType.Knots }],
     ["overspeed", { name: "L:OVERSPEED" /* overspeed */, type: SimVarValueType.Knots }],
     ["on_ground", { name: "SIM ON GROUND" /* on_ground */, type: SimVarValueType.Bool }],
-    ["alt_above_ground", { name: "PLANE ALT ABOVE GROUND" /* alt_above_ground */, type: SimVarValueType.Feet }]
+    ["ground_altitude", { name: "GROUND ALTITUDE" /* ground_altitude */, type: SimVarValueType.Meters }]
   ]);
 
   // instruments/src/PFD/instrument.tsx

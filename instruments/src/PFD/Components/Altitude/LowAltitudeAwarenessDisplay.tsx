@@ -20,13 +20,11 @@ export class LowAltitudeAwarenessDisplay extends DisplayComponent<LowAltitudeAwa
     const sub = this.props.bus.getSubscriber<PFDSimvars>()
 
     sub
-      .on('alt_above_ground')
+      .on('ground_altitude')
       .whenChanged()
       .handle((alt) => {
-        const boxPosition =
-          (this.props.maxAltitude - alt) * this.props.stretch +
-          this.props.minAltitude * this.props.stretch -
-          this.props.minAltitude * this.props.stretch
+        // alt is in meters
+        const boxPosition = this.props.maxAltitude * this.props.stretch - alt * 3.281 * this.props.stretch
 
         this.grndBox.instance.setAttribute('height', `${boxPosition}`)
         this.grndBox.instance.setAttribute('y', `${boxPosition}`)
