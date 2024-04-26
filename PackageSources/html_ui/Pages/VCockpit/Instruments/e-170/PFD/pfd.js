@@ -3618,14 +3618,14 @@
       if (!(point instanceof Float64Array)) {
         point = GeoPoint.sphericalToCartesian(point, GeoCircle.vec3Cache[0]);
       }
-      const offset = Vec3Math.multScalar(this._center, Math.cos(this._radius), GeoCircle.vec3Cache[1]);
-      const dot = Vec3Math.dot(Vec3Math.sub(point, offset, GeoCircle.vec3Cache[2]), this._center);
+      const offset2 = Vec3Math.multScalar(this._center, Math.cos(this._radius), GeoCircle.vec3Cache[1]);
+      const dot = Vec3Math.dot(Vec3Math.sub(point, offset2, GeoCircle.vec3Cache[2]), this._center);
       const planeProjected = Vec3Math.sub(point, Vec3Math.multScalar(this._center, dot, GeoCircle.vec3Cache[2]), GeoCircle.vec3Cache[2]);
       if (Vec3Math.dot(planeProjected, planeProjected) === 0 || Math.abs(Vec3Math.dot(planeProjected, this._center)) === 1) {
         return out instanceof GeoPoint ? out.set(NaN, NaN) : Vec3Math.set(NaN, NaN, NaN, out);
       }
-      const displacement = Vec3Math.multScalar(Vec3Math.normalize(Vec3Math.sub(planeProjected, offset, GeoCircle.vec3Cache[2]), GeoCircle.vec3Cache[2]), Math.sin(this._radius), GeoCircle.vec3Cache[2]);
-      const closest = Vec3Math.add(offset, displacement, GeoCircle.vec3Cache[2]);
+      const displacement = Vec3Math.multScalar(Vec3Math.normalize(Vec3Math.sub(planeProjected, offset2, GeoCircle.vec3Cache[2]), GeoCircle.vec3Cache[2]), Math.sin(this._radius), GeoCircle.vec3Cache[2]);
+      const closest = Vec3Math.add(offset2, displacement, GeoCircle.vec3Cache[2]);
       return out instanceof Float64Array ? Vec3Math.normalize(closest, out) : out.setFromCartesian(closest);
     }
     distance(point) {
@@ -3749,20 +3749,20 @@
       if (crossLengthSquared === 0) {
         return 0;
       }
-      const offset = Math.sqrt((1 - intersectionLengthSquared) / crossLengthSquared);
+      const offset2 = Math.sqrt((1 - intersectionLengthSquared) / crossLengthSquared);
       let solutionCount = 1;
       if (!out[0]) {
         out[0] = new Float64Array(3);
       }
       out[0].set(cross);
-      Vec3Math.multScalar(out[0], offset, out[0]);
+      Vec3Math.multScalar(out[0], offset2, out[0]);
       Vec3Math.add(out[0], intersection, out[0]);
-      if (offset > 0) {
+      if (offset2 > 0) {
         if (!out[1]) {
           out[1] = new Float64Array(3);
         }
         out[1].set(cross);
-        Vec3Math.multScalar(out[1], -offset, out[1]);
+        Vec3Math.multScalar(out[1], -offset2, out[1]);
         Vec3Math.add(out[1], intersection, out[1]);
         solutionCount++;
       }
@@ -8687,9 +8687,9 @@
     FlightPlanSegmentType2["RandomDirectTo"] = "RandomDirectTo";
   })(FlightPlanSegmentType || (FlightPlanSegmentType = {}));
   var FlightPlanSegment = class {
-    constructor(segmentIndex, offset, legs, segmentType = FlightPlanSegmentType.Enroute, airway) {
+    constructor(segmentIndex, offset2, legs, segmentType = FlightPlanSegmentType.Enroute, airway) {
       this.segmentIndex = segmentIndex;
-      this.offset = offset;
+      this.offset = offset2;
       this.legs = legs;
       this.segmentType = segmentType;
       this.airway = airway;
@@ -16747,13 +16747,13 @@
     }
     static hexaToRGBColor(hexColor) {
       const hexStringColor = hexColor;
-      let offset = 0;
+      let offset2 = 0;
       if (hexStringColor[0] === "#") {
-        offset = 1;
+        offset2 = 1;
       }
-      const r = parseInt(hexStringColor.substr(0 + offset, 2), 16);
-      const g = parseInt(hexStringColor.substr(2 + offset, 2), 16);
-      const b = parseInt(hexStringColor.substr(4 + offset, 2), 16);
+      const r = parseInt(hexStringColor.substr(0 + offset2, 2), 16);
+      const g = parseInt(hexStringColor.substr(2 + offset2, 2), 16);
+      const b = parseInt(hexStringColor.substr(4 + offset2, 2), 16);
       return BingComponent.rgbColor(r, g, b);
     }
     static rgbToHexaColor(rgb, poundPrefix = true) {
@@ -16767,14 +16767,14 @@
     }
     static hexaToRGBAColor(hexColor) {
       const hexStringColor = hexColor;
-      let offset = 0;
+      let offset2 = 0;
       if (hexStringColor[0] === "#") {
-        offset = 1;
+        offset2 = 1;
       }
-      const r = parseInt(hexStringColor.substr(0 + offset, 2), 16);
-      const g = parseInt(hexStringColor.substr(2 + offset, 2), 16);
-      const b = parseInt(hexStringColor.substr(4 + offset, 2), 16);
-      const a = parseInt(hexStringColor.substr(6 + offset, 2), 16);
+      const r = parseInt(hexStringColor.substr(0 + offset2, 2), 16);
+      const g = parseInt(hexStringColor.substr(2 + offset2, 2), 16);
+      const b = parseInt(hexStringColor.substr(4 + offset2, 2), 16);
+      const a = parseInt(hexStringColor.substr(6 + offset2, 2), 16);
       return BingComponent.rgbaColor(r, g, b, a);
     }
     static rgbaToHexaColor(rgba, poundPrefix = true) {
@@ -17755,11 +17755,11 @@
       this.radialAngle = angle;
       this.updatePosition();
     }
-    setRadialOffset(offset) {
-      if (this.radialOffset === offset) {
+    setRadialOffset(offset2) {
+      if (this.radialOffset === offset2) {
         return;
       }
-      this.radialOffset = offset;
+      this.radialOffset = offset2;
       this.updatePosition();
     }
     setRingPosition(center, radius) {
@@ -19069,8 +19069,8 @@
       this.geoProjection.setTranslation(this.centerProjected);
       Vec2Math.add(this.centerProjected, this.targetProjectedOffset, this.targetProjected);
     }
-    setTargetProjectedOffset(offset) {
-      this.targetProjectedOffset.set(offset);
+    setTargetProjectedOffset(offset2) {
+      this.targetProjectedOffset.set(offset2);
       Vec2Math.add(this.centerProjected, this.targetProjectedOffset, this.targetProjected);
     }
     storeParameters(record) {
@@ -19914,18 +19914,18 @@
       vertex.arc2OffsetSign = this.windingOrder * (next.isClockwise ? 1 : -1);
       vertex.transform.invert();
     }
-    renderLine(context, offset, lineWidth, strokeStyle, dash, stream) {
+    renderLine(context, offset2, lineWidth, strokeStyle, dash, stream) {
       stream !== null && stream !== void 0 ? stream : stream = context;
       stream.beginPath();
       const startPoint = Vec2Math.set(0, 0, Shape.vec2Cache[0]);
       if (this.isClosed) {
-        if (offset === 0) {
+        if (offset2 === 0) {
           Vec2Math.copy(this.segments[0].end, startPoint);
         } else {
           const lastIndex = this.length - 1;
-          const result = this.calculateOffsetVertex(lastIndex, offset, startPoint);
+          const result = this.calculateOffsetVertex(lastIndex, offset2, startPoint);
           if (!result || !Shape.isPointInSegmentBounds(this.segments[lastIndex], this.segments[lastIndex - 1].end, result)) {
-            this.calculateOffsetEndPoint(lastIndex, offset, startPoint);
+            this.calculateOffsetEndPoint(lastIndex, offset2, startPoint);
           }
         }
         stream.moveTo(startPoint[0], startPoint[1]);
@@ -19935,13 +19935,13 @@
         let newStartPoint;
         switch (segment.type) {
           case "start":
-            newStartPoint = this.pathStartSegment(stream, i, offset);
+            newStartPoint = this.pathStartSegment(stream, i, offset2);
             break;
           case "line":
-            newStartPoint = this.pathLineSegment(stream, i, startPoint, offset);
+            newStartPoint = this.pathLineSegment(stream, i, startPoint, offset2);
             break;
           case "arc":
-            newStartPoint = this.pathArcSegment(stream, i, startPoint, offset);
+            newStartPoint = this.pathArcSegment(stream, i, startPoint, offset2);
             break;
         }
         Vec2Math.copy(newStartPoint, startPoint);
@@ -19951,13 +19951,13 @@
       context.setLineDash(dash);
       context.stroke();
     }
-    pathStartSegment(stream, index, offset) {
+    pathStartSegment(stream, index, offset2) {
       const segment = this.segments[index];
-      if (offset === 0) {
+      if (offset2 === 0) {
         stream.moveTo(segment.end[0], segment.end[1]);
         return segment.end;
       } else {
-        const offsetEnd = this.calculateOffsetVertex(index, offset, Shape.vec2Cache[1]);
+        const offsetEnd = this.calculateOffsetVertex(index, offset2, Shape.vec2Cache[1]);
         if (offsetEnd) {
           stream.moveTo(offsetEnd[0], offsetEnd[1]);
           return offsetEnd;
@@ -19967,40 +19967,40 @@
         }
       }
     }
-    pathLineSegment(stream, index, start, offset) {
+    pathLineSegment(stream, index, start, offset2) {
       const segment = this.segments[index];
-      if (offset !== 0 && !Shape.isPointInSegmentBounds(segment, this.segments[index - 1].end, start)) {
-        const startPoint = this.calculateOffsetStartPoint(index, offset, Shape.vec2Cache[1]);
+      if (offset2 !== 0 && !Shape.isPointInSegmentBounds(segment, this.segments[index - 1].end, start)) {
+        const startPoint = this.calculateOffsetStartPoint(index, offset2, Shape.vec2Cache[1]);
         stream.moveTo(startPoint[0], startPoint[1]);
       }
-      if (offset === 0) {
+      if (offset2 === 0) {
         stream.lineTo(segment.end[0], segment.end[1]);
         return segment.end;
       } else {
-        const offsetEnd = this.calculateOffsetVertex(index, offset, Shape.vec2Cache[1]);
+        const offsetEnd = this.calculateOffsetVertex(index, offset2, Shape.vec2Cache[1]);
         if (offsetEnd && Shape.isPointInSegmentBounds(segment, this.segments[index - 1].end, offsetEnd)) {
           stream.lineTo(offsetEnd[0], offsetEnd[1]);
           return offsetEnd;
         } else {
-          const endPoint = this.calculateOffsetEndPoint(index, offset, Shape.vec2Cache[1]);
+          const endPoint = this.calculateOffsetEndPoint(index, offset2, Shape.vec2Cache[1]);
           stream.lineTo(endPoint[0], endPoint[1]);
-          const nextStartPoint = this.calculateOffsetStartPoint(segment.vertex.toIndex, offset, Shape.vec2Cache[1]);
+          const nextStartPoint = this.calculateOffsetStartPoint(segment.vertex.toIndex, offset2, Shape.vec2Cache[1]);
           stream.moveTo(nextStartPoint[0], nextStartPoint[1]);
           return nextStartPoint;
         }
       }
     }
-    pathArcSegment(stream, index, start, offset) {
+    pathArcSegment(stream, index, start, offset2) {
       const segment = this.segments[index];
       let startAngle;
-      if (offset !== 0 && !Shape.isPointInSegmentBounds(segment, this.segments[index - 1].end, start)) {
-        const startPoint = this.calculateOffsetStartPoint(index, offset, Shape.vec2Cache[1]);
+      if (offset2 !== 0 && !Shape.isPointInSegmentBounds(segment, this.segments[index - 1].end, start)) {
+        const startPoint = this.calculateOffsetStartPoint(index, offset2, Shape.vec2Cache[1]);
         stream.moveTo(startPoint[0], startPoint[1]);
         startAngle = Math.atan2(startPoint[1] - segment.center[1], startPoint[0] - segment.center[0]);
       } else {
         startAngle = Math.atan2(start[1] - segment.center[1], start[0] - segment.center[0]);
       }
-      if (offset === 0) {
+      if (offset2 === 0) {
         const endAngle = Vec2Math.theta(segment.endNormal);
         const angularWidth = Shape.getAngularWidth(startAngle, endAngle, segment.isClockwise, true);
         stream.arc(segment.center[0], segment.center[1], segment.radius, startAngle, startAngle + angularWidth * (segment.isClockwise ? 1 : -1), !segment.isClockwise);
@@ -20009,8 +20009,8 @@
         const baseEndAngle = Vec2Math.theta(segment.endNormal);
         const baseAngularWidth = Shape.getAngularWidth(startAngle, baseEndAngle, segment.isClockwise, true);
         const sign = this.windingOrder * (segment.isClockwise ? 1 : -1);
-        const radius = segment.radius + offset * sign;
-        const offsetEnd = this.calculateOffsetVertex(index, offset, Shape.vec2Cache[1]);
+        const radius = segment.radius + offset2 * sign;
+        const offsetEnd = this.calculateOffsetVertex(index, offset2, Shape.vec2Cache[1]);
         if (offsetEnd && Shape.isPointInSegmentBounds(segment, this.segments[index - 1].end, offsetEnd)) {
           const endAngle = Math.atan2(offsetEnd[1] - segment.center[1], offsetEnd[0] - segment.center[0]);
           const angularWidth = Shape.getAngularWidth(startAngle, endAngle, segment.isClockwise, true);
@@ -20019,12 +20019,12 @@
           return offsetEnd;
         } else {
           if (radius > 0) {
-            const endPoint = this.calculateOffsetEndPoint(index, offset, Shape.vec2Cache[1]);
+            const endPoint = this.calculateOffsetEndPoint(index, offset2, Shape.vec2Cache[1]);
             const endAngle = Math.atan2(endPoint[1] - segment.center[1], endPoint[0] - segment.center[0]);
             const angularWidth = Shape.getAngularWidth(startAngle, endAngle, segment.isClockwise, true);
             const angularWidthDiff = Math.abs(angularWidth - baseAngularWidth);
             stream.arc(segment.center[0], segment.center[1], radius, startAngle, startAngle + angularWidth * (segment.isClockwise ? 1 : -1), angularWidthDiff < Math.PI ? !segment.isClockwise : segment.isClockwise);
-            const nextStartPoint = this.calculateOffsetStartPoint(segment.vertex.toIndex, offset, Shape.vec2Cache[1]);
+            const nextStartPoint = this.calculateOffsetStartPoint(segment.vertex.toIndex, offset2, Shape.vec2Cache[1]);
             stream.moveTo(nextStartPoint[0], nextStartPoint[1]);
             return nextStartPoint;
           } else {
@@ -20034,33 +20034,33 @@
         }
       }
     }
-    calculateOffsetVertex(index, offset, out) {
+    calculateOffsetVertex(index, offset2, out) {
       const vertex = this.segments[index].vertex;
       switch (vertex.type) {
         case "line-start":
         case "arc-start":
         case "line-line":
-          return this.calculateOffsetVertexFromNormal(index, offset, out);
+          return this.calculateOffsetVertexFromNormal(index, offset2, out);
         case "line-arc":
-          return this.calculateOffsetLineArcVertex(index, offset, out);
+          return this.calculateOffsetLineArcVertex(index, offset2, out);
         case "arc-arc":
-          return this.calculateOffsetArcArcVertex(index, offset, out);
+          return this.calculateOffsetArcArcVertex(index, offset2, out);
         default:
           return Vec2Math.copy(this.segments[vertex.fromIndex].end, out);
       }
     }
-    calculateOffsetVertexFromNormal(index, offset, out) {
+    calculateOffsetVertexFromNormal(index, offset2, out) {
       const segment = this.segments[index];
       const vertex = segment.vertex;
-      return Vec2Math.add(segment.end, Vec2Math.multScalar(vertex.normal, offset, out), out);
+      return Vec2Math.add(segment.end, Vec2Math.multScalar(vertex.normal, offset2, out), out);
     }
-    calculateOffsetLineArcVertex(index, offset, out) {
+    calculateOffsetLineArcVertex(index, offset2, out) {
       const vertex = this.segments[index].vertex;
-      const radius = vertex.r0 + offset * vertex.arcOffsetSign;
+      const radius = vertex.r0 + offset2 * vertex.arcOffsetSign;
       if (radius <= 0) {
         return void 0;
       }
-      const y = vertex.y0 + offset * vertex.lineOffsetSign;
+      const y = vertex.y0 + offset2 * vertex.lineOffsetSign;
       const xSq = radius * radius - y * y;
       if (xSq < 0) {
         return void 0;
@@ -20068,15 +20068,15 @@
       const x = Math.sqrt(xSq);
       return vertex.transform.apply(Vec2Math.set(x, y, out), out);
     }
-    calculateOffsetArcArcVertex(index, offset, out) {
+    calculateOffsetArcArcVertex(index, offset2, out) {
       const vertex = this.segments[index].vertex;
       if (vertex.d === 0) {
         return void 0;
       }
       const segment1 = this.segments[vertex.fromIndex];
       const segment2 = this.segments[vertex.toIndex];
-      const radius1 = segment1.radius + offset * vertex.arcOffsetSign;
-      const radius2 = segment2.radius + offset * vertex.arc2OffsetSign;
+      const radius1 = segment1.radius + offset2 * vertex.arcOffsetSign;
+      const radius2 = segment2.radius + offset2 * vertex.arc2OffsetSign;
       if (radius1 <= 0 || radius2 <= 0) {
         return void 0;
       }
@@ -20091,30 +20091,30 @@
       const y = Math.sqrt(ySq);
       return vertex.transform.apply(Vec2Math.set(x, y, out), out);
     }
-    calculateOffsetStartPoint(index, offset, out) {
+    calculateOffsetStartPoint(index, offset2, out) {
       const prevSegment = this.segments[index - 1];
       const segment = this.segments[index];
       switch (segment.type) {
         case "start":
           return Vec2Math.copy(segment.end, out);
         case "line":
-          return Vec2Math.set(prevSegment.end[0] + segment.endNormal[0] * this.windingOrder * offset, prevSegment.end[1] + segment.endNormal[1] * this.windingOrder * offset, out);
+          return Vec2Math.set(prevSegment.end[0] + segment.endNormal[0] * this.windingOrder * offset2, prevSegment.end[1] + segment.endNormal[1] * this.windingOrder * offset2, out);
         case "arc": {
           const sign = this.windingOrder * (segment.isClockwise ? 1 : -1);
-          return Vec2Math.set(prevSegment.end[0] + segment.startNormal[0] * sign * offset, prevSegment.end[1] + segment.startNormal[1] * sign * offset, out);
+          return Vec2Math.set(prevSegment.end[0] + segment.startNormal[0] * sign * offset2, prevSegment.end[1] + segment.startNormal[1] * sign * offset2, out);
         }
       }
     }
-    calculateOffsetEndPoint(index, offset, out) {
+    calculateOffsetEndPoint(index, offset2, out) {
       const segment = this.segments[index];
       switch (segment.type) {
         case "start":
           return Vec2Math.copy(segment.end, out);
         case "line":
-          return Vec2Math.set(segment.end[0] + segment.endNormal[0] * this.windingOrder * offset, segment.end[1] + segment.endNormal[1] * this.windingOrder * offset, out);
+          return Vec2Math.set(segment.end[0] + segment.endNormal[0] * this.windingOrder * offset2, segment.end[1] + segment.endNormal[1] * this.windingOrder * offset2, out);
         case "arc": {
           const sign = this.windingOrder * (segment.isClockwise ? 1 : -1);
-          return Vec2Math.set(segment.end[0] + segment.endNormal[0] * sign * offset, segment.end[1] + segment.endNormal[1] * sign * offset, out);
+          return Vec2Math.set(segment.end[0] + segment.endNormal[0] * sign * offset2, segment.end[1] + segment.endNormal[1] * sign * offset2, out);
         }
       }
     }
@@ -20256,11 +20256,11 @@
     }
     draw(context, mapProjection) {
       const size = this.size.get();
-      const offset = this.offset.get();
+      const offset2 = this.offset.get();
       const anchor = this.anchor.get();
       const projected = mapProjection.project(this.waypoint.location.get(), MapWaypointImageIcon.tempVec2);
-      const left = projected[0] + offset[0] - anchor[0] * size[0];
-      const top = projected[1] + offset[1] - anchor[1] * size[1];
+      const left = projected[0] + offset2[0] - anchor[0] * size[0];
+      const top = projected[1] + offset2[1] - anchor[1] * size[1];
       this.drawIconAt(context, mapProjection, left, top);
     }
   };
@@ -21744,12 +21744,12 @@
       let offsetX, offsetY;
       if (this.props.wxrMode && this.props.wxrMode.get().mode === EWeatherRadar.HORIZONTAL) {
         const offsetSize = new Float64Array([projectedSize[0], projectedSize[1]]);
-        const offset = this.props.mapProjection.getTargetProjectedOffset();
-        offsetSize[0] += offset[0];
-        offsetSize[1] += offset[1];
+        const offset2 = this.props.mapProjection.getTargetProjectedOffset();
+        offsetSize[0] += offset2[0];
+        offsetSize[1] += offset2[1];
         this.size = this.getSize(offsetSize);
-        offsetX = (projectedSize[0] - this.size) / 2 + offset[0];
-        offsetY = (projectedSize[1] - this.size) / 2 + offset[1];
+        offsetX = (projectedSize[0] - this.size) / 2 + offset2[0];
+        offsetY = (projectedSize[1] - this.size) / 2 + offset2[1];
       } else {
         this.size = this.getSize(projectedSize);
         offsetX = (projectedSize[0] - this.size) / 2;
@@ -25371,8 +25371,8 @@
       this.deadZone = "isSubscribable" in deadZone ? deadZone : VecNSubject.createFromVector(new Float64Array(deadZone));
       return this;
     }
-    withTargetOffset(offset) {
-      this.targetOffset = offset;
+    withTargetOffset(offset2) {
+      this.targetOffset = offset2;
       return this;
     }
     withRangeEndpoints(endpoints) {
@@ -27856,13 +27856,13 @@
           if (legCalc && state.transitionMode === LNavTransitionMode.None && legCalc.ingressJoinIndex >= 0 && ingressJoinVector && legCalc.ingress.length > 0) {
             const lastIngressVector = legCalc.ingress[legCalc.ingress.length - 1];
             let vectors;
-            let offset;
+            let offset2;
             if (suspend) {
               vectors = legCalc.flightPath;
               if (GeoPoint.equals(lastIngressVector.endLat, lastIngressVector.endLon, ingressJoinVector.endLat, ingressJoinVector.endLon)) {
-                offset = legCalc.ingressJoinIndex + 1;
+                offset2 = legCalc.ingressJoinIndex + 1;
               } else {
-                offset = legCalc.ingressJoinIndex;
+                offset2 = legCalc.ingressJoinIndex;
               }
             } else {
               let pastIngressJoin = state.vectorIndex > legCalc.ingressJoinIndex;
@@ -27876,17 +27876,17 @@
               if (pastIngressJoin) {
                 vectors = legCalc.ingressToEgress;
                 if (GeoPoint.equals(lastIngressVector.endLat, lastIngressVector.endLon, ingressJoinVector.endLat, ingressJoinVector.endLon)) {
-                  offset = -(legCalc.ingressJoinIndex + 1);
+                  offset2 = -(legCalc.ingressJoinIndex + 1);
                 } else {
-                  offset = -legCalc.ingressJoinIndex;
+                  offset2 = -legCalc.ingressJoinIndex;
                 }
               } else {
                 vectors = legCalc.flightPath;
-                offset = 0;
+                offset2 = 0;
                 out.transitionMode = LNavTransitionMode.Unsuspend;
               }
             }
-            out.vectorIndex = Math.max(0, Math.min(state.vectorIndex + offset, vectors.length - 1));
+            out.vectorIndex = Math.max(0, Math.min(state.vectorIndex + offset2, vectors.length - 1));
           }
           if (suspend && state.transitionMode === LNavTransitionMode.Unsuspend) {
             out.transitionMode = LNavTransitionMode.None;
@@ -31722,12 +31722,12 @@
     const strokeWidth = 4;
     const strokeWidthTop = 3;
     const correctedY = -y * 8.6;
-    const offset = -252;
+    const offset2 = -252;
     if (direction === 1) {
       return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
         PathWithBlackBackground,
         {
-          d: `M ${center} ${correctedY - offset - 8} L ${center - 45} ${correctedY - offset - 80} L ${center - 30} ${correctedY - offset - 80} L ${center} ${correctedY - offset - 35} L ${center + 30} ${correctedY - offset - 80} L ${center + 45} ${correctedY - offset - 80} L ${center} ${correctedY - offset - 8}`,
+          d: `M ${center} ${correctedY - offset2 - 8} L ${center - 45} ${correctedY - offset2 - 80} L ${center - 30} ${correctedY - offset2 - 80} L ${center} ${correctedY - offset2 - 35} L ${center + 30} ${correctedY - offset2 - 80} L ${center + 45} ${correctedY - offset2 - 80} L ${center} ${correctedY - offset2 - 8}`,
           fill: "black",
           fillTop: color,
           strokeWidth,
@@ -31740,7 +31740,7 @@
       return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
         PathWithBlackBackground,
         {
-          d: `M ${center} ${correctedY - offset + 8} L ${center - 45} ${correctedY - offset + 60} L ${center - 30} ${correctedY - offset + 60} L ${center} ${correctedY - offset + 25} L ${center + 30} ${correctedY - offset + 60} L ${center + 45} ${correctedY - offset + 60} L ${center} ${correctedY - offset + 8}`,
+          d: `M ${center} ${correctedY - offset2 + 8} L ${center - 45} ${correctedY - offset2 + 60} L ${center - 30} ${correctedY - offset2 + 60} L ${center} ${correctedY - offset2 + 25} L ${center + 30} ${correctedY - offset2 + 60} L ${center + 45} ${correctedY - offset2 + 60} L ${center} ${correctedY - offset2 + 8}`,
           fill: "black",
           fillTop: color,
           strokeWidth,
@@ -31759,7 +31759,7 @@
     const SevenFiveTickWidth = 18;
     const TenTickWidth = 52;
     const FourtyTickWidth = 10;
-    const offset = -252;
+    const offset2 = -252;
     const correctedY = -y * 8.6;
     const center = 275;
     const strokeWidth = 4.5;
@@ -31769,7 +31769,7 @@
         return /* @__PURE__ */ FSComponent.buildComponent(
           PathWithBlackBackground,
           {
-            d: `M ${center - 0.5 * OneTickWidth} ${correctedY - offset} L ${center - 0.5 * OneTickWidth + OneTickWidth} ${correctedY - offset}`,
+            d: `M ${center - 0.5 * OneTickWidth} ${correctedY - offset2} L ${center - 0.5 * OneTickWidth + OneTickWidth} ${correctedY - offset2}`,
             fill: "black",
             fillTop: "white",
             strokeWidth,
@@ -31780,7 +31780,7 @@
         return /* @__PURE__ */ FSComponent.buildComponent(
           PathWithBlackBackground,
           {
-            d: `M ${center - 0.5 * TwoFiveTickWidth} ${correctedY - offset} L ${center - 0.5 * TwoFiveTickWidth + TwoFiveTickWidth} ${correctedY - offset}`,
+            d: `M ${center - 0.5 * TwoFiveTickWidth} ${correctedY - offset2} L ${center - 0.5 * TwoFiveTickWidth + TwoFiveTickWidth} ${correctedY - offset2}`,
             fill: "black",
             fillTop: "white",
             strokeWidth,
@@ -31791,7 +31791,7 @@
         return /* @__PURE__ */ FSComponent.buildComponent(
           PathWithBlackBackground,
           {
-            d: `M ${center - 0.5 * FiveTickWidth} ${correctedY - offset} L ${center - 0.5 * FiveTickWidth + FiveTickWidth} ${correctedY - offset}`,
+            d: `M ${center - 0.5 * FiveTickWidth} ${correctedY - offset2} L ${center - 0.5 * FiveTickWidth + FiveTickWidth} ${correctedY - offset2}`,
             fill: "black",
             fillTop: "white",
             strokeWidth,
@@ -31802,7 +31802,7 @@
         return /* @__PURE__ */ FSComponent.buildComponent(
           PathWithBlackBackground,
           {
-            d: `M ${center - 0.5 * SevenFiveTickWidth} ${correctedY - offset} L ${center - 0.5 * SevenFiveTickWidth + SevenFiveTickWidth} ${correctedY - offset}`,
+            d: `M ${center - 0.5 * SevenFiveTickWidth} ${correctedY - offset2} L ${center - 0.5 * SevenFiveTickWidth + SevenFiveTickWidth} ${correctedY - offset2}`,
             fill: "black",
             fillTop: "white",
             strokeWidth,
@@ -31814,7 +31814,7 @@
           "text",
           {
             x: center - 45,
-            y: correctedY - offset + 2,
+            y: correctedY - offset2 + 2,
             fill: "white",
             "font-size": "22px",
             "text-anchor": "middle",
@@ -31827,7 +31827,7 @@
         ), /* @__PURE__ */ FSComponent.buildComponent(
           PathWithBlackBackground,
           {
-            d: `M ${center - 0.5 * TenTickWidth} ${correctedY - offset} L ${center - 0.5 * TenTickWidth + TenTickWidth} ${correctedY - offset}`,
+            d: `M ${center - 0.5 * TenTickWidth} ${correctedY - offset2} L ${center - 0.5 * TenTickWidth + TenTickWidth} ${correctedY - offset2}`,
             fill: "black",
             fillTop: "white",
             strokeWidth,
@@ -31837,7 +31837,7 @@
           "text",
           {
             x: center + 45,
-            y: correctedY - offset + 2,
+            y: correctedY - offset2 + 2,
             fill: "white",
             "font-size": "22px",
             "text-anchor": "middle",
@@ -31852,7 +31852,7 @@
         return /* @__PURE__ */ FSComponent.buildComponent(FSComponent.Fragment, null, /* @__PURE__ */ FSComponent.buildComponent(
           PathWithBlackBackground,
           {
-            d: `M ${center - FourtyTickWidth + 35} ${correctedY - offset} L ${center + 35 + FourtyTickWidth} ${correctedY - offset}`,
+            d: `M ${center - FourtyTickWidth + 35} ${correctedY - offset2} L ${center + 35 + FourtyTickWidth} ${correctedY - offset2}`,
             fill: "black",
             fillTop: "white",
             strokeWidth,
@@ -31862,7 +31862,7 @@
           "text",
           {
             x: "260",
-            y: correctedY - offset + 5,
+            y: correctedY - offset2 + 5,
             fill: "white",
             "font-size": "22px",
             "text-anchor": "start",
@@ -31875,7 +31875,7 @@
         ), /* @__PURE__ */ FSComponent.buildComponent(
           PathWithBlackBackground,
           {
-            d: `M ${center - FourtyTickWidth - 35} ${correctedY - offset} L ${center - 35 + FourtyTickWidth} ${correctedY - offset}`,
+            d: `M ${center - FourtyTickWidth - 35} ${correctedY - offset2} L ${center - 35 + FourtyTickWidth} ${correctedY - offset2}`,
             fill: "black",
             fillTop: "white",
             strokeWidth,
@@ -32134,11 +32134,33 @@
   };
 
   // instruments/src/PFD/Components/Altitude/LowAltitudeAwarenessDisplay.tsx
+  var offset = 15;
   var LowAltitudeAwarenessDisplay = class extends DisplayComponent {
     constructor() {
       super(...arguments);
       this.grndBox = FSComponent.createRef();
+      this.grndBoxInsideClipPath = FSComponent.createRef();
       this.grndBoxClipPath = FSComponent.createRef();
+      this.renderLines = () => {
+        const lines = [];
+        const clipPathHeight = this.props.maxAltitude * this.props.stretch;
+        for (let i = -clipPathHeight * 1.005; i < clipPathHeight * 1.005; i += offset) {
+          lines.push(
+            /* @__PURE__ */ FSComponent.buildComponent(
+              "line",
+              {
+                x1: 455,
+                y1: clipPathHeight + i,
+                x2: 537,
+                y2: clipPathHeight + i - offset * 4,
+                stroke: Colors_default.YELLOW,
+                "stroke-width": 2
+              }
+            )
+          );
+        }
+        return lines;
+      };
     }
     onAfterRender(node) {
       super.onAfterRender(node);
@@ -32147,30 +32169,22 @@
         const boxPosition = this.props.maxAltitude * this.props.stretch - alt * 3.281 * this.props.stretch;
         this.grndBox.instance.setAttribute("height", `${boxPosition}`);
         this.grndBox.instance.setAttribute("y", `${boxPosition}`);
+        this.grndBoxInsideClipPath.instance.setAttribute("height", `${boxPosition}`);
+        this.grndBoxInsideClipPath.instance.setAttribute("y", `${boxPosition}`);
         const clipPathHeight = this.props.maxAltitude * this.props.stretch;
         this.grndBoxClipPath.instance.setAttribute("height", `${clipPathHeight}`);
         this.grndBoxClipPath.instance.setAttribute("y", `${boxPosition - clipPathHeight}`);
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent(
-        "pattern",
-        {
-          id: "laadPattern",
-          width: 10,
-          height: 10,
-          patternTransform: "rotate(45 0 0)",
-          patternUnits: "userSpaceOnUse"
-        },
-        /* @__PURE__ */ FSComponent.buildComponent("line", { x1: 5, x2: 5, y1: 0, y2: 10, stroke: Colors_default.YELLOW, "stroke-width": 2 })
-      ), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "laadClipPath" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 455, y: 0, width: 82, height: 0, ref: this.grndBoxClipPath }))), /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "laadInsideClipPath" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 455, y: 0, width: 82, height: 0, ref: this.grndBoxInsideClipPath })), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "laadClipPath" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 455, y: 0, width: 82, height: 0, ref: this.grndBoxClipPath }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#laadInsideClipPath)" }, /* @__PURE__ */ FSComponent.buildComponent("g", null, this.renderLines())), /* @__PURE__ */ FSComponent.buildComponent(
         "rect",
         {
           x: 455,
           y: 0,
           width: 82,
           height: 0,
-          fill: "url(#laadPattern)",
+          fill: "transparent",
           stroke: Colors_default.YELLOW,
           "stroke-width": 2,
           ref: this.grndBox

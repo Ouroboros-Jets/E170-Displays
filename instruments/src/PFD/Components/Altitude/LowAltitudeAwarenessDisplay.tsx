@@ -10,9 +10,32 @@ type LowAltitudeAwarenessDisplayProps = ComponentProps & {
   maxAltitude: number
 }
 
+const offset = 15
+
 export class LowAltitudeAwarenessDisplay extends DisplayComponent<LowAltitudeAwarenessDisplayProps> {
   private readonly grndBox = FSComponent.createRef<SVGRectElement>()
+  private readonly grndBoxInsideClipPath = FSComponent.createRef<SVGRectElement>()
   private readonly grndBoxClipPath = FSComponent.createRef<SVGRectElement>()
+
+  private readonly renderLines = (): JSX.Element[] => {
+    const lines: JSX.Element[] = []
+
+    const clipPathHeight = this.props.maxAltitude * this.props.stretch
+
+    for (let i = -clipPathHeight * 1.005; i < clipPathHeight * 1.005; i += offset) {
+      lines.push(
+        <line
+          x1={455}
+          y1={clipPathHeight + i}
+          x2={537}
+          y2={clipPathHeight + i - offset * 4}
+          stroke={Colors.YELLOW}
+          stroke-width={2}
+        />
+      )
+    }
+    return lines
+  }
 
   public onAfterRender(node: VNode): void {
     super.onAfterRender(node)
@@ -29,6 +52,9 @@ export class LowAltitudeAwarenessDisplay extends DisplayComponent<LowAltitudeAwa
         this.grndBox.instance.setAttribute('height', `${boxPosition}`)
         this.grndBox.instance.setAttribute('y', `${boxPosition}`)
 
+        this.grndBoxInsideClipPath.instance.setAttribute('height', `${boxPosition}`)
+        this.grndBoxInsideClipPath.instance.setAttribute('y', `${boxPosition}`)
+
         const clipPathHeight = this.props.maxAltitude * this.props.stretch
         this.grndBoxClipPath.instance.setAttribute('height', `${clipPathHeight}`)
         this.grndBoxClipPath.instance.setAttribute('y', `${boxPosition - clipPathHeight}`)
@@ -39,27 +65,25 @@ export class LowAltitudeAwarenessDisplay extends DisplayComponent<LowAltitudeAwa
     return (
       <g>
         <defs>
-          <pattern
-            id="laadPattern"
-            width={10}
-            height={10}
-            patternTransform="rotate(45 0 0)"
-            patternUnits="userSpaceOnUse"
-          >
-            <line x1={5} x2={5} y1={0} y2={10} stroke={Colors.YELLOW} stroke-width={2} />
-          </pattern>
+          <clipPath id="laadInsideClipPath">
+            <rect x={455} y={0} width={82} height={0} ref={this.grndBoxInsideClipPath} />
+          </clipPath>
 
           <clipPath id="laadClipPath">
             <rect x={455} y={0} width={82} height={0} ref={this.grndBoxClipPath} />
           </clipPath>
         </defs>
 
+        <g clip-path="url(#laadInsideClipPath)">
+          <g>{this.renderLines()}</g>
+        </g>
+
         <rect
           x={455}
           y={0}
           width={82}
           height={0}
-          fill="url(#laadPattern)"
+          fill="transparent"
           stroke={Colors.YELLOW}
           stroke-width={2}
           ref={this.grndBox}
