@@ -95,18 +95,20 @@
     "name": "INDICATED ALTITUDE",
     "index": 0,
     "unit": "Feet",
-    "value": "0",
+    "value": 0.0,
     "control": {
-      "type": "Text"
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
     },
-    "pinned": true
+    "pinned": null
   },
   {
     "type": "A",
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 170.0,
+    "value": 109.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -843,7 +845,7 @@
     "name": "OVERSPEED",
     "index": 0,
     "unit": "knots",
-    "value": 187.0,
+    "value": 135.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

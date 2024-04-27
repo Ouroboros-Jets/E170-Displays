@@ -10,25 +10,26 @@ type LowAltitudeAwarenessDisplayProps = ComponentProps & {
   maxAltitude: number
 }
 
-const offset = 15
-
 export class LowAltitudeAwarenessDisplay extends DisplayComponent<LowAltitudeAwarenessDisplayProps> {
   private readonly grndBox = FSComponent.createRef<SVGRectElement>()
   private readonly grndBoxInsideClipPath = FSComponent.createRef<SVGRectElement>()
   private readonly grndBoxClipPath = FSComponent.createRef<SVGRectElement>()
+
+  offset = 15
+  tilt = this.offset / 2
 
   private readonly renderLines = (): JSX.Element[] => {
     const lines: JSX.Element[] = []
 
     const clipPathHeight = this.props.maxAltitude * this.props.stretch
 
-    for (let i = -clipPathHeight * 1.005; i < clipPathHeight * 1.005; i += offset) {
+    for (let i = -clipPathHeight * 1.005; i < clipPathHeight * 1.005; i += this.offset) {
       lines.push(
         <line
           x1={455}
-          y1={clipPathHeight + i}
+          y1={clipPathHeight + i - this.offset}
           x2={537}
-          y2={clipPathHeight + i - offset * 4}
+          y2={clipPathHeight + i - this.offset * this.tilt}
           stroke={Colors.YELLOW}
           stroke-width={2}
         />
@@ -47,17 +48,23 @@ export class LowAltitudeAwarenessDisplay extends DisplayComponent<LowAltitudeAwa
       .whenChanged()
       .handle((alt) => {
         // alt is in meters
-        const boxPosition = this.props.maxAltitude * this.props.stretch - alt * 3.281 * this.props.stretch
+        const altInFeet = alt * 3.281
 
-        this.grndBox.instance.setAttribute('height', `${boxPosition}`)
-        this.grndBox.instance.setAttribute('y', `${boxPosition}`)
+        if (altInFeet > 550) {
+          // HIDE
+        } else {
+          const boxPosition = this.props.maxAltitude * this.props.stretch - altInFeet * this.props.stretch
 
-        this.grndBoxInsideClipPath.instance.setAttribute('height', `${boxPosition}`)
-        this.grndBoxInsideClipPath.instance.setAttribute('y', `${boxPosition}`)
+          this.grndBox.instance.setAttribute('height', `${boxPosition}`)
+          this.grndBox.instance.setAttribute('y', `${boxPosition}`)
 
-        const clipPathHeight = this.props.maxAltitude * this.props.stretch
-        this.grndBoxClipPath.instance.setAttribute('height', `${clipPathHeight}`)
-        this.grndBoxClipPath.instance.setAttribute('y', `${boxPosition - clipPathHeight}`)
+          this.grndBoxInsideClipPath.instance.setAttribute('height', `${boxPosition}`)
+          this.grndBoxInsideClipPath.instance.setAttribute('y', `${boxPosition}`)
+
+          const clipPathHeight = this.props.maxAltitude * this.props.stretch
+          this.grndBoxClipPath.instance.setAttribute('height', `${clipPathHeight}`)
+          this.grndBoxClipPath.instance.setAttribute('y', `${boxPosition - clipPathHeight}`)
+        }
       })
   }
 
