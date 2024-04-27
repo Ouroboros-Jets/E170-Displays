@@ -32379,20 +32379,35 @@
     const digits = [];
     for (let i = 0; i < 30; i++) {
       const digit = 9 - i % 10;
-      digits.push(
-        /* @__PURE__ */ FSComponent.buildComponent(
-          "text",
-          {
-            x: tenth ? 525 : 525,
-            y: tenth ? digitSpacing * i - 465 : digitSpacing * i - 462,
-            "font-size": tenth ? 17 : 25,
-            "text-anchor": "middle",
-            fill: Colors_default.GREEN,
-            "letter-spacing": -2
-          },
-          tenth ? digit.toString().concat("0") : digit.toString()
-        )
-      );
+      if (max === 1e4 && digit === 0) {
+        digits.push(
+          /* @__PURE__ */ FSComponent.buildComponent(
+            "path",
+            {
+              d: "M 520 243 L 529 243 L 529 244 L 520 253 M 520 258 L 529 249 L 529 257 L 520 265 M 526 265 L 529 262 L 529 265 Z",
+              stroke: Colors_default.GREEN,
+              "stroke-width": 0,
+              fill: Colors_default.GREEN
+            }
+          )
+        );
+        continue;
+      } else {
+        digits.push(
+          /* @__PURE__ */ FSComponent.buildComponent(
+            "text",
+            {
+              x: tenth ? 525 : 525,
+              y: tenth ? digitSpacing * i - 465 : digitSpacing * i - 462,
+              "font-size": tenth ? 17 : 25,
+              "text-anchor": "middle",
+              fill: Colors_default.GREEN,
+              "letter-spacing": -2
+            },
+            tenth ? digit.toString().concat("0") : digit.toString()
+          )
+        );
+      }
     }
     return digits;
   };
@@ -32436,7 +32451,7 @@
           "stroke-width": 2,
           "stroke-linecap": "round"
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 536 254 L 536 277 L 515 277 L 515 269 L 472 269 L 456 254 L 472 239 L 514 239 L 514 231 L 536 231 L 536 254" })), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#clip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenthDigitScrollRef }, renderDigitTape(10)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.hundredthDigitScrollRef }, renderDigitTape(100)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.thousandsDigitScrollRef }, renderDigitTape(1e3)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenThousandsDigitScrollRef }, renderDigitTape(1e4))), /* @__PURE__ */ FSComponent.buildComponent(
+      ), /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "clip" }, /* @__PURE__ */ FSComponent.buildComponent("path", { d: "M 536 254 L 536 277 L 515 277 L 515 269 L 472 269 L 456 254 L 472 239 L 514 239 L 514 231 L 536 231 L 536 254" }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#clip)" }, /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenthDigitScrollRef }, renderDigitTape(10)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.hundredthDigitScrollRef }, renderDigitTape(100)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.thousandsDigitScrollRef }, renderDigitTape(1e3)), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.tenThousandsDigitScrollRef }, renderDigitTape(1e4))), /* @__PURE__ */ FSComponent.buildComponent(
         "path",
         {
           d: "M 536 254 L 536 277 L 515 277 L 515 269 L 472 269 L 456 254 L 472 239 L 514 239 L 514 231 L 536 231 L 536 254",
