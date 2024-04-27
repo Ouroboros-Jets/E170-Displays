@@ -12,11 +12,15 @@ type LowAltitudeAwarenessDisplayProps = ComponentProps & {
 
 export class LowAltitudeAwarenessDisplay extends DisplayComponent<LowAltitudeAwarenessDisplayProps> {
   private readonly grndBox = FSComponent.createRef<SVGRectElement>()
-  private readonly grndBoxInsideClipPath = FSComponent.createRef<SVGRectElement>()
-  private readonly grndBoxClipPath = FSComponent.createRef<SVGRectElement>()
+  private readonly grndBoxInsideClipPathRef = FSComponent.createRef<SVGRectElement>()
+  private readonly grndBoxOutsideClipPathRef = FSComponent.createRef<SVGRectElement>()
+  private readonly wholeBoxRef = FSComponent.createRef<SVGGElement>()
 
-  offset = 15
-  tilt = this.offset / 2
+  private grndAlt
+  private altAgl
+
+  private readonly offset = 15
+  private readonly tilt = this.offset / 2
 
   private readonly renderLines = (): JSX.Element[] => {
     const lines: JSX.Element[] = []
@@ -38,6 +42,28 @@ export class LowAltitudeAwarenessDisplay extends DisplayComponent<LowAltitudeAwa
     return lines
   }
 
+  private checkTape(): void {
+    if (this.altAgl > 550) {
+      this.wholeBoxRef.instance.style.visibility = 'hidden'
+      this.grndBoxOutsideClipPathRef.instance.setAttribute('y', `${0}`)
+      this.grndBoxOutsideClipPathRef.instance.setAttribute('height', `${this.props.maxAltitude * this.props.stretch}`)
+    } else {
+      this.wholeBoxRef.instance.style.visibility = 'visible'
+
+      const boxPosition = this.props.maxAltitude * this.props.stretch - this.grndAlt * this.props.stretch
+
+      this.grndBox.instance.setAttribute('height', `${boxPosition}`)
+      this.grndBox.instance.setAttribute('y', `${boxPosition}`)
+
+      this.grndBoxInsideClipPathRef.instance.setAttribute('height', `${boxPosition}`)
+      this.grndBoxInsideClipPathRef.instance.setAttribute('y', `${boxPosition}`)
+
+      const clipPathHeight = this.props.maxAltitude * this.props.stretch
+      this.grndBoxOutsideClipPathRef.instance.setAttribute('height', `${clipPathHeight}`)
+      this.grndBoxOutsideClipPathRef.instance.setAttribute('y', `${boxPosition - clipPathHeight}`)
+    }
+  }
+
   public onAfterRender(node: VNode): void {
     super.onAfterRender(node)
 
@@ -46,25 +72,17 @@ export class LowAltitudeAwarenessDisplay extends DisplayComponent<LowAltitudeAwa
     sub
       .on('ground_altitude')
       .whenChanged()
+      .handle((grndAlt) => {
+        this.grndAlt = grndAlt * 3.281
+        this.checkTape()
+      })
+
+    sub
+      .on('altitude_agl')
+      .whenChanged()
       .handle((alt) => {
-        // alt is in meters
-        const altInFeet = alt * 3.281
-
-        if (altInFeet > 550) {
-          // HIDE
-        } else {
-          const boxPosition = this.props.maxAltitude * this.props.stretch - altInFeet * this.props.stretch
-
-          this.grndBox.instance.setAttribute('height', `${boxPosition}`)
-          this.grndBox.instance.setAttribute('y', `${boxPosition}`)
-
-          this.grndBoxInsideClipPath.instance.setAttribute('height', `${boxPosition}`)
-          this.grndBoxInsideClipPath.instance.setAttribute('y', `${boxPosition}`)
-
-          const clipPathHeight = this.props.maxAltitude * this.props.stretch
-          this.grndBoxClipPath.instance.setAttribute('height', `${clipPathHeight}`)
-          this.grndBoxClipPath.instance.setAttribute('y', `${boxPosition - clipPathHeight}`)
-        }
+        this.altAgl = alt
+        this.checkTape()
       })
   }
 
@@ -73,28 +91,30 @@ export class LowAltitudeAwarenessDisplay extends DisplayComponent<LowAltitudeAwa
       <g>
         <defs>
           <clipPath id="laadInsideClipPath">
-            <rect x={455} y={0} width={82} height={0} ref={this.grndBoxInsideClipPath} />
+            <rect x={455} y={0} width={82} height={0} ref={this.grndBoxInsideClipPathRef} />
           </clipPath>
 
           <clipPath id="laadClipPath">
-            <rect x={455} y={0} width={82} height={0} ref={this.grndBoxClipPath} />
+            <rect x={455} y={0} width={82} height={0} ref={this.grndBoxOutsideClipPathRef} />
           </clipPath>
         </defs>
 
-        <g clip-path="url(#laadInsideClipPath)">
-          <g>{this.renderLines()}</g>
-        </g>
+        <g ref={this.wholeBoxRef}>
+          <g clip-path="url(#laadInsideClipPath)">
+            <g>{this.renderLines()}</g>
+          </g>
 
-        <rect
-          x={455}
-          y={0}
-          width={82}
-          height={0}
-          fill="transparent"
-          stroke={Colors.YELLOW}
-          stroke-width={2}
-          ref={this.grndBox}
-        />
+          <rect
+            x={455}
+            y={0}
+            width={82}
+            height={0}
+            fill="transparent"
+            stroke={Colors.YELLOW}
+            stroke-width={2}
+            ref={this.grndBox}
+          />
+        </g>
       </g>
     )
   }

@@ -99,7 +99,7 @@
     "control": {
       "type": "Slider",
       "min": 0.0,
-      "max": 250.0
+      "max": 2500.0
     },
     "pinned": null
   },
@@ -845,7 +845,7 @@
     "name": "OVERSPEED",
     "index": 0,
     "unit": "knots",
-    "value": 135.0,
+    "value": 162.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -858,7 +858,7 @@
     "name": "PLANE ALT ABOVE GROUND",
     "index": 0,
     "unit": "feet",
-    "value": 0.0,
+    "value": 250.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -871,7 +871,7 @@
     "name": "GROUND ALTITUDE",
     "index": 0,
     "unit": "feet",
-    "value": 0.0,
+    "value": 87.0,
     "control": {
       "type": "Slider",
       "min": 0.0,

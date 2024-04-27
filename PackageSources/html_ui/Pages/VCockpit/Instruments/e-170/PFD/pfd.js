@@ -32138,8 +32138,9 @@
     constructor() {
       super(...arguments);
       this.grndBox = FSComponent.createRef();
-      this.grndBoxInsideClipPath = FSComponent.createRef();
-      this.grndBoxClipPath = FSComponent.createRef();
+      this.grndBoxInsideClipPathRef = FSComponent.createRef();
+      this.grndBoxOutsideClipPathRef = FSComponent.createRef();
+      this.wholeBoxRef = FSComponent.createRef();
       this.offset = 15;
       this.tilt = this.offset / 2;
       this.renderLines = () => {
@@ -32163,26 +32164,37 @@
         return lines;
       };
     }
+    checkTape() {
+      if (this.altAgl > 550) {
+        this.wholeBoxRef.instance.style.visibility = "hidden";
+        this.grndBoxOutsideClipPathRef.instance.setAttribute("y", `${0}`);
+        this.grndBoxOutsideClipPathRef.instance.setAttribute("height", `${this.props.maxAltitude * this.props.stretch}`);
+      } else {
+        this.wholeBoxRef.instance.style.visibility = "visible";
+        const boxPosition = this.props.maxAltitude * this.props.stretch - this.grndAlt * this.props.stretch;
+        this.grndBox.instance.setAttribute("height", `${boxPosition}`);
+        this.grndBox.instance.setAttribute("y", `${boxPosition}`);
+        this.grndBoxInsideClipPathRef.instance.setAttribute("height", `${boxPosition}`);
+        this.grndBoxInsideClipPathRef.instance.setAttribute("y", `${boxPosition}`);
+        const clipPathHeight = this.props.maxAltitude * this.props.stretch;
+        this.grndBoxOutsideClipPathRef.instance.setAttribute("height", `${clipPathHeight}`);
+        this.grndBoxOutsideClipPathRef.instance.setAttribute("y", `${boxPosition - clipPathHeight}`);
+      }
+    }
     onAfterRender(node) {
       super.onAfterRender(node);
       const sub = this.props.bus.getSubscriber();
-      sub.on("ground_altitude").whenChanged().handle((alt) => {
-        const altInFeet = alt * 3.281;
-        if (altInFeet > 550) {
-        } else {
-          const boxPosition = this.props.maxAltitude * this.props.stretch - altInFeet * this.props.stretch;
-          this.grndBox.instance.setAttribute("height", `${boxPosition}`);
-          this.grndBox.instance.setAttribute("y", `${boxPosition}`);
-          this.grndBoxInsideClipPath.instance.setAttribute("height", `${boxPosition}`);
-          this.grndBoxInsideClipPath.instance.setAttribute("y", `${boxPosition}`);
-          const clipPathHeight = this.props.maxAltitude * this.props.stretch;
-          this.grndBoxClipPath.instance.setAttribute("height", `${clipPathHeight}`);
-          this.grndBoxClipPath.instance.setAttribute("y", `${boxPosition - clipPathHeight}`);
-        }
+      sub.on("ground_altitude").whenChanged().handle((grndAlt) => {
+        this.grndAlt = grndAlt * 3.281;
+        this.checkTape();
+      });
+      sub.on("altitude_agl").whenChanged().handle((alt) => {
+        this.altAgl = alt;
+        this.checkTape();
       });
     }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "laadInsideClipPath" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 455, y: 0, width: 82, height: 0, ref: this.grndBoxInsideClipPath })), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "laadClipPath" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 455, y: 0, width: 82, height: 0, ref: this.grndBoxClipPath }))), /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#laadInsideClipPath)" }, /* @__PURE__ */ FSComponent.buildComponent("g", null, this.renderLines())), /* @__PURE__ */ FSComponent.buildComponent(
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("defs", null, /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "laadInsideClipPath" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 455, y: 0, width: 82, height: 0, ref: this.grndBoxInsideClipPathRef })), /* @__PURE__ */ FSComponent.buildComponent("clipPath", { id: "laadClipPath" }, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 455, y: 0, width: 82, height: 0, ref: this.grndBoxOutsideClipPathRef }))), /* @__PURE__ */ FSComponent.buildComponent("g", { ref: this.wholeBoxRef }, /* @__PURE__ */ FSComponent.buildComponent("g", { "clip-path": "url(#laadInsideClipPath)" }, /* @__PURE__ */ FSComponent.buildComponent("g", null, this.renderLines())), /* @__PURE__ */ FSComponent.buildComponent(
         "rect",
         {
           x: 455,
@@ -32194,7 +32206,7 @@
           "stroke-width": 2,
           ref: this.grndBox
         }
-      ));
+      )));
     }
   };
 
@@ -33467,7 +33479,8 @@
     ["vstall", { name: "L:VSTALL" /* vstall */, type: SimVarValueType.Knots }],
     ["overspeed", { name: "L:OVERSPEED" /* overspeed */, type: SimVarValueType.Knots }],
     ["on_ground", { name: "SIM ON GROUND" /* on_ground */, type: SimVarValueType.Bool }],
-    ["ground_altitude", { name: "GROUND ALTITUDE" /* ground_altitude */, type: SimVarValueType.Meters }]
+    ["ground_altitude", { name: "GROUND ALTITUDE" /* ground_altitude */, type: SimVarValueType.Meters }],
+    ["altitude_agl", { name: "PLANE ALT ABOVE GROUND" /* altitude_agl */, type: SimVarValueType.Feet }]
   ]);
 
   // instruments/src/PFD/instrument.tsx

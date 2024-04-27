@@ -28,6 +28,7 @@ export type PFDSimvars = {
   overspeed: number
   on_ground: boolean
   ground_altitude: number
+  altitude_agl: number
 }
 
 export enum PFDVars {
@@ -57,7 +58,8 @@ export enum PFDVars {
   vstall = 'L:VSTALL',
   overspeed = 'L:OVERSPEED',
   on_ground = 'SIM ON GROUND',
-  ground_altitude = 'GROUND ALTITUDE'
+  ground_altitude = 'GROUND ALTITUDE',
+  altitude_agl = 'PLANE ALT ABOVE GROUND'
 }
 
 export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
@@ -88,7 +90,8 @@ export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
     ['vstall', { name: PFDVars.vstall, type: SimVarValueType.Knots }],
     ['overspeed', { name: PFDVars.overspeed, type: SimVarValueType.Knots }],
     ['on_ground', { name: PFDVars.on_ground, type: SimVarValueType.Bool }],
-    ['ground_altitude', { name: PFDVars.ground_altitude, type: SimVarValueType.Meters }]
+    ['ground_altitude', { name: PFDVars.ground_altitude, type: SimVarValueType.Meters }],
+    ['altitude_agl', { name: PFDVars.altitude_agl, type: SimVarValueType.Feet }]
   ])
 
   public constructor(bus: EventBus) {
