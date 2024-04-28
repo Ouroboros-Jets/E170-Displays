@@ -32199,7 +32199,7 @@
         {
           x: 455,
           y: 0,
-          width: 82,
+          width: 81,
           height: 0,
           fill: "transparent",
           stroke: Colors_default.YELLOW,
@@ -33453,10 +33453,93 @@
     }
   };
 
+  // instruments/src/PFD/Components/FlightModeAnnunciators/AutoThrottleMode.tsx
+  var AutoThrottleMode = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 82, y: 35, width: 100, height: 25, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 82, y: 60, width: 100, height: 21, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }));
+    }
+  };
+  var AutoThrottleMode_default = AutoThrottleMode;
+
+  // instruments/src/PFD/Components/FlightModeAnnunciators/AutopilotStatus.tsx
+  var AutopilotStatus = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 182, y: 35, width: 78, height: 25, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }));
+    }
+  };
+  var AutopilotStatus_default = AutopilotStatus;
+
+  // instruments/src/PFD/Components/FlightModeAnnunciators/AutoThrottleStatus.tsx
+  var AutoThrottleStatus = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 182, y: 60, width: 78, height: 21, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }));
+    }
+  };
+  var AutoThrottleStatus_default = AutoThrottleStatus;
+
+  // instruments/src/PFD/Components/FlightModeAnnunciators/SourceSelection.tsx
+  var leftArrow = "M 272 53 L 267 59.5 L 272 66 L 272 60 L 283 60 L 283 59 L 272 59 Z";
+  var rightArrow = "M 279 53 L 283 59.5 L 279 66 L 279 60 L 268 60 L 268 59 L 279 59 Z";
+  var SourceSelection = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.arrowRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("selection_source").whenChanged().handle((selSource) => {
+        if (selSource) {
+          this.arrowRef.instance.setAttribute("d", rightArrow);
+        } else {
+          this.arrowRef.instance.setAttribute("d", leftArrow);
+        }
+      });
+    }
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 261, y: 35, width: 28, height: 46, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }), /* @__PURE__ */ FSComponent.buildComponent(
+        "path",
+        {
+          d: leftArrow,
+          fill: Colors_default.GREEN,
+          stroke: Colors_default.GREEN,
+          "stroke-width": 2,
+          "stroke-linejoin": "round",
+          ref: this.arrowRef
+        }
+      ));
+    }
+  };
+  var SourceSelection_default = SourceSelection;
+
+  // instruments/src/PFD/Components/FlightModeAnnunciators/LateralMode.tsx
+  var LateralMode = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 290, y: 35, width: 78, height: 25, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 290, y: 60, width: 78, height: 21, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }));
+    }
+  };
+  var LateralMode_default = LateralMode;
+
+  // instruments/src/PFD/Components/FlightModeAnnunciators/VerticalMode.tsx
+  var VerticalMode = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 368, y: 35, width: 85, height: 25, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 368, y: 60, width: 85, height: 21, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }));
+    }
+  };
+  var VerticalMode_default = VerticalMode;
+
+  // instruments/src/PFD/Components/FlightModeAnnunciators/index.tsx
+  var FlightModeAnnunciators = class extends DisplayComponent {
+    render() {
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(AutoThrottleMode_default, null), /* @__PURE__ */ FSComponent.buildComponent(AutopilotStatus_default, null), /* @__PURE__ */ FSComponent.buildComponent(AutoThrottleStatus_default, null), /* @__PURE__ */ FSComponent.buildComponent(SourceSelection_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(LateralMode_default, null), /* @__PURE__ */ FSComponent.buildComponent(VerticalMode_default, null));
+    }
+  };
+  var FlightModeAnnunciators_default = FlightModeAnnunciators;
+
   // instruments/src/PFD/index.tsx
   var PFDRoot = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent(FSComponent.Fragment, null, /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 460" }, /* @__PURE__ */ FSComponent.buildComponent(AttitudeDisplay_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Airspeed_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(VerticalSpeedIndicator, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 340" }, /* @__PURE__ */ FSComponent.buildComponent(GspdIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator2, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(HeadingSourceAnnunciator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(NavSourceAnnunciator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Compass, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Radio, { bus: this.props.bus })));
+      return /* @__PURE__ */ FSComponent.buildComponent(FSComponent.Fragment, null, /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 460" }, /* @__PURE__ */ FSComponent.buildComponent(AttitudeDisplay_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Altitude_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Airspeed_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(VerticalSpeedIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(FlightModeAnnunciators_default, { bus: this.props.bus })), /* @__PURE__ */ FSComponent.buildComponent("svg", { viewBox: "0 0 600 340" }, /* @__PURE__ */ FSComponent.buildComponent(GspdIndicator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(LockHdgIndicator2, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(HeadingSourceAnnunciator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(NavSourceAnnunciator, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Compass, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(Radio, { bus: this.props.bus })));
     }
   };
 
@@ -33476,7 +33559,7 @@
     ["ground_speed", { name: "GROUND VELOCITY" /* ground_speed */, type: SimVarValueType.Knots }],
     ["heading_lock", { name: "AUTOPILOT HEADING LOCK DIR" /* heading_lock */, type: SimVarValueType.Degree }],
     ["vertical_speed", { name: "VERTICAL SPEED" /* vertical_speed */, type: SimVarValueType.Feet }],
-    ["airspeed_selected", { name: "L:OBJ_AP_SELECTED_AS" /* airspeed_selected */, type: SimVarValueType.Knots }],
+    ["airspeed_selected", { name: "L:OBJ_E170_AP_SELECTED_AS" /* airspeed_selected */, type: SimVarValueType.Knots }],
     ["altitude_selected", { name: "AUTOPILOT ALTITUDE LOCK VAR" /* altitude_selected */, type: SimVarValueType.Feet }],
     ["barometric_setting", { name: "KOHLSMAN SETTING HG" /* barometric_setting */, type: SimVarValueType.InHG }],
     ["barometric_std", { name: "KOHLSMAN SETTING STD" /* barometric_std */, type: SimVarValueType.Bool }],
@@ -33495,7 +33578,8 @@
     ["overspeed", { name: "L:OVERSPEED" /* overspeed */, type: SimVarValueType.Knots }],
     ["on_ground", { name: "SIM ON GROUND" /* on_ground */, type: SimVarValueType.Bool }],
     ["ground_altitude", { name: "GROUND ALTITUDE" /* ground_altitude */, type: SimVarValueType.Meters }],
-    ["altitude_agl", { name: "PLANE ALT ABOVE GROUND" /* altitude_agl */, type: SimVarValueType.Feet }]
+    ["altitude_agl", { name: "PLANE ALT ABOVE GROUND" /* altitude_agl */, type: SimVarValueType.Feet }],
+    ["selection_source", { name: "L:OBJ_E170_PFD_FMA_Selection_Source" /* selection_source */, type: SimVarValueType.Bool }]
   ]);
 
   // instruments/src/PFD/instrument.tsx

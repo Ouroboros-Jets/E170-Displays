@@ -107,7 +107,7 @@ export class LowAltitudeAwarenessDisplay extends DisplayComponent<LowAltitudeAwa
           <rect
             x={455}
             y={0}
-            width={82}
+            width={81}
             height={0}
             fill="transparent"
             stroke={Colors.YELLOW}

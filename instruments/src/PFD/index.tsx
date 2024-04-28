@@ -10,6 +10,7 @@ import VerticalSpeedIndicator from './Components/VerticalSpeed'
 import Radio from './Components/Radio'
 import HeadingSourceAnnunciator from './Components/HeadingSourceAnnunciator'
 import NavSourceAnnunciator from './Components/NavSourceAnnunciatior'
+import FlightModeAnnunciators from './Components/FlightModeAnnunciators'
 
 type PFDProps = ComponentProps & {
   bus: EventBus
@@ -24,6 +25,7 @@ export class PFDRoot extends DisplayComponent<PFDProps> {
           <Altitude bus={this.props.bus} />
           <Airspeed bus={this.props.bus} />
           <VerticalSpeedIndicator bus={this.props.bus} />
+          <FlightModeAnnunciators bus={this.props.bus} />
         </svg>
 
         <svg viewBox="0 0 600 340">
