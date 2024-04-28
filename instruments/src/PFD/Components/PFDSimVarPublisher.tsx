@@ -27,7 +27,9 @@ export type PFDSimvars = {
   vstall: number
   overspeed: number
   on_ground: boolean
-  alt_above_ground: number
+  ground_altitude: number
+  altitude_agl: number
+  selection_source: boolean
 }
 
 export enum PFDVars {
@@ -39,7 +41,7 @@ export enum PFDVars {
   ground_speed = 'GROUND VELOCITY',
   heading_lock = 'AUTOPILOT HEADING LOCK DIR',
   vertical_speed = 'VERTICAL SPEED',
-  airspeed_selected = 'L:OBJ_AP_SELECTED_AS',
+  airspeed_selected = 'L:OBJ_E170_AP_SELECTED_AS',
   altitude_selected = 'AUTOPILOT ALTITUDE LOCK VAR',
   barometric_setting = 'KOHLSMAN SETTING HG',
   barometric_std = 'KOHLSMAN SETTING STD',
@@ -57,7 +59,9 @@ export enum PFDVars {
   vstall = 'L:VSTALL',
   overspeed = 'L:OVERSPEED',
   on_ground = 'SIM ON GROUND',
-  alt_above_ground = 'PLANE ALT ABOVE GROUND'
+  ground_altitude = 'GROUND ALTITUDE',
+  altitude_agl = 'PLANE ALT ABOVE GROUND',
+  selection_source = 'L:OBJ_E170_PFD_FMA_Selection_Source'
 }
 
 export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
@@ -88,7 +92,9 @@ export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
     ['vstall', { name: PFDVars.vstall, type: SimVarValueType.Knots }],
     ['overspeed', { name: PFDVars.overspeed, type: SimVarValueType.Knots }],
     ['on_ground', { name: PFDVars.on_ground, type: SimVarValueType.Bool }],
-    ['alt_above_ground', { name: PFDVars.alt_above_ground, type: SimVarValueType.Feet }]
+    ['ground_altitude', { name: PFDVars.ground_altitude, type: SimVarValueType.Meters }],
+    ['altitude_agl', { name: PFDVars.altitude_agl, type: SimVarValueType.Feet }],
+    ['selection_source', { name: PFDVars.selection_source, type: SimVarValueType.Bool }]
   ])
 
   public constructor(bus: EventBus) {

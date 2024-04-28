@@ -16,18 +16,30 @@ const renderDigitTape = (max: number): JSX.Element[] => {
 
   for (let i = 0; i < 30; i++) {
     const digit = 9 - (i % 10)
-    digits.push(
-      <text
-        x={tenth ? 525 : 525}
-        y={tenth ? digitSpacing * i - 465 : digitSpacing * i - 462}
-        font-size={tenth ? 17 : 25}
-        text-anchor="middle"
-        fill={Colors.GREEN}
-        letter-spacing={-2}
-      >
-        {tenth ? digit.toString().concat('0') : digit.toString()}
-      </text>
-    )
+    if (max === 10000 && digit === 0) {
+      digits.push(
+        <path
+          d="M 520 243 L 529 243 L 529 244 L 520 253 M 520 258 L 529 249 L 529 257 L 520 265 M 526 265 L 529 262 L 529 265 Z"
+          stroke={Colors.GREEN}
+          stroke-width={0}
+          fill={Colors.GREEN}
+        />
+      )
+      continue
+    } else {
+      digits.push(
+        <text
+          x={tenth ? 525 : 525}
+          y={tenth ? digitSpacing * i - 465 : digitSpacing * i - 462}
+          font-size={tenth ? 17 : 25}
+          text-anchor="middle"
+          fill={Colors.GREEN}
+          letter-spacing={-2}
+        >
+          {tenth ? digit.toString().concat('0') : digit.toString()}
+        </text>
+      )
+    }
   }
 
   return digits
@@ -80,9 +92,11 @@ class CurrentAltitudeBox extends DisplayComponent<SelectedAirspeedBoxProps> {
           stroke-linecap="round"
         />
 
-        <clipPath id="clip">
-          <path d="M 536 254 L 536 277 L 515 277 L 515 269 L 472 269 L 456 254 L 472 239 L 514 239 L 514 231 L 536 231 L 536 254" />
-        </clipPath>
+        <defs>
+          <clipPath id="clip">
+            <path d="M 536 254 L 536 277 L 515 277 L 515 269 L 472 269 L 456 254 L 472 239 L 514 239 L 514 231 L 536 231 L 536 254" />
+          </clipPath>
+        </defs>
 
         <g clip-path="url(#clip)">
           <g ref={this.tenthDigitScrollRef}>{renderDigitTape(10)}</g>

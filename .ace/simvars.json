@@ -95,7 +95,7 @@
     "name": "INDICATED ALTITUDE",
     "index": 0,
     "unit": "Feet",
-    "value": 0.0,
+    "value": 213.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -108,7 +108,7 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 170.0,
+    "value": 51.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -511,7 +511,7 @@
     "name": "OBJ_E170_PFD_FMA_Selection_Source",
     "index": 0,
     "unit": "number",
-    "value": 0.0,
+    "value": 1.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -845,25 +845,12 @@
     "name": "OVERSPEED",
     "index": 0,
     "unit": "knots",
-    "value": 202.0,
+    "value": 84.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
       "max": 250.0
     },
-    "pinned": null
-  },
-  {
-    "type": "A",
-    "name": "PLANE ALT ABOVE GROUND",
-    "index": 0,
-    "unit": "feet",
-    "value": 0.0,
-    "control": {
-      "type": "Slider",
-      "min": 0.0,
-      "max": 250.0
-    },
-    "pinned": null
+    "pinned": true
   }
 ]
