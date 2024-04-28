@@ -6,3 +6,4 @@ target
 .vscode
 display-ref
 .env
+.ace
