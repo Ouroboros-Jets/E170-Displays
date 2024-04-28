@@ -1,0 +1,19 @@
+/* temp_stylePlugin:instruments\src\RadioSelector\index.scss */
+.radioSelector {
+  color: white;
+}
+.radio_text {
+  font-family: arial;
+  color: cyan;
+  font-size: 60px;
+}
+.volume {
+  text-align: right;
+}
+.radio_container {
+  width: 23%;
+  display: grid;
+  grid-template-columns: auto auto;
+  row-gap: 30px;
+  padding: 30px;
+}
