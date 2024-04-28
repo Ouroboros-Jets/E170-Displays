@@ -95,7 +95,7 @@
     "name": "INDICATED ALTITUDE",
     "index": 0,
     "unit": "Feet",
-    "value": 1.0,
+    "value": 213.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -108,7 +108,7 @@
     "name": "AIRSPEED INDICATED",
     "index": 0,
     "unit": "Knots",
-    "value": 109.0,
+    "value": 51.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
@@ -845,51 +845,12 @@
     "name": "OVERSPEED",
     "index": 0,
     "unit": "knots",
-    "value": 162.0,
+    "value": 84.0,
     "control": {
       "type": "Slider",
       "min": 0.0,
       "max": 250.0
     },
-    "pinned": null
-  },
-  {
-    "type": "A",
-    "name": "PLANE ALT ABOVE GROUND",
-    "index": 0,
-    "unit": "feet",
-    "value": 94.0,
-    "control": {
-      "type": "Slider",
-      "min": 0.0,
-      "max": 250.0
-    },
-    "pinned": null
-  },
-  {
-    "type": "A",
-    "name": "GROUND ALTITUDE",
-    "index": 0,
-    "unit": "feet",
-    "value": 0.0,
-    "control": {
-      "type": "Slider",
-      "min": 0.0,
-      "max": 250.0
-    },
-    "pinned": null
-  },
-  {
-    "type": "L",
-    "name": "OBJ_E170_AP_SELECTED_AS",
-    "index": 0,
-    "unit": "knots",
-    "value": 0.0,
-    "control": {
-      "type": "Slider",
-      "min": 0.0,
-      "max": 250.0
-    },
-    "pinned": null
+    "pinned": true
   }
 ]
