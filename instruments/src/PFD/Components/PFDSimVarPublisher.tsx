@@ -30,8 +30,10 @@ export type PFDSimvars = {
   ground_altitude: number
   altitude_agl: number
   selection_source: boolean
-  autothrottle_mode: number
-  autopilot_mode: number
+  armed_autothrottle_mode: number
+  active_autothrottle_mode: number
+  autopilot_status: number
+  autothrottle_status: number
 }
 
 export enum PFDVars {
@@ -64,8 +66,10 @@ export enum PFDVars {
   ground_altitude = 'GROUND ALTITUDE',
   altitude_agl = 'PLANE ALT ABOVE GROUND',
   selection_source = 'L:OBJ_E170_PFD_FMA_SELECTION_SOURCE',
-  autothrottle_mode = 'L:OBJ_E170_PFD_FMA_AT_MODE',
-  autopilot_mode = 'L:OBJ_E170_PFD_FMA_AP_MODE'
+  armed_autothrottle_mode = 'L:OBJ_E170_PFD_FMA_ARM_AT_MODE',
+  active_autothrottle_mode = 'L:OBJ_E170_PFD_FMA_ACT_AT_MODE',
+  autopilot_status = 'L:OBJ_E170_PFD_FMA_AP_STATUS',
+  autothrottle_status = 'L:OBJ_E170_PFD_FMA_AT_STATUS'
 }
 
 export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
@@ -99,8 +103,10 @@ export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
     ['ground_altitude', { name: PFDVars.ground_altitude, type: SimVarValueType.Meters }],
     ['altitude_agl', { name: PFDVars.altitude_agl, type: SimVarValueType.Feet }],
     ['selection_source', { name: PFDVars.selection_source, type: SimVarValueType.Bool }],
-    ['autothrottle_mode', { name: PFDVars.autothrottle_mode, type: SimVarValueType.Number }],
-    ['autopilot_mode', { name: PFDVars.autopilot_mode, type: SimVarValueType.Number }]
+    ['armed_autothrottle_mode', { name: PFDVars.armed_autothrottle_mode, type: SimVarValueType.Number }],
+    ['active_autothrottle_mode', { name: PFDVars.active_autothrottle_mode, type: SimVarValueType.Number }],
+    ['autopilot_status', { name: PFDVars.autopilot_status, type: SimVarValueType.Number }],
+    ['autothrottle_status', { name: PFDVars.autothrottle_status, type: SimVarValueType.Number }]
   ])
 
   public constructor(bus: EventBus) {

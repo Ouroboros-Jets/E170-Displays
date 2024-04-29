@@ -488,5 +488,57 @@
       "max": 250.0
     },
     "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_ARM_AT_MODE",
+    "index": 0,
+    "unit": "number",
+    "value": 2.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_ACT_AT_MODE",
+    "index": 0,
+    "unit": "number",
+    "value": 4.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_AP_STATUS",
+    "index": 0,
+    "unit": "number",
+    "value": 1.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_AT_STATUS",
+    "index": 0,
+    "unit": "number",
+    "value": 1.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
   }
 ]
