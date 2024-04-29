@@ -540,5 +540,57 @@
       "max": 250.0
     },
     "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_ACT_LAT_MODE",
+    "index": 0,
+    "unit": "number",
+    "value": 5.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_ARM_LAT_MODE",
+    "index": 0,
+    "unit": "number",
+    "value": 6.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_ACT_VERT_MODE",
+    "index": 0,
+    "unit": "number",
+    "value": 17.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
+  },
+  {
+    "type": "L",
+    "name": "OBJ_E170_PFD_FMA_ARM_VERT_MODE",
+    "index": 0,
+    "unit": "number",
+    "value": 3.0,
+    "control": {
+      "type": "Slider",
+      "min": 0.0,
+      "max": 250.0
+    },
+    "pinned": null
   }
 ]

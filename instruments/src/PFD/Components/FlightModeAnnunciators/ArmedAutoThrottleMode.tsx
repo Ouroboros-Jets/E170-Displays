@@ -70,6 +70,7 @@ class ArmedAutoThrottleMode extends DisplayComponent<ArmedAutoThrottleModeProps>
           ref={this.armedAutoThrottleModeBoxRef}
         />
         <text x={132} y={79} font-size={22} text-anchor="middle" ref={this.armedAutoThrottleModeTextRef} />
+        <text x={221} y={55} font-size={22} text-anchor="middle" ref={this.armedAutoThrottleModeBoxRef} />
       </g>
     )
   }

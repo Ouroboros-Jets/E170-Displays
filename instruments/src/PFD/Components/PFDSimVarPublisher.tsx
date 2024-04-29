@@ -34,6 +34,10 @@ export type PFDSimvars = {
   active_autothrottle_mode: number
   autopilot_status: number
   autothrottle_status: number
+  armed_lateral_mode: number
+  active_lateral_mode: number
+  armed_vertical_mode: number
+  active_vertical_mode: number
 }
 
 export enum PFDVars {
@@ -69,7 +73,11 @@ export enum PFDVars {
   armed_autothrottle_mode = 'L:OBJ_E170_PFD_FMA_ARM_AT_MODE',
   active_autothrottle_mode = 'L:OBJ_E170_PFD_FMA_ACT_AT_MODE',
   autopilot_status = 'L:OBJ_E170_PFD_FMA_AP_STATUS',
-  autothrottle_status = 'L:OBJ_E170_PFD_FMA_AT_STATUS'
+  autothrottle_status = 'L:OBJ_E170_PFD_FMA_AT_STATUS',
+  armed_lateral_mode = 'L:OBJ_E170_PFD_FMA_ARM_LAT_MODE',
+  active_lateral_mode = 'L:OBJ_E170_PFD_FMA_ACT_LAT_MODE',
+  armed_vertical_mode = 'L:OBJ_E170_PFD_FMA_ARM_VERT_MODE',
+  active_vertical_mode = 'L:OBJ_E170_PFD_FMA_ACT_VERT_MODE'
 }
 
 export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
@@ -106,7 +114,11 @@ export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
     ['armed_autothrottle_mode', { name: PFDVars.armed_autothrottle_mode, type: SimVarValueType.Number }],
     ['active_autothrottle_mode', { name: PFDVars.active_autothrottle_mode, type: SimVarValueType.Number }],
     ['autopilot_status', { name: PFDVars.autopilot_status, type: SimVarValueType.Number }],
-    ['autothrottle_status', { name: PFDVars.autothrottle_status, type: SimVarValueType.Number }]
+    ['autothrottle_status', { name: PFDVars.autothrottle_status, type: SimVarValueType.Number }],
+    ['armed_lateral_mode', { name: PFDVars.armed_lateral_mode, type: SimVarValueType.Number }],
+    ['active_lateral_mode', { name: PFDVars.active_lateral_mode, type: SimVarValueType.Number }],
+    ['armed_vertical_mode', { name: PFDVars.armed_vertical_mode, type: SimVarValueType.Number }],
+    ['active_vertical_mode', { name: PFDVars.active_vertical_mode, type: SimVarValueType.Number }]
   ])
 
   public constructor(bus: EventBus) {

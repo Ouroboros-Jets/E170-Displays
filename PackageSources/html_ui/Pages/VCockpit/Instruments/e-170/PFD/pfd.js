@@ -33763,42 +33763,275 @@
           "stroke-width": "2",
           ref: this.armedAutoThrottleModeBoxRef
         }
-      ), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 132, y: 79, "font-size": 22, "text-anchor": "middle", ref: this.armedAutoThrottleModeTextRef }));
+      ), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 132, y: 79, "font-size": 22, "text-anchor": "middle", ref: this.armedAutoThrottleModeTextRef }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 221, y: 55, "font-size": 22, "text-anchor": "middle", ref: this.armedAutoThrottleModeBoxRef }));
     }
   };
   var ArmedAutoThrottleMode_default = ArmedAutoThrottleMode;
 
   // instruments/src/PFD/Components/FlightModeAnnunciators/ActiveLateralMode.tsx
-  var LateralMode = class extends DisplayComponent {
+  var ActiveLateralMode = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.activeLateralModeTextRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("active_lateral_mode").whenChanged().handle((alm) => {
+        switch (alm) {
+          case 0: {
+            this.activeLateralModeTextRef.instance.textContent = "";
+            break;
+          }
+          case 1: {
+            this.activeLateralModeTextRef.instance.textContent = "TRACK";
+            this.activeLateralModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 2: {
+            this.activeLateralModeTextRef.instance.textContent = "ROLL";
+            this.activeLateralModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 3: {
+            this.activeLateralModeTextRef.instance.textContent = "LOC";
+            this.activeLateralModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 4: {
+            this.activeLateralModeTextRef.instance.textContent = "BC";
+            this.activeLateralModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 5: {
+            this.activeLateralModeTextRef.instance.textContent = "LNAV";
+            this.activeLateralModeTextRef.instance.setAttribute("fill", Colors_default.PINK);
+            break;
+          }
+          case 6: {
+            this.activeLateralModeTextRef.instance.textContent = "HDG";
+            this.activeLateralModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 7: {
+            this.activeLateralModeTextRef.instance.textContent = "ALIGN";
+            this.activeLateralModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 8: {
+            this.activeLateralModeTextRef.instance.textContent = "RLOUT";
+            this.activeLateralModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+        }
+      });
+    }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 290, y: 35, width: 78, height: 25, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 290, y: 35, width: 78, height: 25, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 329, y: 55, "font-size": 22, "text-anchor": "middle", ref: this.activeLateralModeTextRef }));
     }
   };
-  var ActiveLateralMode_default = LateralMode;
+  var ActiveLateralMode_default = ActiveLateralMode;
 
   // instruments/src/PFD/Components/FlightModeAnnunciators/ArmedLateralMode.tsx
-  var LateralMode2 = class extends DisplayComponent {
+  var ArmedLateralMode = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.armedLateralModeTextRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("armed_lateral_mode").whenChanged().handle((alm) => {
+        switch (alm) {
+          case 0: {
+            this.armedLateralModeTextRef.instance.textContent = "";
+            break;
+          }
+          case 1: {
+            this.armedLateralModeTextRef.instance.textContent = "LOC";
+            break;
+          }
+          case 2: {
+            this.armedLateralModeTextRef.instance.textContent = "BC";
+            break;
+          }
+          case 3: {
+            this.armedLateralModeTextRef.instance.textContent = "LNAV";
+            break;
+          }
+          case 4: {
+            this.armedLateralModeTextRef.instance.textContent = "ALIGN";
+            break;
+          }
+          case 5: {
+            this.armedLateralModeTextRef.instance.textContent = "RLOUT";
+            break;
+          }
+          case 6: {
+            this.armedLateralModeTextRef.instance.textContent = "TRACK";
+            break;
+          }
+        }
+      });
+    }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 290, y: 60, width: 78, height: 21, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 290, y: 60, width: 78, height: 21, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 329, y: 79, "font-size": 22, "text-anchor": "middle", fill: "white", ref: this.armedLateralModeTextRef }));
     }
   };
-  var ArmedLateralMode_default = LateralMode2;
+  var ArmedLateralMode_default = ArmedLateralMode;
 
   // instruments/src/PFD/Components/FlightModeAnnunciators/ActiveVerticalMode.tsx
-  var VerticalMode = class extends DisplayComponent {
+  var ActiveVerticalMode = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.activeVerticalModeTextRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("active_vertical_mode").whenChanged().handle((avm) => {
+        switch (avm) {
+          case 0: {
+            this.activeVerticalModeTextRef.instance.textContent = "";
+            break;
+          }
+          case 1: {
+            this.activeVerticalModeTextRef.instance.textContent = "ALT";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 2: {
+            this.activeVerticalModeTextRef.instance.textContent = "FLARE";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 3: {
+            this.activeVerticalModeTextRef.instance.textContent = "D-ROT";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 4: {
+            this.activeVerticalModeTextRef.instance.textContent = "FLCH";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 5: {
+            this.activeVerticalModeTextRef.instance.textContent = "GA";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 6: {
+            this.activeVerticalModeTextRef.instance.textContent = "TO";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 7: {
+            this.activeVerticalModeTextRef.instance.textContent = "FPA";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 8: {
+            this.activeVerticalModeTextRef.instance.textContent = "ASEL";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 9: {
+            this.activeVerticalModeTextRef.instance.textContent = "GS";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 10: {
+            this.activeVerticalModeTextRef.instance.textContent = "VS";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 11: {
+            this.activeVerticalModeTextRef.instance.textContent = "WSHR";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            break;
+          }
+          case 12: {
+            this.activeVerticalModeTextRef.instance.textContent = "FLCH";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.PINK);
+            break;
+          }
+          case 13: {
+            this.activeVerticalModeTextRef.instance.textContent = "ASEL";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.PINK);
+            break;
+          }
+          case 14: {
+            this.activeVerticalModeTextRef.instance.textContent = "ALT";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.PINK);
+            break;
+          }
+          case 15: {
+            this.activeVerticalModeTextRef.instance.textContent = "PTH";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.PINK);
+            break;
+          }
+          case 16: {
+            this.activeVerticalModeTextRef.instance.textContent = "GP";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.PINK);
+            break;
+          }
+          case 17: {
+            this.activeVerticalModeTextRef.instance.textContent = "OVSP";
+            this.activeVerticalModeTextRef.instance.setAttribute("fill", Colors_default.ORANGE);
+            break;
+          }
+        }
+      });
+    }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 368, y: 35, width: 85, height: 25, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 368, y: 35, width: 85, height: 25, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 410.5, y: 55, "font-size": 22, "text-anchor": "middle", ref: this.activeVerticalModeTextRef }));
     }
   };
-  var ActiveVerticalMode_default = VerticalMode;
+  var ActiveVerticalMode_default = ActiveVerticalMode;
 
   // instruments/src/PFD/Components/FlightModeAnnunciators/ArmedVerticalMode.tsx
-  var VerticalMode2 = class extends DisplayComponent {
+  var ArmedVerticalMode = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.armedVerticalModeTextRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("armed_vertical_mode").whenChanged().handle((avm) => {
+        switch (avm) {
+          case 0: {
+            this.armedVerticalModeTextRef.instance.textContent = "";
+            break;
+          }
+          case 1: {
+            this.armedVerticalModeTextRef.instance.textContent = "GP";
+            break;
+          }
+          case 2: {
+            this.armedVerticalModeTextRef.instance.textContent = "GS";
+            break;
+          }
+          case 3: {
+            this.armedVerticalModeTextRef.instance.textContent = "VNAV";
+            break;
+          }
+          case 4: {
+            this.armedVerticalModeTextRef.instance.textContent = "FLARE";
+            break;
+          }
+          case 5: {
+            this.armedVerticalModeTextRef.instance.textContent = "D-ROT";
+            break;
+          }
+        }
+      });
+    }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 368, y: 60, width: 85, height: 21, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 368, y: 60, width: 85, height: 21, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 410.5, y: 79, "font-size": 22, "text-anchor": "middle", fill: "white", ref: this.armedVerticalModeTextRef }));
     }
   };
-  var ArmedVerticalMode_default = VerticalMode2;
+  var ArmedVerticalMode_default = ArmedVerticalMode;
 
   // instruments/src/PFD/Components/FlightModeAnnunciators/index.tsx
   var FlightModeAnnunciators = class extends DisplayComponent {
@@ -33855,7 +34088,11 @@
     ["armed_autothrottle_mode", { name: "L:OBJ_E170_PFD_FMA_ARM_AT_MODE" /* armed_autothrottle_mode */, type: SimVarValueType.Number }],
     ["active_autothrottle_mode", { name: "L:OBJ_E170_PFD_FMA_ACT_AT_MODE" /* active_autothrottle_mode */, type: SimVarValueType.Number }],
     ["autopilot_status", { name: "L:OBJ_E170_PFD_FMA_AP_STATUS" /* autopilot_status */, type: SimVarValueType.Number }],
-    ["autothrottle_status", { name: "L:OBJ_E170_PFD_FMA_AT_STATUS" /* autothrottle_status */, type: SimVarValueType.Number }]
+    ["autothrottle_status", { name: "L:OBJ_E170_PFD_FMA_AT_STATUS" /* autothrottle_status */, type: SimVarValueType.Number }],
+    ["armed_lateral_mode", { name: "L:OBJ_E170_PFD_FMA_ARM_LAT_MODE" /* armed_lateral_mode */, type: SimVarValueType.Number }],
+    ["active_lateral_mode", { name: "L:OBJ_E170_PFD_FMA_ACT_LAT_MODE" /* active_lateral_mode */, type: SimVarValueType.Number }],
+    ["armed_vertical_mode", { name: "L:OBJ_E170_PFD_FMA_ARM_VERT_MODE" /* armed_vertical_mode */, type: SimVarValueType.Number }],
+    ["active_vertical_mode", { name: "L:OBJ_E170_PFD_FMA_ACT_VERT_MODE" /* active_vertical_mode */, type: SimVarValueType.Number }]
   ]);
 
   // instruments/src/PFD/instrument.tsx
