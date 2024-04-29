@@ -32098,6 +32098,7 @@
     Colors2["CYAN"] = "#00FEFE";
     Colors2["YELLOW"] = "#FDE501";
     Colors2["RED"] = "#FE0000";
+    Colors2["ORANGE"] = "#E3930F";
     return Colors2;
   })(Colors || {});
   var Colors_default = Colors;
@@ -33455,8 +33456,191 @@
 
   // instruments/src/PFD/Components/FlightModeAnnunciators/AutoThrottleMode.tsx
   var AutoThrottleMode = class extends DisplayComponent {
+    constructor() {
+      super(...arguments);
+      this.autoThrottleModeTextRef = FSComponent.createRef();
+      this.autoThrottleModeBoxRef = FSComponent.createRef();
+      this.autopilotModeTextRef = FSComponent.createRef();
+      this.autopilotModeBoxRef = FSComponent.createRef();
+    }
+    onAfterRender(node) {
+      super.onAfterRender(node);
+      const sub = this.props.bus.getSubscriber();
+      sub.on("autothrottle_mode").whenChanged().handle((atMode) => {
+        switch (atMode) {
+          case 0: {
+            this.autoThrottleModeTextRef.instance.textContent = "";
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", "black");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+          case 1: {
+            this.autoThrottleModeTextRef.instance.textContent = "TO";
+            this.autoThrottleModeTextRef.instance.setAttribute("fill", "white");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", "black");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+          case 2: {
+            this.autoThrottleModeTextRef.instance.textContent = "TO";
+            this.autoThrottleModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", "black");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+          case 3: {
+            this.autoThrottleModeTextRef.instance.textContent = "HOLD";
+            this.autoThrottleModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", "black");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+          case 4: {
+            this.autoThrottleModeTextRef.instance.innerHTML = 'SPD<tspan font-size="15">T</tspan>';
+            this.autoThrottleModeTextRef.instance.setAttribute("fill", "white");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", "black");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+          case 5: {
+            this.autoThrottleModeTextRef.instance.innerHTML = 'SPD<tspan font-size="15">T</tspan>';
+            this.autoThrottleModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", "black");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+          case 6: {
+            this.autoThrottleModeTextRef.instance.innerHTML = 'SPD<tspan font-size="15">E</tspan>';
+            this.autoThrottleModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", "black");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+          case 7: {
+            this.autoThrottleModeTextRef.instance.textContent = "RETD";
+            this.autoThrottleModeTextRef.instance.setAttribute("fill", "white");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", "black");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+          case 8: {
+            this.autoThrottleModeTextRef.instance.textContent = "RETD";
+            this.autoThrottleModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", "black");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+          case 9: {
+            this.autoThrottleModeTextRef.instance.textContent = "GA";
+            this.autoThrottleModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", "black");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+          case 10: {
+            this.autoThrottleModeTextRef.instance.textContent = "LIM";
+            this.autoThrottleModeTextRef.instance.setAttribute("fill", Colors_default.ORANGE);
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", "black");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+          case 11: {
+            this.autoThrottleModeTextRef.instance.textContent = "AT";
+            this.autoThrottleModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", "black");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+          case 12: {
+            this.autoThrottleModeTextRef.instance.textContent = "AT";
+            this.autoThrottleModeTextRef.instance.setAttribute("fill", "black");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", Colors_default.GREEN);
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "1");
+            break;
+          }
+          case 13: {
+            this.autoThrottleModeTextRef.instance.textContent = "AT";
+            this.autoThrottleModeTextRef.instance.setAttribute("fill", "white");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", Colors_default.RED);
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "1");
+            break;
+          }
+          case 14: {
+            this.autoThrottleModeTextRef.instance.textContent = "OVRD";
+            this.autoThrottleModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", "black");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+          case 15: {
+            this.autoThrottleModeTextRef.instance.textContent = "DD";
+            this.autoThrottleModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill", "black");
+            this.autoThrottleModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+        }
+      });
+      sub.on("autopilot_mode").whenChanged().handle((apMode) => {
+        switch (apMode) {
+          case 0: {
+            this.autopilotModeTextRef.instance.textContent = "";
+            this.autopilotModeBoxRef.instance.setAttribute("fill", "black");
+            this.autopilotModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+          case 1: {
+            this.autopilotModeTextRef.instance.textContent = "AP";
+            this.autopilotModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            this.autopilotModeBoxRef.instance.setAttribute("fill", "black");
+            this.autopilotModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+          case 2: {
+            this.autopilotModeTextRef.instance.textContent = "AP";
+            this.autopilotModeTextRef.instance.setAttribute("fill", "white");
+            this.autopilotModeBoxRef.instance.setAttribute("fill", Colors_default.RED);
+            this.autopilotModeBoxRef.instance.setAttribute("fill-opacity", "1");
+            break;
+          }
+          case 3: {
+            this.autopilotModeTextRef.instance.textContent = "TCS";
+            this.autopilotModeTextRef.instance.setAttribute("fill", Colors_default.GREEN);
+            this.autopilotModeBoxRef.instance.setAttribute("fill", "black");
+            this.autopilotModeBoxRef.instance.setAttribute("fill-opacity", "0.3");
+            break;
+          }
+        }
+      });
+    }
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 82, y: 35, width: 100, height: 25, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }), /* @__PURE__ */ FSComponent.buildComponent("rect", { x: 82, y: 60, width: 100, height: 21, fill: "black", "fill-opacity": 0.3, stroke: "white", "stroke-width": "2" }));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(
+        "rect",
+        {
+          x: 82,
+          y: 35,
+          width: 100,
+          height: 25,
+          fill: "black",
+          "fill-opacity": 0.3,
+          stroke: "white",
+          "stroke-width": "2",
+          ref: this.autoThrottleModeBoxRef
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 132, y: 55, "font-size": 22, "text-anchor": "middle", ref: this.autoThrottleModeTextRef }), /* @__PURE__ */ FSComponent.buildComponent(
+        "rect",
+        {
+          x: 82,
+          y: 60,
+          width: 100,
+          height: 21,
+          fill: "black",
+          "fill-opacity": 0.3,
+          stroke: "white",
+          "stroke-width": "2",
+          ref: this.autopilotModeBoxRef
+        }
+      ), /* @__PURE__ */ FSComponent.buildComponent("text", { x: 132, y: 79, "font-size": 22, "text-anchor": "middle", ref: this.autopilotModeTextRef }));
     }
   };
   var AutoThrottleMode_default = AutoThrottleMode;
@@ -33531,7 +33715,7 @@
   // instruments/src/PFD/Components/FlightModeAnnunciators/index.tsx
   var FlightModeAnnunciators = class extends DisplayComponent {
     render() {
-      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(AutoThrottleMode_default, null), /* @__PURE__ */ FSComponent.buildComponent(AutopilotStatus_default, null), /* @__PURE__ */ FSComponent.buildComponent(AutoThrottleStatus_default, null), /* @__PURE__ */ FSComponent.buildComponent(SourceSelection_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(LateralMode_default, null), /* @__PURE__ */ FSComponent.buildComponent(VerticalMode_default, null));
+      return /* @__PURE__ */ FSComponent.buildComponent("g", null, /* @__PURE__ */ FSComponent.buildComponent(AutoThrottleMode_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(AutopilotStatus_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(AutoThrottleStatus_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(SourceSelection_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(LateralMode_default, { bus: this.props.bus }), /* @__PURE__ */ FSComponent.buildComponent(VerticalMode_default, { bus: this.props.bus }));
     }
   };
   var FlightModeAnnunciators_default = FlightModeAnnunciators;
@@ -33574,12 +33758,14 @@
     ["gps_next_waypoint_distance", { name: "GPS WP DISTANCE" /* gps_next_waypoint_distance */, type: SimVarValueType.Number }],
     ["nav_ident", { name: "NAV IDENT" /* nav_ident */, type: SimVarValueType.String }],
     ["nav_dme", { name: "NAV DME" /* nav_dme */, type: SimVarValueType.NM }],
-    ["vstall", { name: "L:VSTALL" /* vstall */, type: SimVarValueType.Knots }],
-    ["overspeed", { name: "L:OVERSPEED" /* overspeed */, type: SimVarValueType.Knots }],
+    ["vstall", { name: "L:OBJ_E170_VSTALL" /* vstall */, type: SimVarValueType.Knots }],
+    ["overspeed", { name: "L:OBJ_E170_OVERSPEED" /* overspeed */, type: SimVarValueType.Knots }],
     ["on_ground", { name: "SIM ON GROUND" /* on_ground */, type: SimVarValueType.Bool }],
     ["ground_altitude", { name: "GROUND ALTITUDE" /* ground_altitude */, type: SimVarValueType.Meters }],
     ["altitude_agl", { name: "PLANE ALT ABOVE GROUND" /* altitude_agl */, type: SimVarValueType.Feet }],
-    ["selection_source", { name: "L:OBJ_E170_PFD_FMA_Selection_Source" /* selection_source */, type: SimVarValueType.Bool }]
+    ["selection_source", { name: "L:OBJ_E170_PFD_FMA_SELECTION_SOURCE" /* selection_source */, type: SimVarValueType.Bool }],
+    ["autothrottle_mode", { name: "L:OBJ_E170_PFD_FMA_AT_MODE" /* autothrottle_mode */, type: SimVarValueType.Number }],
+    ["autopilot_mode", { name: "L:OBJ_E170_PFD_FMA_AP_MODE" /* autopilot_mode */, type: SimVarValueType.Number }]
   ]);
 
   // instruments/src/PFD/instrument.tsx

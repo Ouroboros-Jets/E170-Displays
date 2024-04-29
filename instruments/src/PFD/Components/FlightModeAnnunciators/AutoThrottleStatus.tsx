@@ -1,6 +1,8 @@
-import { FSComponent, DisplayComponent, type VNode, type ComponentProps } from '@microsoft/msfs-sdk'
+import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
 
-type AutoThrottleStatusProps = ComponentProps & {}
+type AutoThrottleStatusProps = ComponentProps & {
+  bus: EventBus
+}
 
 class AutoThrottleStatus extends DisplayComponent<AutoThrottleStatusProps> {
   public render(): VNode {

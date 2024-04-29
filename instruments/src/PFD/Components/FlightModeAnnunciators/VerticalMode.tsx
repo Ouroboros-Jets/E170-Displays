@@ -1,6 +1,8 @@
-import { FSComponent, DisplayComponent, type VNode, type ComponentProps } from '@microsoft/msfs-sdk'
+import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
 
-type VerticalModeProps = ComponentProps & {}
+type VerticalModeProps = ComponentProps & {
+  bus: EventBus
+}
 
 class VerticalMode extends DisplayComponent<VerticalModeProps> {
   public render(): VNode {

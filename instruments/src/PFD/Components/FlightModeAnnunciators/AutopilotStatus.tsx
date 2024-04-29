@@ -1,6 +1,8 @@
-import { FSComponent, DisplayComponent, type VNode, type ComponentProps } from '@microsoft/msfs-sdk'
+import { FSComponent, DisplayComponent, type VNode, type ComponentProps, type EventBus } from '@microsoft/msfs-sdk'
 
-type AutopilotStatusProps = ComponentProps & {}
+type AutopilotStatusProps = ComponentProps & {
+  bus: EventBus
+}
 
 class AutopilotStatus extends DisplayComponent<AutopilotStatusProps> {
   public render(): VNode {

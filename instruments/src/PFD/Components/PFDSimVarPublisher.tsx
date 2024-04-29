@@ -30,6 +30,8 @@ export type PFDSimvars = {
   ground_altitude: number
   altitude_agl: number
   selection_source: boolean
+  autothrottle_mode: number
+  autopilot_mode: number
 }
 
 export enum PFDVars {
@@ -56,12 +58,14 @@ export enum PFDVars {
   gps_next_waypoint_distance = 'GPS WP DISTANCE',
   nav_ident = 'NAV IDENT',
   nav_dme = 'NAV DME',
-  vstall = 'L:VSTALL',
-  overspeed = 'L:OVERSPEED',
+  vstall = 'L:OBJ_E170_VSTALL',
+  overspeed = 'L:OBJ_E170_OVERSPEED',
   on_ground = 'SIM ON GROUND',
   ground_altitude = 'GROUND ALTITUDE',
   altitude_agl = 'PLANE ALT ABOVE GROUND',
-  selection_source = 'L:OBJ_E170_PFD_FMA_Selection_Source'
+  selection_source = 'L:OBJ_E170_PFD_FMA_SELECTION_SOURCE',
+  autothrottle_mode = 'L:OBJ_E170_PFD_FMA_AT_MODE',
+  autopilot_mode = 'L:OBJ_E170_PFD_FMA_AP_MODE'
 }
 
 export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
@@ -94,7 +98,9 @@ export class PFDSimvarPublisher extends SimVarPublisher<PFDSimvars> {
     ['on_ground', { name: PFDVars.on_ground, type: SimVarValueType.Bool }],
     ['ground_altitude', { name: PFDVars.ground_altitude, type: SimVarValueType.Meters }],
     ['altitude_agl', { name: PFDVars.altitude_agl, type: SimVarValueType.Feet }],
-    ['selection_source', { name: PFDVars.selection_source, type: SimVarValueType.Bool }]
+    ['selection_source', { name: PFDVars.selection_source, type: SimVarValueType.Bool }],
+    ['autothrottle_mode', { name: PFDVars.autothrottle_mode, type: SimVarValueType.Number }],
+    ['autopilot_mode', { name: PFDVars.autopilot_mode, type: SimVarValueType.Number }]
   ])
 
   public constructor(bus: EventBus) {

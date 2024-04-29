@@ -14,12 +14,12 @@ class FlightModeAnnunciators extends DisplayComponent<FlightModeAnnunciatorsProp
   public render(): VNode {
     return (
       <g>
-        <AutoThrottleMode />
-        <AutopilotStatus />
-        <AutoThrottleStatus />
+        <AutoThrottleMode bus={this.props.bus} />
+        <AutopilotStatus bus={this.props.bus} />
+        <AutoThrottleStatus bus={this.props.bus} />
         <SourceSelection bus={this.props.bus} />
-        <LateralMode />
-        <VerticalMode />
+        <LateralMode bus={this.props.bus} />
+        <VerticalMode bus={this.props.bus} />
       </g>
     )
   }
