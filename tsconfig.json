@@ -9,23 +9,16 @@
     "moduleResolution": "node",
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
-    "paths": {
-      "@instruments/common/*": ["./instruments/src/Common/*"]
-    },
     "typeRoots": ["./typings/", "./node_modules/@types", "./node_modules"],
     "types": ["sass"]
   },
   "include": [
     ".eslintrc.cjs",
     "node_modules/@types",
-    "instruments/src/**/*.ts",
-    "instruments/src/**/*.tsx",
-    "instruments/common/**/*.ts",
-    "instruments/common/**/*.tsx",
-    "Systems/src/**/*.ts",
-    "Systems/src/**/*.tsx",
-    "Systems/common/**/*.ts",
-    "Systems/common/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "common/**/*.ts",
+    "common/**/*.tsx",
     "mach.config.js"
   ],
   "exclude": ["node_modules"]

@@ -6,8 +6,7 @@
   "scripts": {
     "build:instruments": "mach build --config mach.config.js",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "dev": "mach watch -c mach.config.js -d ",
-    "biome": "biome migrate eslint --write"
+    "dev": "mach watch -c mach.config.js -d "
   },
   "author": "Ourobors Jets",
   "license": "MIT",
