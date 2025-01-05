@@ -6,7 +6,8 @@
   "scripts": {
     "build:instruments": "mach build --config mach.config.js",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "dev": "mach watch -c mach.config.js -d "
+    "dev": "mach watch -c mach.config.js -d ",
+    "biome": "biome migrate eslint --write"
   },
   "author": "Ourobors Jets",
   "license": "MIT",
@@ -23,26 +24,15 @@
     "@types/react-slider": "^1.3.6",
     "@types/sass": "^1.45.0",
     "@types/tz-lookup": "^6.1.2",
-    "@typescript-eslint/eslint-plugin": "^6.18.0",
-    "@typescript-eslint/parser": "^6.10.0",
     "dotenv": "^16.3.1",
     "esbuild": "^0.19.5",
     "esbuild-envfile-plugin": "^1.0.5",
     "esbuild-plugin-tsc": "^0.4.0",
-    "eslint": "^8.56.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-config-standard-with-typescript": "^40.0.0",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-n": "^16.3.1",
-    "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.4",
-    "prettier": "3.1.0",
     "tailwindcss": "^2.2.19",
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@navigraph/leaflet": "^2.0.0",
     "@synaptic-simulations/mach": "^1.0.3",
     "@types/node-sass": "^4.11.4",
